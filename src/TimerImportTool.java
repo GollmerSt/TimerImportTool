@@ -26,8 +26,8 @@ public final class TimerImportTool {
 			for ( int i = 0 ; i < args.length ; i++ )
 			{
 				paras += args[i] + " " ;
-				if (      args[i].equalsIgnoreCase("-new") )
-					allNew = true ;
+				if (      args[i].equalsIgnoreCase("-getAll") )
+					getAll = true ;
 				else if ( args[i].equalsIgnoreCase("-verbose") )
 					Log.setVerbose( true ) ;
 				else if ( args[i].equalsIgnoreCase("-ClickFinder") )
@@ -64,7 +64,7 @@ public final class TimerImportTool {
 			{
 				case TVINFO :
 					AllTVInfoRecordings aR = new AllTVInfoRecordings(control, dvbViewer, 3, 3);
-					aR.processTVInfo(allNew);
+					aR.processTVInfo(getAll);
 					dvbViewer.setDVBViewerTimers();
 					aR.write() ;
 					break ;
