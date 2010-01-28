@@ -1,0 +1,60 @@
+// $LastChangedDate: 2010-01-28 09:11:48 +0100 (Do, 28 Jan 2010) $
+// $LastChangedRevision: 15 $
+// $LastChangedBy: Stefan Gollmer $
+
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.XMLEvent;
+
+
+public class ErrorClass extends Error
+{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5094608651279342617L;
+	private static boolean warnings = false ;
+	private final Throwable mainError ;
+	private final String errorString ;
+	public ErrorClass( String errorString )
+	{
+		super( errorString ) ;
+		mainError = null ;
+		this.errorString = errorString ;
+	}
+	public ErrorClass( Throwable e, String errorString )
+	{
+		super( errorString ) ;
+		mainError = e ;
+		this.errorString = errorString ;
+	}
+	public ErrorClass( XMLEvent ev, String errorString )
+	{
+		super( errorString + " near line "
+                + Integer.toString( ev.getLocation().getLineNumber() ) + "." ) ;
+		mainError = null ;
+		this.errorString = errorString + " near line "
+                           + Integer.toString( ev.getLocation().getLineNumber() ) + "." ;
+	}
+	
+	public ErrorClass( XMLStreamException e, String errorString )
+	{
+		super( errorString + " near line "
+                + Integer.toString( e.getLocation().getLineNumber() ) + "." ) ;
+		mainError = e ;
+		this.errorString = errorString + " near line "
+                           + Integer.toString( e.getLocation().getLineNumber() ) + "." ;
+	}
+	
+	public String getLocalizedMessage()
+	{
+		String res = this.getMessage() ;
+		if ( this.mainError != null)
+			res += "\nDetailed error message:\n\n" +
+					  this.mainError.getLocalizedMessage() ;
+		return( res ) ;
+	}
+	public String getErrorString() { return this.errorString ; } ;
+	static public void setWarníng() { ErrorClass.warnings = true ; } ;
+	static public boolean isWarning() { return ErrorClass.warnings ; } ;
+}

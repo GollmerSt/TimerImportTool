@@ -1,0 +1,10 @@
+// $LastChangedDate: 2010-01-28 08:22:55 +0100 (Do, 28 Jan 2010) $
+// $LastChangedRevision: 9 $
+// $LastChangedBy: Stefan Gollmer $
+
+
+Version 1:
+			Based on TVImport Tool
+			TVInfoImport renamed to TimerImportTool
+			BroadCastAddress bug fixed
+			XML file names changed
