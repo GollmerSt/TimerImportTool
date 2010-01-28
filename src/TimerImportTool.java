@@ -55,7 +55,7 @@ public final class TimerImportTool {
 			DVBViewer dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
 			Control control = new Control(dvbViewer);
 			
-			Log.setToDisplay(showMessageBox);
+			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
 			
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;
@@ -100,13 +100,13 @@ public final class TimerImportTool {
 		if ( ErrorClass.isWarning() )
 		{
 			Log.out( "Import finished, but warnings occurs. The messages should be checked"  ) ;
-			if ( showMessageBox )
+			if ( showMessageBox|| type == ImportType.CLICKFINDER )
 				JOptionPane.showMessageDialog(null, "Warnings occurs", TimerImportTool.exeName + "-Status", JOptionPane.WARNING_MESSAGE);
 		}
 		else
 		{
 			Log.out( "Import successfull finished" ) ;
-			if ( showMessageBox )
+			if ( showMessageBox || install != InstallMode.NONE )
 				JOptionPane.showMessageDialog(null, "Successfull finished", TimerImportTool.exeName + "-Status", JOptionPane.INFORMATION_MESSAGE);
 		}
 		System.exit(0);
