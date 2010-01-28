@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-01-27 22:10:38 +0100 (Mi, 27 Jan 2010) $
-// $LastChangedRevision: 2 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 
 import javax.swing.JOptionPane;

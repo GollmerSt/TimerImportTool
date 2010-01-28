@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-01-28 09:11:48 +0100 (Do, 28 Jan 2010) $
-// $LastChangedRevision: 15 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 
 import java.security.MessageDigest;
