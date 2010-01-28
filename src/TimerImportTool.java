@@ -18,7 +18,7 @@ public final class TimerImportTool {
 		String additionalParas = "" ;
 		//WakeOnLan.execute("192.168.0.255", "00:1F:D0:20:CB:3A" ) ;
 		try {
-			boolean allNew = false ;
+			boolean getAll = false ;
 			
 			String paras = "" ;
 			String dataPath = null ;
