@@ -33,7 +33,7 @@ public class Registry {
 		String command = "reg delete \"" + path + "\" /f" ;
 		if ( key.length() != 0 )
 			command += " /v " + key ;
-		System.out.println( command ) ;
+		//System.out.println( command ) ;
 		Registry.exec(command) ;
 	}
 	static private String exec( String command )

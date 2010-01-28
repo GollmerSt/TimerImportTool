@@ -32,7 +32,7 @@ public final class TVInfo {
 		
 		String hex = Conversions.bytesToString(md.digest()) ;
 		String completeURL = this.url + "?username=" + this.userName + "&password=" + hex ;
-		System.out.print( completeURL + "\n") ;
+		//System.out.print( completeURL + "\n") ;
 		
 		URL tvInfoURL;
 		try {
