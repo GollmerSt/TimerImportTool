@@ -15,6 +15,19 @@ public final class Conversions {
 	private final static SimpleDateFormat dayTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
 	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
+	private final static long svcTimeCorrection = Conversions.calcSvcTimeCorrection() ;
+	
+	static long calcSvcTimeCorrection()
+	{
+		long result = 0 ;
+		try {
+			result = svcTimeFormat.parse("00:00").getTime() ;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return result ;
+	}
 	
 	static byte[] intToBytes( int n )
 	{
@@ -95,5 +108,31 @@ public final class Conversions {
 		int  minutes = c.get( java.util.Calendar.HOUR_OF_DAY ) * 60
 		               + c.get( java.util.Calendar.MINUTE ) ;
 		return Integer.toString( minutes ) ;
+	}
+	static long svcTimeToLong( String time, String date ) throws ParseException
+	{
+		
+		long result = svcTimeFormat.parse( time ).getTime() - Conversions.svcTimeCorrection ;
+		result += svcDayFormat.parse( date ).getTime() ;
+		return result ;
+	}
+	static String replaceDiacritical( String s )
+	{
+		if ( ! s.matches(".*[‰ˆ¸ƒ÷‹ﬂ].*") ) //\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]") )
+			return s ;
+		
+		String result = s ;
+		
+		result = result.replaceAll( "\u00e4", "ae" ) ;
+		result = result.replaceAll( "\u00f6", "oe" ) ;
+		result = result.replaceAll( "\u00fc", "ue" ) ;
+		result = result.replaceAll( "\u00c4", "Ae" ) ;
+		result = result.replaceAll( "\u00d6", "Oe" ) ;
+		result = result.replaceAll( "\u00dc", "Ue" ) ;
+		result = result.replaceAll( "\u00df", "ss" ) ;
+		
+		System.out.println( result ) ;
+		
+		return result ;
 	}
 }

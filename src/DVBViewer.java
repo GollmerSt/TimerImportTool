@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 public class DVBViewer {
 	private DVBViewerService service = null ;
-	private ArrayList<DVBViewerEntry> newEntries = null;
+	private ArrayList<DVBViewerEntry> recordEntries = null;
 	@SuppressWarnings("unused")
 	private ArrayList<TVInfoRecording> deletedRecodings = null;
 	private HashMap< String, Channel> channelsByTVInfo      = null;
@@ -36,7 +36,7 @@ public class DVBViewer {
 		else
 			this.dataPath = this.determineDataPath() ;
 		this.pluginConfPath = this.dataPath + File.separator + "Plugins" ;
-		this.newEntries = new ArrayList<DVBViewerEntry>() ;
+		this.recordEntries = new ArrayList<DVBViewerEntry>() ;
 		this.channelsByTVInfo      = new HashMap< String, Channel>() ;
 		this.channelsByClickFinder = new HashMap< String, Channel>() ;
 	}
@@ -149,7 +149,7 @@ public class DVBViewer {
 		if ( c.getCombine().isValid() )
 			combine = c.getCombine().toCombine() ;
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(), start, end, title, combine ) ;
-		this.newEntries.add( e ) ;
+		this.recordEntries.add( e ) ;
 	}
 	public void addNewTVInfoEntry( String channel, long start, long end, String title )
 	{
@@ -163,7 +163,11 @@ public class DVBViewer {
 	public String getExeName()        { return this.exeName ; } ;
 	public String getDataPath()       { return this.dataPath ; } ;
 	public String getPluginConfPath() { return this.pluginConfPath ; } ;
-	public void setService( DVBViewerService s ) { this.service = s ; } ;
+	public void setService( DVBViewerService s )
+	{
+		this.service = s ;
+		recordEntries = this.service.readTimers() ;
+	}
 	public void setEnableWOL( boolean e ) { this.service.setEnableWOL( e ) ; } ;
 	public void setBroadCastAddress( String b ) { this.service.setBroadCastAddress( b ) ; } ;
 	public void setMacAddress( String m ) { this.service.setMacAddress( m ) ; } ;
@@ -180,39 +184,24 @@ public class DVBViewer {
 	}
 	public void combine()
 	{
-		for ( int iO = 0 ; iO < this.newEntries.size() ; iO++ )
+		for ( int iO = 0 ; iO < this.recordEntries.size() ; iO++ )
 		{
-			if ( ! this.newEntries.get( iO ).toCombine() )
+			if ( ! this.recordEntries.get( iO ).toCombine() )
 				continue ;
 			boolean changed = true ;
 			while ( changed )
 			{
 				changed = false ;
-				DVBViewerEntry o = this.newEntries.get( iO ) ;
-				String channel = o.getChannel() ;
-				long start = o.getStart() ;
-				long end   = o.getEnd() ;
+				DVBViewerEntry o = this.recordEntries.get( iO ) ;
 			
-				for ( int iI = iO+1 ; iI < this.newEntries.size() ; iI++)
+				for ( int iI = iO+1 ; iI < this.recordEntries.size() ; iI++)
 				{
-					DVBViewerEntry i = this.newEntries.get( iI ) ;
-					if ( !channel.equals( i.getChannel() ) )
-						continue ;
-					long startI = i.getStart() ;
-					long endI   = i.getEnd() ;
-					if ( o.isInRange(startI, endI) )
+					DVBViewerEntry i = this.recordEntries.get( iI ) ;
+					if ( o.mustCombine( i ) )
 					{
-						start = Math.min(start, startI) ;
-						end  = Math.max( end, endI ) ;
-						String title = i.getTitle();
-						if ( start < startI )
-							title += this.separator + i.getTitle() ;
-						else
-							title = i.getTitle() + this.separator + title ;
-						DVBViewerEntry e = new DVBViewerEntry( channel, start, end, title, o.toCombine() ) ;
-						this.newEntries.remove( iO ) ;
-						this.newEntries.add( iO, e ) ;
-						this.newEntries.remove( iI ) ;
+						DVBViewerEntry newEntry = o.update( i, this.separator ) ;
+						if ( newEntry != null )
+							this.recordEntries.add( newEntry ) ;
 						changed = true ;
 						break ;
 					}
@@ -225,12 +214,14 @@ public class DVBViewer {
 		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
 		rsBase += "-a0 -t0 " ;
 
-		for ( Iterator<DVBViewerEntry> it = this.newEntries.iterator() ; it.hasNext() ; )
+		for ( Iterator<DVBViewerEntry> it = this.recordEntries.iterator() ; it.hasNext() ; )
 		{
 			DVBViewerEntry d = it.next();
 			if ( this.service != null )
-				this.service.setTimerEntry( d.getChannel(), d.getTitle(), d.getStart(), d.getEnd()) ;
-			else
+			{
+				this.service.setTimerEntry( d ) ;
+			}
+			else if ( d.getToDo() == DVBViewerEntry.ToDo.NEW )
 			{
 				String rs = rsBase ;
 				rs += "-d \"" + d.getTitle() + "\" " ;

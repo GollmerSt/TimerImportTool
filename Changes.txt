@@ -8,3 +8,10 @@ Version 1:
 			TVInfoImport renamed to TimerImportTool
 			BroadCastAddress bug fixed
 			XML file names changed
+		
+		
+Version 1.01:
+			Merging is now working between older entries
+			Version of the DVBViewerService is read
+			äöüÄÖÜß workarround for older service versions
+

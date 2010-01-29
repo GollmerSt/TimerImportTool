@@ -61,6 +61,7 @@ public class ClickFinder {
 		}
 		long end = start + milliSeconds ;
 		this.dvbViewer.addNewClickFinderEntry(channel, start, end, title) ;
+		this.dvbViewer.combine() ;
 	}
 	
 	public void putToRegistry( boolean setDataDir, String additionalParas )
