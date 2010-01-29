@@ -211,12 +211,20 @@ public class DVBViewer {
 	}
 	public void setDVBViewerTimers() throws IOException, InterruptedException
 	{
+		int updatedEntries = 0 ;
+		int newEntries = 0 ;
 		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
 		rsBase += "-a0 -t0 " ;
 
 		for ( Iterator<DVBViewerEntry> it = this.recordEntries.iterator() ; it.hasNext() ; )
 		{
 			DVBViewerEntry d = it.next();
+			
+			if ( d.mustUpdated() )
+				updatedEntries++ ;
+			else if ( ! d.mustIgnored() )
+				newEntries++ ;
+
 			if ( this.service != null )
 			{
 				this.service.setTimerEntry( d ) ;
@@ -233,6 +241,8 @@ public class DVBViewer {
 				Log.out(true, rs) ;
 			}
 		}
+		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
+				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 	}
 	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
 	public Combine getCombine() { return combine ; } ;

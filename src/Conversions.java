@@ -131,7 +131,7 @@ public final class Conversions {
 		result = result.replaceAll( "\u00dc", "Ue" ) ;
 		result = result.replaceAll( "\u00df", "ss" ) ;
 		
-		System.out.println( result ) ;
+		//System.out.println( result ) ;
 		
 		return result ;
 	}
