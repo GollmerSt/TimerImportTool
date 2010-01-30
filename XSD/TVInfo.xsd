@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified">
+
+    <xsd:element name="epg_schedule" type="AllEntries"></xsd:element>
+    
+    <xsd:complexType name="AllEntries">
+    	
+        <xsd:sequence>
+    		
+            <xsd:element name="epg_schedule_entry" type="Entry" minOccurs="0" maxOccurs="unbounded">
+    		</xsd:element>
+        </xsd:sequence>
+        
+        <xsd:attribute name="seqnumber" type="xsd:int" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="version" type="xsd:string" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="charset" type="xsd:string" use="required"></xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:complexType name="Entry">
+        
+        <xsd:all>
+    		
+            <xsd:element name="title" type="xsd:string" minOccurs="1" maxOccurs="1">
+    		</xsd:element>
+            
+            <xsd:element name="nature" minOccurs="1" maxOccurs="1">
+    			
+                <xsd:simpleType>
+                	<xsd:restriction base="xsd:string">
+
+                		<xsd:enumeration value="Comedy"></xsd:enumeration>
+
+                		<xsd:enumeration value="Kinderfilm"></xsd:enumeration>
+
+                		<xsd:enumeration value="Kriminal"></xsd:enumeration>
+
+                		<xsd:enumeration value="Zeichentrick"></xsd:enumeration>
+
+                		<xsd:enumeration value=""></xsd:enumeration>
+                		<xsd:whiteSpace value="collapse"></xsd:whiteSpace>
+                	</xsd:restriction>
+                </xsd:simpleType>
+            </xsd:element>
+            
+            <xsd:element name="format" minOccurs="1" maxOccurs="1">
+    			
+                <xsd:simpleType>
+    				<xsd:restriction base="xsd:string">
+    					
+                        <xsd:enumeration value="Serie"></xsd:enumeration>
+                        
+                        <xsd:enumeration value="Kinder"></xsd:enumeration>
+                        
+                        <xsd:enumeration value="Spielfilm"></xsd:enumeration>
+                        
+                        <xsd:enumeration value="Show"></xsd:enumeration>
+                        
+                        <xsd:enumeration value=""></xsd:enumeration>
+                    </xsd:restriction>
+    			</xsd:simpleType>
+            </xsd:element>
+            
+            <xsd:element name="cast_director" type="xsd:string" minOccurs="1" maxOccurs="1">
+    		</xsd:element>
+            
+            <xsd:element name="cast_actors" type="xsd:string" minOccurs="1" maxOccurs="1"></xsd:element>
+        </xsd:all>
+        
+        <xsd:attribute name="uid" type="xsd:int" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="channel" type="xsd:string" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="starttime" type="Date" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="endtime" type="Date" use="required"></xsd:attribute>
+        
+        <xsd:attribute name="eventtype">
+    		
+            <xsd:simpleType>
+    			<xsd:restriction base="xsd:string">
+    				
+                    <xsd:enumeration value="rec"></xsd:enumeration>
+                </xsd:restriction>
+    		</xsd:simpleType>
+        </xsd:attribute>
+    </xsd:complexType>
+
+    <xsd:simpleType name="Date">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:pattern
+    			value="\d+-\d+-\d+ \d+:\d+:\d+ [+-]\d{4}">
+    		</xsd:pattern>
+    	</xsd:restriction>
+    </xsd:simpleType>
+</xsd:schema>
