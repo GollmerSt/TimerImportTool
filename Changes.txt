@@ -15,3 +15,6 @@ Version 1.01:
 			Version of the DVBViewerService is read
 			הצüִײÜß workarround for older service versions
 
+Version 1.02
+			XML control file now compatible with XML Schema
+			XML Schema added

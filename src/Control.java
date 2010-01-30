@@ -53,7 +53,7 @@ public class Control {
 		this.pathService = p3 ;
 
 		Stack<String> p4 = new Stack<String>() ;
-		Collections.addAll( p4, "Importer", "Offset" ) ;
+		Collections.addAll( p4, "Importer", "Offsets", "Offset" ) ;
 		this.pathGlobalOffsets = p4 ;
 
 		Stack<String> p5 = new Stack<String>() ;
@@ -61,7 +61,7 @@ public class Control {
 		this.pathChannel = p5 ;
 
 		Stack<String> p6 = new Stack<String>() ;
-		Collections.addAll( p6, "Importer", "Channels", "Channel", "Offset" ) ;
+		Collections.addAll( p6, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
 		this.pathChannelOffsets = p6 ;
 
 		Stack<String> p7 = new Stack<String>() ;

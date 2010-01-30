@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified">
+  <xsd:element name="Importer">
+    <xsd:complexType>
+      <xsd:all>
+        <xsd:element name="TVInfo" minOccurs="0">
+          <xsd:complexType>
+            <xsd:all>
+              <xsd:element name="Url" type="xsd:string" minOccurs="1"/>
+            </xsd:all>
+            <xsd:attribute name="username"      type="xsd:string" use="required"/>
+            <xsd:attribute name="password"      type="xsd:string" use="required"/>
+            <xsd:attribute name="triggeraction" type="xsd:integer"/>
+          </xsd:complexType>
+        </xsd:element>
+
+        <xsd:element name="DVBService" minOccurs="0">
+          <xsd:complexType>
+            <xsd:all>
+              <xsd:element name="WakeOnLAN" minOccurs="0">
+                <xsd:complexType>
+                  <xsd:attribute name="enable"           type="xsd:boolean" use="required"/>
+                  <xsd:attribute name="broadCastaddress" type="xsd:string" use="required"/>
+                  <xsd:attribute name="macAddress"       type="myMacType" use="required"/>
+                  <xsd:attribute name="waitTimeAfterWOL" type="xsd:integer"/>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:all>
+            <xsd:attribute name="url"      type="xsd:string" use="required"/>
+            <xsd:attribute name="username" type="xsd:string" use="required"/>
+            <xsd:attribute name="password" type="xsd:string" use="required"/>
+            <xsd:attribute name="timeZone" type="xsd:string" use="required"/>
+          </xsd:complexType>
+        </xsd:element>
+      
+        <xsd:element name="Offsets" type="myOffsetsType" minOccurs="0"/>
+        <xsd:element name ="Combine"   type="xsd:string" minOccurs="0"/>
+        <xsd:element name ="Separator" type="xsd:string" minOccurs="0"/>
+
+        <xsd:element name="Channels" minOccurs="1">
+          <xsd:complexType>
+            <xsd:sequence>
+              <xsd:element name="Channel" maxOccurs="unbounded" minOccurs="1">
+                <xsd:complexType>
+                  <xsd:all>
+                    <xsd:element name ="TVInfo"      type="xsd:string" minOccurs="0"/>
+                    <xsd:element name ="ClickFinder" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name ="DVBViewer"   type="myDVBViewerChannelType"/>
+                    <xsd:element name ="Offsets"     type="myOffsetsType" minOccurs="0"/>
+                    <xsd:element name ="Combine"     type="xsd:boolean" minOccurs="0"/>
+                  </xsd:all>
+                </xsd:complexType>
+              </xsd:element>
+            </xsd:sequence>
+          </xsd:complexType>
+        </xsd:element>
+      </xsd:all>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:simpleType name="myTimeType">
+    <xsd:restriction base='xsd:string'>
+      <xsd:pattern value='\d{2}\:\d{2}'/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="myDaysType">
+    <xsd:restriction base='xsd:string'>
+      <xsd:pattern value='[01]{7}'/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="myMacType">
+    <xsd:restriction base='xsd:string'>
+      <xsd:pattern value='(\d{2}[\-:]){5}\d{2}'/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="myDVBViewerChannelType">
+    <xsd:restriction base='xsd:string'>
+      <xsd:pattern value='(\d+\|.*)|(none)'/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:complexType name="myOffsetsType">
+    <xsd:sequence>
+      <xsd:element name="Offset" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="before" type="xsd:integer"/>
+          <xsd:attribute name="after"  type="xsd:integer"/>
+          <xsd:attribute name="days"   type="myDaysType"/>
+          <xsd:attribute name="begin"  type="myTimeType"/>
+          <xsd:attribute name="end"    type="myTimeType"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+
+</xsd:schema>
