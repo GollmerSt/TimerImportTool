@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
+    <TVInfo
+        username="SGollmer" password="esamikro" triggeraction="16640">
+        <Url>
+            <![CDATA[http://www.tvinfo.de/share/openepg/schedule.php]]>
+        </Url>
+    </TVInfo>
+    <DVBService
+        url="localhost:50425"
+        username="admin"
+        password="admin"
+        timeZone="Europe/Berlin">
+    </DVBService>
+    <!--DVBService
+        url="multimedia2008:50425"
+        username="StefanGollmer"
+        password="e$am1kro"
+        timeZone="Europe/Berlin">
+        <WakeOnLAN enable="true" broadCastaddress="192.168.0.255" macAddress="00:1F:D0:20:CB:3A" waitTimeAfterWOL="15"/>
+    </DVBService-->
+    <Offsets>
+        <Offset before="15"/>
+        <Offset after="30"/>
+    </Offsets>
+    <Combine>true</Combine>
+    <Separator>,,</Separator>
+    <Channels>
+        <Channel>
+            <TVInfo>ARD</TVInfo>
+            <ClickFinder>ARD</ClickFinder>
+            <DVBViewer>543583690|Das Erste (deu)</DVBViewer>
+            <Offsets>
+                <Offset after="60" days="0000011" begin="22:00"/>
+                <Offset after="60" days="1000001" begin="00:00" end="04:00"/>
+            </Offsets>
+            <Combine>false</Combine>
+        </Channel>
+        <Channel>
+            <TVInfo>ZDF</TVInfo>
+            <ClickFinder>ZDF</ClickFinder>
+            <DVBViewer>544763238|ZDF (deu)</DVBViewer>
+            <Offsets>
+                <Offset after="60" days="0000011" begin="22:00"/>
+                <Offset after="60" days="1000001" begin="00:00" end="04:00"/>
+            </Offsets>
+        </Channel>
+        <Channel>
+            <TVInfo>Bayern</TVInfo>
+            <ClickFinder>B3</ClickFinder>
+            <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>HR</TVInfo>
+            <ClickFinder>H3</ClickFinder>
+            <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>WDR</TVInfo>
+            <ClickFinder>WDR</ClickFinder>
+            <DVBViewer>576351695|WDR Köln</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>SWR</TVInfo>
+            <ClickFinder>SWR</ClickFinder>
+            <DVBViewer>740191815|SWR Fernsehen RP</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>MDR</TVInfo>
+            <ClickFinder>MDR</ClickFinder>
+            <DVBViewer>727150150|MDR Thüringen (2ch)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>NDR</TVInfo>
+            <ClickFinder>NDR</ClickFinder>
+            <DVBViewer>707423809|NDR FS HH (2ch)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RBB</TVInfo>
+            <ClickFinder>RBB</ClickFinder>
+            <DVBViewer>576351790|rbb Berlin</DVBViewer>
+        </Channel>
+
+        <Channel>
+            <TVInfo>MDR</TVInfo>
+            <ClickFinder>MDR</ClickFinder>
+            <DVBViewer>727150150|MDR Thüringen (2ch)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Ki.Ka</TVInfo>
+            <ClickFinder>Ki.Ka</ClickFinder>
+            <DVBViewer>557870440|KiKa</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>3sat</TVInfo>
+            <ClickFinder>3SAT</ClickFinder>
+            <DVBViewer>551316839|3sat (deu)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>SR</TVInfo>
+            <DVBViewer>622227270|SR Fernsehen</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Alpha</TVInfo>
+            <ClickFinder>BR Alpha</ClickFinder>
+            <DVBViewer>628780871|BR-alpha</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ORF2</TVInfo>
+            <ClickFinder>ORF 2</ClickFinder>
+            <DVBViewer>747962478|ORF2</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Tele 5</TVInfo>
+            <ClickFinder>Tele5</ClickFinder>
+            <DVBViewer>637534319|TELE 5</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sat1</TVInfo>
+            <ClickFinder>SAT1</ClickFinder>
+            <DVBViewer>553665628|SAT.1</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Kabel1</TVInfo>
+            <ClickFinder>Kabel</ClickFinder>
+            <DVBViewer>587220062|kabel eins</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Pro7</TVInfo>
+            <ClickFinder>PRO7</ClickFinder>
+            <DVBViewer>570442845|ProSieben</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RTL</TVInfo>
+            <ClickFinder>RTL</ClickFinder>
+            <DVBViewer>543698659|RTL Television</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RTL2</TVInfo>
+            <ClickFinder>RTL II</ClickFinder>
+            <DVBViewer>545271540|RTL2</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Super RTL</TVInfo>
+            <ClickFinder>S RTL</ClickFinder>
+            <DVBViewer>544747272|Super RTL</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>VOX</TVInfo>
+            <ClickFinder>VOX</ClickFinder>
+            <DVBViewer>545795868|VOX</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>arte</TVInfo>
+            <ClickFinder>Arte</ClickFinder>
+            <DVBViewer>563245108|arte (ger)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Das Vierte</TVInfo>
+            <ClickFinder>Das Vierte</ClickFinder>
+            <DVBViewer>671088743|DAS VIERTE</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>9 Live</TVInfo>
+            <ClickFinder>9Live</ClickFinder>
+            <DVBViewer>620774496|9Live</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>BBC</TVInfo>
+            <ClickFinder>BBC</ClickFinder>
+            <DVBViewer>542900425|BBC World</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>BloombergTV</TVInfo>
+            <ClickFinder>BloombergTV</ClickFinder>
+            <DVBViewer>629932133|Bloomberg German TV</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>CNBC</TVInfo>
+            <DVBViewer>557056202|CNBC Europe</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>CNN</TVInfo>
+            <ClickFinder>CNN</ClickFinder>
+            <DVBViewer>543424715|CNN Int.</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Comedy Central</TVInfo>
+            <ClickFinder>Comedy Central</ClickFinder>
+            <DVBViewer>803733606|COMEDY CENTRAL Germany</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>DSF</TVInfo>
+            <ClickFinder>DSF</ClickFinder>
+            <DVBViewer>603979880|DSF</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>EinsExtra</TVInfo>
+            <ClickFinder>EinsExtra</ClickFinder>
+            <DVBViewer>543584305|EinsExtra</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>EinsFestival</TVInfo>
+            <ClickFinder>EinsFestival</ClickFinder>
+            <DVBViewer>550137906|EinsFestival</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>EinsPlus</TVInfo>
+            <ClickFinder>EinsMuXx</ClickFinder>
+            <DVBViewer>556691507|EinsPlus</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>N24</TVInfo>
+            <ClickFinder>N24</ClickFinder>
+            <DVBViewer>603997279|N24</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>n-tv</TVInfo>
+            <ClickFinder>NTV</ClickFinder>
+            <DVBViewer>541667130|n-tv</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Phoenix</TVInfo>
+            <ClickFinder>Phoenix</ClickFinder>
+            <DVBViewer>569798709|Phoenix</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>EuroNews</TVInfo>
+            <ClickFinder>EURONEWS</ClickFinder>
+            <DVBViewer>696320204|EuroNews (ger)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Eurosport</TVInfo>
+            <ClickFinder>EUROSPORT</ClickFinder>
+            <DVBViewer>543621325|Eurosport</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Home Shopping Europe</TVInfo>
+            <ClickFinder>Home Shopping Europe</ClickFinder>
+            <DVBViewer>620757198|HSE</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>MTV</TVInfo>
+            <ClickFinder>MTV</ClickFinder>
+            <DVBViewer>801112170|MTV Germany</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>münchen 2</TVInfo>
+            <ClickFinder>münchen 2</ClickFinder>
+            <DVBViewer>550109291|Muenchen2</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>münchen.tv</TVInfo>
+            <DVBViewer>539295852|MuenchenTV</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Nick</TVInfo>
+            <ClickFinder>Nick</ClickFinder>
+            <DVBViewer>805699693|NICK Germany</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RTLSHOP</TVInfo>
+            <ClickFinder>RTL Shop</ClickFinder>
+            <DVBViewer>545861424|RTL Shop</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TRT</TVInfo>
+            <DVBViewer>83598289|TRT Int. - CV</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>VIVA</TVInfo>
+            <ClickFinder>VIVA</ClickFinder>
+            <DVBViewer>803078256|VIVA Germany</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ZDFinfokanal</TVInfo>
+            <ClickFinder>ZDFInfo</ClickFinder>
+            <DVBViewer>577531243|ZDFinfokanal</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ZDFtheaterkanal</TVInfo>
+            <ClickFinder>ZDF Theaterkanal</ClickFinder>
+            <DVBViewer>610299248|ZDFtheaterkanal</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ZDF_neo</TVInfo>
+            <ClickFinder>ZDFneo</ClickFinder>
+            <DVBViewer>580808046|ZDFdokukanal (deu)</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>13th Street</TVInfo>
+            <ClickFinder>13th Street</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Animal Planet</TVInfo>
+            <ClickFinder>Animal Planet</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Anixe HD</TVInfo>
+            <ClickFinder>Anixe HD</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ATVplus</TVInfo>
+            <ClickFinder>ATV+</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Bahn TV</TVInfo>
+            <ClickFinder>Bahn TV</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>BBC Prime</TVInfo>
+            <ClickFinder>BBC Prime</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Beate Uhse TV</TVInfo>
+            <ClickFinder>Beate-Uhse-TV</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Belgien 1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Bibel TV</TVInfo>
+            <ClickFinder>Bibel-TV</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Cartoon Network</TVInfo>
+            <ClickFinder>Cartoon Network</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>CityInfo</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Classica</TVInfo>
+            <ClickFinder>Classica</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Discovery Channel</TVInfo>
+            <ClickFinder>BBBBB</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Discovery Geschichte</TVInfo>
+            <ClickFinder>Discovery Geschichte</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Discovery HD</TVInfo>
+            <ClickFinder>Discovery HD</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Disney Channel</TVInfo>
+            <ClickFinder>Disney Channel</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>DMAX</TVInfo>
+            <ClickFinder>XXP</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>DR1</TVInfo>
+            <ClickFinder>DK1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>DR2</TVInfo>
+            <ClickFinder>DK2</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>DW-tv</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Eurosport 2</TVInfo>
+            <ClickFinder>Eurosport 2</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Extreme Sports Channel</TVInfo>
+            <ClickFinder>Extreme Sports Channel</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>FAB</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Focus Gesundheit</TVInfo>
+            <ClickFinder>FOCUS Gesundheit</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Goldstar TV</TVInfo>
+            <ClickFinder>Goldstar TV</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>gotv</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Heimatkanal</TVInfo>
+            <ClickFinder>Heimatkanal</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>HH1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>hit24</TVInfo>
+            <ClickFinder>Hit24</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>intv</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Jetix</TVInfo>
+            <ClickFinder>Fox Kids</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Junior</TVInfo>
+            <ClickFinder>Junior</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Kanal D</TVInfo>
+            <ClickFinder>Kanal D</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>MGM</TVInfo>
+            <ClickFinder>MGM</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>NBC</TVInfo>
+            <ClickFinder>NBC</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>NL 1</TVInfo>
+            <ClickFinder>NL1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>NL 2</TVInfo>
+            <ClickFinder>NL2</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>NL3</TVInfo>
+            <ClickFinder>NL 3</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>ORF1</TVInfo>
+            <ClickFinder>ORF 1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>OTV</TVInfo>
+            <ClickFinder>BBBBB</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Planet</TVInfo>
+            <ClickFinder>Planet</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Puls tv</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>QVC</TVInfo>
+            <ClickFinder>QVC</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>rheinmaintv</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RNFplus</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>RTL Lux</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>SaarTV</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sci Fi</TVInfo>
+            <ClickFinder>SCI FI</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>SF1</TVInfo>
+            <ClickFinder>SF 1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>SF2</TVInfo>
+            <ClickFinder>SF 2</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Action</TVInfo>
+            <ClickFinder>SKY Action</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Cinema</TVInfo>
+            <ClickFinder>SKY Cinema</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Cinema</TVInfo>                   <!-- TVInfo nicht eindeutig!!!-->
+            <ClickFinder>SKY Cinema HD</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Cinema +1</TVInfo>
+            <ClickFinder>SKY Cinema +1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Cinema +24</TVInfo>
+            <ClickFinder>SKY Cinema +24</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Cinema Hits</TVInfo>
+            <ClickFinder>SKY Cinema Hits</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Comedy</TVInfo>
+            <ClickFinder>SKY Comedy</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Emotion</TVInfo>
+            <ClickFinder>SKY Emotion</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Fussball Bundesliga</TVInfo>
+            <ClickFinder>SKY Fussball Bundesliga</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Krimi</TVInfo>
+            <ClickFinder>SKY Krimi</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Nostalgie</TVInfo>
+            <ClickFinder>SKY Nostalgie</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Sport 1</TVInfo>
+            <ClickFinder>SKY Sport 1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Sport 2</TVInfo>
+            <ClickFinder>SKY Sport 2</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Sport Austria</TVInfo>
+            <ClickFinder>SKY Sport Austria</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Select</TVInfo>
+            <ClickFinder>SKY</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Sky Sport HD</TVInfo>
+            <ClickFinder>SKY Sport HD</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Spi.ka tv</TVInfo>
+            <ClickFinder>Spi.Ka TV</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Spreekanal</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>Steiermark 1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TIDE</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TSI1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TSI2</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TSR1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TSR2</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TV 2</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TV Franken</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TV Slovenija 1</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TV Slovenija 2</TVInfo>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TVBerlin</TVInfo>
+            <ClickFinder>TV Berlin</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+        <Channel>
+            <TVInfo>TW1</TVInfo>
+            <ClickFinder>TW1</ClickFinder>
+            <DVBViewer>none</DVBViewer>
+        </Channel>
+    </Channels>
+</Importer>

@@ -1,0 +1,497 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Timers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBViewerService Timerlist.xsd">
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="31.01.2010" Start="09:25:00" End="11:55:00" Action="0">
+      <Descr>Herbie gross in Fahrt</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="543698659|RTL Television"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>0</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="31.01.2010" Start="10:00:00" End="11:15:00" Action="0">
+
+      <Descr>Bibliothek der Sachgeschichten - L (2) - wie Laterna magica, Loeffel, Legostein und Luft</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="628780871|BR-alpha"/>
+
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>1</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="31.01.2010" Start="12:15:00" End="14:35:00" Action="0">
+      <Descr>Pastewka - Der Tarif,,Mensch Markus,,Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+
+      <ID>2</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="31.01.2010" Start="12:45:00" End="14:00:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>3</ID>
+    </Timer>
+
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="31.01.2010" Start="13:15:00" End="14:35:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>4</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="31.01.2010" Start="15:50:00" End="17:35:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG,,DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+
+      <Recording>0</Recording>
+      <ID>5</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="31.01.2010" Start="16:20:00" End="17:35:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>6</ID>
+
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="01.02.2010" Start="20:55:00" End="23:15:00" Action="0">
+      <Descr>Nicht ohne meine Leiche</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="550137906|EinsFestival"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>7</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="02.02.2010" Start="00:40:00" End="03:00:00" Action="0">
+
+      <Descr>Nicht ohne meine Leiche</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="550137906|EinsFestival"/>
+
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>8</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="02.02.2010" Start="20:00:00" End="22:45:00" Action="0">
+      <Descr>Sexstreik!</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+
+      <ID>9</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="03.02.2010" Start="01:15:00" End="02:30:00" Action="0">
+      <Descr>Bully &amp; Rick - Der Ueberfallunfall</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="570442845|ProSieben"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>10</ID>
+
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="03.02.2010" Start="20:00:00" End="22:50:00" Action="0">
+      <Descr>Fantomas bedroht die Welt</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="671088743|DAS VIERTE"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>11</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="04.02.2010" Start="02:45:00" End="05:05:00" Action="0">
+
+      <Descr>Fantomas bedroht die Welt</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="671088743|DAS VIERTE"/>
+
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>12</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="05.02.2010" Start="21:30:00" End="22:50:00" Action="0">
+      <Descr>Pastewka - Der grosse Kessler</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+
+      <ID>13</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="06.02.2010" Start="00:00:00" End="01:45:00" Action="0">
+      <Descr>WAS GUCKST DU?!,,WAS GUCKST DU?!</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>14</ID>
+    </Timer>
+
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="06.02.2010" Start="00:30:00" End="01:45:00" Action="0">
+      <Descr>WAS GUCKST DU?!</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>15</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="06.02.2010" Start="06:55:00" End="08:05:00" Action="0">
+      <Descr>Shaun, das Schaf - Der Ausflug / Waschtag / Saturday Night Shaun</Descr>
+
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="543583690|Das Erste (deu)"/>
+      <Executeable>-1</Executeable>
+
+      <Recording>0</Recording>
+      <ID>16</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="06.02.2010" Start="09:20:00" End="12:00:00" Action="0">
+      <Descr>Sexstreik!</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>17</ID>
+
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="06.02.2010" Start="11:00:00" End="12:15:00" Action="0">
+      <Descr>Bully &amp; Rick - Am Strand</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="570442845|ProSieben"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>18</ID>
+    </Timer>
+
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="06.02.2010" Start="22:55:00" End="00:40:00" Action="0">
+      <Descr>Mensch Markus,,Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>19</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="06.02.2010" Start="23:25:00" End="00:40:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+
+      <Recording>0</Recording>
+      <ID>20</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="07.02.2010" Start="09:10:00" End="12:00:00" Action="0">
+      <Descr>Der tolle Kaefer in der Rallye Monte Carlo</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="543698659|RTL Television"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>21</ID>
+
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="07.02.2010" Start="10:00:00" End="11:15:00" Action="0">
+      <Descr>Bibliothek der Sachgeschichten - V (2) - Varus, Arminius und die Germanen</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="628780871|BR-alpha"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>22</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="07.02.2010" Start="12:20:00" End="14:35:00" Action="0">
+
+      <Descr>Pastewka - Der grosse Kessler,,Mensch Markus,,Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>23</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="07.02.2010" Start="12:50:00" End="14:05:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+
+      <ID>24</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="07.02.2010" Start="13:20:00" End="14:35:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>25</ID>
+    </Timer>
+
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="07.02.2010" Start="15:50:00" End="17:35:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG,,DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>26</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="07.02.2010" Start="16:20:00" End="17:35:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+
+      <Recording>0</Recording>
+      <ID>27</ID>
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="07.02.2010" Start="20:00:00" End="23:15:00" Action="0">
+      <Descr>Beim ersten Mal</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="543698659|RTL Television"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>28</ID>
+
+    </Timer>
+    <Timer Type="1" Enabled="-1" Priority="50" Charset="0" Date="08.02.2010" Start="00:00:00" End="03:00:00" Action="0">
+      <Descr>Beim ersten Mal</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="543698659|RTL Television"/>
+      <Executeable>-1</Executeable>
+      <Recording>0</Recording>
+      <ID>29</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="31.01.2010" Start="12:15:00" End="13:30:00" Action="0">
+
+      <Descr>Pastewka - Der Tarif</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>30</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="31.01.2010" Start="15:50:00" End="17:05:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+
+      <ID>31</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="06.02.2010" Start="00:00:00" End="01:15:00" Action="0">
+      <Descr>WAS GUCKST DU?!</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>32</ID>
+    </Timer>
+
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="06.02.2010" Start="22:55:00" End="00:10:00" Action="0">
+      <Descr>Mensch Markus</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>33</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="07.02.2010" Start="12:20:00" End="13:35:00" Action="0">
+
+      <Descr>Pastewka - Der grosse Kessler</Descr>
+      <Options AdjustPAT="-1"/>
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+      <ID>34</ID>
+    </Timer>
+    <Timer Type="1" Enabled="0" Priority="50" Charset="0" Date="07.02.2010" Start="15:50:00" End="17:05:00" Action="0">
+      <Descr>DIE DREISTEN DREI - DIE COMEDY WG</Descr>
+      <Options AdjustPAT="-1"/>
+
+      <Format>2</Format>
+      <Folder>Auto</Folder>
+      <NameScheme>%name_%date_%time</NameScheme>
+      <Log Enabled="-1" Extended="-1"/>
+      <Channel ID="553665628|SAT.1"/>
+      <Executeable>0</Executeable>
+      <Recording>0</Recording>
+
+      <ID>35</ID>
+    </Timer>
+  </Timers>

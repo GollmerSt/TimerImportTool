@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epg_schedule seqnumber="1713980075" version="1.0" charset="ISO-8859-1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="TVInfo.xsd">
+
+<epg_schedule_entry uid="246060195" channel="Sat1" starttime="2010-01-30 00:15:00 +0200" endtime="2010-01-30 00:45:00 +0200" eventtype="rec">
+<title><![CDATA[WAS GUCKST DU?!]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="246060197" channel="Sat1" starttime="2010-01-30 00:45:00 +0200" endtime="2010-01-30 01:10:00 +0200" eventtype="rec">
+<title><![CDATA[WAS GUCKST DU?!]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="250247257" channel="ARD" starttime="2010-01-30 07:10:00 +0200" endtime="2010-01-30 07:35:00 +0200" eventtype="rec">
+<title><![CDATA[Shaun, das Schaf - Spuren im Beton / Schatzsuche / Zahnschmerzen]]></title>
+<nature>Zeichentrick </nature>
+<format>Serie</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="246860721" channel="Pro7" starttime="2010-01-30 11:30:00 +0200" endtime="2010-01-30 12:00:00 +0200" eventtype="rec">
+<title><![CDATA[Bully & Rick - Der Überfallunfall]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Michael 'Bully' Herbig</cast_director><cast_actors>Michael 'Bully' Herbig</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="261774557" channel="Sat1" starttime="2010-01-30 22:50:00 +0200" endtime="2010-01-30 23:20:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="261774559" channel="Sat1" starttime="2010-01-30 23:20:00 +0200" endtime="2010-01-30 23:50:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="247662645" channel="RTL" starttime="2010-01-31 09:40:00 +0200" endtime="2010-01-31 11:25:00 +0200" eventtype="rec">
+<title><![CDATA[Herbie groß in Fahrt]]></title>
+<nature>Comedy </nature>
+<format>Spielfilm</format>
+<cast_director></cast_director><cast_actors>Ken Berry, Helen Heyes, Stefanie Powers, John McIntire, Edmond Keenan Wynn, Huntz Hall</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="247662643" channel="Alpha" starttime="2010-01-31 10:15:00 +0200" endtime="2010-01-31 10:45:00 +0200" eventtype="rec">
+<title><![CDATA[Bibliothek der Sachgeschichten - L (2) - wie Laterna magica, Löffel, Legostein und Luft]]></title>
+<nature>Kinderfilm </nature>
+<format>Kinder</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="251080635" channel="Sat1" starttime="2010-01-31 12:30:00 +0200" endtime="2010-01-31 13:00:00 +0200" eventtype="rec">
+<title><![CDATA[Pastewka - Der Tarif]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Joseph Orr, Jan Markus Linhof</cast_director><cast_actors>Bastian Pastewka, Sonsee Neu, Matthias Matschke, Cristina do Rego, Sabine Vitua</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="266218145" channel="Sat1" starttime="2010-01-31 13:00:00 +0200" endtime="2010-01-31 13:30:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="266218147" channel="Sat1" starttime="2010-01-31 13:30:00 +0200" endtime="2010-01-31 14:05:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="266218099" channel="Sat1" starttime="2010-01-31 16:05:00 +0200" endtime="2010-01-31 16:35:00 +0200" eventtype="rec">
+<title><![CDATA[DIE DREISTEN DREI - DIE COMEDY WG]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director>Jan Becker</cast_director><cast_actors>Markus Majowski, Mirja Boes, Ralf Schmitz</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="247662653" channel="Sat1" starttime="2010-01-31 16:35:00 +0200" endtime="2010-01-31 17:05:00 +0200" eventtype="rec">
+<title><![CDATA[DIE DREISTEN DREI - DIE COMEDY WG]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director>Jan Becker</cast_director><cast_actors>Markus Majowski, Janine Kunze</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="270159775" channel="EinsFestival" starttime="2010-02-01 21:10:00 +0200" endtime="2010-02-01 22:45:00 +0200" eventtype="rec">
+<title><![CDATA[Nicht ohne meine Leiche]]></title>
+<nature>Comedy </nature>
+<format>Spielfilm</format>
+<cast_director>Yang Zhang</cast_director><cast_actors>Benshan Zhao, Qiwen Hong, Dandan Song, Degang Guo, Jun Hu, Ma Wu, Yu Xia, Jinshan Liu, Tao Guo, Ying Chen, Haiying Sun, Dongming Wu, Bo Liu, Linxiong Zhang</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="270159779" channel="EinsFestival" starttime="2010-02-02 00:55:00 +0200" endtime="2010-02-02 02:30:00 +0200" eventtype="rec">
+<title><![CDATA[Nicht ohne meine Leiche]]></title>
+<nature>Comedy </nature>
+<format>Spielfilm</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="270159781" channel="Sat1" starttime="2010-02-02 20:15:00 +0200" endtime="2010-02-02 22:15:00 +0200" eventtype="rec">
+<title><![CDATA[Sexstreik!]]></title>
+<nature></nature>
+<format></format>
+<cast_director>Thomas Nennstiel</cast_director><cast_actors>Henning Baum,  u.a. spielte er den Ruprecht in 'Der zerbrochene Krug' und ,  sein TV-Debüt gab er in Peter Thorwarths 'Die zwei Beiden v, Elena Uhlig, Liane Forestieri, Denise Eitner, Michael Pyter, Bengt Kiene, Karina Maria Lischka, Maxi Warwel</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="249368775" channel="Pro7" starttime="2010-02-03 01:30:00 +0200" endtime="2010-02-03 02:00:00 +0200" eventtype="rec">
+<title><![CDATA[Bully & Rick - Der Überfallunfall]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Michael 'Bully' Herbig</cast_director><cast_actors>Michael 'Bully' Herbig</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="250247267" channel="Das Vierte" starttime="2010-02-03 20:15:00 +0200" endtime="2010-02-03 22:20:00 +0200" eventtype="rec">
+<title><![CDATA[Fantomas bedroht die Welt]]></title>
+<nature>Kriminal </nature>
+<format>Spielfilm</format>
+<cast_director>Andre  Hunebelle</cast_director><cast_actors>Jean Marais, Louis de Funès, Mylène  Demongeot, Francoise  Christophe</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="250247269" channel="Das Vierte" starttime="2010-02-04 03:00:00 +0200" endtime="2010-02-04 04:35:00 +0200" eventtype="rec">
+<title><![CDATA[Fantomas bedroht die Welt]]></title>
+<nature>Kriminal </nature>
+<format>Spielfilm</format>
+<cast_director>Andre  Hunebelle</cast_director><cast_actors>Jean Marais, Louis de Funès, Mylène  Demongeot, Francoise  Christophe</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="260962121" channel="Sat1" starttime="2010-02-05 21:45:00 +0200" endtime="2010-02-05 22:20:00 +0200" eventtype="rec">
+<title><![CDATA[Pastewka - Der große Kessler]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Joseph Orr, Jan Markus Linhof</cast_director><cast_actors>Bastian Pastewka, Sonsee Neu, Matthias Matschke, Cristina do Rego, Sabine Vitua</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="252018869" channel="Sat1" starttime="2010-02-06 00:15:00 +0200" endtime="2010-02-06 00:45:00 +0200" eventtype="rec">
+<title><![CDATA[WAS GUCKST DU?!]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="252018871" channel="Sat1" starttime="2010-02-06 00:45:00 +0200" endtime="2010-02-06 01:15:00 +0200" eventtype="rec">
+<title><![CDATA[WAS GUCKST DU?!]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="260962129" channel="ARD" starttime="2010-02-06 07:10:00 +0200" endtime="2010-02-06 07:35:00 +0200" eventtype="rec">
+<title><![CDATA[Shaun, das Schaf - Der Ausflug / Waschtag / Saturday Night Shaun]]></title>
+<nature>Zeichentrick </nature>
+<format>Serie</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="270159785" channel="Sat1" starttime="2010-02-06 09:35:00 +0200" endtime="2010-02-06 11:30:00 +0200" eventtype="rec">
+<title><![CDATA[Sexstreik!]]></title>
+<nature></nature>
+<format></format>
+<cast_director>Thomas Nennstiel</cast_director><cast_actors>Henning Baum,  u.a. spielte er den Ruprecht in 'Der zerbrochene Krug' und ,  sein TV-Debüt gab er in Peter Thorwarths 'Die zwei Beiden v, Elena Uhlig, Liane Forestieri, Denise Eitner, Michael Pyter, Bengt Kiene, Karina Maria Lischka, Maxi Warwel</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="252890701" channel="Pro7" starttime="2010-02-06 11:15:00 +0200" endtime="2010-02-06 11:45:00 +0200" eventtype="rec">
+<title><![CDATA[Bully & Rick - Am Strand]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Michael 'Bully' Herbig</cast_director><cast_actors>Michael 'Bully' Herbig</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="252890697" channel="Sat1" starttime="2010-02-06 23:10:00 +0200" endtime="2010-02-06 23:40:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="252890699" channel="Sat1" starttime="2010-02-06 23:40:00 +0200" endtime="2010-02-7 00:10:00 +0200" eventtype="rec">
+<title><![CDATA[Mensch Markus]]></title>
+<nature>Comedy </nature>
+<format>Show</format>
+<cast_director></cast_director><cast_actors>Markus Maria Profitlich</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="253735125" channel="RTL" starttime="2010-02-07 09:25:00 +0200" endtime="2010-02-07 11:30:00 +0200" eventtype="rec">
+<title><![CDATA[Der tolle Käfer in der Rallye Monte Carlo]]></title>
+<nature>Comedy </nature>
+<format>Spielfilm</format>
+<cast_director></cast_director><cast_actors>Dean Jones, Don Knotts, Julie Sommars, Jacques Marin, Rory Kinnear, Bernard Fox, Eric Braeden, Xavier Saint-Macary</cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="253735115" channel="Alpha" starttime="2010-02-07 10:15:00 +0200" endtime="2010-02-07 10:45:00 +0200" eventtype="rec">
+<title><![CDATA[Bibliothek der Sachgeschichten - V (2) - Varus, Arminius und die Germanen]]></title>
+<nature>Kinderfilm </nature>
+<format>Kinder</format>
+<cast_director></cast_director><cast_actors></cast_actors></epg_schedule_entry>
+	
+<epg_schedule_entry uid="260962123" channel="Sat1" starttime="2010-02-07 12:35:00 +0200" endtime="2010-02-07 13:05:00 +0200" eventtype="rec">
+<title><![CDATA[Pastewka - Der große Kessler]]></title>
+<nature>Comedy </nature>
+<format>Serie</format>
+<cast_director>Joseph Orr, Jan Markus Linhof</cast_director><cast_actors>Bastian Pastewka, Sonsee Neu, Matthias Matschke, Cristina do Rego, Sabine Vitua</cast_actors></epg_schedule_entry>
+	</epg_schedule>

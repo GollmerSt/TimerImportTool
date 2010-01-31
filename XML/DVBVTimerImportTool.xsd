@@ -40,15 +40,15 @@
 
         <xsd:element name="Channels" minOccurs="1">
           <xsd:complexType>
-            <xsd:sequence>
+                        <xsd:sequence>
               <xsd:element name="Channel" maxOccurs="unbounded" minOccurs="1">
                 <xsd:complexType>
                   <xsd:all>
-                    <xsd:element name ="TVInfo"      type="xsd:string" minOccurs="0"/>
-                    <xsd:element name ="ClickFinder" type="xsd:string" minOccurs="0"/>
-                    <xsd:element name ="DVBViewer"   type="myDVBViewerChannelType"/>
-                    <xsd:element name ="Offsets"     type="myOffsetsType" minOccurs="0"/>
-                    <xsd:element name ="Combine"     type="xsd:boolean" minOccurs="0"/>
+                    <xsd:element name="TVInfo" type="xsd:string" minOccurs="0" />
+                    <xsd:element name="ClickFinder" type="xsd:string" minOccurs="0" />
+                    <xsd:element name="DVBViewer" type="myDVBViewerChannelType" />
+                    <xsd:element name="Offsets" type="myOffsetsType" minOccurs="0" />
+                    <xsd:element name="Combine" type="xsd:boolean" minOccurs="0" />
                   </xsd:all>
                 </xsd:complexType>
               </xsd:element>
@@ -80,14 +80,14 @@
     </xsd:restriction>
   </xsd:simpleType>
   <xsd:complexType name="myOffsetsType">
-    <xsd:sequence>
+        <xsd:sequence>
       <xsd:element name="Offset" minOccurs="1" maxOccurs="unbounded">
         <xsd:complexType>
-          <xsd:attribute name="before" type="xsd:integer"/>
-          <xsd:attribute name="after"  type="xsd:integer"/>
-          <xsd:attribute name="days"   type="myDaysType"/>
-          <xsd:attribute name="begin"  type="myTimeType"/>
-          <xsd:attribute name="end"    type="myTimeType"/>
+          <xsd:attribute name="before" type="xsd:integer" />
+          <xsd:attribute name="after" type="xsd:integer" />
+          <xsd:attribute name="days" type="myDaysType" />
+          <xsd:attribute name="begin" type="myTimeType" />
+          <xsd:attribute name="end" type="myTimeType" />
         </xsd:complexType>
       </xsd:element>
     </xsd:sequence>
