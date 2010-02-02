@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package Misc ;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,11 +15,11 @@ import javax.swing.JOptionPane;
 
 public class Log {
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
-	static private String logFileName = Constants.NAME_LOG_FILE ;
-	static private File file = null ;
-	static private boolean toDisplay = false ;
-	static private boolean verbose = false ;
-	static void setFile( String dataPath )
+	private static String logFileName = Constants.NAME_LOG_FILE ;
+	private static File file = null ;
+	private static boolean toDisplay = false ;
+	private static boolean verbose = false ;
+	public static void setFile( String dataPath )
 	{
 		File dir = new File( dataPath ) ;
 		if ( ! dir.isDirectory() )
@@ -37,7 +38,7 @@ public class Log {
 		}
 		Log.out( "Import started" ) ;
 	}
-	static String out( boolean verbose, boolean error, String out, boolean toDisplay )
+	public static String out( boolean verbose, boolean error, String out, boolean toDisplay )
 	{
 		if ( verbose && ! Log.isVerbose() )
 			return out ;
@@ -74,27 +75,27 @@ public class Log {
 			Log.ErrorBox( out ) ;
 		return out ;
 	}
-	static String out( String out )
+	public static String out( String out )
 	{
 		return( Log.out( false, false, out, false ) ) ;
 	}
-	static String out( boolean verbose, String out )
+	public static String out( boolean verbose, String out )
 	{
 		return( Log.out( verbose, false, out, false ) ) ;
 	}
-	static String out( String out, boolean toDisplay )
+	public static String out( String out, boolean toDisplay )
 	{
 		return( Log.out( false, false, out, toDisplay ) ) ;
 	}
-	static String error( String out )
+	public static String error( String out )
 	{
 			return( Log.out(false, true, out, false) ) ;
 	}
-	static public void setVerbose( boolean b ) { Log.verbose = b ; } ;
-	static public boolean isVerbose() { return Log.verbose ; } ; 
-	static public void setToDisplay( boolean d ) { Log.toDisplay = d ; } ;
-	static public boolean toDisplay() { return Log.toDisplay ; } ;
-	static void ErrorBox( String errorText )
+	public static void setVerbose( boolean b ) { Log.verbose = b ; } ;
+	public static boolean isVerbose() { return Log.verbose ; } ; 
+	public static void setToDisplay( boolean d ) { Log.toDisplay = d ; } ;
+	public static boolean toDisplay() { return Log.toDisplay ; } ;
+	public static void ErrorBox( String errorText )
 	{
 	    String lines = "" ;
 	    int pos0 = 0 ;

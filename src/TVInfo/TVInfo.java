@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package TVInfo ;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,8 @@ import java.net.URLConnection;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import Misc.* ;
 
 public final class TVInfo {
 	private String userName ;

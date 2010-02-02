@@ -2,16 +2,17 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
-public class Combine {
-	private boolean combine = false ;
+public class Merge {
+	private boolean merge = false ;
 	private boolean valid ;
-	Combine( boolean valid )
+	public Merge( boolean valid )
 	{
 		this.valid = valid ;
 	}
-	public void set( boolean c ) { this.combine = c ; } ;
-	public boolean toCombine() { return this.combine ; } ;
+	public void set( boolean c ) { this.merge = c ; } ;
+	public boolean toMerge() { return this.merge ; } ;
 	public void setValid() { this.valid = true ; } ;
 	public boolean isValid() { return this.valid ; } ;
 

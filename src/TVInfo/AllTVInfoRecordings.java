@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package TVInfo ;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,6 +25,10 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
+
+import Control.Control ;
+import DVBViewer.DVBViewer ;
+import Misc.* ;
 
 
 public final class AllTVInfoRecordings

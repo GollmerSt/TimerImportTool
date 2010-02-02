@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package Control ;
 
 import java.io.File;
 import java.util.Collections;
@@ -14,6 +15,12 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
+
+import DVBViewer.DVBViewer ;
+import DVBViewer.TimeOffsets ;
+import DVBViewer.Merge ;
+import DVBViewer.DVBViewerService ;
+import Misc.* ;
 
 
 public class Control {
@@ -121,7 +128,7 @@ public class Control {
 		String tvInfoChannel      = null ;
 		String clickFinderChannel = null ;
 		String dvbViewerChannel   = null ;
-		Combine channelCombine    = null ;
+		Merge channelMerge    = null ;
 		
 		String  dvbServiceURL              = null ;
 		String  dvbServiceName             = null ;
@@ -166,7 +173,7 @@ public class Control {
 					tvInfoChannel      = "" ;
 					clickFinderChannel = "" ;
 					dvbViewerChannel   = "" ;
-					channelCombine = new Combine( false ) ;
+					channelMerge = new Merge( false ) ;
 				}
 				else if ( stack.equals( this.pathWOL ) )
 					type = 5 ;
@@ -252,7 +259,7 @@ public class Control {
 				String data = ev.asCharacters().getData().trim() ;
 				if ( data.length() > 0 )
 				{
-					Combine combine = null ;
+					Merge combine = null ;
 					if      ( stack.equals( this.pathTVInfoURL ) )
 						this.tvInfoURL = data ;
 					else if ( stack.equals( this.pathChannelTVInfo ) )
@@ -262,9 +269,9 @@ public class Control {
 					else if ( stack.equals( this.pathChannelDVBViewer ) )
 						dvbViewerChannel = data ;
 					else if ( stack.equals( this.pathGlobalCombine ) )
-						combine = this.dvbViewer.getCombine() ;
+						combine = this.dvbViewer.getMerge() ;
 					else if ( stack.equals( this.pathChannelCombine ) )
-						combine = channelCombine ;
+						combine = channelMerge ;
 					else if ( stack.equals( this.pathSeparator) )
 						dvbViewer.setSeparator( data ) ;
 					if ( combine != null )
@@ -282,7 +289,7 @@ public class Control {
 	        if( ev.isEndElement() )
 	        {
 	        	if      ( stack.equals( this.pathChannel ) )
-	        		this.dvbViewer.addChannel(dvbViewerChannel, tvInfoChannel, clickFinderChannel, channelOffsets, channelCombine ) ;
+	        		this.dvbViewer.addChannel(dvbViewerChannel, tvInfoChannel, clickFinderChannel, channelOffsets, channelMerge ) ;
 	        	else if ( stack.equals( this.pathService ) )
 	        	{
 	        		this.dvbViewer.setService(

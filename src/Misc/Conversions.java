@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package Misc ;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -39,7 +40,7 @@ public final class Conversions {
 		return result ;
 	}
 	
-	static byte[] longToBytes( long n )
+	public static byte[] longToBytes( long n )
 	{
 		byte[] result = new byte[8];
 		result[ 7 ] = (byte) (   n         & 0xff ) ;
@@ -53,7 +54,7 @@ public final class Conversions {
 		return result ;
 	}
 	
-	static String bytesToString( byte[] b )
+	public static String bytesToString( byte[] b )
 	{
 		String hex = "" ;
 		for (int i = 0; i < b.length; i++)
@@ -63,7 +64,7 @@ public final class Conversions {
 		return hex ;
 	}
 	
-	static long tvInfoTimeToLong( String time ) throws ParseException
+	public static long tvInfoTimeToLong( String time ) throws ParseException
 	{
 		//Workaround in case of a wrong time zone of the TVInfo output
 		// must be checked on summer time
@@ -72,28 +73,28 @@ public final class Conversions {
 		return d.getTime() ;
 	}
 	
-	static long clickFinderTimeToLong( String time ) throws ParseException
+	static public long clickFinderTimeToLong( String time ) throws ParseException
 	{
 		Date d = new Date( clickFinderoFormat.parse(time).getTime()) ;
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
 	}
 	
-	static long dayTimeToLong( String time ) throws ParseException
+	public static long dayTimeToLong( String time ) throws ParseException
 	{
 		return dayTimeFormat.parse(time).getTime() ;
 	}
-	static String longToSvcDayString( long d )
+	public static String longToSvcDayString( long d )
 	{
 		Date dt = new Date( d ) ;
 		return Conversions.svcDayFormat.format( dt ) ;
 	}
-	static String longToSvcTimeString( long d )
+	public static String longToSvcTimeString( long d )
 	{
 		Date dt = new Date( d ) ;
 		return Conversions.svcTimeFormat.format( dt ) ;
 	}
-	static String longToSvcDateString( long d )
+	public static String longToSvcDateString( long d )
 	{
 		GregorianCalendar c = new GregorianCalendar() ;
 		c.setTime(new Date(d) ) ;
@@ -101,7 +102,7 @@ public final class Conversions {
 		//System.out.println(t%(1000*60*60*24) ) ;
 		return Long.toString( t  / 1000 / 60 / 60 / 24 +  + 25569 ) ;
 	}
-	static String longToSvcMinutesString( long d )
+	public static String longToSvcMinutesString( long d )
 	{
 		GregorianCalendar c = new GregorianCalendar() ;
 		c.setTime(new Date(d) ) ;
@@ -109,14 +110,14 @@ public final class Conversions {
 		               + c.get( java.util.Calendar.MINUTE ) ;
 		return Integer.toString( minutes ) ;
 	}
-	static long svcTimeToLong( String time, String date ) throws ParseException
+	public static long svcTimeToLong( String time, String date ) throws ParseException
 	{
 		
 		long result = svcTimeFormat.parse( time ).getTime() - Conversions.svcTimeCorrection ;
 		result += svcDayFormat.parse( date ).getTime() ;
 		return result ;
 	}
-	static String replaceDiacritical( String s )
+	public static String replaceDiacritical( String s )
 	{
 		if ( ! s.matches(".*[äöüÄÖÜß].*") ) //\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]") )
 			return s ;

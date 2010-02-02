@@ -2,6 +2,10 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
+
+import Misc.* ;
+
 
 public final class DVBViewerEntry {
 	public enum ToDo { NONE, NEW, NEW_UPDATED, UPDATE, DISABLE, UPDATE_AND_DISABLE } ;

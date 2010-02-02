@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,6 +30,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import Misc.* ;
 
 public class DVBViewerService {
 	private final String url ;
@@ -45,7 +47,7 @@ public class DVBViewerService {
 	private final Stack<String> pathDescr ;
 	private final long version ;
 	
-	DVBViewerService( String url, String name, String password)
+	public DVBViewerService( String url, String name, String password)
 	{
 		this.url = url ;
 		this.userName = name ;

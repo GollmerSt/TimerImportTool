@@ -2,9 +2,16 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package Main ;
 
 import javax.swing.JOptionPane;
 
+import Misc.* ;
+import DVBViewer.DVBViewer ;
+import Control.Control ;
+import TVInfo.AllTVInfoRecordings ;
+import ClickFinder.ClickFinder ;
+import DVBViewer_Channels.Channels ;
 
 public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
@@ -53,6 +60,10 @@ public final class TimerImportTool {
 			Log.setToDisplay(true);
 
 			DVBViewer dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
+			
+			Channels channels = new Channels( dvbViewer ) ;
+			channels.read() ;
+			
 			Control control = new Control(dvbViewer);
 			
 			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );

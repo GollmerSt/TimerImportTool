@@ -2,29 +2,30 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
 public class Channel {
 	private final String dvbViewer ;
 	private final String tvInfo ;
 	private final String clickFinder ;
 	private final TimeOffsets offsets ;
-	private final Combine combine ;
+	private final Merge merge ;
 
 	public Channel( String dvbViewer,
 			        String tvInfo, 
 			        String clickFinder, 
 			        TimeOffsets offsets,
-			        Combine combine )
+			        Merge merge )
 	{
 		this.dvbViewer   = dvbViewer ;
 		this.tvInfo      = tvInfo ;
 		this.clickFinder = clickFinder ;
 		this.offsets     = offsets ;
-		this.combine     = combine ;
+		this.merge       = merge ;
 	}
 	public String getDVBViewer()     { return this.dvbViewer ; } ;
 	public String getTVInfo()        { return this.tvInfo ; } ;
 	public String getClickFinder()   { return this.clickFinder; } ;
 	public TimeOffsets  getOffsets() { return this.offsets ; } ;
-	public Combine getCombine()      { return this.combine ; } ;
+	public Merge getMerge()        { return this.merge ; } ;
 }

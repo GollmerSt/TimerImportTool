@@ -2,9 +2,12 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package TVInfo ;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import Misc.* ;
 
 public final class TVInfoRecording {
 	public enum DeleteMode { KEEP, REMOVE, DELETE } ; // REMOVE: Delete from XML and DVBViewer

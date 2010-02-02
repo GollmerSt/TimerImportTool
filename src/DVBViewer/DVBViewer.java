@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import TVInfo.TVInfoRecording ;
+import Misc.* ;
 
 public class DVBViewer {
 	private DVBViewerService service = null ;
@@ -25,7 +28,7 @@ public class DVBViewer {
 	private final String dataPath ;
 	private final String exeName ;
 	private final String pluginConfPath ;
-	private Combine combine = new Combine( true );
+	private Merge merge = new Merge( true );
 	private String separator      = ",," ;
 	public DVBViewer( String dataPath, String exeName )
 	{
@@ -49,7 +52,7 @@ public class DVBViewer {
 		{
 			File jarFile = null ;
 			try {
-				jarFile = new File(TimerImportTool.class.getProtectionDomain()
+				jarFile = new File(Main.TimerImportTool.class.getProtectionDomain()
 						.getCodeSource().getLocation().toURI());
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
@@ -145,10 +148,10 @@ public class DVBViewer {
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel.length() == 0 || dvbViewerChannel.equalsIgnoreCase("none") )
 			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
-		boolean combine = this.combine.toCombine() ;
-		if ( c.getCombine().isValid() )
-			combine = c.getCombine().toCombine() ;
-		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(), start, end, title, combine ) ;
+		boolean merge = this.merge.toMerge() ;
+		if ( c.getMerge().isValid() )
+			merge = c.getMerge().toMerge() ;
+		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(), start, end, title, merge ) ;
 		this.recordEntries.add( e ) ;
 	}
 	public void addNewTVInfoEntry( String channel, long start, long end, String title )
@@ -176,9 +179,9 @@ public class DVBViewer {
 			        		String tvInfo, 
 			        		String clickFinder, 
 			        		TimeOffsets offsets,
-			        		Combine combine )
+			        		Merge merge )
 	{
-		Channel c = new Channel( dvbViewer, tvInfo, clickFinder, offsets, combine ) ;
+		Channel c = new Channel( dvbViewer, tvInfo, clickFinder, offsets, merge ) ;
 		channelsByTVInfo.put( new String( tvInfo ) , c ) ;
 		channelsByClickFinder.put( new String( clickFinder ), c ) ;
 	}
@@ -245,6 +248,6 @@ public class DVBViewer {
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 	}
 	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
-	public Combine getCombine() { return combine ; } ;
+	public Merge getMerge() { return merge ; } ;
 	public void setSeparator( String s ) { this.separator = s ; } ;
 }

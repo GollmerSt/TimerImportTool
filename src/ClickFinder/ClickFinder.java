@@ -2,14 +2,18 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package ClickFinder ;
 
 import java.io.File;
 import java.text.ParseException;
 
+import DVBViewer.DVBViewer ;
+import Misc.* ;
+
 
 public class ClickFinder {
 	private DVBViewer dvbViewer = null ;
-	ClickFinder( DVBViewer dvbViewer )
+	public ClickFinder( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
 	}

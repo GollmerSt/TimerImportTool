@@ -2,6 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,7 +12,7 @@ public class TimeOffsets {
 	private static TimeOffsets generalTimeOffsets = new TimeOffsets() ;
 	private ArrayList<OffsetEntry> preOffsets  = null;
 	private ArrayList<OffsetEntry> postOffsets = null;
-	TimeOffsets()
+	public TimeOffsets()
 	{
 		this.preOffsets  = new ArrayList<OffsetEntry>() ;
 		this.postOffsets = new ArrayList<OffsetEntry>() ;

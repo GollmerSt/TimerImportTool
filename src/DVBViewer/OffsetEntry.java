@@ -2,9 +2,12 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
+package DVBViewer ;
 
 import java.text.ParseException;
 import java.util.GregorianCalendar;
+
+import Misc.* ;
 
 
 public class OffsetEntry {
