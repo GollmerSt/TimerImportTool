@@ -2,25 +2,44 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package DVBViewer ;
+package Control ;
 
 import java.text.ParseException;
 import java.util.GregorianCalendar;
+
+import javax.xml.stream.XMLStreamException;
+
+import javanet.staxutils.IndentingXMLStreamWriter;
 
 import Misc.* ;
 
 
 public class OffsetEntry {
-	private final long minutes ;
+	private static final String[] ATTRIBUTES = { "before", "after" } ;
+	private final long[] minutes ;
 	private final boolean[] weekdays ;
 	private final long start ;
 	private final long end ;
 	
-	public OffsetEntry( String minuteString, String weekdaysString, String startTime, String endTime )
+	public OffsetEntry( String preMinuteString, 
+						String postMinuteString, 
+						String weekdaysString,
+						String startTime,
+						String endTime )
 	{
-		if ( !minuteString.matches("\\d+") )
-			throw new ErrorClass( "Illegal minute format" ) ;
-		this.minutes = Integer.valueOf(minuteString) ;
+		long[] minutes = { -1, -1 } ;
+		String [] minuteStrings = { preMinuteString, postMinuteString } ;
+		for ( int ix = 0 ; ix < 2 ; ix++ )
+		{
+			if ( minuteStrings[ix] == null || minuteStrings[ix].length() == 0 )
+				continue ;
+			if ( !minuteStrings[ix].matches("\\d*"))
+				throw new ErrorClass( "Illegal minute format" ) ;
+
+			minutes[ ix ] = Integer.valueOf( minuteStrings[ix] ) ;
+		}
+		this.minutes = minutes ;
+
 		boolean[] w = new boolean[7] ;
 		String ws  ;
 		if ( weekdaysString.length() == 0 )
@@ -56,7 +75,7 @@ public class OffsetEntry {
 		else
 			this.end = Constants.DAYMILLSEC ;
 	}
-	public long getMinutes() { return this.minutes ; } ;
+	public long[] getMinutes() { return this.minutes ; } ;
 	public boolean isInTimeRange( long time )
 	{
 		GregorianCalendar cal = new GregorianCalendar();
@@ -70,6 +89,31 @@ public class OffsetEntry {
 		cal.set( java.util.Calendar.SECOND  , 0) ;
 		cal.set( java.util.Calendar.MILLISECOND  , 0) ;
 		long dayTime = time - cal.getTime().getTime();
+		//System.out.println(  dayTime ) ;
 		return dayTime >= start && dayTime <= end ;
 	}
+	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
+	{
+		sw.writeStartElement( "Offset" ) ;
+		  for ( int ix = 0 ; ix < 2 ; ix++ )
+			  if ( this.minutes[ ix ] >= 0 )
+				  sw.writeAttribute( ATTRIBUTES[ ix ], Long.toString( this.minutes[ ix ] ) ) ;
+
+		  String weekdays = "" ;
+
+		  for ( int ix = 0 ; ix < 7 ; ix ++ )
+			  if ( this.weekdays[ ix ])
+				  weekdays += "1" ;
+			  else
+				  weekdays += "0" ;
+		  if ( ! weekdays.equals( "1111111" ) )
+			  sw.writeAttribute( "days", weekdays) ;
+		  
+		  if ( this.start != 0 )
+			  sw.writeAttribute( "begin", Conversions.longTodayTime( this.start ) ) ;
+		  if ( this.end != Constants.DAYMILLSEC )
+			  sw.writeAttribute( "end",   Conversions.longTodayTime( this.end ) ) ;
+		sw.writeEndElement() ;
+	}
 }
+	

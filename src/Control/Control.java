@@ -4,26 +4,38 @@
 
 package Control ;
 
+
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
+import javanet.staxutils.IndentingXMLStreamWriter;
+
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import DVBViewer.DVBViewer ;
-import DVBViewer.TimeOffsets ;
-import DVBViewer.Merge ;
 import DVBViewer.DVBViewerService ;
 import Misc.* ;
-
+import TVInfo.TVInfoRecording;
 
 public class Control {
+	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
+
 	private DVBViewer dvbViewer = null ;
 	private final Stack<String> pathTVInfo ;
 	private final Stack<String> pathTVInfoURL ;
@@ -41,12 +53,19 @@ public class Control {
 	
 	private String tvInfoUsername = null ;
 	private String tvInfoPassword = null ;
+	private String tvInfoMD5      = null ;
 	private int tvInfoTriggerAction = 0 ;
 	private String tvInfoURL = null ;
+
+	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
+	private String separator = null ;
+	private Merge generalMerge = new Merge( false ) ;
+	
 	@SuppressWarnings("unchecked")
 	public Control( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
+		
 		Stack<String> p1 = new Stack<String>() ;
 		Collections.addAll( p1, "Importer", "TVInfo" ) ;
 		this.pathTVInfo = p1 ;
@@ -99,22 +118,22 @@ public class Control {
 		Collections.addAll( p13, "Importer",  "DVBService", "WakeOnLAN" ) ;
 		this.pathWOL = p13 ;
 		
-		try {
-			this.read() ;
-		} catch (XMLStreamException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		this.read() ;
 	}
-	public void read() throws XMLStreamException
+	public void read()
 	{	
 		File f = new File( this.dvbViewer.getPluginConfPath()
 		          + File.separator
-		          + Constants.NAME_XML_CONTROLFILE ) ;
+		          + NAME_XML_CONTROLFILE ) ;
 		if ( ! f.canRead() )
 			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-		XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
+		XMLEventReader reader = null ;
+		try {
+			reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
+		} catch (XMLStreamException e2) {
+			throw new ErrorClass( e2, "Unexpected error on opening the file \"" + f.getName() + "\"" );
+		}
 		Stack<String>   stack = new Stack<String>();
 		
 		TimeOffsets offsets = null ;
@@ -125,10 +144,7 @@ public class Control {
 		String offsetBegin  = null ;
 		String offsetEnd    = null ;
 		
-		String tvInfoChannel      = null ;
-		String clickFinderChannel = null ;
-		String dvbViewerChannel   = null ;
-		Merge channelMerge    = null ;
+		ChannelSet channelSet = null ;
 		
 		String  dvbServiceURL              = null ;
 		String  dvbServiceName             = null ;
@@ -169,11 +185,8 @@ public class Control {
 				else if ( stack.equals( this.pathChannel ) )
 				{
 					type = 4 ;
-					channelOffsets = new TimeOffsets() ;
-					tvInfoChannel      = "" ;
-					clickFinderChannel = "" ;
-					dvbViewerChannel   = "" ;
-					channelMerge = new Merge( false ) ;
+					channelSet = new ChannelSet() ;
+					channelOffsets = channelSet.getTimeOffsets() ;
 				}
 				else if ( stack.equals( this.pathWOL ) )
 					type = 5 ;
@@ -195,9 +208,13 @@ public class Control {
 	            	switch ( type )
 	            	{
 	            	case 0 :
-	            		if ( attributeName == "username")           this.tvInfoUsername      = value ;
-		            	else if ( attributeName == "password")      this.tvInfoPassword      = value ;
-		            	else if ( attributeName == "triggeraction")
+	            		if (      attributeName.equals( "username" ) )
+	            			this.tvInfoUsername      = value ;
+		            	else if ( attributeName.equals( "password" ) )
+		            		this.tvInfoPassword      = value ;
+		            	else if ( attributeName.equals( "md5" ) )
+		            		this.tvInfoMD5           = value ;
+		            	else if ( attributeName.equals( "triggeraction" ) )
 		            	{
 		            		if ( !value.matches("\\d+") )
 		            			throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + f.getName() + "\"" ) ;
@@ -205,20 +222,28 @@ public class Control {
 		            	}
 	            		break ;
 	            	case 1 :
-	            		if      ( attributeName == "url" )     dvbServiceURL      = value ;
-	            		else if ( attributeName == "username") dvbServiceName     = value ;
-		            	else if ( attributeName == "password") dvbServicePassword = value ;
+	            		if      ( attributeName.equals( "url" ) )
+	            			dvbServiceURL      = value ;
+	            		else if ( attributeName.equals( "username" ) )
+	            			dvbServiceName     = value ;
+		            	else if ( attributeName.equals( "password" ) )
+		            		dvbServicePassword = value ;
 	            		break ;
 	            	case 2 :
 	            	case 3 :
-	            		if      ( attributeName == "before" ) offsetBefore = value ;
-	            		else if ( attributeName == "after"  ) offsetAfter  = value ;
-	            		else if ( attributeName == "days"   ) offsetDays   = value ;
-	            		else if ( attributeName == "begin"  ) offsetBegin  = value ;
-	            		else if ( attributeName == "end"    ) offsetEnd    = value ;
+	            		if      ( attributeName.equals( "before" ) )
+	            			offsetBefore = value ;
+	            		else if ( attributeName.equals( "after"  ) )
+	            			offsetAfter  = value ;
+	            		else if ( attributeName.equals( "days"   ) )
+	            			offsetDays   = value ;
+	            		else if ( attributeName.equals( "begin"  ) )
+	            			offsetBegin  = value ;
+	            		else if ( attributeName.equals( "end"    ) )
+	            			offsetEnd    = value ;
 	            		break ;
 	            	case 5 :
-	            		if      ( attributeName == "enable"            )
+	            		if      ( attributeName.equals( "enable" ) )
 	            		{
 	            			if      ( value.equalsIgnoreCase( "true" ) )
 	            				dvbServiceEnableWOL = true ;
@@ -227,19 +252,19 @@ public class Control {
 	            			else
 	            				throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + f.getName() + "\"" ) ;
 	            		}
-	            		else if ( attributeName == "broadCastaddress"  )
+	            		else if ( attributeName.equals( "broadCastaddress" ) )
 	            		{
 	            			if ( ! value.matches("\\d+\\.\\d+\\.\\d+\\.\\d+"))
 	            				throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + f.getName() + "\"" ) ;
 	            			dvbServiceBroadCastAddress = value ;
 	            		}
-	            		else if ( attributeName == "macAddress" )
+	            		else if ( attributeName.equals( "macAddress" ) )
 	            		{
 	            			if ( ! value.matches("([\\dA-Fa-f]+[\\:\\-])+[\\dA-Fa-f]+"))
 	            				throw new ErrorClass ( ev, "Wrong mac address format in file \"" + f.getName() + "\"" ) ;
 	            			dvbServiceMacAddress = value ;
 	            		}
-	            		else if ( attributeName == "waitTimeAfterWOL" )
+	            		else if ( attributeName.equals( "waitTimeAfterWOL" ) )
 	            		{
 	            			if ( ! value.matches("\\d+"))
 	            				throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + f.getName() + "\"" ) ;
@@ -259,28 +284,28 @@ public class Control {
 				String data = ev.asCharacters().getData().trim() ;
 				if ( data.length() > 0 )
 				{
-					Merge combine = null ;
+					Merge merge = null ;
 					if      ( stack.equals( this.pathTVInfoURL ) )
 						this.tvInfoURL = data ;
 					else if ( stack.equals( this.pathChannelTVInfo ) )
-						tvInfoChannel = data ;
+						channelSet.add(Channel.Type.TVINFO, data) ;
 					else if ( stack.equals( this.pathChannelClickFinder ) )
-						clickFinderChannel = data ;
+						channelSet.add(Channel.Type.CLICKFINDER, data) ;
 					else if ( stack.equals( this.pathChannelDVBViewer ) )
-						dvbViewerChannel = data ;
+						channelSet.setDVBViewerChannel( data ) ;
 					else if ( stack.equals( this.pathGlobalCombine ) )
-						combine = this.dvbViewer.getMerge() ;
+						merge = this.generalMerge ;
 					else if ( stack.equals( this.pathChannelCombine ) )
-						combine = channelMerge ;
+						merge = channelSet.getMerge() ;
 					else if ( stack.equals( this.pathSeparator) )
-						dvbViewer.setSeparator( data ) ;
-					if ( combine != null )
+						this.separator = data ;
+					if ( merge != null )
 					{
-						combine.setValid() ;
+						merge.setValid() ;
 						if      ( data.equalsIgnoreCase( "false" ) )
-							combine.set(false) ;
+							merge.set(false) ;
 						else if ( data.equalsIgnoreCase( "true" ) )
-							combine.set(true ) ;
+							merge.set(true ) ;
 						else
 							throw new ErrorClass( ev, "Illegal boolean error in file \"" + f.getName() + "\"" ) ;
 					}
@@ -289,8 +314,13 @@ public class Control {
 	        if( ev.isEndElement() )
 	        {
 	        	if      ( stack.equals( this.pathChannel ) )
-	        		this.dvbViewer.addChannel(dvbViewerChannel, tvInfoChannel, clickFinderChannel, channelOffsets, channelMerge ) ;
-	        	else if ( stack.equals( this.pathService ) )
+					try {
+						this.channelSets.add( channelSet ) ;
+//						this.dvbViewer.addChannel(dvbViewerChannel, tvInfoChannel, clickFinderChannel, channelOffsets, channelMerge ) ;
+					} catch (ErrorClass e) {
+						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
+					}
+				else if ( stack.equals( this.pathService ) )
 	        	{
 	        		this.dvbViewer.setService(
 	        				new DVBViewerService( dvbServiceURL, dvbServiceName, dvbServicePassword )
@@ -305,10 +335,99 @@ public class Control {
 	        	stack.pop();
 	        }
 		}
-		reader.close() ;
+		try {
+			reader.close() ;
+		} catch (XMLStreamException e) {
+			throw new ErrorClass( e, "Unexpected error on closing the file \"" + f.getName() + "\"" );
+		}
+	}
+	public void write()
+	{
+		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
+        
+		String fileName = this.dvbViewer.getDataPath() + File.separator + NAME_XML_CONTROLFILE ;
+		XMLStreamWriter  writer = null ;
+		try {
+			try {
+				writer = output.createXMLStreamWriter(
+						new FileOutputStream( new File( fileName )), "ISO-8859-1");
+			} catch (FileNotFoundException e) {
+				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + fileName + "\". Write protected?" ) ;
+			}
+			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
+	        sw.setIndent( "    " );
+			sw.writeStartDocument( "ISO-8859-1","1.0" ) ;
+			sw.writeStartElement( "Importer" ) ;
+		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
+		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
+			  sw.writeStartElement( "TVInfo" ) ;
+			    sw.writeAttribute( "username", this.tvInfoUsername ) ;
+			    if ( this.tvInfoPassword != null )
+				    sw.writeAttribute( "password", this.tvInfoPassword ) ;
+  			    if ( this.tvInfoMD5 != null )
+				    sw.writeAttribute( "md5"     , this.tvInfoMD5 ) ;
+			    if ( this.tvInfoTriggerAction >= 0 )
+				    sw.writeAttribute( "triggeraction" , Integer.toString( this.tvInfoTriggerAction ) ) ;
+				sw.writeStartElement( "Url" ) ;
+			      sw.writeCharacters( this.tvInfoURL ) ;
+				  sw.writeEndElement();
+			  sw.writeEndElement();
+
+			  sw.writeStartElement( "DVBService" ) ;
+			    sw.writeAttribute( "url",      this.dvbViewer.getService().getURL() ) ;
+			    sw.writeAttribute( "username", this.dvbViewer.getService().getUserName() ) ;
+			    sw.writeAttribute( "password", this.dvbViewer.getService().getPassword() ) ;
+			    sw.writeAttribute( "timeZone", "Europe/Berlin" ) ;
+			  sw.writeEndElement();
+			  
+			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
+			  
+			  this.generalMerge.writeXML( sw ) ;
+			  
+			  if ( this.separator.length() != 0 )
+			  {
+				  sw.writeStartElement( "Separator" ) ;
+				  sw.writeCharacters( this.separator ) ;
+				  sw.writeEndElement() ;
+			  }
+			  sw.writeStartElement( "Channels" ) ;
+			    for ( Iterator< ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ; )
+			    	it.next().writeXML( sw ) ;
+			  sw.writeEndElement();
+			sw.writeEndElement();
+			writer.writeEndDocument();
+			writer.flush();
+			writer.close();
+		} catch (XMLStreamException e) {
+			throw new ErrorClass( e,   "Error on writing XML file \"" + fileName ) ;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void writeOffsets( IndentingXMLStreamWriter sw, TimeOffsets offsets ) throws XMLStreamException
+	{
+		sw.writeStartElement( "Offsets" ) ;
+		
+//		for ( )
+		
+	}
+	public void setDVBViewerEntries()
+	{
+		this.dvbViewer.setSeparator( this.separator ) ;
+		this.dvbViewer.setMerge( this.generalMerge ) ;
+		for ( Iterator<ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ;)
+		{
+			this.dvbViewer.addChannel( it.next() ) ;
+		}
 	}
 	public String getTVInfoURL() { return this.tvInfoURL ; } ;
 	public String getTVInfoUserName() { return this.tvInfoUsername ; } ;
-	public String getTVInfoPassword() { return this.tvInfoPassword ; } ; 
+	public String getTVInfoMD5()
+	{
+		if ( this.tvInfoMD5 == null )
+			return TVInfo.TVInfo.translateToMD5( this.tvInfoPassword ) ;
+		return this.tvInfoMD5 ;
+	} ; 
 	public int getTriggerAction()     { return this.tvInfoTriggerAction ; } ;
 }

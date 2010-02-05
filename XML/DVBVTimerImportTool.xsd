@@ -43,10 +43,10 @@
                         <xsd:sequence>
               <xsd:element name="Channel" maxOccurs="unbounded" minOccurs="1">
                 <xsd:complexType>
-                  <xsd:all>
-                    <xsd:element name="TVInfo" type="xsd:string" minOccurs="0" />
+                                    <xsd:all>
+                    <xsd:element name="TVInfo" type="xsd:string" minOccurs="0" maxOccurs="1" />
                     <xsd:element name="ClickFinder" type="xsd:string" minOccurs="0" />
-                    <xsd:element name="DVBViewer" type="myDVBViewerChannelType" />
+                    <xsd:element name="DVBViewer" type="myDVBViewerChannelType" minOccurs="0"/>
                     <xsd:element name="Offsets" type="myOffsetsType" minOccurs="0" />
                     <xsd:element name="Combine" type="xsd:boolean" minOccurs="0" />
                   </xsd:all>
@@ -76,7 +76,7 @@
   </xsd:simpleType>
   <xsd:simpleType name="myDVBViewerChannelType">
     <xsd:restriction base='xsd:string'>
-      <xsd:pattern value='(\d+\|.*)|(none)'/>
+      <xsd:pattern value='(\d+\|.*)'/>
     </xsd:restriction>
   </xsd:simpleType>
   <xsd:complexType name="myOffsetsType">

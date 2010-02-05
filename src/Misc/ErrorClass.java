@@ -40,16 +40,22 @@ public class ErrorClass extends Error
 	
 	public ErrorClass( XMLStreamException e, String errorString )
 	{
-		super( errorString + " near line "
-                + Integer.toString( e.getLocation().getLineNumber() ) + "." ) ;
+		super( errorString ) ;
 		mainError = e ;
-		this.errorString = errorString + " near line "
-                           + Integer.toString( e.getLocation().getLineNumber() ) + "." ;
+		this.errorString = errorString ;
 	}
 	
 	public String getLocalizedMessage()
 	{
 		String res = this.getMessage() ;
+		if ( this.mainError.getClass() == javax.xml.stream.XMLStreamException.class )
+		{
+			XMLStreamException ex = (XMLStreamException) this.mainError ;
+			if ( ex.getLocation() != null )
+				res += " near line " + Integer.toString( ex.getLocation().getLineNumber() ) + "." ;
+			else
+				res += "." ;
+		}
 		if ( this.mainError != null)
 			res += "\nDetailed error message:\n\n" +
 					  this.mainError.getLocalizedMessage() ;

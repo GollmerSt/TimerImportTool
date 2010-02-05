@@ -16,26 +16,34 @@ import java.security.NoSuchAlgorithmException;
 import Misc.* ;
 
 public final class TVInfo {
-	private String userName ;
-	private String password ;
-	private String url ;
+	private final String userName ;
+	private final String md5Hex ;
+	private final String url ;
 	
 	public TVInfo( String userName,
-			       String password,
+			       String md5Hex,
 			       String url )
 	{
-		this.userName      = userName ;
-		this.password      = password ;
-		this.url           = url ;
+		this.userName = userName ;
+		this.md5Hex   = md5Hex ;
+		this.url      = url ;
+	}
+	public static String translateToMD5( String password )
+	{
+		MessageDigest md = null ;
+		try {
+			md = MessageDigest.getInstance("MD5");
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		md.update( password.getBytes() ) ;
+		return Conversions.bytesToString(md.digest()) ;
 	}
 	public InputStream connect() throws DigestException, NoSuchAlgorithmException
 	{
-		MessageDigest md = MessageDigest.getInstance("MD5") ;
-		md.update(this.password.getBytes()) ;
-		
-		String hex = Conversions.bytesToString(md.digest()) ;
-		String completeURL = this.url + "?username=" + this.userName + "&password=" + hex ;
-		//System.out.print( completeURL + "\n") ;
+		String completeURL = this.url + "?username=" + this.userName + "&password=" + this.md5Hex ;
+		Log.out( true, "TVInfo URL: " + completeURL ) ;
 		
 		URL tvInfoURL;
 		try {

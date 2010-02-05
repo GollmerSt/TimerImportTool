@@ -1,0 +1,393 @@
+unit Unit1;
+
+interface
+
+uses
+  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms,
+  Dialogs, StdCtrls, Grids;
+
+//TTuner data structure (packed, no alignment gaps, 52 bytes)
+type
+TTuner = Packed Record
+            TunerType: Byte; //0 = cable, 1 = satellite, 2 = terrestrial, 3 = atsc
+            ChannelGroup: Byte; //0 = Group A, 1 = Group B, 2 = Group C
+            SatModulationSystem: Byte; //0 = DVB-S, 1 = DVB-S2
+              //SatModulationSystem is deprecated! Only set for compatibility
+            Flags: Byte;
+              //Bit 0: 1 = encrypted channel
+              //Bit 1: 1 = don't display EPG on What's Now Tab & in Timeline
+              //Bit 2: 1 = channel broadcasts RDS data
+              //Bit 3: 1 = channels is a video service (even if the Video PID is temporarily = 0)
+              //Bit 4: 1 = channel is an audio service (even if the Audio PID is temporarily = 0)
+              //Bit 5..7: reserved
+            Frequency: DWord; //MHz for DVB-S, KHz for DVB-T/C and ATSC
+            Smbolrate: DWord; //DVB-S/C only
+            LNB_LOF: Word; //DVB-S only, local oscillator frequency of the LNB
+            PMT_PID: Word;
+            Reserved1: Word;
+            SatModulation: Byte;
+              //Bit 0..1: modulation. 0 = Auto, 1 = QPSK, 2 = 8PSK, 3 = 16QAM
+              //Bit 2: modulation system. 0 = DVB-S, 1 = DVB-S2
+              //Bit 3..4: roll-off. 0 = 0.35, 1 = 0.25, 2 = 0.20, 3 = reserved
+              //Bit 5..6: spectral inversion. 0 = undefined, 1 = auto, 2 = normal, 3 = inverted
+              //Bit 7: pilot symbols. 0 = off, 1 = on
+               //Note: Bit 3..7 only apply to DVB-S2 and Hauppauge HVR 4000 / Nova S2 Plus
+            AVFormat: Byte;
+              //Low Nibble (Bit 0..3): audio format
+              //  0 = MPEG
+              //  1 = AC3
+              //  2..15 reserved
+              //High Nibble (Bit 4..7): video format
+              //  0 = MPEG2
+              //  1 = H.264
+              //  2..15 reserved
+            FEC: Byte;
+              //0 = Auto
+              //1 = 1/2
+              //2 = 2/3
+              //3 = 3/4
+              //4 = 5/6
+              //5 = 7/8
+              //6 = 8/9
+              //7 = 3/5
+              //8 = 4/5
+              //9 = 9/10
+            Reserved2: Byte; //must be 0
+            Reserved3: Word;
+            Polarity: Byte;
+              //DVB-S polarity
+              //  0 = horizontal
+              //  1 = vertical
+              //  2 = circular left
+              //  3 = circular right
+              //or DVB-C modulation
+              //  0 = Auto
+              //  1 = 16QAM
+              //  2 = 32QAM
+              //  3 = 64QAM
+              //  4 = 128QAM
+              //  5 = 256 QAM
+              //or DVB-T bandwidth
+              //  0 = 6 MHz
+              //  1 = 7 MHz
+              //  2 = 8 MHz
+            Reserved4: Byte; //must be 0
+            Reserved5: Word;
+            Tone: Byte; //0 = off, 1 = 22 khz
+            Reserved6: Byte; //must be 0
+            DiSEqCExt: Word;
+              //DiSEqC Extension: OrbitPos, or other value
+              //-> Positoner, GotoAngular, Command String (set to 0 if not required)
+            DiSEqC: Byte;
+              //0 = None
+              //1 = Pos A (mostly translated to PosA/OptA)
+              //2 = Pos B (mostly translated to PosB/OptA)
+              //3 = PosA/OptA
+              //4 = PosB/OptA
+              //5  =PosA/OptB
+              //6 = PosB/OptB
+            Reserved7: Byte; //must be 0
+            Reserved8: Word;
+            Audio_PID: Word;
+            Reserved9: Word;
+            Video_PID: Word;
+            TransportStream_ID: Word;
+            Teletext_PID: Word;
+            OriginalNetwork_ID: Word;
+            Service_ID: Word;
+            PCR_PID: Word;
+         end;
+//---------------------------------------------------------------------
+
+//Type ShortString25 (used in TChannel structure for name, category, root)
+type
+  ShortString25 = array[0..25] of byte; //fixed size, always 26 bytes
+    //Byte 0: Length;
+    //Byte 1..Length: Char;
+    //Byte Length+1..25: Unused
+
+//---------------------------------------------------------------------
+
+//TChannel data structure (packed, no alignment gaps, 132 bytes)
+type
+TChannel = packed Record
+             TunerData: TTuner; //structure see above
+             Root: ShortString25; //structure see above
+               //mostly the satellite position resp. DVB network name, can be user defined
+             ChannelName: ShortString25;
+             Category: ShortString25; //user defined
+             Encrypted: Byte;
+                //deprecated! Only set for compatibility. Same as TTuner.Flags.
+             Reserved10: Byte;
+           end;
+//---------------------------------------------------------------------
+
+//channels.dat file structure (packed, no alignment gaps)
+
+//Header:
+type
+THeader = packed Record
+            IDLength: Byte; // = 4
+            ID: array[0..3] of Char; //'B2C2' as ASCII chars
+            VersionHi: Byte; //currently 1
+            VersionLo: Byte; //currently 8 -> 1.8
+          end;
+
+
+type
+TEpgEvent = packed Record
+              EventID: Word;      //see ETSI EN 300 468, 5.2.4 Event Information Table
+              Reserved: Word;     //Always 0 in DVBViewer GE. //May be used for other purpose in DVBViewer Pro
+              StartTime: Double; //TDateTime
+              Duration: Double; //TDateTime
+              Event: String;
+              Title: String;
+              Description: String;
+              CharSet: Byte;
+              Content: Byte; //See ETSI EN 300 468, 6.2.9, Content Descriptor
+            end;
+
+type
+ Ch_st = record
+    ID : word;
+    St : string;
+ end;
+
+type
+  TForm1 = class(TForm)
+    Button1: TButton;
+    Memo1: TMemo;
+    Memo2: TMemo;
+    Button2: TButton;
+    StringGrid1: TStringGrid;
+    procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+  private
+    { Private-Deklarationen }
+  public
+   Channel_String: array of Ch_st;
+   function GetChannel(ID:word) : String;
+    { Public-Deklarationen }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+function Bytes25ToString(a:shortstring25) : string;
+var s: string;
+    i: word;
+begin
+//ShortString25 = array[0..25] of byte; //fixed size, always 26 bytes
+//Byte 0: Length;
+//Byte 1..Length: Char;
+//Byte Length+1..25: Unused
+  i := ord(a[0]);
+  setlength(s,i);
+  copymemory(@s[1],@a[1],i);
+  Result := s;
+end;
+
+function TForm1.GetChannel(ID:word) : String;
+var i : integer;
+begin
+ Result := '';
+  for I := 0 to length(Channel_String) - 1 do
+  begin
+   if Channel_String[i].ID = ID then
+    begin
+     Result := Channel_String[i].st;
+     break;
+    end;
+  end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+var FS : Tfilestream;
+    H  : THeader;
+    C  : TChannel;
+    i : integer;
+    aleadyfound : boolean;
+begin
+ fs := Tfilestream.Create('channels.dat',0);
+ try
+  fs.Read(H,sizeof(h));
+  memo1.Lines.Add('Header information of Channels.dat');
+  memo1.Lines.Add('-----------------------------------------');
+  memo1.Lines.Add(inttostr(h.IDLength));
+  memo1.Lines.Add(h.ID);
+  memo1.Lines.Add(inttostr(h.VersionHi));
+  memo1.Lines.Add(inttostr(h.VersionLo));
+  memo1.Lines.Add('-----------------------------------------');
+
+  while fs.Read(C,sizeof(C)) > 0 do
+   begin
+     memo1.Lines.Add('Root         : ' + bytes25tostring(c.Root));
+     memo1.Lines.Add('Channel Name : ' + bytes25tostring(c.ChannelName));
+     memo1.Lines.Add('Service ID   : ' + inttostr(c.TunerData.Service_ID));
+     memo1.Lines.Add('Channel Cat  : ' + bytes25tostring(c.Category));
+     memo1.Lines.Add('-----------------------------------------');
+
+     setlength(Channel_String,length(Channel_String) +1 );
+
+     aleadyfound := false;
+     for i := 0 to stringgrid1.ColCount - 1 do
+       if stringgrid1.Cells[i,0] = inttostr(c.TunerData.Service_ID) then
+        begin
+         aleadyfound := true;
+         break;
+        end;
+
+     if not aleadyfound then
+      begin
+       Channel_String[length(Channel_String)-1].ID := c.TunerData.Service_ID;
+       Channel_String[length(Channel_String)-1].St := bytes25tostring(c.ChannelName);
+       stringgrid1.Cells[stringgrid1.ColCount-1,0] := inttostr(c.TunerData.Service_ID);
+       stringgrid1.Cells[stringgrid1.ColCount-1,1] := bytes25tostring(c.ChannelName);
+       stringgrid1.ColCount := stringgrid1.ColCount + 1;
+      end;
+
+   end;
+ finally
+  fs.free;
+  stringgrid1.ColCount := stringgrid1.ColCount - 1;
+  button2.Enabled := true;
+ end;
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+var FS             : Tfilestream;
+    Fileposition   : int64;
+    Filesize       : int64;
+    FormatVersion  : Word;
+    TimeZone       : double;
+    i,j            : integer;
+    NrOfEvents     : DWord;
+    EventID        : Word;      //see ETSI EN 300 468, 5.2.4 Event Information Table
+    Reserved       : Word;      //Always 0 in DVBViewer GE. //May be used for other purpose in DVBViewer Pro
+    StartTime      : Double;
+    Duration       : Double;
+    Event          : AnsiString;
+    Title          : AnsiString;
+    Description    : AnsiString;
+    CharSet        : Byte;
+    Content        : Byte;      //See ETSI EN 300 468, 6.2.9, Content Descriptor
+    Stringsize     : DWORD;
+    epgcol         : integer;
+
+//new version 0x108
+    ServiceID      : Word;
+ TransportStreamID : Word;
+ OriginalNetworkID : Word;
+    Tunertype      : Byte;      //0 = undefined, 1 = cable, 2 = satellite, 3 = terrestrial, 4 = ATSC
+    Reserved1      : Byte;      //= 0
+   DataBlockLength : DWord;
+    Data           : Byte;
+
+
+    function readbytearray : Ansistring;
+    var s : Ansistring;
+    begin
+       fs.Read(Stringsize,sizeof(Stringsize));
+       setlength(s,Stringsize);
+       fs.Read(s[1],Stringsize);
+       Result := s;
+    end;
+
+
+begin
+ fs := Tfilestream.Create('epg.dat',0);
+ try
+  Filesize := fs.Size;
+  fs.Read(FormatVersion,sizeof(FormatVersion));
+  fs.Read(TimeZone,sizeof(TimeZone));
+
+  memo2.Lines.Add('Header information of EPG.dat');
+  memo2.Lines.Add('-----------------------------------------');
+  memo2.Lines.Add(inttostr(FormatVersion));
+  memo2.Lines.Add(floattostr(TimeZone));
+  memo2.Lines.Add('-----------------------------------------');
+
+ while fs.Position < filesize do
+  begin
+
+  fs.Read(ServiceID,sizeof(ServiceID));
+  fs.Read(TransportStreamID,sizeof(TransportStreamID));
+  memo2.Lines.Add('ChannelID     : ' +inttostr(ServiceID));
+  memo2.Lines.Add('ChannelString : ' + GetChannel(ServiceID));
+
+  case Formatversion of
+   $0108 : begin
+               fs.Read(OriginalNetworkID,sizeof(OriginalNetworkID));
+               fs.Read(Tunertype,sizeof(Tunertype));
+               fs.Read(Reserved1,sizeof(Reserved1));
+             end;
+  end;
+
+
+  for i := 0 to stringgrid1.ColCount - 1 do
+   if stringgrid1.Cells[i,0] = inttostr(ServiceID) then
+    epgcol := i;
+
+   fs.Read(NrOfEvents,sizeof(NrOfEvents));
+   memo2.Lines.Add('Number of Events : ' + inttostr(NrOfEvents));
+   memo2.Lines.Add('-----------------------------------------');
+
+   if stringgrid1.RowCount+2 < NrOfEvents then
+     stringgrid1.RowCount := NrOfEvents + 2;
+
+   for i := 0 to NrOfEvents-1 do
+    begin
+
+     fs.Read(EventID,sizeof(EventID));
+     fs.Read(Reserved,sizeof(Reserved));
+     fs.Read(StartTime,sizeof(StartTime));
+     fs.Read(Duration,sizeof(Duration));
+     memo2.Lines.Add(datetimetoStr(Starttime) + ' -(' + timetostr(Duration) + ')');
+
+     Event := readbytearray;
+     memo2.Lines.Add(Event);
+     if event[1] = '<' then
+      delete(event,1,5);
+
+     Title := readbytearray;
+     memo2.Lines.Add(Title);
+     if (Title <> '') and (Title[1] = '<') then
+      delete(Title,1,5);
+
+
+     if title <> '' then
+      stringgrid1.Cells[epgcol,i+2] := Title
+     else
+      stringgrid1.Cells[epgcol,i+2] := Event;
+
+     application.ProcessMessages;
+     Description := readbytearray;
+     memo2.Lines.Add(Description);
+
+     fs.Read(CharSet,sizeof(CharSet));
+     fs.Read(Content,sizeof(Content));
+     memo2.Lines.Add('-----------------------------------------');
+
+      //the following data block is reserved for various data. Skip it.
+     case Formatversion of
+      $0108 : begin
+                fs.Read(DataBlockLength,sizeof(DataBlockLength));
+                 for j := 0 to DataBlockLength-1 do
+                  fs.Read(Data,sizeof(Data));
+             end;
+     end;
+
+    end; // for i := 0 to NrOfEvents-1 do
+  end; //  while fs.Position < filesize do
+
+ finally
+  fs.free;
+ end;
+
+end;
+
+end.

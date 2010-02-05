@@ -16,9 +16,9 @@ public final class Conversions {
 	private final static SimpleDateFormat dayTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
 	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
-	private final static long svcTimeCorrection = Conversions.calcSvcTimeCorrection() ;
+	private final static long dayTimeOrigin = Conversions.calcSvcTimeCorrection() ;
 	
-	static long calcSvcTimeCorrection()
+	private static long calcSvcTimeCorrection()
 	{
 		long result = 0 ;
 		try {
@@ -82,7 +82,15 @@ public final class Conversions {
 	
 	public static long dayTimeToLong( String time ) throws ParseException
 	{
-		return dayTimeFormat.parse(time).getTime() ;
+		long t = dayTimeFormat.parse(time).getTime() - dayTimeOrigin ;
+		//System.out.println( "dayTimeToLong: "+ Long.toString( t ) ) ;
+		return t ;
+	}
+	public static String longTodayTime( long d ) throws ParseException
+	{
+		Date dt = new Date( d + dayTimeOrigin ) ;
+		//System.out.println( "dayTimeToLong: "+ Long.toString( t ) ) ;
+		return Conversions.dayTimeFormat.format(  dt ) ;
 	}
 	public static String longToSvcDayString( long d )
 	{
@@ -113,7 +121,7 @@ public final class Conversions {
 	public static long svcTimeToLong( String time, String date ) throws ParseException
 	{
 		
-		long result = svcTimeFormat.parse( time ).getTime() - Conversions.svcTimeCorrection ;
+		long result = svcTimeFormat.parse( time ).getTime() - Conversions.dayTimeOrigin ;
 		result += svcDayFormat.parse( date ).getTime() ;
 		return result ;
 	}

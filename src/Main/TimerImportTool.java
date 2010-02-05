@@ -65,6 +65,9 @@ public final class TimerImportTool {
 			channels.read() ;
 			
 			Control control = new Control(dvbViewer);
+			control.write();
+			
+			control.setDVBViewerEntries() ;
 			
 			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
 			

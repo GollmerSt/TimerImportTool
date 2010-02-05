@@ -14,8 +14,10 @@ import javax.swing.JOptionPane;
 
 
 public class Log {
+	private static final String NAME_LOG_FILE                 = "DVBVTimerImportTool" ;	
+
 	private final static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
-	private static String logFileName = Constants.NAME_LOG_FILE ;
+	private static String logFileName = NAME_LOG_FILE ;
 	private static File file = null ;
 	private static boolean toDisplay = false ;
 	private static boolean verbose = false ;

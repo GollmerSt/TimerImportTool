@@ -1,10 +1,13 @@
+// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
+// $LastChangedRevision: 79 $
+// $LastChangedBy: Stefan Gollmer $
+
 package DVBViewer_Channels;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
@@ -12,8 +15,6 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
-
-import javax.xml.transform.stream.StreamSource;
 
 import DVBViewer.DVBViewer;
 import Misc.ErrorClass;
@@ -28,8 +29,6 @@ public class Channels {
 	private static final String CHANNEL_FILE_NAME           = "channels.dat" ;
 	private static final int SUPPORTED_CHANNEL_ENTRY_LENGTH = Channel.ENTRY_LENGTH ;
 	private static final FileChannel.MapMode READ_ONLY      = FileChannel.MapMode.READ_ONLY ;
-
-	private static final int MAX_STRING_LENGTH = 256 ;
 
 	private final DVBViewer dvbViewer ;
 	private File file ;

@@ -26,30 +26,31 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import Control.Control ;
 import DVBViewer.DVBViewer ;
 import Misc.* ;
 
 
 public final class AllTVInfoRecordings
 {
+	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
+
 	private final Stack<String> xmlPath ;
 	private final Stack<String> xmlPathTVinfoEntry ;
 	private final Stack<String> xmlPathTVinfoTitle ;
 	private HashMap<String,TVInfoRecording> map = null ;
 	private TVInfo tvInfo = null ;
-	private final Control control ;
+	private final Control.Control control ;
 	private int days = 0 ;
 	private int syncs = 0;
 	private String dataDirectory = null ;
 	private DVBViewer dvbViewer = null ;
 	@SuppressWarnings("unchecked")
-	public AllTVInfoRecordings( Control control, DVBViewer dvbViewer, int days, int syncs )
+	public AllTVInfoRecordings( Control.Control control, DVBViewer dvbViewer, int days, int syncs )
 	{
 		this.map           = new HashMap<String,TVInfoRecording> ();
 		this.control       = control ;
-		this.tvInfo        = new TVInfo( this.control.getTVInfoUserName(),
-				                         this.control.getTVInfoPassword(),
+		this.tvInfo        = new TVInfo( this.control.getTVInfoUserName() ,
+				                         this.control.getTVInfoMD5() ,
 				                         this.control.getTVInfoURL() ) ;
 		this.dvbViewer     = dvbViewer ;
 		this.days          = days ;
@@ -115,7 +116,7 @@ public final class AllTVInfoRecordings
 	{	
 		File f = new File( dataDirectory
 		          + File.separator
-		          + Constants.NAME_XML_PROCESSED_RECORDINGS ) ;
+		          + NAME_XML_PROCESSED_RECORDINGS ) ;
 		if ( ! f.exists() )
 			return ;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -141,12 +142,18 @@ public final class AllTVInfoRecordings
 			        	Attribute a = iter.next();
 			        	String attributeName = a.getName().getLocalPart() ;
 			        	String value = a.getValue() ;
-			        	if ( attributeName == "uid") tvInfoID = value ;
-			        	else if ( attributeName == "channel") channel = value ;
-			        	else if ( attributeName == "start") start = value ;
-			        	else if ( attributeName == "end") end = value ;
-			        	else if ( attributeName == "missingSince") missingSince = value ;
-			        	else if ( attributeName == "missingSyncSince") missingSyncSince = value ;
+			        	if (      attributeName.equals( "uid" ) )
+			        		tvInfoID = value ;
+			        	else if ( attributeName.equals( "channel" ) )
+			        		channel = value ;
+			        	else if ( attributeName.equals( "start" ) )
+			        		start = value ;
+			        	else if ( attributeName.equals( "end") )
+			        		end = value ;
+			        	else if ( attributeName.equals( "missingSince") )
+			        		missingSince = value ;
+			        	else if ( attributeName.equals( "missingSyncSince") )
+			        		missingSyncSince = value ;
 			        }
 			        TVInfoRecording t = new TVInfoRecording( tvInfoID, channel, start, end, missingSince, missingSyncSince ) ;
 			        this.map.put(t.getHash(), t) ;
@@ -167,7 +174,7 @@ public final class AllTVInfoRecordings
 	{
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();
 		 
-		String fileName = dataDirectory + File.separator + Constants.NAME_XML_PROCESSED_RECORDINGS ;
+		String fileName = dataDirectory + File.separator + NAME_XML_PROCESSED_RECORDINGS ;
 		XMLStreamWriter writer = null ;
 		try {
 			try {
@@ -246,13 +253,16 @@ public final class AllTVInfoRecordings
 						String value = a.getValue() ;
 						try
 						{
-							if ( attributeName == "uid") tvInfoID = value ;
-							else if ( attributeName == "channel") channel = value ;
-							else if ( attributeName == "starttime")
+							if ( attributeName.equals( "uid" ) )
+								tvInfoID = value ;
+							else if ( attributeName.equals( "channel" ) )
+								channel = value ;
+							else if ( attributeName.equals( "starttime" ) )
 								start = Conversions.tvInfoTimeToLong( value ) ;
-							else if ( attributeName == "endtime")
+							else if ( attributeName.equals( "endtime" ) )
 								end  = Conversions.tvInfoTimeToLong( value ) ;
-							else if ( attributeName == "title") title = value ;
+							else if ( attributeName.equals( "title" ) )
+								title = value ;
 						} catch (ParseException e)
 						{
 							throw new ErrorClass( ev, "Illegal TVinfo time" ) ;
@@ -272,16 +282,20 @@ public final class AllTVInfoRecordings
 					if ( stack.equals( this.xmlPathTVinfoTitle ) )
 					{
 						title = ev.asCharacters().getData() ;
-						this.dvbViewer.addNewTVInfoEntry( channel, start, end, title) ;
+						this.dvbViewer.addNewEntry( Control.Channel.Type.TVINFO, channel, start, end, title) ;
 					}
 				}					
 				if( ev.isEndElement() ) stack.pop();
 			}
 			reader.close();
 		} catch (XMLStreamException e) {
-			throw new ErrorClass( e,   "Error on readin the TVInfo data." 
+			if ( e.getLocation().getLineNumber() == 1 && e.getLocation().getColumnNumber() == 1 )
+				throw new ErrorClass( "No data available from TVInfo, account data should be checked." ) ;
+			else
+				throw new ErrorClass( e,   "Error on reading TVInfo data."
 	                 + " Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
 	                 +        ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+			
 		//} catch (ErrorClass e) {
 		//	// TODO Auto-generated catch block
 		//	e.printStackTrace();

@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
@@ -156,7 +157,7 @@ public class DVBViewerService {
 				if ( ev.isStartElement() )
 						actKey = ev.asStartElement().getName().getLocalPart() ;
 				if ( ev.isCharacters() )
-					if ( actKey == "version" )
+					if ( actKey.equals( "version" ) )
 						version = ev.asCharacters().getData();
 			}
 			reader.close();
@@ -178,20 +179,25 @@ public class DVBViewerService {
 		
 		return result ;
 	}
-	public void setTimerEntry( DVBViewerEntry e ) throws IOException
+	public void setTimerEntry( DVBViewerEntry e )
 	{
 		if ( e.mustIgnored() )
 			return ;
-		String query = "ch=" + URLEncoder.encode( e.getChannel(), "UTF-8" ) ;
-		query += "&dor=" + Conversions.longToSvcDateString( e.getStart() ) ;
-		query += "&encoding=255" ;
-		query += "&start=" + Conversions.longToSvcMinutesString( e.getStart() ) ;
-		query += "&stop=" + Conversions.longToSvcMinutesString( e.getEnd() ) ;
-		String title = e.getTitle() ;
-		if ( this.version <= 10500077 )
-			title = Conversions.replaceDiacritical( title ) ;
-		
-		query += "&title=" + URLEncoder.encode( title , "UTF-8" ) ;
+		String query = "" ;
+		try {
+			query = "ch=" + URLEncoder.encode( e.getChannel(), "UTF-8" );
+			query += "&dor=" + Conversions.longToSvcDateString( e.getStart() ) ;
+			query += "&encoding=255" ;
+			query += "&start=" + Conversions.longToSvcMinutesString( e.getStart() ) ;
+			query += "&stop=" + Conversions.longToSvcMinutesString( e.getEnd() ) ;
+			String title = e.getTitle() ;
+			if ( this.version <= 10500077 )
+				title = Conversions.replaceDiacritical( title ) ;
+			
+			query += "&title=" + URLEncoder.encode( title , "UTF-8" ) ;
+		} catch (UnsupportedEncodingException e1) {
+			throw new ErrorClass( e1, "Error on creating the DVBViewerService URL" );
+		}
 		
 		String command = null ;
 		
@@ -212,15 +218,19 @@ public class DVBViewerService {
 		InputStream input = connect( command, query) ;
 
 		BufferedReader b = new BufferedReader(new InputStreamReader(input));
-		String line = b.readLine() ;
-		if ( line != null )
-		{
-			Log.out( "Unexpected response on access to URL \""
-		            + this.lastURL + "\": " ) ;
-			ErrorClass.setWarníng() ;
+		try {
+			String line = b.readLine() ;
+			if ( line != null )
 			{
-				Log.out( line );
-			} while ( ( line = b.readLine() ) != null ) ;
+				Log.out( "Unexpected response on access to URL \""
+			            + this.lastURL + "\": " ) ;
+				ErrorClass.setWarníng() ;
+				{
+					Log.out( line );
+				} while ( ( line = b.readLine() ) != null ) ;
+			}
+		} catch (IOException e1) {
+			throw new ErrorClass( e1, "Unexpected error on acces to the DVBViewerService" );
 		}
 	} ;
 	public ArrayList<DVBViewerEntry> readTimers()
@@ -277,14 +287,14 @@ public class DVBViewerService {
 									else if ( ! value.equals( "-1" ) )
 										throw new ErrorClass( ev, "Format error: Unexpected enable bit format from service" ) ;
 								}
-								else if ( attributeName == "Date")
+								else if ( attributeName.equals( "Date") )
 									dateString  = value ;
-								else if ( attributeName == "Start")
+								else if ( attributeName.equals( "Start") )
 									startString = value ;
-								else if ( attributeName == "End")
+								else if ( attributeName.equals( "End") )
 									endString   = value ;
-								else if ( attributeName == "Day")
-									if ( value != "-------") 
+								else if ( attributeName.equals( "Day") )
+									if ( ! value.equals( "-------") ) 
 										enable = false ;    // ignore periodic timer entry 
 								break ;
 							
@@ -371,4 +381,7 @@ public class DVBViewerService {
         </Timers>
 		 */
 	}
+	public String getURL()      { return this.url ; } ;
+	public String getUserName() { return this.userName ; } ;
+	public String getPassword() { return this.password ; } ;
 }

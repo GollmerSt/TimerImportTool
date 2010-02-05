@@ -6,7 +6,9 @@ package ClickFinder ;
 
 import java.io.File;
 import java.text.ParseException;
+import java.util.HashMap;
 
+import DVBViewer.Channel;
 import DVBViewer.DVBViewer ;
 import Misc.* ;
 
@@ -64,7 +66,7 @@ public class ClickFinder {
 			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
 		}
 		long end = start + milliSeconds ;
-		this.dvbViewer.addNewClickFinderEntry(channel, start, end, title) ;
+		this.dvbViewer.addNewEntry( Control.Channel.Type.CLICKFINDER, channel, start, end, title) ;
 		this.dvbViewer.combine() ;
 	}
 	
@@ -111,4 +113,5 @@ public class ClickFinder {
 
 			Registry.delete("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "" ) ;
 		}
-	}}
+	}
+}

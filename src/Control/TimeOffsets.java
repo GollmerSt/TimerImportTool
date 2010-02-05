@@ -2,49 +2,43 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package DVBViewer ;
+package Control ;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import javax.xml.stream.XMLStreamException;
+
+import javanet.staxutils.IndentingXMLStreamWriter;
 
 
 public class TimeOffsets {
 	private static TimeOffsets generalTimeOffsets = new TimeOffsets() ;
-	private ArrayList<OffsetEntry> preOffsets  = null;
-	private ArrayList<OffsetEntry> postOffsets = null;
+	private ArrayList<OffsetEntry> offsets  = null;
 	public TimeOffsets()
 	{
-		this.preOffsets  = new ArrayList<OffsetEntry>() ;
-		this.postOffsets = new ArrayList<OffsetEntry>() ;
+		this.offsets  = new ArrayList<OffsetEntry>() ;
 	}
 	public void add( String pre, String post, String weekdaysString, String startTime, String endTime )
 	{
-		if ( pre.length() > 0)
-			this.addPreOffset( pre, weekdaysString, startTime, endTime ) ;
-		if (post.length() > 0 )
-			this.addPostOffset( post, weekdaysString, startTime, endTime ) ;
+		OffsetEntry o = new OffsetEntry( pre, post, weekdaysString, startTime, endTime );
+		if ( pre.length() > 0 || post.length() > 0 )
+			this.offsets.add( o ) ;
 	}
-	private void addPreOffset( String minuteString, String weekdaysString, String startTime, String endTime )
+	private long getMax( long time, long offset, ArrayList<OffsetEntry> list, int ix )
 	{
-		OffsetEntry o = new OffsetEntry( minuteString, weekdaysString, startTime, endTime );
-		this.preOffsets.add( o ) ;
-	}
-	private void addPostOffset( String minuteString, String weekdaysString, String startTime, String endTime )
-	{
-		OffsetEntry o = new OffsetEntry( minuteString, weekdaysString, startTime, endTime );
-		this.postOffsets.add( o ) ;
-	}
-	private long getMax( long time, long offset, ArrayList<OffsetEntry> list )
-	{
-		long o = offset ;
+		long o = 0 ;
+		if ( offset > 0 )
+			o = offset ;
 		for ( Iterator<OffsetEntry> i = list.iterator() ; i.hasNext(); )
 		{
 			OffsetEntry e = i.next();
 			if ( ! e.isInTimeRange ( time ) )
 				continue ;
-			long n = e.getMinutes() ;
-			if ( o < n )
-				o = n ;
+			long[] n = e.getMinutes() ;
+			if ( o < n[ix] )
+				o = n[ix] ;
 		}
 		return o ;
 	}
@@ -52,15 +46,27 @@ public class TimeOffsets {
 	{
 		long offset = 0 ;
 		if ( this != generalTimeOffsets )
-			offset = this.getMax( time, 0, generalTimeOffsets.preOffsets ) ;
-		return this.getMax( time, offset, preOffsets ) ;
+			offset = this.getMax( time, 0, generalTimeOffsets.offsets, 0 ) ;
+		return this.getMax( time, offset, this.offsets, 0 ) ;
 	}
 	public long getPostOffset( long time )
 	{
 		long offset = 0 ;
 		if ( this != generalTimeOffsets )
-			offset = this.getMax( time, 0, generalTimeOffsets.postOffsets ) ;
-		return this.getMax( time, offset, postOffsets ) ;
+			offset = this.getMax( time, 0, generalTimeOffsets.offsets, 1 ) ;
+		return this.getMax( time, offset, offsets, 1 ) ;
 	}
-	static public TimeOffsets getGeneralTimeOffsets() { return generalTimeOffsets ; } ;
+	public static TimeOffsets getGeneralTimeOffsets() { return generalTimeOffsets ; } ;
+	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
+	{
+		if ( this.offsets.size() == 0 )
+			return ;
+		
+		sw.writeStartElement( "Offsets" ) ;
+		
+		for ( Iterator<OffsetEntry> it = this.offsets.iterator() ; it.hasNext() ; )
+			it.next().writeXML( sw ) ;
+		
+		sw.writeEndElement() ;
+	}
 }
