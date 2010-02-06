@@ -23,7 +23,7 @@ public final class TimerImportTool {
 		InstallMode install = InstallMode.NONE ;
 		boolean showMessageBox = false ;
 		String additionalParas = "" ;
-		//WakeOnLan.execute("192.168.0.255", "00:1F:D0:20:CB:3A" ) ;
+
 		try {
 			boolean getAll = false ;
 			
@@ -61,11 +61,14 @@ public final class TimerImportTool {
 
 			DVBViewer dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
 			
-			Channels channels = new Channels( dvbViewer ) ;
-			channels.read() ;
+//			Channels channels = new Channels( dvbViewer ) ;
+//			channels.read() ;
 			
 			Control control = new Control(dvbViewer);
-			control.write();
+//			control.write();
+			
+//			GUI.Main gui = new GUI.Main() ;
+//			gui.execute() ;
 			
 			control.setDVBViewerEntries() ;
 			

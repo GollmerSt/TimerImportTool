@@ -18,3 +18,7 @@ Version 1.01:
 Version 1.02
 			XML control file now compatible with XML Schema
 			XML Schema added
+			
+Version 1.03
+			Prepared for write XML control file
+			
