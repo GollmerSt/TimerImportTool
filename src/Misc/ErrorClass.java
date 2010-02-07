@@ -48,7 +48,8 @@ public class ErrorClass extends Error
 	public String getLocalizedMessage()
 	{
 		String res = this.getMessage() ;
-		if ( this.mainError.getClass() == javax.xml.stream.XMLStreamException.class )
+		
+		if ( this.mainError != null && this.mainError.getClass() == javax.xml.stream.XMLStreamException.class )
 		{
 			XMLStreamException ex = (XMLStreamException) this.mainError ;
 			if ( ex.getLocation() != null )
