@@ -46,6 +46,7 @@ public class DVBViewerService {
 	private final Stack<String> pathChannel ;
 	private final Stack<String> pathID ;
 	private final Stack<String> pathDescr ;
+	private final Stack<String> pathRecording ;
 	private final long version ;
 	
 	public DVBViewerService( String url, String name, String password)
@@ -70,6 +71,10 @@ public class DVBViewerService {
 		p = new Stack<String>() ;
 		Collections.addAll( p, "Timers", "Timer", "Descr" ) ;
 		this.pathDescr = p ;
+		
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Timers", "Timer", "Recording" ) ;
+		this.pathRecording = p ;
 		
 		this.version = this.readVersion() ;
 	}
@@ -248,6 +253,7 @@ public class DVBViewerService {
 			String startString = null ;
 			String endString   = null ;
 			String title       = null ;
+			boolean ignore     = false ;
 			long id            = -1 ;
 			
 			while( reader.hasNext() ) {
@@ -266,6 +272,7 @@ public class DVBViewerService {
 						title       = "" ;
 						id          = -1 ;
 						type        = 1 ;
+						ignore      = false ;
 					}
 					else if ( stack.equals( this.pathChannel ) )
 						type = 2 ;
@@ -294,8 +301,10 @@ public class DVBViewerService {
 								else if ( attributeName.equals( "End") )
 									endString   = value ;
 								else if ( attributeName.equals( "Day") )
-									if ( ! value.equals( "-------") ) 
-										enable = false ;    // ignore periodic timer entry 
+								{
+									if ( ! value.equals( "-------") )
+										enable = false ;    // ignore periodic timer entry
+								}
 								break ;
 							
 							case 2 :
@@ -319,10 +328,17 @@ public class DVBViewerService {
 						title += value ;
 						//System.out.println(title) ;
 					}
+					else if ( stack.equals( this.pathRecording ) )
+					{
+						if ( value.equals( "-1" ) )
+							ignore = true ;
+						else if ( ! value.equals( "0" ) )
+							throw new ErrorClass( ev, "Format error: Unexpected recording bit format from service" ) ;
+					}
 				}					
 				if( ev.isEndElement() )
 				{
-					if ( enable && stack.equals( this.pathTimer ) )
+					if ( !ignore && stack.equals( this.pathTimer ) )
 					{
 						if ( id < 0 || channel == null || dateString == null || startString == null || endString == null || title == null )
 							throw new ErrorClass( ev, "Incomplete timer entry from service" ) ;
