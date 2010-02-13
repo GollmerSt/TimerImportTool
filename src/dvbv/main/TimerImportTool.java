@@ -2,17 +2,17 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Main ;
+package dvbv.main ;
 
 import javax.swing.JOptionPane;
 
-import Misc.* ;
-import Provider.Provider;
-import DVBViewer.DVBViewer ;
-import Control.Control ;
-import TVInfo.AllTVInfoRecordings ;
-import ClickFinder.ClickFinder ;
-import DVBViewer_Channels.Channels ;
+import dvbv.misc.* ;
+import dvbv.provider.Provider;
+import dvbv.dvbviewer.DVBViewer ;
+import dvbv.control.Control ;
+import dvbv.tvinfo.AllTVInfoRecordings ;
+import dvbv.clickfinder.ClickFinder ;
+import dvbv.dvbviewer.channels.Channels ;
 
 public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;

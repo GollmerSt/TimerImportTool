@@ -2,7 +2,7 @@
 // $LastChangedRevision: 79 $
 // $LastChangedBy: Stefan Gollmer $
 
-package DVBViewer_Channels;
+package dvbv.dvbviewer.channels;
 
 import java.nio.MappedByteBuffer;
 

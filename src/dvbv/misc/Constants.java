@@ -1,4 +1,4 @@
-package Misc;
+package dvbv.misc;
 // $LastChangedDate$
 // $LastChangedRevision$
 // $LastChangedBy$

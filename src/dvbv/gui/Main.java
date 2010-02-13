@@ -1,4 +1,4 @@
-package GUI;
+package dvbv.gui;
 
 import java.awt.Color;
 import java.awt.event.MouseAdapter;

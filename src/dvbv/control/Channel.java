@@ -2,9 +2,9 @@
 // $LastChangedRevision: 79 $
 // $LastChangedBy: Stefan Gollmer $
 
-package Control;
+package dvbv.control;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -18,7 +18,7 @@ public class Channel {
 	}
 	public int  getType() { return this.type ; } ;
 	public String getName() { return this.name ; } ;
-	public String getTypeName(){ return Provider.Provider.getProviderName( this.type) ; } ;
+	public String getTypeName(){ return dvbv.provider.Provider.getProviderName( this.type) ; } ;
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException
 	{
 		sw.writeStartElement( "Provider" ) ;

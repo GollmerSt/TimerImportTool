@@ -2,9 +2,9 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package DVBViewer ;
+package dvbv.dvbviewer ;
 
-import Misc.* ;
+import dvbv.misc.* ;
 
 
 public final class DVBViewerEntry {

@@ -1,4 +1,4 @@
-package Provider;
+package dvbv.provider;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,16 +7,16 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import XML.Conversions;
+import dvbv.xml.Conversions;
 
-import Misc.ErrorClass;
+import dvbv.misc.ErrorClass;
 
 public class Provider {
 	private static ArrayList< String > names = new ArrayList< String >() ;

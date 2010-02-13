@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package TVInfo ;
+package dvbv.tvinfo ;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,8 +13,8 @@ import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import Misc.* ;
-import Provider.Provider;
+import dvbv.misc.* ;
+import dvbv.provider.Provider;
 
 public final class TVInfo extends Provider {	
 	public TVInfo()

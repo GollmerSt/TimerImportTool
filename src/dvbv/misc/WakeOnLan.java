@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Misc ;
+package dvbv.misc ;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;

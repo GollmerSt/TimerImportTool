@@ -1,10 +1,10 @@
-package XML;
+package dvbv.xml;
 
 import java.io.File;
 
 import javax.xml.stream.events.XMLEvent;
 
-import Misc.ErrorClass;
+import dvbv.misc.ErrorClass;
 
 public class Conversions {
 	public static boolean getBoolean( String text, XMLEvent ev, File f )

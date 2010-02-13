@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package TVInfo ;
+package dvbv.tvinfo ;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,8 +26,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import DVBViewer.DVBViewer ;
-import Misc.* ;
+import dvbv.dvbviewer.DVBViewer ;
+import dvbv.misc.* ;
 
 
 public final class AllTVInfoRecordings
@@ -47,7 +47,7 @@ public final class AllTVInfoRecordings
 	public AllTVInfoRecordings( DVBViewer dvbViewer, int days, int syncs )
 	{
 		this.map           = new HashMap<String,TVInfoRecording> ();
-		this.tvInfo        = (TVInfo) Provider.Provider.getProvider( "TVInfo") ;
+		this.tvInfo        = (TVInfo) dvbv.provider.Provider.getProvider( "TVInfo") ;
 		this.dvbViewer     = dvbViewer ;
 		this.days          = days ;
 		this.syncs         = syncs ;
@@ -206,7 +206,7 @@ public final class AllTVInfoRecordings
 	@SuppressWarnings("unchecked")
 	public void process( boolean all )
 	{
-		int providerType = Provider.Provider.getProviderID( "TVInfo" ) ;
+		int providerType = dvbv.provider.Provider.getProviderID( "TVInfo" ) ;
 
 		if ( ! all )
 			this.read() ;

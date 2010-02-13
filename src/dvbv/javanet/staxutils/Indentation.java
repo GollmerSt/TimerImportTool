@@ -1,4 +1,4 @@
-package javanet.staxutils;
+package dvbv.javanet.staxutils;
 
 /**
  * Characters that represent line breaks and indentation. These are represented

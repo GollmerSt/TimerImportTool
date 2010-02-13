@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Misc ;
+package dvbv.misc ;
 
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.XMLEvent;

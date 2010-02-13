@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package DVBViewer ;
+package dvbv.dvbviewer ;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import TVInfo.TVInfoRecording ;
-import Control.ChannelSet;
-import Control.TimeOffsets;
-import Misc.* ;
+import dvbv.tvinfo.TVInfoRecording ;
+import dvbv.control.ChannelSet;
+import dvbv.control.TimeOffsets;
+import dvbv.misc.* ;
 
 public class DVBViewer {
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
@@ -27,7 +27,7 @@ public class DVBViewer {
 	@SuppressWarnings("unused")
 	private ArrayList<TVInfoRecording> deletedRecodings = null;
 	private ArrayList< HashMap< String, Channel> > channelsLists 
-	        = new ArrayList< HashMap< String, Channel> >( Provider.Provider.getProviders().size() ) ;
+	        = new ArrayList< HashMap< String, Channel> >( dvbv.provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
 	private final String dataPath ;
 	private final String exeName ;
@@ -48,7 +48,7 @@ public class DVBViewer {
 	public void setProvider()
 	{
 		if ( this.channelsLists.size() == 0)
-			for ( int ix = 0 ; ix < Provider.Provider.getProviders().size() ; ix++ )
+			for ( int ix = 0 ; ix < dvbv.provider.Provider.getProviders().size() ; ix++ )
 				channelsLists.add( new HashMap< String, Channel>() ) ;
 	}
 	public void setGeneralMerge( boolean merge ) { this.generalMerge = merge ; } ;
@@ -61,7 +61,7 @@ public class DVBViewer {
 		{
 			File jarFile = null ;
 			try {
-				jarFile = new File(Main.TimerImportTool.class.getProtectionDomain()
+				jarFile = new File(dvbv.main.TimerImportTool.class.getProtectionDomain()
 						.getCodeSource().getLocation().toURI());
 			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
@@ -195,9 +195,9 @@ public class DVBViewer {
 		Channel c = new Channel( channelSet.getDVBViewerChannel(),
 				                 channelSet.getTimeOffsets(),
 				                 channelSet.getMerge() ) ;
-		for ( Iterator<Control.Channel> it = channelSet.getChannels().iterator() ; it.hasNext() ; )
+		for ( Iterator<dvbv.control.Channel> it = channelSet.getChannels().iterator() ; it.hasNext() ; )
 		{
-			Control.Channel cC = it.next() ;
+			dvbv.control.Channel cC = it.next() ;
 			int type = cC.getType() ;
 			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}

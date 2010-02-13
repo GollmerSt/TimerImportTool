@@ -2,16 +2,16 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Control ;
+package dvbv.control ;
 
 import java.text.ParseException;
 import java.util.GregorianCalendar;
 
 import javax.xml.stream.XMLStreamException;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
-import Misc.* ;
+import dvbv.misc.* ;
 
 
 public class OffsetEntry {

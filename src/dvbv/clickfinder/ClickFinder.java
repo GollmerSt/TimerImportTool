@@ -2,16 +2,14 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package ClickFinder ;
+package dvbv.clickfinder ;
 
 import java.io.File;
 import java.text.ParseException;
-import java.util.HashMap;
 
-import DVBViewer.Channel;
-import DVBViewer.DVBViewer ;
-import Misc.* ;
-import Provider.Provider;
+import dvbv.dvbviewer.DVBViewer ;
+import dvbv.misc.* ;
+import dvbv.provider.Provider;
 
 
 public class ClickFinder extends Provider {

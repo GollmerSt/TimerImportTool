@@ -2,7 +2,7 @@
 // $LastChangedRevision: 79 $
 // $LastChangedBy: Stefan Gollmer $
 
-package DVBViewer_Channels;
+package dvbv.dvbviewer.channels;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +16,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-import DVBViewer.DVBViewer;
-import Misc.ErrorClass;
+import dvbv.dvbviewer.DVBViewer;
+import dvbv.misc.ErrorClass;
 
 
 public class Channels {

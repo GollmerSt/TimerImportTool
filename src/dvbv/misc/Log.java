@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Misc ;
+package dvbv.misc ;
 
 import java.io.BufferedWriter;
 import java.io.File;

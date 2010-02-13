@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Control ;
+package dvbv.control ;
 
 
 import java.io.File;
@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -28,12 +28,12 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import DVBViewer.DVBViewer ;
-import DVBViewer.DVBViewerService ;
-import Misc.* ;
-import Provider.Provider;
-import TVInfo.TVInfo;
-import TVInfo.TVInfoRecording;
+import dvbv.dvbviewer.DVBViewer ;
+import dvbv.dvbviewer.DVBViewerService ;
+import dvbv.misc.* ;
+import dvbv.provider.Provider;
+import dvbv.tvinfo.TVInfo;
+import dvbv.tvinfo.TVInfoRecording;
 
 public class Control
 {
@@ -63,7 +63,7 @@ public class Control
 		this.dvbViewer = dvbViewer ;
 		
 		new TVInfo( ) ;
-		new ClickFinder.ClickFinder( dvbViewer ) ;
+		new dvbv.clickfinder.ClickFinder( dvbViewer ) ;
 		dvbViewer.setProvider() ;
 		
 		Stack<String> p = null ;
@@ -287,7 +287,7 @@ public class Control
 						channelSet.setDVBViewerChannel( data ) ;
 					else if ( stack.equals( this.pathChannelMerge ) )
 					{
-						channelSet.setMerge( XML.Conversions.getBoolean( data, ev, f ) ) ;
+						channelSet.setMerge( dvbv.xml.Conversions.getBoolean( data, ev, f ) ) ;
 					}
 					else if ( stack.equals( this.pathSeparator) )
 						this.separator = data ;

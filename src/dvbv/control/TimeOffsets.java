@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package Control ;
+package dvbv.control ;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 
 public class TimeOffsets {

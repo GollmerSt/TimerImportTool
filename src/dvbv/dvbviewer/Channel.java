@@ -2,10 +2,10 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package DVBViewer ;
+package dvbv.dvbviewer ;
 
-import Control.TimeOffsets;
-import Misc.Enums.Merge;
+import dvbv.control.TimeOffsets;
+import dvbv.misc.Enums.Merge;
 
 public class Channel {
 	private final String dvbViewer ;

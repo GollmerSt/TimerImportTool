@@ -2,17 +2,17 @@
 // $LastChangedRevision: 79 $
 // $LastChangedBy: Stefan Gollmer $
 
-package Control ;
+package dvbv.control ;
 
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import javanet.staxutils.IndentingXMLStreamWriter;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLStreamException;
 
-import Misc.Enums.Merge;
+import dvbv.misc.Enums.Merge;
 
 public class ChannelSet {
 	private ArrayList< Channel > channels = new ArrayList< Channel >() ;
