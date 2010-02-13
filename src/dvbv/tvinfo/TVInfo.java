@@ -23,6 +23,8 @@ public final class TVInfo extends Provider {
 	}
 	private String getMD5()
 	{
+		if ( ! this.isValid )
+			throw new ErrorClass( "Provider \"TVInfo\" data is missing in the control file" ) ;
 		MessageDigest md = null ;
 		try {
 			md = MessageDigest.getInstance("MD5");

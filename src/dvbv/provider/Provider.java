@@ -22,6 +22,7 @@ public class Provider {
 	private static ArrayList< String > names = new ArrayList< String >() ;
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
 	private final int id ;
+	protected boolean isValid = false ;
 	private final boolean hasAccount ;
 	private final boolean hasURL ;
 	private final String name ;
@@ -49,6 +50,14 @@ public class Provider {
 	public boolean getMerge()   { return this.merge ; } ;
 	public boolean getVerbose() { return this.verbose ; } ;
 	public boolean getMessage() { return this.message ; } ;
+	public void check()
+	{
+		if ( this.hasAccount && ( this.username == null || this.password == null ) )
+			throw new ErrorClass( "Username or password is missing" ) ;
+		
+		if ( this.hasURL && this.url == null )
+			throw new ErrorClass( "URL is missing" ) ;
+	}
 	public static ArrayList< Provider > getProviders() { return Provider.providers ; } ;
 	public static boolean contains( String provider ){ return Provider.names.contains( provider ) ; } ;
 	public static Provider getProvider( String providerName )
@@ -151,7 +160,14 @@ public class Provider {
 			if ( ev.isEndElement() )
 			{
 				stack.pop() ;
-				if ( stack.size() == 0 )
+				if ( stack.size() == 1 )
+					try {
+						provider.isValid = true ;
+						provider.check() ;
+					} catch( ErrorClass e ) {
+						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\""  ) ;
+					}
+					else if ( stack.size() == 0 )
 					break ;
 			}
 		}
@@ -162,6 +178,8 @@ public class Provider {
 		  for ( Iterator<Provider> it = Provider.providers.iterator() ; it.hasNext() ;)
 		  {
 			  Provider provider = it.next();
+			  if ( ! provider.isValid )
+				  continue ;
 			  sw.writeStartElement( "Provider" ) ;
 			  sw.writeAttribute( "name", provider.name) ;
 			  if ( provider.hasAccount )
