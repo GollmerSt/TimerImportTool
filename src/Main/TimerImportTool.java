@@ -7,6 +7,7 @@ package Main ;
 import javax.swing.JOptionPane;
 
 import Misc.* ;
+import Provider.Provider;
 import DVBViewer.DVBViewer ;
 import Control.Control ;
 import TVInfo.AllTVInfoRecordings ;
@@ -22,7 +23,8 @@ public final class TimerImportTool {
 		ImportType type    = ImportType.TVINFO ;
 		InstallMode install = InstallMode.NONE ;
 		boolean showMessageBox = false ;
-		String additionalParas = "" ;
+
+		Provider provider = null ;
 
 		try {
 			boolean getAll = false ;
@@ -44,10 +46,7 @@ public final class TimerImportTool {
 				else if ( args[i].equalsIgnoreCase("-deinstall") )
 					install = InstallMode.DEINSTALL ;
 				else if ( args[i].equalsIgnoreCase("-message") )
-				{
 					showMessageBox = true ;
-					additionalParas += "-message" ;
-				}
 				else if ( args[i].equalsIgnoreCase("-path") )
 				{
 					i++ ;
@@ -65,12 +64,27 @@ public final class TimerImportTool {
 //			channels.read() ;
 			
 			Control control = new Control(dvbViewer);
-//			control.write();
+			control.write();
 			
 //			GUI.Main gui = new GUI.Main() ;
 //			gui.execute() ;
 			
-			control.setDVBViewerEntries() ;
+			
+			switch ( type )
+			{
+				case TVINFO : 
+					provider = Provider.getProvider( "TVInfo" ) ;
+					break ;
+				case CLICKFINDER :
+					provider = Provider.getProvider( "ClickFinder" ) ;
+					break ;
+			}
+			
+			control.setDVBViewerEntries( provider ) ;
+			
+			showMessageBox |= provider.getMessage() ;
+			if ( provider.getVerbose() )
+				Log.setVerbose( true ) ;
 			
 			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
 			
@@ -80,14 +94,14 @@ public final class TimerImportTool {
 			switch ( type )
 			{
 				case TVINFO :
-					AllTVInfoRecordings aR = new AllTVInfoRecordings(control, dvbViewer, 3, 3);
-					aR.processTVInfo(getAll);
+					AllTVInfoRecordings aR = new AllTVInfoRecordings( dvbViewer, 3, 3 );
+					aR.process(getAll);
 					dvbViewer.setDVBViewerTimers();
 					aR.write() ;
 					break ;
 				case CLICKFINDER :
 				{
-					ClickFinder click = new ClickFinder( dvbViewer ) ;
+					ClickFinder click = (ClickFinder) provider ;
 
 					switch ( install )
 					{
@@ -96,7 +110,7 @@ public final class TimerImportTool {
 							dvbViewer.setDVBViewerTimers();
 							break ;
 						case INSTALL :
-							click.putToRegistry( dataPath != null, additionalParas ) ;
+							click.putToRegistry( dataPath != null ) ;
 							break ;
 						case DEINSTALL :
 							click.removeFromRegistry() ;
@@ -118,13 +132,13 @@ public final class TimerImportTool {
 		{
 			Log.out( "Import finished, but warnings occurs. The messages should be checked"  ) ;
 			if ( showMessageBox|| type == ImportType.CLICKFINDER )
-				JOptionPane.showMessageDialog(null, "Warnings occurs", TimerImportTool.exeName + "-Status", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Warnings occurs", provider.getName() + " status", JOptionPane.WARNING_MESSAGE);
 		}
 		else
 		{
 			Log.out( "Import successfull finished" ) ;
 			if ( showMessageBox || install != InstallMode.NONE )
-				JOptionPane.showMessageDialog(null, "Successfull finished", TimerImportTool.exeName + "-Status", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status", JOptionPane.INFORMATION_MESSAGE);
 		}
 		System.exit(0);
 	}

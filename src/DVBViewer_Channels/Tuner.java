@@ -8,6 +8,16 @@ import java.nio.MappedByteBuffer;
 
 
 public class Tuner {
+	class TTunerLanguage
+	{
+		private byte[] array = new byte[3] ;
+		protected void read( MappedByteBuffer buffer )
+		{
+			array[0] = buffer.get();
+			array[1] = buffer.get();
+			array[2] = buffer.get();
+		}
+	}
 	public static final int ENTRY_LENGTH = 52 ;
 	private final Channels channels ;
 	private byte  type ; 				// 0 = cable, 1 = satellite, 2 = terrestrial, 3 = atsc
@@ -24,7 +34,8 @@ public class Tuner {
 	private int   smbolrate ; 			// DWord: DVB-S/C only
 	private short lnbNB_LOF ;			// Word:  DVB-S only, local oscillator frequency of the LNB
 	private short pmtPID ;				// Word
-	private short reserved1 ;			// Word
+	private byte  volume ;				// Byte
+	private byte  reserved1 ;			// Word
 	private byte  satModulation ;		// Bit 0..1: modulation. 0 = Auto, 1 = QPSK, 2 = 8PSK, 3 = 16QAM
 										// Bit 2: modulation system. 0 = DVB-S, 1 = DVB-S2
 										// Bit 3..4: roll-off. 0 = 0.35, 1 = 0.25, 2 = 0.20, 3 = reserved
@@ -49,7 +60,7 @@ public class Tuner {
 										// 7 = 3/5
  										// 8 = 4/5
 										// 9 = 9/10
-	private byte  reserved2 ;			// must be 0
+	private byte  audioChannel ;		// Byte
 	private short reserved3 ;			// Word
 	private byte  polarity ;			// DVB-S polarity
  										//     0 = horizontal
@@ -68,9 +79,9 @@ public class Tuner {
 										//     1 = 7 MHz
 										//     2 = 8 MHz
 	private byte  reserved4 ;			// must be 0
-	private short reserved5 ;			// Word
+	private short orbitalPos ;			// Word
 	private byte  tone ; 				// Byte; //0 = off, 1 = 22 khz
-	private byte  reserved6 ;			// must be 0
+	private byte  epgFlag ;				// Byte
 	private short diSEqCExt ;			// Word
 										// DiSEqC Extension: OrbitPos, or other value
 										// -> Positoner, GotoAngular, Command String (set to 0 if not required)
@@ -81,7 +92,7 @@ public class Tuner {
 										// 4 = PosB/OptA
 										// 5  =PosA/OptB
 										// 6 = PosB/OptB
-	private byte  reserved7 ;			// must be 0
+	private TTunerLanguage language ;	// array [0..2] of char (byte)
 	private short reserved8 ; 			// Word
 	private short audioPID ; 			// Word;
 	private short reserved9 ; 			// Word;
@@ -108,20 +119,21 @@ public class Tuner {
 		this.smbolrate           = buffer.getInt() ;
 		this.lnbNB_LOF           = buffer.getShort() ;
 		this.pmtPID              = buffer.getShort() ;
-		this.reserved1           = buffer.getShort() ;
+		this.volume              = buffer.get() ;
+		this.reserved1           = buffer.get() ;
 		this.satModulation       = buffer.get() ;
 		this.avFormat            = buffer.get() ;
 		this.fec                 = buffer.get() ;
-		this.reserved2           = buffer.get() ;
+		this.audioChannel        = buffer.get() ;
 		this.reserved3           = buffer.getShort() ;
 		this.polarity            = buffer.get() ;
 		this.reserved4           = buffer.get() ;
-		this.reserved5           = buffer.getShort() ;
+		this.orbitalPos          = buffer.getShort() ;
 		this.tone                = buffer.get() ;
-		this.reserved6           = buffer.get() ;
+		this.epgFlag             = buffer.get() ;
 		this.diSEqCExt           = buffer.getShort() ;
 		this.diSEqC              = buffer.get() ;
-		this.reserved7           = buffer.get() ;
+		this.language             .read( buffer ) ;
 		this.reserved8           = buffer.getShort() ;
 		this.audioPID            = buffer.getShort() ;
 		this.reserved9           = buffer.getShort() ;

@@ -11,12 +11,14 @@ import java.util.HashMap;
 import DVBViewer.Channel;
 import DVBViewer.DVBViewer ;
 import Misc.* ;
+import Provider.Provider;
 
 
-public class ClickFinder {
+public class ClickFinder extends Provider {
 	private DVBViewer dvbViewer = null ;
 	public ClickFinder( DVBViewer dvbViewer )
 	{
+		super( false, false, "ClickFinder" ) ;
 		this.dvbViewer = dvbViewer ;
 	}
 	private String getParaInfo()
@@ -25,7 +27,7 @@ public class ClickFinder {
 		", necessary parameters:\n   -ClickFinder [-path dataPath] Sender=ccc Begin=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	public void processEntry( String[] args )
-	{
+	{		
 		String channel = null ;
 		String startTime = null ;
 		long milliSeconds = -1 ;
@@ -66,11 +68,11 @@ public class ClickFinder {
 			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
 		}
 		long end = start + milliSeconds ;
-		this.dvbViewer.addNewEntry( Control.Channel.Type.CLICKFINDER, channel, start, end, title) ;
-		this.dvbViewer.combine() ;
+		this.dvbViewer.addNewEntry( this.getID(), channel, start, end, title) ;
+		this.dvbViewer.merge() ;
 	}
 	
-	public void putToRegistry( boolean setDataDir, String additionalParas )
+	public void putToRegistry( boolean setDataDir )
 	{
 		String dataPathPara = "" ;
 		if ( setDataDir )
@@ -94,7 +96,7 @@ public class ClickFinder {
 		Registry.setValue("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ExeDateiname", "javaw" ) ;
 		Registry.setValue("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ParameterFest", "-jar \"\"\""
 				           + this.dvbViewer.getExePath() + File.separator + this.dvbViewer.getExeName()
-				           + "\"\"\" -ClickFinder" + dataPathPara + " " + additionalParas ) ;
+				           + "\"\"\" -ClickFinder" + dataPathPara ) ;
 	}
 	 public void removeFromRegistry()
 	{

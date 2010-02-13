@@ -16,7 +16,6 @@ import java.util.Iterator;
 
 import TVInfo.TVInfoRecording ;
 import Control.ChannelSet;
-import Control.Merge;
 import Control.TimeOffsets;
 import Misc.* ;
 
@@ -28,17 +27,15 @@ public class DVBViewer {
 	@SuppressWarnings("unused")
 	private ArrayList<TVInfoRecording> deletedRecodings = null;
 	private ArrayList< HashMap< String, Channel> > channelsLists 
-	        = new ArrayList< HashMap< String, Channel> >( Control.Channel.Type.SIZE.ordinal() ) ;
+	        = new ArrayList< HashMap< String, Channel> >( Provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
 	private final String dataPath ;
 	private final String exeName ;
 	private final String pluginConfPath ;
-	private Merge merge = new Merge( true );
+	private boolean generalMerge = false ;
 	private String separator      = ",," ;
 	public DVBViewer( String dataPath, String exeName )
 	{
-		for ( int ix = 0 ; ix < Control.Channel.Type.SIZE.ordinal() ; ix++ )
-			channelsLists.add( new HashMap< String, Channel>() ) ;
 		this.exeName = exeName + ".jar" ;
 		this.exePath = determineExePath( dataPath ) ;
 		if ( dataPath != null )
@@ -48,6 +45,13 @@ public class DVBViewer {
 		this.pluginConfPath = this.dataPath + File.separator + "Plugins" ;
 		this.recordEntries = new ArrayList<DVBViewerEntry>() ;
 	}
+	public void setProvider()
+	{
+		if ( this.channelsLists.size() == 0)
+			for ( int ix = 0 ; ix < Provider.Provider.getProviders().size() ; ix++ )
+				channelsLists.add( new HashMap< String, Channel>() ) ;
+	}
+	public void setGeneralMerge( boolean merge ) { this.generalMerge = merge ; } ;
 	private String determineExePath( String dataPath )
 	{
 		String exePath = System.getProperty("user.dir") ;
@@ -138,13 +142,13 @@ public class DVBViewer {
 		Log.setFile(path) ;
 		return path ;
 	}
-	public void addNewEntry( Control.Channel.Type type,
-							  String channel, 
-							  long start, 
-							  long end,
-							  String title )
+	public void addNewEntry( int type,
+							 String channel, 
+							 long start, 
+							 long end,
+							 String title )
 	{
-		HashMap< String, Channel > channelMap = this.channelsLists.get(type.ordinal() ) ;
+		HashMap< String, Channel > channelMap = this.channelsLists.get( type ) ;
 		if ( ! channelMap.containsKey( channel ) )
 			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
 		Channel c =  channelMap.get( channel ) ;
@@ -154,10 +158,11 @@ public class DVBViewer {
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
-		boolean merge = this.merge.toMerge() ;
-		if ( c.getMerge().isValid() )
-			merge = c.getMerge().toMerge() ;
-		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(), start, end, title, merge ) ;
+		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+											   start,
+											   end,
+											   title,
+											   c.getMerge( this.generalMerge ) ) ;
 		this.recordEntries.add( e ) ;
 	}
 	public String getExePath()        { return this.exePath ; } ;
@@ -193,15 +198,15 @@ public class DVBViewer {
 		for ( Iterator<Control.Channel> it = channelSet.getChannels().iterator() ; it.hasNext() ; )
 		{
 			Control.Channel cC = it.next() ;
-			int index = cC.getIndex() ;
-			this.addChannel( this.channelsLists.get(index), cC.getName(), c, cC.getTypeName() ) ;
+			int type = cC.getType() ;
+			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}
 	}
-	public void combine()
+	public void merge()
 	{
 		for ( int iO = 0 ; iO < this.recordEntries.size() ; iO++ )
 		{
-			if ( ! this.recordEntries.get( iO ).toCombine() )
+			if ( ! this.recordEntries.get( iO ).toMerge() )
 				continue ;
 			boolean changed = true ;
 			while ( changed )
@@ -212,7 +217,7 @@ public class DVBViewer {
 				for ( int iI = iO+1 ; iI < this.recordEntries.size() ; iI++)
 				{
 					DVBViewerEntry i = this.recordEntries.get( iI ) ;
-					if ( o.mustCombine( i ) )
+					if ( o.mustMerge( i ) )
 					{
 						DVBViewerEntry newEntry = o.update( i, this.separator ) ;
 						if ( newEntry != null )
@@ -260,7 +265,5 @@ public class DVBViewer {
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 	}
 	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
-	public void setMerge( Merge merge ) { this.merge= merge ; } ;
-	public Merge getMerge() { return merge ; } ;
 	public void setSeparator( String s ) { this.separator = s ; } ;
 }

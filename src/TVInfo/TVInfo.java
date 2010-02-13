@@ -14,21 +14,14 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import Misc.* ;
+import Provider.Provider;
 
-public final class TVInfo {
-	private final String userName ;
-	private final String md5Hex ;
-	private final String url ;
-	
-	public TVInfo( String userName,
-			       String md5Hex,
-			       String url )
+public final class TVInfo extends Provider {	
+	public TVInfo()
 	{
-		this.userName = userName ;
-		this.md5Hex   = md5Hex ;
-		this.url      = url ;
+		super( true, true, "TVInfo" ) ;
 	}
-	public static String translateToMD5( String password )
+	private String getMD5()
 	{
 		MessageDigest md = null ;
 		try {
@@ -37,12 +30,12 @@ public final class TVInfo {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		md.update( password.getBytes() ) ;
+		md.update( this.password.getBytes() ) ;
 		return Conversions.bytesToString(md.digest()) ;
 	}
 	public InputStream connect() throws DigestException, NoSuchAlgorithmException
 	{
-		String completeURL = this.url + "?username=" + this.userName + "&password=" + this.md5Hex ;
+		String completeURL = this.url + "?username=" + this.username + "&password=" + this.getMD5() ;
 		Log.out( true, "TVInfo URL: " + completeURL ) ;
 		
 		URL tvInfoURL;

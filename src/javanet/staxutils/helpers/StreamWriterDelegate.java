@@ -140,6 +140,13 @@ public abstract class StreamWriterDelegate implements XMLStreamWriter {
         out.writeAttribute(localName, value);
     }
 
+    public void writeAttribute(String localName, boolean value) throws XMLStreamException {
+    	String string = "false" ;
+    	if ( value )
+    		string = "true" ;
+        out.writeAttribute(localName, string);
+    }
+
     public void writeAttribute(String namespaceURI, String localName, String value)
             throws XMLStreamException {
         out.writeAttribute(namespaceURI, localName, value);

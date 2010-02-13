@@ -12,20 +12,28 @@ import javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLStreamException;
 
+import Misc.Enums.Merge;
+
 public class ChannelSet {
 	private ArrayList< Channel > channels = new ArrayList< Channel >() ;
 	private String dvbViewerChannel = null ;
 	private TimeOffsets timeOffsets = new TimeOffsets() ;
-	private Merge merge = new Merge( false );
+	private Merge merge = Merge.INVALID ;
 	
-	public void add( Channel.Type type, String name )
+	public void add( int type, String name )
 	{
 		Channel channel = new Channel( type, name ) ;
 		channels.add( channel ) ;
 	}
 	public void setTimeOffsets( TimeOffsets timeOffsets ) { this.timeOffsets = timeOffsets ; }
 	public TimeOffsets getTimeOffsets() { return timeOffsets ; } ;
-	public void setMerge( Merge merge ) { this.merge = merge ; } ;
+	public void setMerge( boolean merge )
+	{
+		if ( merge )
+			this.merge = Merge.TRUE ;
+		else
+			this.merge = Merge.FALSE ;
+	} ;
 	public Merge getMerge() { return this.merge ; } ;
 	public void setDVBViewerChannel( String channelName ) { this.dvbViewerChannel = channelName ; } ;
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
@@ -43,7 +51,14 @@ public class ChannelSet {
 			  sw.writeEndElement() ;
 		  }
 		  this.timeOffsets.writeXML( sw ) ;
-		  this.merge.writeXML( sw ) ;
+		  if ( this.merge != Merge.INVALID )
+		  {
+			  sw.writeStartElement( "Merge" ) ;
+			  if ( this.merge == Merge.FALSE )
+				  sw.writeCharacters( "true" ) ;
+			  else
+				  sw.writeCharacters( "false" ) ;
+		  }
 		sw.writeEndElement() ;
 	}
 }

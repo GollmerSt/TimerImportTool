@@ -9,22 +9,20 @@ import javanet.staxutils.IndentingXMLStreamWriter;
 import javax.xml.stream.XMLStreamException;
 
 public class Channel {
-	public enum Type { TVINFO, CLICKFINDER, SIZE } ;
-	private static final String[] typeStrings = { "TVInfo", "ClickFinder" } ;
-	private final Type type ;
+	private final int type ;
 	private final String name ;
-	public Channel( Type type, String name )
+	public Channel( int type, String name )
 	{
 		this.type = type ;
 		this.name = name ;
 	}
-	public Type getType() { return this.type ; } ;
-	public int getIndex() { return this.type.ordinal() ; } ;
+	public int  getType() { return this.type ; } ;
 	public String getName() { return this.name ; } ;
-	public String getTypeName(){ return Channel.typeStrings[ this.type.ordinal() ] ; } ;
+	public String getTypeName(){ return Provider.Provider.getProviderName( this.type) ; } ;
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException
 	{
-		sw.writeStartElement( typeStrings[ type.ordinal() ] ) ;
+		sw.writeStartElement( "Provider" ) ;
+		sw.writeAttribute( "name", this.getTypeName() ) ;
 		sw.writeCharacters( name ) ;
 		sw.writeEndElement() ;
 	}

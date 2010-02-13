@@ -4,8 +4,8 @@
 
 package DVBViewer ;
 
-import Control.Merge;
 import Control.TimeOffsets;
+import Misc.Enums.Merge;
 
 public class Channel {
 	private final String dvbViewer ;
@@ -24,5 +24,12 @@ public class Channel {
 	}
 	public String getDVBViewer()     { return this.dvbViewer ; } ;
 	public TimeOffsets  getOffsets() { return this.offsets ; } ;
-	public Merge getMerge()        { return this.merge ; } ;
+	public boolean getMerge( boolean generalMerge)
+	{
+		if (      merge == Merge.INVALID )
+			return generalMerge ;
+		else if ( merge == Merge.TRUE )
+			return true ;
+		return false ;
+	}
 }

@@ -15,26 +15,26 @@ public final class DVBViewerEntry {
 	private long end ;
 	private String title ;
 	private ToDo toDo ;
-	private boolean combine;
+	private boolean merge;
 	
-	public DVBViewerEntry( long id, String channel, long start, long end, String title, boolean combine )
+	public DVBViewerEntry( long id, String channel, long start, long end, String title, boolean merge )
 	{
 		this.id = id ;
 		this.channel = channel ;
 		this.start = start;
 		this.end = end;
 		this.title = title ;
-		this.combine = combine ;
+		this.merge = merge ;
 		this.toDo = ToDo.NONE ;
 	}
-	public DVBViewerEntry( String channel, long start, long end, String title, boolean combine )
+	public DVBViewerEntry( String channel, long start, long end, String title, boolean merge )
 	{
 		this.id = -1 ;
 		this.channel = channel ;
 		this.start = start;
 		this.end = end;
 		this.title = title ;
-		this.combine = combine ;
+		this.merge = merge ;
 		this.toDo = ToDo.NEW ;
 	}
 	public void update( long start, long end, String title )
@@ -79,7 +79,7 @@ public final class DVBViewerEntry {
 	}
 	public DVBViewerEntry clone()
 	{
-		DVBViewerEntry result = new DVBViewerEntry( this.id, this.channel, this.start, this.end, this.title, this.combine ) ;
+		DVBViewerEntry result = new DVBViewerEntry( this.id, this.channel, this.start, this.end, this.title, this.merge ) ;
 		result.toDo = this.toDo ;
 		return result ;
 	}
@@ -96,12 +96,12 @@ public final class DVBViewerEntry {
 			return true ;
 		return false ;
 	}
-	public boolean toCombine() { return this.combine ; } ;
-	public boolean mustCombine( DVBViewerEntry dE )
+	public boolean toMerge() { return this.merge ; } ;
+	public boolean mustMerge( DVBViewerEntry dE )
 	{
 		if ( this.toDo == ToDo.NONE && dE.toDo == ToDo.NONE )
 			return false ;
-		if ( ! this.combine || ! dE.combine )
+		if ( ! this.merge || ! dE.merge )
 			return false ;
 		if ( this.isDisabled() || dE.isDisabled() )
 			return false ;

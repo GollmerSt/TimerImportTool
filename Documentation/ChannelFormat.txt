@@ -1,0 +1,163 @@
+//Please note: Software, that wants to access the channels.dat file must first
+//read the file UserMode.ini (from the DVBViewer directory) in order to find out
+//where it is located:
+
+case UserMode of
+  0: //configuration files are located in the DVBViewer directory (exe path)
+  1: //configuration files are located in the application data folder
+     //(documents and settings\username\application data\...)
+  2: //configuration files are located in the common application data folder
+     //(documents and settings\all users\application data\...)
+
+//In case of user mode 1 or 2 use the SHGetFolderPath function (from Shell32.dll)
+//with the appropriate CSIDL value (CSIDL_APPDATA or CSIDL_COMMON_APPDATA) to
+//retrieve the path, and append the directory specified by the Root entry
+//of the UserMode.ini to it. See
+
+http://msdn2.microsoft.com/en-us/library/ms647764.aspx
+
+//---------------------------------------------------------------------
+
+//TTuner data structure (packed, no alignment gaps, 52 bytes)
+
+TunerType: Byte; //0 = cable, 1 = satellite, 2 = terrestrial, 3 = atsc
+ChannelGroup: Byte; //0 = Group A, 1 = Group B, 2 = Group C
+SatModulationSystem: Byte; //0 = DVB-S, 1 = DVB-S2
+  //SatModulationSystem is deprecated! Only set for compatibility
+Flags: Byte;
+  //Bit 0: 1 = encrypted channel
+  //Bit 1: 1 = don't display EPG on What's Now Tab & in Timeline
+  //Bit 2: 1 = channel broadcasts RDS data
+  //Bit 3: 1 = channels is a video service (even if the Video PID is temporarily = 0)
+  //Bit 4: 1 = channel is an audio service (even if the Audio PID is temporarily = 0)
+  //*** New! The following bits will be used in future DVBViewer versions.
+  //Bit 5: 1 = audio has a different samplerate than 48 KHz
+  //Bit 6: reserved, must be 0
+  //Bit 7: 1 = channel entry is an additional audio track of the last preceding 
+  //       channel with bit 7 = 0
+Frequency: DWord; //MHz for DVB-S, KHz for DVB-T/C and ATSC
+Smbolrate: DWord; //DVB-S/C only
+LNB_LOF: Word; //DVB-S only, local oscillator frequency of the LNB
+PMT_PID: Word;
+Volume: Byte;
+Reserved1: Byte;
+SatModulation: Byte;
+  //Bit 0..1: modulation. 0 = Auto, 1 = QPSK, 2 = 8PSK, 3 = 16QAM
+  //Bit 2: modulation system. 0 = DVB-S, 1 = DVB-S2
+  //Bit 3..4: roll-off. 0 = 0.35, 1 = 0.25, 2 = 0.20, 3 = reserved
+  //Bit 5..6: spectral inversion. 0 = undefined, 1 = auto, 2 = normal, 3 = inverted
+  //Bit 7: pilot symbols. 0 = off, 1 = on
+  //Note: Bit 3..4 and 7 only apply to DVB-S2 and Hauppauge HVR 4000 / Nova S2 Plus
+AVFormat: Byte;
+  //Low Nibble (Bit 0..3): audio format
+    //  0 = MPEG
+    //  1 = AC3
+    //  2..15 reserved
+  //High Nibble (Bit 4..7): video format
+    //  0 = MPEG2
+    //  1 = H.264
+    //  2..15 reserved
+FEC: Byte;
+  //0 = Auto
+  //1 = 1/2
+  //2 = 2/3
+  //3 = 3/4
+  //4 = 5/6
+  //5 = 7/8
+  //6 = 8/9
+  //7 = 3/5
+  //8 = 4/5
+  //9 = 9/10
+Audiochannel: Byte;
+Reserved3: Word;
+Polarity: Byte;
+  //DVB-S polarity
+  //  0 = horizontal
+  //  1 = vertical
+  //  2 = circular left
+  //  3 = circular right
+  //or DVB-C modulation
+  //  0 = Auto
+  //  1 = 16QAM
+  //  2 = 32QAM
+  //  3 = 64QAM
+  //  4 = 128QAM
+  //  5 = 256 QAM
+  //or DVB-T bandwidth
+  //  0 = 6 MHz
+  //  1 = 7 MHz
+  //  2 = 8 MHz
+Reserved4: Byte; //must be 0
+OrbitalPos: Word;
+Tone: Byte; //0 = off, 1 = 22 khz
+EPGFlag: Byte;
+DiSEqCExt: Word;
+  //DiSEqC Extension: OrbitPos, or other value
+  //-> Positoner, GotoAngular, Command String (set to 0 if not required)
+DiSEqC: Byte;
+  //0 = None
+  //1 = Pos A (mostly translated to PosA/OptA)
+  //2 = Pos B (mostly translated to PosB/OptA)
+  //3 = PosA/OptA
+  //4 = PosB/OptA
+  //5  =PosA/OptB
+  //6 = PosB/OptB
+Language: TTunerLanguage; //array [0..2] of char (byte)
+Audio_PID: Word;
+Reserved9: Word;
+Video_PID: Word;
+TransportStream_ID: Word;
+Teletext_PID: Word;
+OriginalNetwork_ID: Word;
+Service_ID: Word;
+PCR_PID: Word;
+
+//---------------------------------------------------------------------
+
+//Type ShortString25 (used in TChannel structure for name, category, root)
+
+array[0..25] of byte; //fixed size, always 26 bytes
+  //Byte 0: Length;
+  //Byte 1..Length: Char;
+  //Byte Length+1..25: Unused
+
+//---------------------------------------------------------------------
+
+//TChannel data structure (packed, no alignment gaps, 132 bytes)
+
+TunerData: TTuner; //structure see above
+Root: ShortString25; //structure see above
+  //mostly the satellite position resp. DVB network name, can be user defined
+ChannelName: ShortString25;
+Category: ShortString25; //user defined
+Encrypted: Byte;
+  //deprecated! Only set for compatibility. Same as TTuner.Flags.
+Reserved10: Byte;
+
+//---------------------------------------------------------------------
+
+//channels.dat file structure (packed, no alignment gaps)
+
+  //Header:
+IDLength: Byte; // = 4
+ID: array[0..3] of Char; //'B2C2' as ASCII chars
+VersionHi: Byte; //currently 1
+VersionLo: Byte; //currently 8 -> 1.8
+  //followed by a list of TChannel
+while not EndOfFile
+  TChannel
+
+//---------------------------------------------------------------------
+
+//An external application can let DVBViewer reload/save the channels.dat file from/to
+//the configuration folder by sending the following messages:
+
+SendMessage(Handle,0xB2C2,0x1032,0);
+//DVBViewer saves the channels.dat file.
+
+PostMessage(Handle,0xB2C2,0x1033,0);
+//DVBViewer reloads the channels.dat file.
+
+//The handle of the DVBViewer main window can be obtained this way:
+Handle := FindWindow('TfrmMain','DVB Viewer');
+if Handle <> 0 then...

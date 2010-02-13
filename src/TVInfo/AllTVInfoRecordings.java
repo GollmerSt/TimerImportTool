@@ -39,19 +39,15 @@ public final class AllTVInfoRecordings
 	private final Stack<String> xmlPathTVinfoTitle ;
 	private HashMap<String,TVInfoRecording> map = null ;
 	private TVInfo tvInfo = null ;
-	private final Control.Control control ;
 	private int days = 0 ;
 	private int syncs = 0;
 	private String dataDirectory = null ;
 	private DVBViewer dvbViewer = null ;
 	@SuppressWarnings("unchecked")
-	public AllTVInfoRecordings( Control.Control control, DVBViewer dvbViewer, int days, int syncs )
+	public AllTVInfoRecordings( DVBViewer dvbViewer, int days, int syncs )
 	{
 		this.map           = new HashMap<String,TVInfoRecording> ();
-		this.control       = control ;
-		this.tvInfo        = new TVInfo( this.control.getTVInfoUserName() ,
-				                         this.control.getTVInfoMD5() ,
-				                         this.control.getTVInfoURL() ) ;
+		this.tvInfo        = (TVInfo) Provider.Provider.getProvider( "TVInfo") ;
 		this.dvbViewer     = dvbViewer ;
 		this.days          = days ;
 		this.syncs         = syncs ;
@@ -208,8 +204,10 @@ public final class AllTVInfoRecordings
 		}
 	}
 	@SuppressWarnings("unchecked")
-	public void processTVInfo( boolean all )
+	public void process( boolean all )
 	{
+		int providerType = Provider.Provider.getProviderID( "TVInfo" ) ;
+
 		if ( ! all )
 			this.read() ;
 		
@@ -282,7 +280,7 @@ public final class AllTVInfoRecordings
 					if ( stack.equals( this.xmlPathTVinfoTitle ) )
 					{
 						title = ev.asCharacters().getData() ;
-						this.dvbViewer.addNewEntry( Control.Channel.Type.TVINFO, channel, start, end, title) ;
+						this.dvbViewer.addNewEntry( providerType, channel, start, end, title) ;
 					}
 				}					
 				if( ev.isEndElement() ) stack.pop();
@@ -301,6 +299,6 @@ public final class AllTVInfoRecordings
 		//	e.printStackTrace();
 		}
 		this.dvbViewer.setDeletedRecordings( this.finish(System.currentTimeMillis()) ) ;
-		dvbViewer.combine() ;
+		dvbViewer.merge() ;
 	}
 }

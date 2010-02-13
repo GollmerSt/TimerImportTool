@@ -31,92 +31,87 @@ import javax.xml.transform.stream.StreamSource;
 import DVBViewer.DVBViewer ;
 import DVBViewer.DVBViewerService ;
 import Misc.* ;
+import Provider.Provider;
+import TVInfo.TVInfo;
 import TVInfo.TVInfoRecording;
 
-public class Control {
+public class Control
+{
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
 
 	private DVBViewer dvbViewer = null ;
-	private final Stack<String> pathTVInfo ;
-	private final Stack<String> pathTVInfoURL ;
+	private final Stack<String> pathProviders ;
 	private final Stack<String> pathService ;
 	private final Stack<String> pathGlobalOffsets ;
-	private final Stack<String> pathGlobalCombine ;
 	private final Stack<String> pathChannel ;
 	private final Stack<String> pathChannelOffsets ;
-	private final Stack<String> pathChannelTVInfo ;
-	private final Stack<String> pathChannelClickFinder ;
+	private final Stack<String> pathChannelProvider ;
 	private final Stack<String> pathChannelDVBViewer ;
-	private final Stack<String> pathChannelCombine ;
+	private final Stack<String> pathChannelMerge ;
 	private final Stack<String> pathSeparator ;
 	private final Stack<String> pathWOL ;
+	private final Stack<String> pathDefaultProvider ;
 	
-	private String tvInfoUsername = null ;
-	private String tvInfoPassword = null ;
-	private String tvInfoMD5      = null ;
-	private int tvInfoTriggerAction = 0 ;
-	private String tvInfoURL = null ;
+	private String defaultProvider = null ;
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
-	private Merge generalMerge = new Merge( false ) ;
 	
 	@SuppressWarnings("unchecked")
 	public Control( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
 		
-		Stack<String> p1 = new Stack<String>() ;
-		Collections.addAll( p1, "Importer", "TVInfo" ) ;
-		this.pathTVInfo = p1 ;
+		new TVInfo( ) ;
+		new ClickFinder.ClickFinder( dvbViewer ) ;
+		dvbViewer.setProvider() ;
 		
-		Stack<String> p2 = (Stack<String>)p1.clone();
-		p2.push( "Url" ) ;
-		this.pathTVInfoURL = p2 ;
+		Stack<String> p = null ;
 		
-		Stack<String> p3 = new Stack<String>() ;
-		Collections.addAll( p3, "Importer", "DVBService" ) ;
-		this.pathService = p3 ;
-
-		Stack<String> p4 = new Stack<String>() ;
-		Collections.addAll( p4, "Importer", "Offsets", "Offset" ) ;
-		this.pathGlobalOffsets = p4 ;
-
-		Stack<String> p5 = new Stack<String>() ;
-		Collections.addAll( p5, "Importer", "Channels", "Channel" ) ;
-		this.pathChannel = p5 ;
-
-		Stack<String> p6 = new Stack<String>() ;
-		Collections.addAll( p6, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
-		this.pathChannelOffsets = p6 ;
-
-		Stack<String> p7 = new Stack<String>() ;
-		Collections.addAll( p7, "Importer", "Channels", "Channel", "TVInfo" ) ;
-		this.pathChannelTVInfo = p7 ;
-
-		Stack<String> p8 = new Stack<String>() ;
-		Collections.addAll( p8, "Importer", "Channels", "Channel", "ClickFinder" ) ;
-		this.pathChannelClickFinder = p8 ;
-
-		Stack<String> p9 = new Stack<String>() ;
-		Collections.addAll( p9, "Importer", "Channels", "Channel", "DVBViewer" ) ;
-		this.pathChannelDVBViewer = p9 ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Providers" ) ;
+		this.pathProviders = p ;
 		
-		Stack<String> p10 = new Stack<String>() ;
-		Collections.addAll( p10, "Importer", "Combine" ) ;
-		this.pathGlobalCombine = p10 ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "DVBService" ) ;
+		this.pathService = p ;
+
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Offsets", "Offset" ) ;
+		this.pathGlobalOffsets = p ;
+
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Channels", "Channel" ) ;
+		this.pathChannel = p ;
+
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
+		this.pathChannelOffsets = p ;
+
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Channels", "Channel", "Provider" ) ;
+		this.pathChannelProvider = p ;
+
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Channels", "Channel", "DVBViewer" ) ;
+		this.pathChannelDVBViewer = p ;
 		
-		Stack<String> p11 = new Stack<String>() ;
-		Collections.addAll( p11, "Importer", "Channels", "Channel", "Combine" ) ;
-		this.pathChannelCombine = p11 ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer", "Channels", "Channel", "Merge" ) ;
+		this.pathChannelMerge = p ;
 		
-		Stack<String> p12 = new Stack<String>() ;
-		Collections.addAll( p12, "Importer",  "Separator" ) ;
-		this.pathSeparator = p12 ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer",  "Separator" ) ;
+		this.pathSeparator = p ;
 		
-		Stack<String> p13 = new Stack<String>() ;
-		Collections.addAll( p13, "Importer",  "DVBService", "WakeOnLAN" ) ;
-		this.pathWOL = p13 ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer",  "DVBService", "WakeOnLAN" ) ;
+		this.pathWOL = p ;
+		
+		p = new Stack<String>() ;
+		Collections.addAll( p, "Importer",  "GUI", "defaultProvider" ) ;
+		this.pathDefaultProvider = p ;
+		
 		
 		this.read() ;
 	}
@@ -144,6 +139,8 @@ public class Control {
 		String offsetBegin  = null ;
 		String offsetEnd    = null ;
 		
+		Provider provider = null ;
+		
 		ChannelSet channelSet = null ;
 		
 		String  dvbServiceURL              = null ;
@@ -165,10 +162,18 @@ public class Control {
 			}
 			if( ev.isStartElement() )
 			{
-				stack.push( ev.asStartElement().getName().getLocalPart() );
+				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
 				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 				int type = 0 ;
-				if ( stack.equals( this.pathTVInfo ) )
+				if ( stack.equals( this.pathProviders ) )
+					try {
+						Provider.readXML( reader, f ) ;
+						stack.pop() ;
+						continue ;
+					} catch (XMLStreamException e1) {
+						throw new ErrorClass( e1, "XML syntax error in file \"" + f.getName() + "\"" );
+					}
+				if ( stack.equals( this.pathChannelProvider ) )
 					type = 0;
 				else if ( stack.equals( this.pathService ) )
 					type = 1 ;
@@ -185,6 +190,7 @@ public class Control {
 				else if ( stack.equals( this.pathChannel ) )
 				{
 					type = 4 ;
+					provider = null ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
 				}
@@ -208,18 +214,9 @@ public class Control {
 	            	switch ( type )
 	            	{
 	            	case 0 :
-	            		if (      attributeName.equals( "username" ) )
-	            			this.tvInfoUsername      = value ;
-		            	else if ( attributeName.equals( "password" ) )
-		            		this.tvInfoPassword      = value ;
-		            	else if ( attributeName.equals( "md5" ) )
-		            		this.tvInfoMD5           = value ;
-		            	else if ( attributeName.equals( "triggeraction" ) )
-		            	{
-		            		if ( !value.matches("\\d+") )
-		            			throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + f.getName() + "\"" ) ;
-		            		this.tvInfoTriggerAction = Integer.valueOf( value ) ;
-		            	}
+	            		provider = Provider.getProvider( value ) ;
+	            		if ( provider == null )
+            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
 	            		break ;
 	            	case 1 :
 	            		if      ( attributeName.equals( "url" ) )
@@ -284,31 +281,18 @@ public class Control {
 				String data = ev.asCharacters().getData().trim() ;
 				if ( data.length() > 0 )
 				{
-					Merge merge = null ;
-					if      ( stack.equals( this.pathTVInfoURL ) )
-						this.tvInfoURL = data ;
-					else if ( stack.equals( this.pathChannelTVInfo ) )
-						channelSet.add(Channel.Type.TVINFO, data) ;
-					else if ( stack.equals( this.pathChannelClickFinder ) )
-						channelSet.add(Channel.Type.CLICKFINDER, data) ;
+					if      ( stack.equals( this.pathChannelProvider ) )
+						channelSet.add( provider.getID(), data ) ;
 					else if ( stack.equals( this.pathChannelDVBViewer ) )
 						channelSet.setDVBViewerChannel( data ) ;
-					else if ( stack.equals( this.pathGlobalCombine ) )
-						merge = this.generalMerge ;
-					else if ( stack.equals( this.pathChannelCombine ) )
-						merge = channelSet.getMerge() ;
+					else if ( stack.equals( this.pathChannelMerge ) )
+					{
+						channelSet.setMerge( XML.Conversions.getBoolean( data, ev, f ) ) ;
+					}
 					else if ( stack.equals( this.pathSeparator) )
 						this.separator = data ;
-					if ( merge != null )
-					{
-						merge.setValid() ;
-						if      ( data.equalsIgnoreCase( "false" ) )
-							merge.set(false) ;
-						else if ( data.equalsIgnoreCase( "true" ) )
-							merge.set(true ) ;
-						else
-							throw new ErrorClass( ev, "Illegal boolean error in file \"" + f.getName() + "\"" ) ;
-					}
+					else if ( stack.equals( this.pathDefaultProvider ) )
+						this.defaultProvider = data ;
 				}					
 			}					
 	        if( ev.isEndElement() )
@@ -360,19 +344,7 @@ public class Control {
 			sw.writeStartElement( "Importer" ) ;
 		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
-			  sw.writeStartElement( "TVInfo" ) ;
-			    sw.writeAttribute( "username", this.tvInfoUsername ) ;
-			    if ( this.tvInfoPassword != null )
-				    sw.writeAttribute( "password", this.tvInfoPassword ) ;
-  			    if ( this.tvInfoMD5 != null )
-				    sw.writeAttribute( "md5"     , this.tvInfoMD5 ) ;
-			    if ( this.tvInfoTriggerAction >= 0 )
-				    sw.writeAttribute( "triggeraction" , Integer.toString( this.tvInfoTriggerAction ) ) ;
-				sw.writeStartElement( "Url" ) ;
-			      sw.writeCharacters( this.tvInfoURL ) ;
-				  sw.writeEndElement();
-			  sw.writeEndElement();
-
+		      Provider.writeXML( sw ) ;
 			  sw.writeStartElement( "DVBService" ) ;
 			    sw.writeAttribute( "url",      this.dvbViewer.getService().getURL() ) ;
 			    sw.writeAttribute( "username", this.dvbViewer.getService().getUserName() ) ;
@@ -380,9 +352,16 @@ public class Control {
 			    sw.writeAttribute( "timeZone", "Europe/Berlin" ) ;
 			  sw.writeEndElement();
 			  
-			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
+			  sw.writeStartElement( "GUI" ) ;
+			  if ( this.defaultProvider != null )
+			  {
+				  sw.writeStartElement( "DefaultProvider" ) ;
+				  sw.writeCharacters( this.defaultProvider ) ;
+				  sw.writeEndElement() ;
+			  }
+			  sw.writeEndElement() ;
 			  
-			  this.generalMerge.writeXML( sw ) ;
+			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
 			  
 			  if ( this.separator.length() != 0 )
 			  {
@@ -412,22 +391,13 @@ public class Control {
 //		for ( )
 		
 	}
-	public void setDVBViewerEntries()
+	public void setDVBViewerEntries( Provider provider )
 	{
 		this.dvbViewer.setSeparator( this.separator ) ;
-		this.dvbViewer.setMerge( this.generalMerge ) ;
+		this.dvbViewer.setGeneralMerge( provider.getMerge() ) ;
 		for ( Iterator<ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ;)
 		{
 			this.dvbViewer.addChannel( it.next() ) ;
 		}
 	}
-	public String getTVInfoURL() { return this.tvInfoURL ; } ;
-	public String getTVInfoUserName() { return this.tvInfoUsername ; } ;
-	public String getTVInfoMD5()
-	{
-		if ( this.tvInfoMD5 == null )
-			return TVInfo.TVInfo.translateToMD5( this.tvInfoPassword ) ;
-		return this.tvInfoMD5 ;
-	} ; 
-	public int getTriggerAction()     { return this.tvInfoTriggerAction ; } ;
 }
