@@ -164,7 +164,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	}
 	public DVBViewerAssignment( GUI parent, dvbv.dvbviewer.channels.Channels dChannels )
 	{
-		super( parent.getControl() ) ;
+		super( parent.getControl(), parent.getFrame() ) ;
 		
 		this.parent = parent ;
 		this.dvbViewerChannels = dChannels ;

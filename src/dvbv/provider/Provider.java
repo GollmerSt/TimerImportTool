@@ -26,6 +26,7 @@ public abstract class Provider {
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
 	private final int id ;
 	protected boolean isValid = false ;
+	protected ArrayList< String > channels = new ArrayList< String >() ;
 	private final boolean hasAccount ;
 	private final boolean hasURL ;
 	private final boolean canExecute ;
@@ -89,6 +90,7 @@ public abstract class Provider {
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean install()   { return true ; } ;
 	public boolean uninstall() { return true ; } ;
+	public ArrayList< String > getChannels() { return channels ; } ;
 	public void check()
 	{
 		if ( this.hasAccount && ( this.username == null || this.password == null ) )

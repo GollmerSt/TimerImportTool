@@ -1,7 +1,8 @@
-package dvbv.misc;
 // $LastChangedDate$
 // $LastChangedRevision$
 // $LastChangedBy$
+
+package dvbv.misc;
 
 
 public final class Constants {

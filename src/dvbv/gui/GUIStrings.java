@@ -1,3 +1,7 @@
+// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
+// $LastChangedRevision: 79 $
+// $LastChangedBy: Stefan Gollmer $
+
 package dvbv.gui;
 
 public class GUIStrings {
@@ -8,9 +12,10 @@ public class GUIStrings {
 	private static final String[] add = { "Add", "Hinzufügen" } ;
 	private static final String[] allTimers = { "All timers", "Alle Timer" } ;
 	private static final String[] apply = { "Apply", "Übernehmen" } ;
+	private static final String[] assignedError = { "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" } ;
 	private static final String[] broadCastAddress = { "Broadast address", "Broadcast-Adresse" } ;
 	private static final String[] cancel = { "Cancel", "Abbruch" } ;
-	private static final String[] cannotDeleted = { "Cannot be deleted in case of assignment", "Kann nicht wegen Zuordnung gelöscht werden" } ;
+	private static final String[] cannotDeleted = { "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" } ;
 	private static final String[] channel = { "Channel", "Kanal" } ;
 	private static final String[] check = { "Check", "Teste" } ;
 	private static final String[] delete = { "Delete", "Löschen" } ;
@@ -63,6 +68,7 @@ public class GUIStrings {
 	public static String add() { return get( add ) ; } ;
 	public static String allTimers() { return get( allTimers ) ; } ;
 	public static String apply() { return get( apply ) ; } ;
+	public static String assignedError() { return get( assignedError ) ; } ;
 	public static String broadCastAddress() { return get( broadCastAddress ) ; } ;
 	public static String cancel() { return get( cancel ) ; } ;
 	public static String cannotDeleted() { return get( cannotDeleted ) ; } ;

@@ -18,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -251,9 +252,9 @@ public class ProviderService extends MyTabPanel {
 		}
 		
 	}
-	public ProviderService( Control control )
+	public ProviderService( Control control, JFrame frame )
 	{
-		super( control ) ;
+		super( control, frame ) ;
 	}
 	public void paint()
 	{

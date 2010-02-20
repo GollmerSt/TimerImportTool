@@ -107,6 +107,7 @@ public class GUI {
 		this.dChannels = dChannels ;
 	}
 	public Control getControl() { return this.control ; } ;
+	public JFrame getFrame() { return frame ; } ;
 	public void execute()
 	{ 
         try {
@@ -138,8 +139,8 @@ public class GUI {
 
 	    
 	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
-	    ProviderService tab2 = new ProviderService( control ) ;
-	    ProviderAssignment tab4 = new ProviderAssignment( control ) ;
+	    ProviderService tab2 = new ProviderService( control, frame ) ;
+	    ProviderAssignment tab4 = new ProviderAssignment( control, frame ) ;
 	    	    
 	    this.tabbedPane.add( GUIStrings.dvbViewerAssignment(), tab1); 
 	    this.tabbedPane.add( GUIStrings.providerService(), tab2);
