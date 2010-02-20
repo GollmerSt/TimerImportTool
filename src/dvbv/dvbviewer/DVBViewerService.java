@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.ProtocolException;
@@ -34,9 +35,10 @@ import javax.xml.transform.stream.StreamSource;
 import dvbv.misc.* ;
 
 public class DVBViewerService {
-	private final String url ;
-	private final String userName ;
-	private final String password ;
+	private boolean enable ;
+	private String url ;
+	private String userName ;
+	private String password ;
 	private boolean enableWOL = false ;
 	private String broadCastAddress ;
 	private String macAddress ;
@@ -47,14 +49,15 @@ public class DVBViewerService {
 	private final Stack<String> pathID ;
 	private final Stack<String> pathDescr ;
 	private final Stack<String> pathRecording ;
-	private final long version ;
+	private long version = -1 ;
 	
-	public DVBViewerService( String url, String name, String password)
+	public DVBViewerService( boolean enable, String url, String name, String password)
 	{
+		this.enable = enable ;
 		this.url = url ;
 		this.userName = name ;
 		this.password = password ;
-		Authenticator.setDefault( new DVBViewerService.MyAuthenticator( this.userName, this.password ) ) ; 
+		Authenticator.setDefault( new DVBViewerService.MyAuthenticator() ) ; 
 
 		Stack<String> p = new Stack<String>() ;
 		Collections.addAll( p, "Timers", "Timer" ) ;
@@ -76,19 +79,10 @@ public class DVBViewerService {
 		Collections.addAll( p, "Timers", "Timer", "Recording" ) ;
 		this.pathRecording = p ;
 		
-		this.version = this.readVersion() ;
+//		this.version = this.readVersion() ;
 	}
 	private class MyAuthenticator extends Authenticator
 	{
-		private final String user ;
-		private final String password ;
-		
-		public MyAuthenticator( String user, String password)
-		{
-			super() ;
-			this.user     = user ;
-			this.password = password ;
-		}
 		protected PasswordAuthentication getPasswordAuthentication() 
 		{ 
 			//System.out.println( "Hier erfolgt die Authentifizierung" ) ;
@@ -96,14 +90,22 @@ public class DVBViewerService {
 	        //               getRequestingURL(), getRequestingHost(), 
 	        //               getRequestingSite(), getRequestingPort() ); 
 	 
-			return new PasswordAuthentication( this.user, this.password.toCharArray() ); 
+			return new PasswordAuthentication( userName, password.toCharArray() ); 
 		}
 	}
+	public boolean getEnableWOL() { return this.enableWOL ; } ;
 	public void setEnableWOL( boolean e ) { this.enableWOL = e ; } ;
+	public String getBroadCastAddress() { return this.broadCastAddress ; } ;
 	public void setBroadCastAddress( String b ) { this.broadCastAddress = b ; } ;
+	public String getMacAddress() { return this.macAddress ; } ;
 	public void setMacAddress( String m ) { this.macAddress = m ; } ;
+	public int getWaitTimeAfterWOL() { return this.waitTimeAfterWOL ; } ;
 	public void setWaitTimeAfterWOL( int w ) { this.waitTimeAfterWOL = w ; } ;
-	private InputStream connect( String command, String query)
+	private InputStream connect( String command, String query )
+	{
+		return this.connect( command, query, false ) ;
+	}
+	private InputStream connect( String command, String query, boolean check)
 	{
 		String completeURL = "http://" + this.url ;
 		completeURL       += "/API/" + command + ".html" ;
@@ -124,7 +126,17 @@ public class DVBViewerService {
 		while ( true )
 		{
 			try {
-				input = dvbViewerServiceURL.openStream();
+				HttpURLConnection conn = (HttpURLConnection) dvbViewerServiceURL.openConnection() ;
+				if ( check  )
+				{
+					conn.setUseCaches(false); // Cachen ausschalten
+		        
+					if ( this.userName.length() > 0 && this.password.length() > 0) {
+						// Daten für HTTP-Authentifizierung festlegen
+						conn.setRequestProperty("Authorization", "Basic " + Base64.encodeBytes(new String(this.userName + ":" + this.password).getBytes()));
+					}
+				}
+				input = conn.getInputStream() ;
 			} catch ( ProtocolException e1) {
 				throw new ErrorClass("Authenticator error on access to the DVBViewerService. Username/password should be checked.");
 			} catch (IOException e) {
@@ -146,10 +158,18 @@ public class DVBViewerService {
 		}
 		return input ;
 	}
-	private InputStream connect( String command) { return this.connect(command, "" ) ; } ;
-	private long readVersion()
+	private InputStream connect( String command) { return this.connect(command, "", false ) ; } ;
+	private InputStream connect( String command, boolean check) { return this.connect(command, "", check ) ; } ;
+	public long getVersion()
 	{
-		InputStream input = connect( "version" ) ;
+		if ( this.version < 0 )
+			this.version = this.readVersion() ;
+		return this.version ;
+	}
+	private long readVersion() { return this.readVersion( false ) ; } ;
+	public long readVersion( boolean check)
+	{
+		InputStream input = connect( "version", check ) ;
 
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		
@@ -397,7 +417,12 @@ public class DVBViewerService {
         </Timers>
 		 */
 	}
-	public String getURL()      { return this.url ; } ;
+	public boolean isEnabled() { return this.enable ; } ;
+	public void setEnabled( boolean e ) { this.enable = e ; } ;
+	public String getURL()           { return this.url ; } ;
 	public String getUserName() { return this.userName ; } ;
 	public String getPassword() { return this.password ; } ;
+	public void setURL( String url )           { this.url = url ; } ;
+	public void setUserName( String userName ) { this.userName = userName ; } ;
+	public void setPassword( String password ) { this.password = password ; } ;
 }

@@ -8,9 +8,6 @@ package dvbv.control ;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,11 +30,13 @@ import dvbv.dvbviewer.DVBViewerService ;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
 import dvbv.tvinfo.TVInfo;
-import dvbv.tvinfo.TVInfoRecording;
 
 public class Control
 {
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
+	
+	private enum BlockType { INVALID , CHANNEL_PROVIDER, DVBSERVICE,
+		                     GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
 	private DVBViewer dvbViewer = null ;
 	private final Stack<String> pathProviders ;
@@ -57,7 +56,6 @@ public class Control
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
 	
-	@SuppressWarnings("unchecked")
 	public Control( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
@@ -109,12 +107,13 @@ public class Control
 		this.pathWOL = p ;
 		
 		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer",  "GUI", "defaultProvider" ) ;
+		Collections.addAll( p, "Importer",  "GUI", "DefaultProvider" ) ;
 		this.pathDefaultProvider = p ;
 		
 		
 		this.read() ;
 	}
+	@SuppressWarnings("unchecked")
 	public void read()
 	{	
 		File f = new File( this.dvbViewer.getPluginConfPath()
@@ -143,9 +142,10 @@ public class Control
 		
 		ChannelSet channelSet = null ;
 		
-		String  dvbServiceURL              = null ;
-		String  dvbServiceName             = null ;
-		String  dvbServicePassword         = null ;
+		boolean dvbServiceEnable		   = false ;
+		String  dvbServiceURL              = "" ;
+		String  dvbServiceName             = "" ;
+		String  dvbServicePassword         = "" ;
 		boolean dvbServiceEnableWOL        = false ;
 		String  dvbServiceBroadCastAddress = null ;
 		String  dvbServiceMacAddress       = null ;
@@ -164,7 +164,7 @@ public class Control
 			{
 				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
 				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
-				int type = 0 ;
+				BlockType type = BlockType.INVALID ;
 				if ( stack.equals( this.pathProviders ) )
 					try {
 						Provider.readXML( reader, f ) ;
@@ -174,31 +174,32 @@ public class Control
 						throw new ErrorClass( e1, "XML syntax error in file \"" + f.getName() + "\"" );
 					}
 				if ( stack.equals( this.pathChannelProvider ) )
-					type = 0;
+					type = BlockType.CHANNEL_PROVIDER ;
 				else if ( stack.equals( this.pathService ) )
-					type = 1 ;
+					type = BlockType.DVBSERVICE ;
 				else if ( stack.equals( this.pathGlobalOffsets ) )
 				{
-					type = 2 ;
+					type = BlockType.GLOBAL_OFFSETS ;
 					offsets = TimeOffsets.getGeneralTimeOffsets() ;
 				}
 				else if ( stack.equals( this.pathChannelOffsets ) )
 				{
-					type = 3 ;
+					type = BlockType.CHANNEL_OFFSETS ;
 					offsets = channelOffsets ;
 				}
 				else if ( stack.equals( this.pathChannel ) )
 				{
-					type = 4 ;
+					type = BlockType.CHANNEL ;
 					provider = null ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
 				}
 				else if ( stack.equals( this.pathWOL ) )
-					type = 5 ;
+					type = BlockType.WOL ;
 				else
 					continue ;
-				if ( type == 2 || type == 3 )
+				if (    type == BlockType.CHANNEL_OFFSETS
+				     || type == BlockType.GLOBAL_OFFSETS )
 				{
 					offsetAfter  = "" ;
 					offsetBefore = "" ;
@@ -213,12 +214,14 @@ public class Control
 	            	String value = a.getValue() ;
 	            	switch ( type )
 	            	{
-	            	case 0 :
+	            	case CHANNEL_PROVIDER :
 	            		provider = Provider.getProvider( value ) ;
 	            		if ( provider == null )
             				throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
 	            		break ;
-	            	case 1 :
+	            	case DVBSERVICE :
+	            		if      ( attributeName.equals( "enable" ) )
+	            			dvbServiceEnable   = dvbv.xml.Conversions.getBoolean( value, ev, f ) ;
 	            		if      ( attributeName.equals( "url" ) )
 	            			dvbServiceURL      = value ;
 	            		else if ( attributeName.equals( "username" ) )
@@ -226,8 +229,8 @@ public class Control
 		            	else if ( attributeName.equals( "password" ) )
 		            		dvbServicePassword = value ;
 	            		break ;
-	            	case 2 :
-	            	case 3 :
+	            	case GLOBAL_OFFSETS :
+	            	case CHANNEL_OFFSETS :
 	            		if      ( attributeName.equals( "before" ) )
 	            			offsetBefore = value ;
 	            		else if ( attributeName.equals( "after"  ) )
@@ -239,7 +242,7 @@ public class Control
 	            		else if ( attributeName.equals( "end"    ) )
 	            			offsetEnd    = value ;
 	            		break ;
-	            	case 5 :
+	            	case WOL :
 	            		if      ( attributeName.equals( "enable" ) )
 	            		{
 	            			if      ( value.equalsIgnoreCase( "true" ) )
@@ -249,7 +252,7 @@ public class Control
 	            			else
 	            				throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + f.getName() + "\"" ) ;
 	            		}
-	            		else if ( attributeName.equals( "broadCastaddress" ) )
+	            		else if ( attributeName.equals( "broadCastAddress" ) )
 	            		{
 	            			if ( ! value.matches("\\d+\\.\\d+\\.\\d+\\.\\d+"))
 	            				throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + f.getName() + "\"" ) ;
@@ -269,7 +272,8 @@ public class Control
 	            		}
 	            	}
 	            }
-	            if ( type == 2 || type == 3 )
+	            if (    type == BlockType.CHANNEL_OFFSETS
+	                 || type == BlockType.GLOBAL_OFFSETS )
 					try {
 						offsets.add(offsetBefore, offsetAfter, offsetDays, offsetBegin, offsetEnd) ;
 					} catch (ErrorClass e) {
@@ -304,20 +308,17 @@ public class Control
 					} catch (ErrorClass e) {
 						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
 					}
-				else if ( stack.equals( this.pathService ) )
-	        	{
-	        		this.dvbViewer.setService(
-	        				new DVBViewerService( dvbServiceURL, dvbServiceName, dvbServicePassword )
-	        		) ;
-	        		this.dvbViewer.setEnableWOL( dvbServiceEnableWOL ) ;
-	        		if ( dvbServiceEnableWOL && ( dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null ) )
-	        			throw new ErrorClass( ev, "Broadcast address or mac addres not given in file \"" + f.getName() + "\"" ) ;
-	        		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
-	        		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
-	        		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
-	        	}
 	        	stack.pop();
 	        }
+    		this.dvbViewer.setService(
+    				new DVBViewerService( dvbServiceEnable, dvbServiceURL, dvbServiceName, dvbServicePassword )
+    		) ;
+    		this.dvbViewer.setEnableWOL( dvbServiceEnableWOL ) ;
+    		if ( dvbServiceEnableWOL && ( dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null ) )
+    			throw new ErrorClass( ev, "Broadcast address or mac addres not given in file \"" + f.getName() + "\"" ) ;
+    		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
+    		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
+    		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
 		}
 		try {
 			reader.close() ;
@@ -329,14 +330,17 @@ public class Control
 	{
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
         
-		String fileName = this.dvbViewer.getDataPath() + File.separator + NAME_XML_CONTROLFILE ;
+		File file = new File( this.dvbViewer.getPluginConfPath()
+		          + File.separator
+		          + NAME_XML_CONTROLFILE ) ;
+
 		XMLStreamWriter  writer = null ;
 		try {
 			try {
 				writer = output.createXMLStreamWriter(
-						new FileOutputStream( new File( fileName )), "ISO-8859-1");
+						new FileOutputStream( file), "ISO-8859-1");
 			} catch (FileNotFoundException e) {
-				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + fileName + "\". Write protected?" ) ;
+				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
 			}
 			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
 	        sw.setIndent( "    " );
@@ -346,10 +350,18 @@ public class Control
 		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
 		      Provider.writeXML( sw ) ;
 			  sw.writeStartElement( "DVBService" ) ;
-			    sw.writeAttribute( "url",      this.dvbViewer.getService().getURL() ) ;
-			    sw.writeAttribute( "username", this.dvbViewer.getService().getUserName() ) ;
-			    sw.writeAttribute( "password", this.dvbViewer.getService().getPassword() ) ;
+			  	DVBViewerService dvbs = this.dvbViewer.getService() ;
+			    sw.writeAttribute( "enable",   dvbs.isEnabled() ) ;
+			    sw.writeAttribute( "url",      dvbs.getURL() ) ;
+			    sw.writeAttribute( "username", dvbs.getUserName() ) ;
+			    sw.writeAttribute( "password", dvbs.getPassword() ) ;
 			    sw.writeAttribute( "timeZone", "Europe/Berlin" ) ;
+				sw.writeStartElement( "WakeOnLAN" ) ;
+				  sw.writeAttribute( "enable", dvbs.getEnableWOL() ) ;
+				  sw.writeAttribute( "broadCastAddress", dvbs.getBroadCastAddress() ) ;
+				  sw.writeAttribute( "macAddress", dvbs.getMacAddress() ) ;
+				  sw.writeAttribute( "waitTimeAfterWOL", Integer.toString( dvbs.getWaitTimeAfterWOL() ) ) ;
+				  sw.writeEndElement();
 			  sw.writeEndElement();
 			  
 			  sw.writeStartElement( "GUI" ) ;
@@ -378,7 +390,7 @@ public class Control
 			writer.flush();
 			writer.close();
 		} catch (XMLStreamException e) {
-			throw new ErrorClass( e,   "Error on writing XML file \"" + fileName ) ;
+			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -400,4 +412,8 @@ public class Control
 			this.dvbViewer.addChannel( it.next() ) ;
 		}
 	}
+	public String getDefaultProvider() { return this.defaultProvider ; } ;
+	public void setDefaultProvider( String defaultProvider ) { this.defaultProvider = defaultProvider ; } ;
+	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
+	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
 }

@@ -208,7 +208,7 @@ public final class AllTVInfoRecordings
 	{
 		int providerType = dvbv.provider.Provider.getProviderID( "TVInfo" ) ;
 
-		if ( ! all )
+		if ( this.tvInfo.getHistorie() )
 			this.read() ;
 		
 		InputStream iS = null ;

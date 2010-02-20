@@ -43,7 +43,6 @@ public class DVBViewer {
 		else
 			this.dataPath = this.determineDataPath() ;
 		this.pluginConfPath = this.dataPath + File.separator + "Plugins" ;
-		this.recordEntries = new ArrayList<DVBViewerEntry>() ;
 	}
 	public void setProvider()
 	{
@@ -142,12 +141,24 @@ public class DVBViewer {
 		Log.setFile(path) ;
 		return path ;
 	}
+	private void checkRecordingEntries()
+	{
+		if ( this.recordEntries == null )
+		{
+			if ( this.service != null && this.service.isEnabled() )
+				this.recordEntries = this.service.readTimers() ;
+			else
+				this.recordEntries = new ArrayList<DVBViewerEntry>() ;
+		}
+		
+	}
 	public void addNewEntry( int type,
 							 String channel, 
 							 long start, 
 							 long end,
 							 String title )
 	{
+		this.checkRecordingEntries();
 		HashMap< String, Channel > channelMap = this.channelsLists.get( type ) ;
 		if ( ! channelMap.containsKey( channel ) )
 			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
@@ -169,11 +180,7 @@ public class DVBViewer {
 	public String getExeName()        { return this.exeName ; } ;
 	public String getDataPath()       { return this.dataPath ; } ;
 	public String getPluginConfPath() { return this.pluginConfPath ; } ;
-	public void setService( DVBViewerService s )
-	{
-		this.service = s ;
-		recordEntries = this.service.readTimers() ;
-	}
+	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
 	public void setEnableWOL( boolean e ) { this.service.setEnableWOL( e ) ; } ;
 	public void setBroadCastAddress( String b ) { this.service.setBroadCastAddress( b ) ; } ;
@@ -204,6 +211,7 @@ public class DVBViewer {
 	}
 	public void merge()
 	{
+		this.checkRecordingEntries();
 		for ( int iO = 0 ; iO < this.recordEntries.size() ; iO++ )
 		{
 			if ( ! this.recordEntries.get( iO ).toMerge() )
@@ -245,11 +253,12 @@ public class DVBViewer {
 			else if ( ! d.mustIgnored() )
 				newEntries++ ;
 
-			if ( this.service != null )
+			if ( this.service != null && this.service.isEnabled() )
 			{
 				this.service.setTimerEntry( d ) ;
 			}
-			else if ( d.getToDo() == DVBViewerEntry.ToDo.NEW )
+			else if (    d.getToDo() == DVBViewerEntry.ToDo.NEW
+					  || d.getToDo() == DVBViewerEntry.ToDo.NEW_UPDATED )
 			{
 				String rs = rsBase ;
 				rs += "-d \"" + d.getTitle() + "\" " ;

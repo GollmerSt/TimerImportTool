@@ -25,8 +25,18 @@ public class ChannelSet {
 		Channel channel = new Channel( type, name ) ;
 		channels.add( channel ) ;
 	}
+	public void remove( int type )
+	{
+		for ( Iterator< Channel > it = channels.iterator() ; it.hasNext() ; )
+		{
+			Channel channel = it.next() ;
+			if ( channel.getType() == type )
+				it.remove() ;
+		}
+	}
 	public void setTimeOffsets( TimeOffsets timeOffsets ) { this.timeOffsets = timeOffsets ; }
 	public TimeOffsets getTimeOffsets() { return timeOffsets ; } ;
+	public void setMerge( Merge merge ) { this.merge = merge ; } ;
 	public void setMerge( boolean merge )
 	{
 		if ( merge )
@@ -38,6 +48,16 @@ public class ChannelSet {
 	public void setDVBViewerChannel( String channelName ) { this.dvbViewerChannel = channelName ; } ;
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
 	public ArrayList< Channel > getChannels() { return channels ; } ;
+	public Channel getChannel( int providerID )
+	{
+		for ( Iterator< Channel > it = channels.iterator() ; it.hasNext() ; )
+		{
+			Channel c = it.next() ;
+			if ( c.getType() == providerID )
+				return c ;
+		}
+		return null ;
+	}
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
 	{
 		sw.writeStartElement( "Channel" ) ;
@@ -55,9 +75,10 @@ public class ChannelSet {
 		  {
 			  sw.writeStartElement( "Merge" ) ;
 			  if ( this.merge == Merge.FALSE )
-				  sw.writeCharacters( "true" ) ;
-			  else
 				  sw.writeCharacters( "false" ) ;
+			  else
+				  sw.writeCharacters( "true" ) ;
+			  sw.writeEndElement() ;
 		  }
 		sw.writeEndElement() ;
 	}

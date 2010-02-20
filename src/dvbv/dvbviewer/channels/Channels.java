@@ -12,8 +12,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.Comparator;
 import java.util.TreeMap;
 
 import dvbv.dvbviewer.DVBViewer;
@@ -37,7 +36,16 @@ public class Channels {
 	private long headerLength = 0 ;
 	private long channelEntryLength = 0 ;
 	
-	private TreeMap< String, Channel > channelMap = new TreeMap< String, Channel >() ;
+	public class MyComparator implements Comparator< String>
+	{
+		@Override
+		public int compare(String o1, String o2) {
+			if ( o1.equalsIgnoreCase(o2) )
+				return o1.compareTo( o2 ) ;
+			return o1.compareToIgnoreCase(o2) ;
+		}
+	}
+	private TreeMap< String, Channel > channelMap = new TreeMap< String, Channel >( new MyComparator() ) ;
 	
 	public Channels( DVBViewer dvbViewer )
 	{
@@ -134,13 +142,19 @@ public class Channels {
 			throw new ErrorClass( "Unexpected error on reading \"" + this.file.getAbsolutePath() );
 		}
 		
-		Collection<Channel> values = this.channelMap.values() ;
+		//Collection<Channel> values = this.channelMap.values() ;
 		
-		for ( Iterator<Channel> it = values.iterator() ; it.hasNext(); )
-		{
-			System.out.println(" ChannelID: " + it.next().getChannelID() ) ;
+		//for ( Iterator<Channel> it = values.iterator() ; it.hasNext(); )
+		//{
+		//	System.out.println(" ChannelID: " + it.next().getChannelID() ) ;
+		//}
+		try {
+			this.fileChannel.close() ;
+		} catch (IOException e) {
+			throw new ErrorClass( "Unexpected error on closing \"" + this.file.getAbsolutePath() );
 		}
 	}
-	public MappedByteBuffer getMappedByteBuffer() { return this.buffer ; } ; 
+	public MappedByteBuffer getMappedByteBuffer() { return this.buffer ; } ;
+	public TreeMap< String, Channel > getChannels() { return this.channelMap ; } ;
 }
 	

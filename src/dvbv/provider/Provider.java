@@ -1,8 +1,11 @@
+// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
+// $LastChangedRevision: 79 $
+// $LastChangedBy: Stefan Gollmer $
+
 package dvbv.provider;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
@@ -18,13 +21,17 @@ import dvbv.xml.Conversions;
 
 import dvbv.misc.ErrorClass;
 
-public class Provider {
+public abstract class Provider {
 	private static ArrayList< String > names = new ArrayList< String >() ;
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
 	private final int id ;
 	protected boolean isValid = false ;
 	private final boolean hasAccount ;
 	private final boolean hasURL ;
+	private final boolean canExecute ;
+	private final boolean canTest ;
+	private final boolean hasHistory ;
+	private final boolean mustInstall ;
 	private final String name ;
 	protected String url = "" ;
 	protected String username = null ;
@@ -33,23 +40,55 @@ public class Provider {
 	private boolean merge = false ;
 	private boolean verbose = false ;
 	private boolean message = false ;
-	public Provider( boolean hasAccount, boolean hasURL, String name )
+	private boolean history = false ;
+	public Provider( boolean hasAccount,
+			         boolean hasURL,
+			         String name,
+			         boolean canExecute,
+			         boolean canTest,
+			         boolean hasHistory,
+			         boolean mustInstall )
 	{
 		this.hasAccount   = hasAccount ;
 		this.hasURL       = hasURL ;
 		this.name = name ;
 		this.id = Provider.providers.size() ;
+		this.canExecute = canExecute ;
+		this.canTest = canTest ;
+		this.hasHistory = hasHistory ;
+		if ( hasHistory )
+			this.history = true ;
+		this.mustInstall = mustInstall ;
 		Provider.names.add( name ) ;
 		Provider.providers.add( this ) ;
 	}
 	public int getID() { return this.id ; } ;
 	public String getName() { return this.name ; } ;
-	protected String getUserName() { return this.username ; } ;
-	protected String getPassword() { return this.password ; } ;
-	protected String getURL() { return this.url ; } ;
+	public String toString() { return this.name ; } ;
+	public String getURL() { return this.url ; } ;
+	public void setURL( final String url) { this.url = url; } ;
+	public String getUserName() { return this.username ; } ;
+	public void setUserName( final String name ) { this.username = name; } ;
+	public String getPassword() { return this.password ; } ;
+	public void setPassword( final String password) { this.password = password ; } ;
+	public int getTriggerAction() { return this.triggerAction ; } ;
+	public void setTriggerAction( int triggerAction ) { this.triggerAction = triggerAction ; } ;
+	public boolean getHistorie() { return this.history ; } ;
+	public void setHistorie( boolean history ) { this.history = history ; } ;
 	public boolean getMerge()   { return this.merge ; } ;
+	public void setMerge( boolean m)   { this.merge = m ; } ;
 	public boolean getVerbose() { return this.verbose ; } ;
+	public void setVerbose( boolean verbose) { this.verbose = verbose ; } ;
 	public boolean getMessage() { return this.message ; } ;
+	public void setMessage( boolean message) { this.message = message ; } ;
+	public boolean hasURL() { return this.hasURL ; } ;
+	public boolean hasAccount() { return this.hasAccount ; } ;
+	public boolean hasHistory() { return this.hasHistory ; } ;
+	public boolean canExecute() { return this.canExecute ; } ;
+	public boolean canTest() { return this.canTest ; } ;
+	public boolean mustInstall() { return this.mustInstall ; } ;
+	public boolean install()   { return true ; } ;
+	public boolean uninstall() { return true ; } ;
 	public void check()
 	{
 		if ( this.hasAccount && ( this.username == null || this.password == null ) )
@@ -58,6 +97,7 @@ public class Provider {
 		if ( this.hasURL && this.url == null )
 			throw new ErrorClass( "URL is missing" ) ;
 	}
+	public boolean test() { return false ; } ;
 	public static ArrayList< Provider > getProviders() { return Provider.providers ; } ;
 	public static boolean contains( String provider ){ return Provider.names.contains( provider ) ; } ;
 	public static Provider getProvider( String providerName )

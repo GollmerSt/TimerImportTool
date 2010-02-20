@@ -19,7 +19,7 @@ import dvbv.provider.Provider;
 public final class TVInfo extends Provider {	
 	public TVInfo()
 	{
-		super( true, true, "TVInfo" ) ;
+		super( true, true, "TVInfo", true, true, true, false ) ;
 	}
 	private String getMD5()
 	{
@@ -58,5 +58,31 @@ public final class TVInfo extends Provider {
 			throw new ErrorClass( e, "TVInfo data not available." );
 		}
 		return result ;
+	}
+	public boolean test()
+	{
+		InputStream i = null ;
+		try {
+			i = this.connect() ;
+		} catch (ErrorClass e ) {
+			return false ;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String comp = "<?xml version=\"1.0" ;
+		byte [] buffer = new byte[ 100 ] ; 
+		try {
+			i.read( buffer ) ;
+			i.close();
+		} catch (IOException e) {
+			return false ;
+		}
+		String content = new String( buffer, 0, comp.length() ) ;
+		if ( content.length() < comp.length())
+			return false ;
+		if ( ! content.equals( comp ) )
+			return false ;
+		return true ;
 	}
 }

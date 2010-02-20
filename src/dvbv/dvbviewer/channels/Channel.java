@@ -11,13 +11,17 @@ public class Channel {
 	private final Channels channels ;
 	private Tuner tuner = null ;
 	private String root ;
-	private String channelName ;
+	private String channelName = null ;
 	private String category ;
     private byte encrypted ;			// deprecated! Only set for compatibility. Same as TTuner.Flags.
     private byte reserved ;
-	Channel( Channels channels )
+	public Channel( Channels channels )
 	{
 		this.channels = channels ;
+	}
+	public Channel()
+	{
+		this.channels = null ;
 	}
 	public void read()
 	{
@@ -33,14 +37,17 @@ public class Channel {
 		this.encrypted = buffer.get() ;
 		this.reserved  = buffer.get();
 	}
-	String getChannelName() { return this.channelName ; } ;
-	String getChannelID()
+	public String getChannelName() { return this.channelName ; } ;
+	public String toString() { return this.channelName ; } ;
+	public String getChannelID()
 	{
+		if ( channelName == null )
+			return null ;
 		long id = ( this.tuner.getType() + 1 ) << 29 ;
 		id |= this.tuner.getAudioPID() << 16 ;
 		id |= this.tuner.getServiceID() ;
 		
 		return Long.toString( id ) + "|" + this.channelName ;
 	}
-	public boolean isVideo() { return this.tuner.isVideo() ; } ; 
+	public boolean isVideo() { return this.tuner.isVideo() ; } ;
 }

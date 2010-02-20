@@ -16,6 +16,11 @@ public class Channel {
 		this.type = type ;
 		this.name = name ;
 	}
+	public Channel( final Channel channel )
+	{
+		this.type = channel.type ;
+		this.name = channel.name ;
+	}
 	public int  getType() { return this.type ; } ;
 	public String getName() { return this.name ; } ;
 	public String getTypeName(){ return dvbv.provider.Provider.getProviderName( this.type) ; } ;

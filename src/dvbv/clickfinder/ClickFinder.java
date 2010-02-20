@@ -16,7 +16,7 @@ public class ClickFinder extends Provider {
 	private DVBViewer dvbViewer = null ;
 	public ClickFinder( DVBViewer dvbViewer )
 	{
-		super( false, false, "ClickFinder" ) ;
+		super( false, false, "ClickFinder", false, false, false, true ) ;
 		this.dvbViewer = dvbViewer ;
 	}
 	private String getParaInfo()
@@ -70,11 +70,11 @@ public class ClickFinder extends Provider {
 		this.dvbViewer.merge() ;
 	}
 	
-	public void putToRegistry( boolean setDataDir )
+	public boolean install() // boolean setDataDir )
 	{
 		String dataPathPara = "" ;
-		if ( setDataDir )
-			dataPathPara = " -path \"\"\"" + this.dvbViewer.getDataPath() + "\"\"\"";
+		//if ( setDataDir )
+		//	dataPathPara = " -path \"\"\"" + this.dvbViewer.getDataPath() + "\"\"\"";
 		String regContents = Registry.getValue( "HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost", "AddOns" ) ;
 		if ( regContents == null || ! regContents.contains("DVBViewer") )
 		{
@@ -95,8 +95,9 @@ public class ClickFinder extends Provider {
 		Registry.setValue("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ParameterFest", "-jar \"\"\""
 				           + this.dvbViewer.getExePath() + File.separator + this.dvbViewer.getExeName()
 				           + "\"\"\" -ClickFinder" + dataPathPara ) ;
+		return true ;
 	}
-	 public void removeFromRegistry()
+	 public boolean uninstall()
 	{
 		String regContents = Registry.getValue( "HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost", "AddOns" ) ;
 		if ( regContents != null && regContents.contains("DVBViewer") )
@@ -113,5 +114,6 @@ public class ClickFinder extends Provider {
 
 			Registry.delete("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "" ) ;
 		}
+		return true ;
 	}
 }

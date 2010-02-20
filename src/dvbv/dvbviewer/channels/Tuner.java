@@ -35,7 +35,7 @@ public class Tuner {
 	private short lnbNB_LOF ;			// Word:  DVB-S only, local oscillator frequency of the LNB
 	private short pmtPID ;				// Word
 	private byte  volume ;				// Byte
-	private byte  reserved1 ;			// Word
+	private byte  reserved1 ;			// Byte
 	private byte  satModulation ;		// Bit 0..1: modulation. 0 = Auto, 1 = QPSK, 2 = 8PSK, 3 = 16QAM
 										// Bit 2: modulation system. 0 = DVB-S, 1 = DVB-S2
 										// Bit 3..4: roll-off. 0 = 0.35, 1 = 0.25, 2 = 0.20, 3 = reserved
@@ -92,8 +92,8 @@ public class Tuner {
 										// 4 = PosB/OptA
 										// 5  =PosA/OptB
 										// 6 = PosB/OptB
-	private TTunerLanguage language ;	// array [0..2] of char (byte)
-	private short reserved8 ; 			// Word
+	private TTunerLanguage language = new TTunerLanguage() ;
+										// array [0..2] of char (byte)
 	private short audioPID ; 			// Word;
 	private short reserved9 ; 			// Word;
 	private short videoPID ; 			// Word;
@@ -134,7 +134,6 @@ public class Tuner {
 		this.diSEqCExt           = buffer.getShort() ;
 		this.diSEqC              = buffer.get() ;
 		this.language             .read( buffer ) ;
-		this.reserved8           = buffer.getShort() ;
 		this.audioPID            = buffer.getShort() ;
 		this.reserved9           = buffer.getShort() ;
 		this.videoPID            = buffer.getShort() ;
