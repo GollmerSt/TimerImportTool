@@ -12,7 +12,9 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteOrder;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.TreeMap;
 
 import dvbv.dvbviewer.DVBViewer;
@@ -69,7 +71,7 @@ public class Channels {
 			if ( stringLength >= fieldLength )
 				this.throwErrorWrongVersion() ;
 						
-			this.buffer.get( buffer, 0, stringLength ) ;
+			this.buffer.get( buffer, 0, fieldLength - 1 ) ;
 			
 		} catch ( BufferUnderflowException e ) {
 			throwErrorWrongVersion() ;
@@ -142,12 +144,16 @@ public class Channels {
 			throw new ErrorClass( "Unexpected error on reading \"" + this.file.getAbsolutePath() );
 		}
 		
-		//Collection<Channel> values = this.channelMap.values() ;
-		
-		//for ( Iterator<Channel> it = values.iterator() ; it.hasNext(); )
-		//{
-		//	System.out.println(" ChannelID: " + it.next().getChannelID() ) ;
-		//}
+		boolean debug = false ;
+		if ( debug )
+		{
+			Collection<Channel> values = this.channelMap.values() ;
+			
+			for ( Iterator<Channel> it = values.iterator() ; it.hasNext(); )
+			{
+				System.out.println(" ChannelID: " + it.next().getChannelID() ) ;
+			}
+		}
 		try {
 			this.fileChannel.close() ;
 		} catch (IOException e) {
