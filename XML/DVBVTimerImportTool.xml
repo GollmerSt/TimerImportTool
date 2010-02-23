@@ -1,291 +1,220 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
-	<Providers>
-	    <Provider name="TVInfo"
-        	username="DVBViewerImport"
-        	password="TimerImportTool"
-        	triggeraction="16640"
-        	verbose="true"
-        	message="false"
-        	merge="true">
-        	<Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
-    	</Provider>
-	    <Provider name="ClickFinder"
-        	verbose="true"
-        	message="true"
-        	merge="false">
-    	</Provider>
+    <Providers>
+        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="true" message="false" verbose="true">
+            <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
+        </Provider>
+        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true"></Provider>
     </Providers>
-    <DVBService
-        url="localhost:50425"
-        username="admin"
-        password="admin"
-        timeZone="Europe/Berlin">
+    <DVBService enable="true" url="localhost:50425" username="admin" password="admin" timeZone="Europe/Berlin">
+        <WakeOnLAN enable="false" broadCastAddress="192.168.0.255" macAddress="00:1F:D0:20:CB:3A" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
-    	<DefaultProvider>TVInfo</DefaultProvider>
+        <DefaultProvider>TVInfo</DefaultProvider>
+        <Language>de</Language>
     </GUI>
     <Offsets>
-        <Offset before="15"/>
-        <Offset after="30"/>
+        <Offset before="15" after="30"></Offset>
     </Offsets>
     <Separator>,,</Separator>
     <Channels>
         <Channel>
             <Provider name="TVInfo">ARD</Provider>
             <Provider name="ClickFinder">ARD</Provider>
-            <DVBViewer>543583690|Das Erste (deu)</DVBViewer>
-            <Offsets>
-                <Offset after="60" days="0000011" begin="22:00"/>
-                <Offset after="60" days="1000001" begin="00:00" end="04:00"/>
-            </Offsets>
             <Merge>false</Merge>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDF</Provider>
             <Provider name="ClickFinder">ZDF</Provider>
-            <DVBViewer>544763238|ZDF (deu)</DVBViewer>
-            <Offsets>
-                <Offset after="60" days="0000011" begin="22:00"/>
-                <Offset after="60" days="1000001" begin="00:00" end="04:00"/>
-            </Offsets>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Bayern</Provider>
             <Provider name="ClickFinder">B3</Provider>
-            <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">HR</Provider>
             <Provider name="ClickFinder">H3</Provider>
-            <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">WDR</Provider>
             <Provider name="ClickFinder">WDR</Provider>
-            <DVBViewer>576351695|WDR Köln</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SWR</Provider>
             <Provider name="ClickFinder">SWR</Provider>
-            <DVBViewer>740191815|SWR Fernsehen RP</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MDR</Provider>
             <Provider name="ClickFinder">MDR</Provider>
-            <DVBViewer>727150150|MDR Thüringen (2ch)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NDR</Provider>
             <Provider name="ClickFinder">NDR</Provider>
-            <DVBViewer>707423809|NDR FS HH (2ch)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RBB</Provider>
             <Provider name="ClickFinder">RBB</Provider>
-            <DVBViewer>576351790|rbb Berlin</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Ki.Ka</Provider>
             <Provider name="ClickFinder">Ki.Ka</Provider>
-            <DVBViewer>557870440|KiKa</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">3sat</Provider>
             <Provider name="ClickFinder">3SAT</Provider>
-            <DVBViewer>551316839|3sat (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SR</Provider>
-            <DVBViewer>622227270|SR Fernsehen</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Alpha</Provider>
             <Provider name="ClickFinder">BR Alpha</Provider>
-            <DVBViewer>628780871|BR-alpha</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF2</Provider>
             <Provider name="ClickFinder">ORF 2</Provider>
-            <DVBViewer>747962478|ORF2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Tele 5</Provider>
             <Provider name="ClickFinder">Tele5</Provider>
-            <DVBViewer>637534319|TELE 5</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sat1</Provider>
             <Provider name="ClickFinder">SAT1</Provider>
-            <DVBViewer>553665628|SAT.1</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Kabel1</Provider>
             <Provider name="ClickFinder">Kabel</Provider>
-            <DVBViewer>587220062|kabel eins</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Pro7</Provider>
             <Provider name="ClickFinder">PRO7</Provider>
-            <DVBViewer>570442845|ProSieben</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL</Provider>
             <Provider name="ClickFinder">RTL</Provider>
-            <DVBViewer>543698659|RTL Television</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL2</Provider>
             <Provider name="ClickFinder">RTL II</Provider>
-            <DVBViewer>545271540|RTL2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Super RTL</Provider>
             <Provider name="ClickFinder">S RTL</Provider>
-            <DVBViewer>544747272|Super RTL</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VOX</Provider>
             <Provider name="ClickFinder">VOX</Provider>
-            <DVBViewer>545795868|VOX</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">arte</Provider>
             <Provider name="ClickFinder">Arte</Provider>
-            <DVBViewer>563245108|arte (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Das Vierte</Provider>
             <Provider name="ClickFinder">Das Vierte</Provider>
-            <DVBViewer>671088743|DAS VIERTE</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">9 Live</Provider>
             <Provider name="ClickFinder">9Live</Provider>
-            <DVBViewer>620774496|9Live</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">BBC</Provider>
             <Provider name="ClickFinder">BBC</Provider>
-            <DVBViewer>542900425|BBC World</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">BloombergTV</Provider>
             <Provider name="ClickFinder">BloombergTV</Provider>
-            <DVBViewer>629932133|Bloomberg German TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CNBC</Provider>
-            <DVBViewer>557056202|CNBC Europe</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CNN</Provider>
             <Provider name="ClickFinder">CNN</Provider>
-            <DVBViewer>543424715|CNN Int.</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Comedy Central</Provider>
             <Provider name="ClickFinder">Comedy Central</Provider>
-            <DVBViewer>803733606|COMEDY CENTRAL Germany</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DSF</Provider>
             <Provider name="ClickFinder">DSF</Provider>
-            <DVBViewer>603979880|DSF</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsExtra</Provider>
             <Provider name="ClickFinder">EinsExtra</Provider>
-            <DVBViewer>543584305|EinsExtra</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsFestival</Provider>
             <Provider name="ClickFinder">EinsFestival</Provider>
-            <DVBViewer>550137906|EinsFestival</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsPlus</Provider>
             <Provider name="ClickFinder">EinsMuXx</Provider>
-            <DVBViewer>556691507|EinsPlus</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">N24</Provider>
             <Provider name="ClickFinder">N24</Provider>
-            <DVBViewer>603997279|N24</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">n-tv</Provider>
             <Provider name="ClickFinder">NTV</Provider>
-            <DVBViewer>541667130|n-tv</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Phoenix</Provider>
             <Provider name="ClickFinder">Phoenix</Provider>
-            <DVBViewer>569798709|Phoenix</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EuroNews</Provider>
             <Provider name="ClickFinder">EURONEWS</Provider>
-            <DVBViewer>696320204|EuroNews (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Eurosport</Provider>
             <Provider name="ClickFinder">EUROSPORT</Provider>
-            <DVBViewer>543621325|Eurosport</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Home Shopping Europe</Provider>
             <Provider name="ClickFinder">Home Shopping Europe</Provider>
-            <DVBViewer>620757198|HSE</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV</Provider>
             <Provider name="ClickFinder">MTV</Provider>
-            <DVBViewer>801112170|MTV Germany</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">münchen 2</Provider>
             <Provider name="ClickFinder">münchen 2</Provider>
-            <DVBViewer>550109291|Muenchen2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">münchen.tv</Provider>
-            <DVBViewer>539295852|MuenchenTV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Nick</Provider>
             <Provider name="ClickFinder">Nick</Provider>
-            <DVBViewer>805699693|NICK Germany</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTLSHOP</Provider>
             <Provider name="ClickFinder">RTL Shop</Provider>
-            <DVBViewer>545861424|RTL Shop</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TRT</Provider>
             <Provider name="ClickFinder">TRT</Provider>
-            <DVBViewer>83598289|TRT Int. - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VIVA</Provider>
             <Provider name="ClickFinder">VIVA</Provider>
-            <DVBViewer>803078256|VIVA Germany</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDFinfokanal</Provider>
             <Provider name="ClickFinder">ZDFInfo</Provider>
-            <DVBViewer>577531243|ZDFinfokanal</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDFtheaterkanal</Provider>
             <Provider name="ClickFinder">ZDF Theaterkanal</Provider>
-            <DVBViewer>610299248|ZDFtheaterkanal</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDF_neo</Provider>
             <Provider name="ClickFinder">ZDFneo</Provider>
-            <DVBViewer>580808046|ZDFdokukanal (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">13th Street</Provider>
@@ -440,7 +369,6 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">OTV</Provider>
-            <Provider name="ClickFinder">BBBBB</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Planet</Provider>

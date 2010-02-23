@@ -43,7 +43,6 @@ public final class AllTVInfoRecordings
 	private int syncs = 0;
 	private String dataDirectory = null ;
 	private DVBViewer dvbViewer = null ;
-	@SuppressWarnings("unchecked")
 	public AllTVInfoRecordings( DVBViewer dvbViewer, int days, int syncs )
 	{
 		this.map           = new HashMap<String,TVInfoRecording> ();
@@ -53,15 +52,16 @@ public final class AllTVInfoRecordings
 		this.syncs         = syncs ;
 		this.dataDirectory = dvbViewer.getDataPath() ;
 		
-		Stack<String> p1 = new Stack<String>() ;
-		Collections.addAll( p1, "TVInfoProcessed", "entry" ) ;
-		this.xmlPath = p1 ;
-		Stack<String> p2 = new Stack<String>() ;
-		Collections.addAll( p2, "epg_schedule", "epg_schedule_entry" ) ;
-		this.xmlPathTVinfoEntry = p2 ;
-		Stack<String> p3 = (Stack<String>)p2.clone();
-		p3.push("title");
-		this.xmlPathTVinfoTitle = p3 ;
+		Stack<String> p ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "TVInfoProcessed", "entry" ) ;
+		this.xmlPath = p ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "epg_schedule", "epg_schedule_entry" ) ;
+		this.xmlPathTVinfoEntry = p ;
+		p = new Stack<String>() ;
+		Collections.addAll( p, "epg_schedule", "epg_schedule_entry", "title");
+		this.xmlPathTVinfoTitle = p ;
 	}
 	private boolean add( String tvInfoID,
 			         String channel,

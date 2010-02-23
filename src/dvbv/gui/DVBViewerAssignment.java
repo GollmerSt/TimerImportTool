@@ -31,8 +31,10 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import dvbv.Resources.ResourceManager;
 import dvbv.control.ChannelSet;
 import dvbv.control.Channel;
+import dvbv.control.TimeOffsets;
 import dvbv.provider.Provider;
 
 
@@ -40,9 +42,11 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private static final long serialVersionUID = 124706451716532907L;
 	private final GUI parent ;
 	private final dvbv.dvbviewer.channels.Channels dvbViewerChannels ;
-	private JComboBox providerCombo = new JComboBox() ;
-	private JList providerChannelList = new JList( new DefaultListModel() ) ;
-	private JComboBox dvbViewerCombo = new JComboBox() ;
+	private final JComboBox providerCombo = new JComboBox() ;
+	private final JList providerChannelList = new JList( new DefaultListModel() ) ;
+	private final JComboBox dvbViewerCombo = new JComboBox() ;
+	private final JButton channelOffsetButton = new JButton() ;
+	private final JButton globalOffsetButton = new JButton() ;
 	private final JComboBox mergeCombo = new JComboBox() ;
 	private TreeMap< String, Integer > dvbViewerChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
 	private boolean ignoreNextDVBViewerChannelChange = false ;
@@ -74,9 +78,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 		 * 
 		 */
 		private static final long serialVersionUID = -224601712240775345L;
-		private ImageIcon active   = ResourceManager.createImageIcon( "Icons/dvbViewer16.png", "DVBViewer icon" ) ;
-	    private ImageIcon inactive   = ResourceManager.createImageIcon( "Icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
-	    private ImageIcon unknown   = ResourceManager.createImageIcon( "Icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
+		private ImageIcon offsets   = ResourceManager.createImageIcon( "icons/dvbViewer Red16.png", "DVBViewer icon" ) ;
+		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
+	    private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
+	    private ImageIcon unknown   = ResourceManager.createImageIcon( "icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
 	    
 	    public SpecialCellRenderer()
 	    {
@@ -97,6 +102,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        if ( channelSet.getDVBViewerChannel() != null )
 	        {
 	        	if ( dvbViewerChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
+	        		if ( channelSet.getTimeOffsets().size() > 0 )
+	        			this.setIcon( this.offsets ) ;
+	        		else
 	        			this.setIcon( this.active ) ;
 	        	else 
         			this.setIcon( this.unknown ) ;
@@ -161,6 +169,32 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        JComboBox cb = (JComboBox)e.getSource();
 	        csa.channelSet.setMerge( dvbv.misc.Enums.Merge.values()[ cb.getSelectedIndex() ] ) ;
 	    }
+	}
+	public class OffsetButtonsPressed implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e ) {
+			JButton source = (JButton)e.getSource() ;
+			TimeOffsets offsets = null ;
+			int line = -1 ;
+			DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
+			ChannelSetAssignment csa = null ;
+			if ( source == channelOffsetButton )
+			{
+				line = providerChannelList.getSelectedIndex() ;
+				if ( line < 0 )
+					return ;
+				csa = (ChannelSetAssignment)model.getElementAt( line ) ;
+				offsets = csa.channelSet.getTimeOffsets() ;
+			}
+			else if ( source == globalOffsetButton )
+				offsets = TimeOffsets.getGeneralTimeOffsets() ;
+			new OffsetsDialog( frame, offsets ) ;
+			if ( csa != null )
+				model.setElementAt( csa, line ) ;
+		}
+		
 	}
 	public DVBViewerAssignment( GUI parent, dvbv.dvbviewer.channels.Channels dChannels )
 	{
@@ -273,10 +307,11 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.weighty    = 0.5 ;
 		c.insets     = i ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		JButton offsets = new JButton( GUIStrings.offsets() ) ;
-		channelPane.add( offsets, c ) ;
+		this.channelOffsetButton.setText( GUIStrings.offsets() ) ;
+		this.channelOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
+		channelPane.add( this.channelOffsetButton, c ) ;
 		
 
 		
@@ -321,19 +356,21 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.add( channelPane, c ) ;
 		
 		
-		JButton globalOffsets = new JButton( GUIStrings.globalOffsets() ) ;
 		
 		c = new GridBagConstraints();
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.gridx      = 1 ;
 		c.gridy      = 2 ;
 		c.weighty    = 0.5 ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTH ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
 //		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.insets     = i ;
 //		c.insets     = new Insets( 40, 5, 5, 5 ); ;
 
-		this.add( globalOffsets, c ) ;
+		this.globalOffsetButton.setText( GUIStrings.globalOffsets() ) ;
+		this.globalOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
+		this.add( this.globalOffsetButton, c ) ;
 		
 		this.providerCombo.setSelectedItem( Provider.getProvider( control.getDefaultProvider() ) ) ;
 		
@@ -349,14 +386,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 		for ( Iterator< ChannelSet > itS = sets.iterator() ; itS.hasNext(); )
 		{
 			ChannelSet channelSet = itS.next() ;
-			ArrayList<Channel> channels = channelSet.getChannels() ;
-			for ( Iterator< Channel> itC = channels.iterator() ; itC.hasNext() ; )
-			{
-				Channel c = itC.next();
-				if ( c.getType() != providerID )
-					continue ;
-				channelMap.put( c.getName(), channelSet ) ;
-			}
+			Channel c = channelSet.getChannel( providerID ) ;
+			if ( c == null )
+				continue ;
+			channelMap.put( c.getName(), channelSet ) ;
 		}
 		
 		DefaultListModel map = (DefaultListModel) this.providerChannelList.getModel() ;

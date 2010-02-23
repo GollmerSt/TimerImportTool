@@ -129,7 +129,6 @@ public abstract class Provider {
 		stack.push( "Providers" ) ;
 		XMLEvent ev = null ;
 
-		String url = "" ;
 		Provider provider = null ;
 				
 		while( reader.hasNext() )
@@ -153,8 +152,8 @@ public abstract class Provider {
 					boolean verbose = false ;
 					boolean message = false ;
 					boolean merge = false ;
-					url = "" ;
 					
+					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 					
 					while ( iter.hasNext() )

@@ -18,7 +18,7 @@ public final class Conversions {
 	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static long dayTimeOrigin = Conversions.calcSvcTimeCorrection() ;
 	
-	private static long calcSvcTimeCorrection()
+	static long calcSvcTimeCorrection()
 	{
 		long result = 0 ;
 		try {
@@ -88,6 +88,8 @@ public final class Conversions {
 	}
 	public static String longTodayTime( long d ) throws ParseException
 	{
+		if ( d == Constants.DAYMILLSEC )
+			return "24.00" ;
 		Date dt = new Date( d + dayTimeOrigin ) ;
 		//System.out.println( "dayTimeToLong: "+ Long.toString( t ) ) ;
 		return Conversions.dayTimeFormat.format(  dt ) ;

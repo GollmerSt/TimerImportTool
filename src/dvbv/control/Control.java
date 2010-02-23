@@ -5,17 +5,25 @@
 package dvbv.control ;
 
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
+import dvbv.gui.GUIStrings;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
+import javax.swing.JOptionPane;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -25,6 +33,7 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import dvbv.Resources.ResourceManager;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.dvbviewer.DVBViewerService ;
 import dvbv.misc.* ;
@@ -39,19 +48,21 @@ public class Control
 		                     GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
 	private DVBViewer dvbViewer = null ;
-	private final Stack<String> pathProviders ;
-	private final Stack<String> pathService ;
-	private final Stack<String> pathGlobalOffsets ;
-	private final Stack<String> pathChannel ;
-	private final Stack<String> pathChannelOffsets ;
-	private final Stack<String> pathChannelProvider ;
-	private final Stack<String> pathChannelDVBViewer ;
-	private final Stack<String> pathChannelMerge ;
-	private final Stack<String> pathSeparator ;
-	private final Stack<String> pathWOL ;
-	private final Stack<String> pathDefaultProvider ;
+	private final Stack<String> pathProviders			= new Stack<String>() ;
+	private final Stack<String> pathService				= new Stack<String>() ;
+	private final Stack<String> pathGlobalOffsets		= new Stack<String>() ;
+	private final Stack<String> pathChannel				= new Stack<String>() ;
+	private final Stack<String> pathChannelOffsets		= new Stack<String>() ;
+	private final Stack<String> pathChannelProvider		= new Stack<String>() ;
+	private final Stack<String> pathChannelDVBViewer	= new Stack<String>() ;
+	private final Stack<String> pathChannelMerge		= new Stack<String>() ;
+	private final Stack<String> pathSeparator			= new Stack<String>() ;
+	private final Stack<String> pathWOL					= new Stack<String>() ;
+	private final Stack<String> pathDefaultProvider		= new Stack<String>() ;
+	private final Stack<String> pathLanguage			= new Stack<String>() ;
 	
 	private String defaultProvider = null ;
+	private String language = "" ;
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
@@ -64,61 +75,47 @@ public class Control
 		new dvbv.clickfinder.ClickFinder( dvbViewer ) ;
 		dvbViewer.setProvider() ;
 		
-		Stack<String> p = null ;
+		Collections.addAll( this.pathProviders, "Importer", "Providers" ) ;
 		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Providers" ) ;
-		this.pathProviders = p ;
-		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "DVBService" ) ;
-		this.pathService = p ;
+		Collections.addAll( this.pathService, "Importer", "DVBService" ) ;
 
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Offsets", "Offset" ) ;
-		this.pathGlobalOffsets = p ;
+		Collections.addAll( this.pathGlobalOffsets, "Importer", "Offsets", "Offset" ) ;
 
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Channels", "Channel" ) ;
-		this.pathChannel = p ;
+		Collections.addAll( this.pathChannel, "Importer", "Channels", "Channel" ) ;
 
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
-		this.pathChannelOffsets = p ;
+		Collections.addAll( this.pathChannelOffsets, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
 
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Channels", "Channel", "Provider" ) ;
-		this.pathChannelProvider = p ;
+		Collections.addAll( this.pathChannelProvider, "Importer", "Channels", "Channel", "Provider" ) ;
 
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Channels", "Channel", "DVBViewer" ) ;
-		this.pathChannelDVBViewer = p ;
+		Collections.addAll( this.pathChannelDVBViewer, "Importer", "Channels", "Channel", "DVBViewer" ) ;
 		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer", "Channels", "Channel", "Merge" ) ;
-		this.pathChannelMerge = p ;
+		Collections.addAll( this.pathChannelMerge, "Importer", "Channels", "Channel", "Merge" ) ;
 		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer",  "Separator" ) ;
-		this.pathSeparator = p ;
+		Collections.addAll( this.pathSeparator, "Importer",  "Separator" ) ;
 		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer",  "DVBService", "WakeOnLAN" ) ;
-		this.pathWOL = p ;
+		Collections.addAll( this.pathWOL, "Importer",  "DVBService", "WakeOnLAN" ) ;
 		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Importer",  "GUI", "DefaultProvider" ) ;
-		this.pathDefaultProvider = p ;
+		Collections.addAll( this.pathDefaultProvider, "Importer",  "GUI", "DefaultProvider" ) ;
 		
+		Collections.addAll( this.pathLanguage, "Importer",  "GUI", "Language" ) ;
 		
 		this.read() ;
 	}
-	@SuppressWarnings("unchecked")
 	public void read()
 	{	
 		File f = new File( this.dvbViewer.getPluginConfPath()
 		          + File.separator
 		          + NAME_XML_CONTROLFILE ) ;
+		if ( ! f.exists() )
+		{
+			int answer = JOptionPane.showConfirmDialog( null,
+					GUIStrings.copyDefaultControlFile(), 
+			        Constants.PROGRAM_NAME, 
+			        JOptionPane.OK_CANCEL_OPTION );
+			if ( answer == JOptionPane.CANCEL_OPTION )
+				System.exit( 1 ) ;
+			this.createDefaultXML( f ) ;
+		}
 		if ( ! f.canRead() )
 			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -163,6 +160,7 @@ public class Control
 			if( ev.isStartElement() )
 			{
 				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
+				@SuppressWarnings("unchecked")
 				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 				BlockType type = BlockType.INVALID ;
 				if ( stack.equals( this.pathProviders ) )
@@ -297,6 +295,11 @@ public class Control
 						this.separator = data ;
 					else if ( stack.equals( this.pathDefaultProvider ) )
 						this.defaultProvider = data ;
+					else if ( stack.equals( this.pathLanguage ) )
+					{
+						this.language = data ;
+						GUIStrings.setLanguage( data ) ;
+					}
 				}					
 			}					
 	        if( ev.isEndElement() )
@@ -371,6 +374,12 @@ public class Control
 				  sw.writeCharacters( this.defaultProvider ) ;
 				  sw.writeEndElement() ;
 			  }
+			  if ( ! this.language.equals( "" ) )
+			  {
+				  sw.writeStartElement( "Language" ) ;
+				  sw.writeCharacters( this.language ) ;
+				  sw.writeEndElement() ;
+			  }
 			  sw.writeEndElement() ;
 			  
 			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
@@ -414,6 +423,31 @@ public class Control
 	}
 	public String getDefaultProvider() { return this.defaultProvider ; } ;
 	public void setDefaultProvider( String defaultProvider ) { this.defaultProvider = defaultProvider ; } ;
+	public String getLanguage() { return this.language ; } ;
+	public void setLanguage( String language ) { this.language = language ; } ;
+	public String getSeparator() { return this.separator ; } ;
+	public void setSeparator( String separator ) { this.separator = separator ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
+	private void createDefaultXML( File f )
+	{
+		InputStream is = ResourceManager.createInputStream( "datafiles/DVBVTimerImportTool.xml" ) ;
+		
+		BufferedReader bufR = new BufferedReader( new InputStreamReader( is ) ) ;
+		
+		FileWriter fstream = null ;
+		try {
+			fstream = new FileWriter( f, true );
+			BufferedWriter bufW = new BufferedWriter( fstream ) ;
+		
+			String line = null ;
+		
+			while ( ( line = bufR.readLine() ) != null )
+				bufW.write( line ) ;
+			bufR.close() ;
+			bufW.close() ;
+		} catch (IOException e) {
+			throw new ErrorClass( "Unexpected error on writing default XML control file" );
+		}
+	}
 }

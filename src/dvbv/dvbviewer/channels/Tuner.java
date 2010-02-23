@@ -6,6 +6,8 @@ package dvbv.dvbviewer.channels;
 
 import java.nio.MappedByteBuffer;
 
+@SuppressWarnings("unused")
+
 
 public class Tuner {
 	class TTunerLanguage

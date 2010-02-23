@@ -2,9 +2,13 @@
 // $LastChangedRevision: 79 $
 // $LastChangedBy: Stefan Gollmer $
 
-package dvbv.gui;
+package dvbv.Resources;
+
+import java.io.InputStream;
 
 import javax.swing.ImageIcon;
+
+import dvbv.misc.ErrorClass;
 
 public class ResourceManager {
 	private static ResourceManager rsc = new ResourceManager() ;
@@ -15,9 +19,21 @@ public class ResourceManager {
     	if ( imgURL != null )
     		return new ImageIcon(imgURL, description);
     	else
+    		throw new ErrorClass( "Package error: Icon file \"" + path + "\" not found" ) ;
+    }
+    public static InputStream createInputStream( String path )
+    {
+    	InputStream inputStream = null;
+    	try
     	{
-    		System.err.println("Couldn't find file: " + path);
-    		return null;
-    	}
+    		inputStream = rsc.getClass().getResourceAsStream( path ) ;
+    	} catch (Exception e) {
+    	      e.printStackTrace();
+        }
+    	
+    	if ( inputStream == null )
+    		throw new ErrorClass( "Package error: File \"" + path + "\" not found" ) ;
+
+    	return inputStream ;
     }
 }

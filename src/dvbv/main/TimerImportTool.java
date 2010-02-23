@@ -5,8 +5,6 @@
 package dvbv.main ;
 
 
-import java.util.concurrent.Semaphore;
-
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -25,10 +23,14 @@ import dvbv.gui.GUI.GUIStatus;
 public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER } ;
-	private enum InstallMode{ NONE, INSTALL, DEINSTALL } ;
 	public static void main(String[] args) {
 		
-		GUIStrings.setLanguage( GUIStrings.Language.GERMAN ) ;
+		String language = System.getProperty( "user.language" ) ;
+		System.out.println( language ) ;
+		
+		
+		
+		GUIStrings.setLanguage( "" ) ;
 
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -50,7 +52,6 @@ public final class TimerImportTool {
 		}
 		
 		ImportType type    = ImportType.GUI ;
-		InstallMode install = InstallMode.NONE ;
 		boolean showMessageBox = false ;
 
 		Provider provider = null ;
@@ -72,10 +73,6 @@ public final class TimerImportTool {
 					type = ImportType.CLICKFINDER ;
 				else if ( args[i].equalsIgnoreCase("-TVInfo") )
 					type = ImportType.TVINFO ;
-				else if ( args[i].equalsIgnoreCase("-install") )
-					install = InstallMode.INSTALL ;
-				else if ( args[i].equalsIgnoreCase("-deinstall") )
-					install = InstallMode.DEINSTALL ;
 				else if ( args[i].equalsIgnoreCase("-message") )
 					showMessageBox = true ;
 				else if ( args[i].equalsIgnoreCase("-path") )
@@ -161,19 +158,8 @@ public final class TimerImportTool {
 			else if ( provider == Provider.getProvider( "ClickFinder" ))
 			{
 				ClickFinder click = (ClickFinder) provider ;
-				switch ( install )
-				{
-					case NONE :
-						click.processEntry( args ) ;
-						dvbViewer.setDVBViewerTimers();
-						break ;
-					case INSTALL :
-						click.install( ) ; //dataPath != null ) ;
-						break ;
-					case DEINSTALL :
-						click.uninstall() ;
-						break ;
-				}
+				click.processEntry( args ) ;
+				dvbViewer.setDVBViewerTimers();
 			}
 		} catch (ErrorClass e) {
 			Log.error(e.getLocalizedMessage());
@@ -193,7 +179,7 @@ public final class TimerImportTool {
 		else
 		{
 			Log.out( "Import successfull finished" ) ;
-			if ( showMessageBox || install != InstallMode.NONE )
+			if ( showMessageBox )
 				JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status", JOptionPane.INFORMATION_MESSAGE);
 		}
 		System.exit(0);

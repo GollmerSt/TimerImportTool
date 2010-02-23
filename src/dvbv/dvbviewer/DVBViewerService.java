@@ -15,7 +15,6 @@ import java.net.MalformedURLException;
 import java.net.PasswordAuthentication;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -30,7 +29,6 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.stream.StreamSource;
 
 import dvbv.misc.* ;
 
@@ -267,7 +265,6 @@ public class DVBViewerService {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( iS );
 			Stack<String>   stack = new Stack<String>() ;
 			
-			boolean enable     = true ;
 			String channel     = null;
 			String dateString  = null ;
 			String startString = null ;
@@ -297,6 +294,7 @@ public class DVBViewerService {
 					else if ( stack.equals( this.pathChannel ) )
 						type = 2 ;
 
+					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 					while( iter.hasNext() )
 					{

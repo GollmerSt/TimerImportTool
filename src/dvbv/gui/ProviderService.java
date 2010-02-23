@@ -730,6 +730,9 @@ public class ProviderService extends MyTabPanel {
 	public void update()
 	{
 		this.updateLockBox() ;
+		this.updateProvider() ;
+		this.updateService() ;
+		
 	}
 	
 }

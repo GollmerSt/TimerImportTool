@@ -10,11 +10,7 @@ public class Channel {
 	public static final int ENTRY_LENGTH = Tuner.ENTRY_LENGTH + 26 * 3 + 2 ;
 	private final Channels channels ;
 	private Tuner tuner = null ;
-	private String root ;
 	private String channelName = null ;
-	private String category ;
-    private byte encrypted ;			// deprecated! Only set for compatibility. Same as TTuner.Flags.
-    private byte reserved ;
 	public Channel( Channels channels )
 	{
 		this.channels = channels ;
@@ -28,14 +24,14 @@ public class Channel {
 		this.tuner = new Tuner( channels ) ;
 		this.tuner.read();
 		
-		this.root        = channels.readString( 26 ) ;
+		channels.readString( 26 );
 		this.channelName = channels.readString( 26 ) ;
-		this.category    = channels.readString( 26 ) ;
+		channels.readString( 26 );
 
 		MappedByteBuffer buffer = channels.getMappedByteBuffer() ;
 
-		this.encrypted = buffer.get() ;
-		this.reserved  = buffer.get();
+		buffer.get();
+		buffer.get();
 	}
 	public String getChannelName() { return this.channelName ; } ;
 	public String toString() { return this.channelName ; } ;

@@ -14,20 +14,28 @@ import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
 
 
-public class OffsetEntry {
+public class OffsetEntry implements Cloneable {
 	private static final String[] ATTRIBUTES = { "before", "after" } ;
-	private final long[] minutes ;
+	private final int[] minutes ;
 	private final boolean[] weekdays ;
-	private final long start ;
-	private final long end ;
+	private final long[] times  = new long[ 2 ] ;
 	
+	public OffsetEntry()
+	{
+		this.minutes = new int[2] ;
+		this.minutes[0] = -1 ;
+		this.minutes[1] = -1 ;
+		this.weekdays = new boolean[7] ;
+		this.times[0] = 0;
+		this.times[1] = Constants.DAYMILLSEC ;
+	}
 	public OffsetEntry( String preMinuteString, 
 						String postMinuteString, 
 						String weekdaysString,
 						String startTime,
 						String endTime )
 	{
-		long[] minutes = { -1, -1 } ;
+		int[] minutes = { -1, -1 } ;
 		String [] minuteStrings = { preMinuteString, postMinuteString } ;
 		for ( int ix = 0 ; ix < 2 ; ix++ )
 		{
@@ -59,23 +67,35 @@ public class OffsetEntry {
 		this.weekdays = w ;
 		if ( startTime.length() != 0 )
 			try {
-				this.start = Conversions.dayTimeToLong( startTime ) ;
+				this.times[0] = Conversions.dayTimeToLong( startTime ) ;
 			} catch (ParseException e) {
 				throw new ErrorClass("Illegal begin time (must be hh:mm)") ;
 			}
 		else
-			this.start = 0 ;
+			this.times[0] = 0 ;
 
 		if ( endTime.length() != 0 )
 			try {
-				this.end = Conversions.dayTimeToLong( endTime ) ;
+				this.times[1] = Conversions.dayTimeToLong( endTime ) ;
 			} catch (ParseException e) {
 				throw new ErrorClass("Illegal end time (must be hh:mm)") ;
 			}
 		else
-			this.end = Constants.DAYMILLSEC ;
+			this.times[1] = Constants.DAYMILLSEC ;
 	}
-	public long[] getMinutes() { return this.minutes ; } ;
+	@Override
+	public OffsetEntry clone()
+	{
+		OffsetEntry clonedOffset = new OffsetEntry() ;
+		clonedOffset.minutes[0] = this.minutes[0] ;
+		clonedOffset.minutes[1] = this.minutes[1] ;
+		for ( int ix = 0 ; ix < 7 ; ix++ )
+			clonedOffset.weekdays[ ix ] = this.weekdays[ ix ] ;
+		clonedOffset.times[0] = this.times[0] ;
+		clonedOffset.times[1] = this.times[1] ;
+		return clonedOffset ;
+	}
+	public int[] getMinutes() { return this.minutes ; } ;
 	public boolean isInTimeRange( long time )
 	{
 		GregorianCalendar cal = new GregorianCalendar();
@@ -90,7 +110,7 @@ public class OffsetEntry {
 		cal.set( java.util.Calendar.MILLISECOND  , 0) ;
 		long dayTime = time - cal.getTime().getTime();
 		//System.out.println(  dayTime ) ;
-		return dayTime >= start && dayTime <= end ;
+		return dayTime >= times[0] && dayTime <= times[1] ;
 	}
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
 	{
@@ -109,11 +129,13 @@ public class OffsetEntry {
 		  if ( ! weekdays.equals( "1111111" ) )
 			  sw.writeAttribute( "days", weekdays) ;
 		  
-		  if ( this.start != 0 )
-			  sw.writeAttribute( "begin", Conversions.longTodayTime( this.start ) ) ;
-		  if ( this.end != Constants.DAYMILLSEC )
-			  sw.writeAttribute( "end",   Conversions.longTodayTime( this.end ) ) ;
+		  if ( this.times[0] != 0 )
+			  sw.writeAttribute( "begin", Conversions.longTodayTime( this.times[0] ) ) ;
+		  if ( this.times[1] != Constants.DAYMILLSEC )
+			  sw.writeAttribute( "end",   Conversions.longTodayTime( this.times[1] ) ) ;
 		sw.writeEndElement() ;
 	}
+	public boolean[] getWeekDays() { return this.weekdays ; } ;
+	public long[] getDayTimes() { return this.times ; } ;
 }
 	

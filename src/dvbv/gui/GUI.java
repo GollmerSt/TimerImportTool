@@ -4,7 +4,6 @@
 
 package dvbv.gui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -24,6 +23,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import dvbv.Resources.ResourceManager;
 import dvbv.control.Control;
 import dvbv.provider.Provider;
 
@@ -32,7 +32,7 @@ public class GUI {
 	private final Control control ;
 	private final dvbv.dvbviewer.channels.Channels dChannels ;
 
-	private ImageIcon programIcon   = ResourceManager.createImageIcon( "Icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
+	private ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
 
 	private final Semaphore guiBusy = new Semaphore(1) ;
 	private final Semaphore appBusy = new Semaphore(1) ;
@@ -63,12 +63,9 @@ public class GUI {
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Component co = tabbedPane.getSelectedComponent() ;
-			if ( co.getClass() == ProviderService.class )
-			{
-				((ProviderService)co).updateProvider() ;
-				((ProviderService)co).updateService() ;
-			}
+			MyTabPanel tabPanel = (MyTabPanel)tabbedPane.getSelectedComponent() ;
+			tabPanel.update() ;
+
 			JButton button = (JButton) e.getSource() ;
 			
 			if ( button == okButton )
@@ -140,16 +137,19 @@ public class GUI {
 	    
 	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
 	    ProviderService tab2 = new ProviderService( control, frame ) ;
+	    Miscellaneous tab3 = new Miscellaneous( control, frame ) ;
 	    ProviderAssignment tab4 = new ProviderAssignment( control, frame ) ;
 	    	    
 	    this.tabbedPane.add( GUIStrings.dvbViewerAssignment(), tab1); 
 	    this.tabbedPane.add( GUIStrings.providerService(), tab2);
+	    this.tabbedPane.add( GUIStrings.miscellaneous(), tab3);
 	    this.tabbedPane.add( GUIStrings.providerAssignment(), tab4);
 	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
 	    this.tabbedPane.setSelectedComponent( tab1 ) ;
 	    tab1.paint() ;
 	    tab2.paint() ;
+	    tab3.paint() ;
 	    tab4.paint() ;
 
 	 	    
@@ -213,11 +213,10 @@ public class GUI {
 		this.frame.add( this.applyButton, c ) ;
 
 		this.frame.pack(); 
-		this.frame.setVisible( true ); 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         this.frame.setLocation( (d.width  - this.frame.getSize().width  ) / 2, 
         		                (d.height - this.frame.getSize().height ) / 2 ) ;
-        
+		this.frame.setVisible( true );         
 	}
 	public void updateExecuteButton()
 	{

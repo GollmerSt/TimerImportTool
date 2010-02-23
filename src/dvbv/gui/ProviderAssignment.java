@@ -17,7 +17,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultCellEditor;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +28,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import javax.swing.table.AbstractTableModel;
@@ -36,6 +37,7 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import dvbv.Resources.ResourceManager;
 import dvbv.control.Channel;
 import dvbv.control.ChannelSet;
 import dvbv.control.Control;
@@ -61,7 +63,7 @@ public class ProviderAssignment  extends MyTabPanel{
 	private final JButton deleteChannelButton = new JButton() ;
 	private final JTable table ;
     private TableRowSorter<TableModel> sorter = null ;
-
+    
 	private final JLabel messageLabel = new JLabel() ;
 
 	public class LockBoxChanged implements ActionListener
@@ -87,15 +89,28 @@ public class ProviderAssignment  extends MyTabPanel{
 	    {
 			messageLabel.setText( "") ;
 	    	updateChannelComboBox() ;
-	    }
+
+			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			if ( p == null )
+				return ;
+
+			int row = table.getSelectedRow() ;
+			if ( row < 0 )
+				return ;
+			int selectedLine = sorter.convertRowIndexToModel( row ) ;
+			MyTableObject o = (MyTableObject) table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
+			if ( ! o.isEmpty )
+			{
+				channelCombo.setSelectedItem( o.toString() ) ;
+			}
+}
 	}
 	public class ChannelSelected implements ActionListener
 	{
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			
-			int ix = channelCombo.getSelectedIndex() ;
+			int ix = channelCombo.getSelectedIndex() ;			
 			
 			if ( ix >= 0 )
 			{
@@ -181,6 +196,28 @@ public class ProviderAssignment  extends MyTabPanel{
 			}
 		}
 	}
+	public class TableChannelSelected implements ListSelectionListener
+	{
+
+		@Override
+		public void valueChanged(ListSelectionEvent e) {
+			if ( e.getValueIsAdjusting() )
+				return ;
+			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			if ( p == null )
+				return ;
+			int row = table.getSelectedRow() ;
+			if ( row < 0 )
+				return ;
+			int selectedLine = sorter.convertRowIndexToModel( row ) ;
+			MyTableObject o = (MyTableObject) table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
+			if ( ! o.isEmpty )
+			{
+				channelCombo.setSelectedItem( o.toString() ) ;
+			}
+		}
+		
+	}
 	public class MyComparator implements Comparator< String>
 	{
 		@Override
@@ -201,17 +238,15 @@ public class ProviderAssignment  extends MyTabPanel{
 		for ( Iterator< Provider> itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
 		{
 			Provider provider = itP.next() ;
+			int providerID = provider.getID() ;
 			TreeMap< String, Integer > map = new TreeMap< String, Integer >( new MyComparator() ) ;
 			for ( int ix = 0 ; ix < control.getChannelSets().size() ; ix++ )
 			{
 				ChannelSet cs = control.getChannelSets().get( ix ) ;
-				for ( Iterator< Channel > itC = cs.getChannels().iterator() ; itC.hasNext() ; )
-				{
-					Channel c = itC.next() ;
-					if ( c.getType() != provider.getID() )
-						continue ;
-					map.put( c.getName(), ix ) ;
-				}
+				Channel c = cs.getChannel( providerID ) ;
+				if ( c == null )
+					continue ;
+				map.put( c.getName(), ix ) ;
 			}
 			for ( Iterator< String > it = provider.getChannels().iterator() ; it.hasNext() ; )
 			{
@@ -287,7 +322,7 @@ public class ProviderAssignment  extends MyTabPanel{
 		c.insets     = i ;
 		
 		this.addChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		addChannelButton.setText( GUIStrings.add() ) ;
+		this.addChannelButton.setText( GUIStrings.add() ) ;
 		this.add( this.addChannelButton, c ) ;
 
 		
@@ -300,7 +335,7 @@ public class ProviderAssignment  extends MyTabPanel{
 		c.insets     = i ;
 		
 		this.modifyChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		modifyChannelButton.setText( GUIStrings.modify() ) ;
+		this.modifyChannelButton.setText( GUIStrings.modify() ) ;
 		this.add( this.modifyChannelButton, c ) ;
 
 		
@@ -313,7 +348,7 @@ public class ProviderAssignment  extends MyTabPanel{
 		c.insets     = i ;
 		
 		this.deleteChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		deleteChannelButton.setText( GUIStrings.delete() ) ;
+		this.deleteChannelButton.setText( GUIStrings.delete() ) ;
 		this.add( this.deleteChannelButton, c ) ;
 
 		
@@ -406,6 +441,9 @@ public class ProviderAssignment  extends MyTabPanel{
 			column.setCellEditor( cellEditor ) ;
 		}
 		updateTableComboBoxes() ;
+		this.table.setRowSelectionAllowed( true ) ;
+		ListSelectionModel  cellSelectionModel = this.table.getSelectionModel();
+		cellSelectionModel.addListSelectionListener( new TableChannelSelected() ) ;
 	}
 	private void cancelCellEditing()
 	{
@@ -514,8 +552,8 @@ public class ProviderAssignment  extends MyTabPanel{
 		 * 
 		 */
 		private static final long serialVersionUID = -4564280852966603471L;
-		private ImageIcon active   = ResourceManager.createImageIcon( "Icons/dvbViewer16.png", "DVBViewer icon" ) ;
-	    private ImageIcon inactive   = ResourceManager.createImageIcon( "Icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
+		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
+	    private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
 	    @Override
 		public int getColumnCount() {
 			// TODO Auto-generated method stub
@@ -539,7 +577,6 @@ public class ProviderAssignment  extends MyTabPanel{
 		}
 		@Override
 		public int getRowCount() {
-			// TODO Auto-generated method stub
 			return control.getChannelSets().size()+1;
 		}
 
