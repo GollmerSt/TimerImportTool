@@ -6,8 +6,8 @@
         </Provider>
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true"></Provider>
     </Providers>
-    <DVBService enable="true" url="localhost:50425" username="admin" password="admin" timeZone="Europe/Berlin">
-        <WakeOnLAN enable="false" broadCastAddress="192.168.0.255" macAddress="00:1F:D0:20:CB:3A" waitTimeAfterWOL="14"></WakeOnLAN>
+    <DVBService enable="true" url="localhost" username="admin" password="admin" timeZone="Europe/Berlin">
+        <WakeOnLAN enable="false" broadCastAddress="192.168.43.255" macAddress="01:23:45:67:89:AB" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
         <DefaultProvider>TVInfo</DefaultProvider>

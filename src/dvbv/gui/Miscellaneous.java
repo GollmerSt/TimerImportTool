@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import dvbv.control.Control;
 import dvbv.importer.TVInfoDVBV;
 
 public class Miscellaneous extends MyTabPanel
@@ -24,10 +23,10 @@ public class Miscellaneous extends MyTabPanel
 	private final JComboBox languageBox = new JComboBox() ;
 	private final JTextField separatorBox = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
-	
-	public Miscellaneous(Control control, JFrame frame)
+		
+	public Miscellaneous( GUI gui, JFrame frame)
 	{
-		super(control, frame);
+		super( gui, frame );
 	}
 	class LanguageSelected implements ActionListener
 	{
@@ -36,7 +35,12 @@ public class Miscellaneous extends MyTabPanel
 			String language = (String) languageBox.getSelectedItem() ;
 			if ( language == null )
 				return ;
-			control.setLanguage( GUIStrings.toInternalLanguage( language ) ) ;
+			String internal = GUIStrings.toInternalLanguage( language ) ;
+			if ( ! internal.equals( control.getLanguage() ) )
+			{
+				control.setLanguage( GUIStrings.toInternalLanguage( language ) ) ;
+				gui.setChanged() ;
+			}
 		}
 	}
 	class ButtonsPressed implements ActionListener
@@ -55,7 +59,7 @@ public class Miscellaneous extends MyTabPanel
 		
 	}
 	public void paint()
-	{
+	{		
 		Insets i = new Insets( 5, 5, 5, 5 );
 		GridBagConstraints c = null ;
 
@@ -130,8 +134,15 @@ public class Miscellaneous extends MyTabPanel
 		this.add( separatorBox, c ) ;
 	}
 	@Override
-	public void update()
+	public void update( boolean active )
 	{
-		this.control.setSeparator( this.separatorBox.getText() ) ;
+		if ( ! active )
+		{
+			if ( ! this.control.getSeparator().equals( this.separatorBox.getText() ) )
+			{
+				this.control.setSeparator( this.separatorBox.getText() ) ;
+				this.gui.setChanged() ;
+			}
+		}
 	}
 }

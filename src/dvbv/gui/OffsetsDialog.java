@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -23,7 +23,6 @@ import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -60,6 +59,8 @@ public class OffsetsDialog extends JDialog {
 	private final JButton cancelButton = new JButton() ;
 	private final JButton newButton = new JButton() ; 
 	private final JButton deleteButton = new JButton() ; 
+	
+	private final GUI gui ;
 
 	private class ButtonsPressed implements ActionListener
 	{
@@ -69,6 +70,7 @@ public class OffsetsDialog extends JDialog {
 			JButton source = (JButton)e.getSource() ;
 			if ( source == okButton )
 			{
+				gui.setChanged() ;
 				table.editingStopped( null ) ;
 				originalOffsets.assign( offsets ) ;
 				dispose() ;
@@ -94,12 +96,13 @@ public class OffsetsDialog extends JDialog {
 		
 	}
 	
-	public OffsetsDialog( final JFrame frame, final TimeOffsets offsets )
+	public OffsetsDialog( final GUI gui, final TimeOffsets offsets )
 	{
-		super( frame, true ) ;
+		super( gui.getFrame(), true ) ;
 		
 		this.originalOffsets = offsets ;
 		this.offsets = offsets.clone() ;
+		this.gui = gui ;
 		
 		
 		this.columnNames[0] = GUIStrings.timeBefore() ;

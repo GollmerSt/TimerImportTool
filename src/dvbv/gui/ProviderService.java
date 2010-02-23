@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -28,7 +28,6 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
-import dvbv.control.Control;
 import dvbv.dvbviewer.DVBViewerService;
 import dvbv.misc.ErrorClass;
 import dvbv.provider.Provider;
@@ -146,6 +145,7 @@ public class ProviderService extends MyTabPanel {
 				p.setMessage( messageBox.isSelected() ) ;
 			else if ( source == mergeBox )
 				p.setMerge( mergeBox.isSelected() ) ;
+			gui.setChanged() ;
 		}
 	}
 	public class ProviderTestButton implements ActionListener
@@ -191,11 +191,11 @@ public class ProviderService extends MyTabPanel {
 	{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
+			DVBViewerService dvbs = control.getDVBViewer().getService() ;
 			Object source = e.getItemSelectable();
 			boolean serviceEnabled = serviceEnableBox.isSelected() ;
 			if( source == serviceEnableBox )
 			{
-				control.getDVBViewer().getService().setEnabled( serviceEnabled ) ;
 				urlServiceLabel.setEnabled( serviceEnabled ) ;
 				urlServiceBox.setEnabled( serviceEnabled ) ;
 				userServiceLabel.setEnabled( serviceEnabled ) ;
@@ -204,11 +204,20 @@ public class ProviderService extends MyTabPanel {
 				passwordServiceBox.setEnabled( serviceEnabled ) ;
 				serviceButton.setEnabled( serviceEnabled ) ;
 				wolEnableBox.setEnabled( serviceEnabled ) ;
+				if ( serviceEnabled != dvbs.isEnabled() )
+				{
+					dvbs.setEnabled( serviceEnabled ) ;
+					gui.setChanged() ;
+				}
 			}
 			if ( source == wolEnableBox || source == serviceEnableBox )
 			{
 				boolean enabled = wolEnableBox.isSelected() ;
-				control.getDVBViewer().getService().setEnableWOL( enabled ) ;
+				if ( enabled != dvbs.getEnableWOL() )
+				{
+					dvbs.setEnableWOL( enabled ) ;
+					gui.setChanged() ;
+				}
 				enabled = enabled && serviceEnabled ;
 				waitTimeLabel.setEnabled( enabled ) ;
 				waitTimeBox.setEnabled( enabled ) ;
@@ -252,9 +261,9 @@ public class ProviderService extends MyTabPanel {
 		}
 		
 	}
-	public ProviderService( Control control, JFrame frame )
+	public ProviderService( GUI gui, JFrame frame )
 	{
-		super( control, frame ) ;
+		super( gui, frame ) ;
 	}
 	public void paint()
 	{
@@ -284,6 +293,7 @@ public class ProviderService extends MyTabPanel {
 			this.providerCombo.addItem( it.next() ) ;
 		}
 		this.providerCombo.setSelectedItem( defaultProvider ) ;
+		this.lastProvider = defaultProvider ;
 		providerBox.add( this.providerCombo, c ) ;
 
 		
@@ -710,29 +720,74 @@ public class ProviderService extends MyTabPanel {
 	{
 		if ( this.lastProvider != null )
 		{
-			this.lastProvider.setURL( this.urlBox.getText() ) ;
-			this.lastProvider.setUserName( this.userNameBox.getText() ) ;
-			this.lastProvider.setPassword( this.passwordBox.getText() ) ;
-			this.lastProvider.setTriggerAction( ((Integer)this.triggerBox.getValue()).intValue() ) ;
+			if ( ! this.lastProvider.getURL().equals( this.urlBox.getText() ) )
+			{
+				this.lastProvider.setURL( this.urlBox.getText() ) ;
+				this.gui.setChanged() ;
+			}
+			if ( ! this.lastProvider.getUserName().equals( this.userNameBox.getText() ) )
+			{
+				this.lastProvider.setUserName( this.userNameBox.getText() ) ;
+				this.gui.setChanged() ;
+			}
+			if ( ! this.lastProvider.getPassword().equals( this.passwordBox.getText() ) )
+			{
+				this.lastProvider.setPassword( this.passwordBox.getText() ) ;
+				this.gui.setChanged() ;
+			}
+			int trigger = ((Integer)this.triggerBox.getValue()).intValue() ;
+			if ( this.lastProvider.getTriggerAction() != trigger )
+			{
+				this.lastProvider.setTriggerAction( trigger ) ;
+				this.gui.setChanged() ;
+			}
 		}
 	}
 	public void updateService()
 	{
 		DVBViewerService dvbs  = this.control.getDVBViewer().getService() ;
-		dvbs.setURL( this.urlServiceBox.getText() ) ;
-		dvbs.setUserName( this.userServiceBox.getText() ) ;
-		dvbs.setPassword( this.passwordServiceBox.getText() ) ;
-		dvbs.setWaitTimeAfterWOL( ((Integer)this.waitTimeBox.getValue()).intValue() ) ;
-		dvbs.setBroadCastAddress( this.broadCastBox.getText() ) ;
-		dvbs.setMacAddress( this.macBox.getText() ) ;
+		if ( ! dvbs.getURL().equals( this.urlServiceBox.getText() ) )
+		{
+			dvbs.setURL( this.urlServiceBox.getText() ) ;
+			this.gui.setChanged() ;
+		}
+		if ( ! dvbs.getUserName().equals( this.userServiceBox.getText() ) )
+		{
+			dvbs.setUserName( this.userServiceBox.getText() ) ;
+			this.gui.setChanged() ;
+		}
+		if ( ! dvbs.getPassword().equals( this.passwordServiceBox.getText() ) )
+		{
+			dvbs.setPassword( this.passwordServiceBox.getText() ) ;
+			this.gui.setChanged() ;
+		}
+		int waitTime = (Integer)this.waitTimeBox.getValue() ;
+		if ( dvbs.getWaitTimeAfterWOL() != waitTime )
+		{
+			dvbs.setWaitTimeAfterWOL( waitTime ) ;
+			this.gui.setChanged() ;
+		}
+		if ( ! dvbs.getBroadCastAddress().equals( this.broadCastBox.getText() ) )
+		{
+			dvbs.setBroadCastAddress( this.broadCastBox.getText() ) ;
+			this.gui.setChanged() ;
+		}
+		if ( ! dvbs.getMacAddress().equals( this.macBox.getText() ) )
+		{
+			dvbs.setMacAddress( this.macBox.getText() ) ;
+			this.gui.setChanged() ;
+		}
 	}
 	@Override
-	public void update()
+	public void update( boolean active )
 	{
-		this.updateLockBox() ;
-		this.updateProvider() ;
-		this.updateService() ;
-		
+		if ( active )
+			this.updateLockBox() ;
+		else
+		{
+			this.updateProvider() ;
+			this.updateService() ;
+		}
 	}
 	
 }

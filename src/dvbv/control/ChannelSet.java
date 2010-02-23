@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.control ;
 

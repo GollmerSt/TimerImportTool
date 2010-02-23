@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -17,12 +17,15 @@ public abstract class MyTabPanel extends JPanel {
 	 */
 	private static final long serialVersionUID = -5527812753090468381L;
 	protected final Control control ;
+	protected final GUI gui ;
 	protected final JFrame frame ;
-	public MyTabPanel( Control control, JFrame frame )
+	public MyTabPanel( GUI gui, JFrame frame )
 	{
 		super( new GridBagLayout() ) ;
-		this.control = control ;
+		
+		this.gui = gui ;
+		this.control = gui.getControl() ;
 		this.frame = frame ;
 	}
-	public void update() {} ;
+	public void update( boolean active ) {} ;
 }

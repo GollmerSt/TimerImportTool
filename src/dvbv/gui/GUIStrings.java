@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -56,6 +56,8 @@ public class GUIStrings {
     										   "Anbieter / Service" } ;
 	private static final String[] providerAssignment = { "Provider assignment",
 	   "Anbieter-Zuordnung" } ;
+	private static final String[] setupChanged = { "Setup is changed!\nTerminating without saving?", "Einstellungen wurden verändert!\nBeenden ohne Speichern?" } ;
+	private static final String[] setupSave = { "Setup is changed!\nShould the setup saved??", "Einstellungen wurden verändert!\nSollen sie gespeichert werden?" } ;
 	private static final String[] separator = { "Separator", "Trennzeichen" } ;
 	private static final String[] start = { "Start", "Start" } ;
 	private static final String[] successful = { "Successful", "Erfolgreich" } ;
@@ -156,6 +158,8 @@ public class GUIStrings {
 	public static String provider() { return get( provider ) ; } ;
 	public static String providerService() { return get( providerService ) ; } ;
 	public static String providerAssignment() { return get( providerAssignment ) ; } ;
+	public static String setupChanged() { return get( setupChanged ) ; } ;
+	public static String setupSave() { return get( setupSave ) ; } ;
 	public static String start() { return get( start ) ; } ;
 	public static String separator() { return get( separator ) ; } ;
 	public static String successful() { return get( successful ) ; } ;

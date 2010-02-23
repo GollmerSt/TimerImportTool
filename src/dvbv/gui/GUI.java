@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -19,16 +19,18 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import dvbv.Resources.ResourceManager;
 import dvbv.control.Control;
+import dvbv.misc.Constants;
 import dvbv.provider.Provider;
 
 public class GUI {
-	public enum GUIStatus { INVALID, OK, CANCEL, APPLY, EXECUTE } ;
+	public enum GUIStatus { INVALID, OK, CANCEL, APPLY, EXECUTE, SAVE_EXECUTE } ;
 	private final Control control ;
 	private final dvbv.dvbviewer.channels.Channels dChannels ;
 
@@ -38,6 +40,8 @@ public class GUI {
 	private final Semaphore appBusy = new Semaphore(1) ;
 	
 	private GUIStatus status = GUIStatus.INVALID ;
+	private boolean isChanged = false ;
+	private MyTabPanel previousTab = null ;
 
 	private final JFrame frame = new JFrame() ;
 	private final JTabbedPane tabbedPane = new JTabbedPane() ;
@@ -52,10 +56,12 @@ public class GUI {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			updateExecuteButton() ;
-			Object source = ((JTabbedPane)e.getSource()).getSelectedComponent() ;
+			MyTabPanel source = (MyTabPanel)((JTabbedPane)e.getSource()).getSelectedComponent() ;
 			if ( source == null )
 				return ;
-			((MyTabPanel)source).update() ;
+			previousTab.update( false );
+			source.update( true ) ;
+			previousTab = source ;
 		}
     	
     }
@@ -64,7 +70,7 @@ public class GUI {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			MyTabPanel tabPanel = (MyTabPanel)tabbedPane.getSelectedComponent() ;
-			tabPanel.update() ;
+			tabPanel.update( false ) ;
 
 			JButton button = (JButton) e.getSource() ;
 			
@@ -73,7 +79,7 @@ public class GUI {
 				status = GUIStatus.OK ;
 				waitAPP() ;
 			}
-			if ( button == cancelButton )
+			else if ( button == cancelButton && messageIsChanged( GUIStrings.setupChanged()) )
 			{
 				status = GUIStatus.CANCEL ;
 				waitAPP() ;
@@ -85,7 +91,10 @@ public class GUI {
 			}
 			if ( button == executeButton )
 			{
-				status = GUIStatus.EXECUTE ;
+				if ( messageIsChanged( GUIStrings.setupSave() ))
+					status = GUIStatus.SAVE_EXECUTE ;
+				else
+					status = GUIStatus.EXECUTE ;
 				waitAPP() ;
 			}
 		}
@@ -105,6 +114,7 @@ public class GUI {
 	}
 	public Control getControl() { return this.control ; } ;
 	public JFrame getFrame() { return frame ; } ;
+	public void setChanged() { this.isChanged = true ; } ;
 	public void execute()
 	{ 
         try {
@@ -136,9 +146,9 @@ public class GUI {
 
 	    
 	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
-	    ProviderService tab2 = new ProviderService( control, frame ) ;
-	    Miscellaneous tab3 = new Miscellaneous( control, frame ) ;
-	    ProviderAssignment tab4 = new ProviderAssignment( control, frame ) ;
+	    ProviderService tab2 = new ProviderService( this, frame ) ;
+	    Miscellaneous tab3 = new Miscellaneous( this, frame ) ;
+	    ProviderAssignment tab4 = new ProviderAssignment( this, frame ) ;
 	    	    
 	    this.tabbedPane.add( GUIStrings.dvbViewerAssignment(), tab1); 
 	    this.tabbedPane.add( GUIStrings.providerService(), tab2);
@@ -147,6 +157,7 @@ public class GUI {
 	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
 	    this.tabbedPane.setSelectedComponent( tab1 ) ;
+	    this.previousTab = (MyTabPanel)tab1 ;
 	    tab1.paint() ;
 	    tab2.paint() ;
 	    tab3.paint() ;
@@ -259,4 +270,16 @@ public class GUI {
 		this.frame.setEnabled( false ) ;
 		this.guiBusy.release() ;
 	}
+	private boolean messageIsChanged( String message )
+	{
+		if ( ! this.isChanged )
+			return true ;
+		
+		int answer = JOptionPane.showConfirmDialog(
+		        frame, message, 
+		        Constants.PROGRAM_NAME, 
+		        JOptionPane.YES_NO_OPTION );
+		return( answer == JOptionPane.YES_OPTION ) ;
+	}
+	
 }

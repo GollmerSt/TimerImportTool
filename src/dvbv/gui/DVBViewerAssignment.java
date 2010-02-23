@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -35,6 +35,7 @@ import dvbv.Resources.ResourceManager;
 import dvbv.control.ChannelSet;
 import dvbv.control.Channel;
 import dvbv.control.TimeOffsets;
+import dvbv.misc.Enums;
 import dvbv.provider.Provider;
 
 
@@ -121,8 +122,12 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        JComboBox cb = (JComboBox)e.getSource();
 	        Provider p = (Provider)cb.getSelectedItem() ;
 	        fillProviderChannelList( p.getName() ) ;
-	        control.setDefaultProvider( p.getName() ) ;
-	        parent.updateExecuteButton() ;
+	        if ( ! p.getName().equals( control.getDefaultProvider() ) )
+	        {
+	        	control.setDefaultProvider( p.getName() ) ;
+	        	parent.updateExecuteButton() ;
+	        	gui.setChanged() ;
+	        }
 	    }
 	}
 	public class ProviderChannelSelected implements ListSelectionListener {
@@ -149,11 +154,13 @@ public class DVBViewerAssignment extends MyTabPanel{
 		    	ignoreNextDVBViewerChannelChange = false ;
 		    	return ;
 	    	}
+
 	        JComboBox cb = (JComboBox)e.getSource();
 	        dvbv.dvbviewer.channels.Channel c = (dvbv.dvbviewer.channels.Channel)cb.getSelectedItem() ;
 	        int ix = providerChannelList.getSelectedIndex() ;
 	        if ( ix >= 0 )
 	        {
+	        	gui.setChanged() ;
 	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	        	csa.channelSet.setDVBViewerChannel( c.getChannelID() ) ;
 	        	providerChannelList.setSelectedValue(csa, false) ;
@@ -167,7 +174,14 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	if ( csa == null )
 	    		return ;
 	        JComboBox cb = (JComboBox)e.getSource();
-	        csa.channelSet.setMerge( dvbv.misc.Enums.Merge.values()[ cb.getSelectedIndex() ] ) ;
+	        
+	        Enums.Merge res = Enums.Merge.values()[ cb.getSelectedIndex() ] ;
+	        
+	        if ( res != csa.channelSet.getMerge() )
+	        {
+	        	csa.channelSet.setMerge( res ) ;
+	        	gui.setChanged() ;
+	        }
 	    }
 	}
 	public class OffsetButtonsPressed implements ActionListener
@@ -190,7 +204,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 			}
 			else if ( source == globalOffsetButton )
 				offsets = TimeOffsets.getGeneralTimeOffsets() ;
-			new OffsetsDialog( frame, offsets ) ;
+			new OffsetsDialog( gui, offsets ) ;
 			if ( csa != null )
 				model.setElementAt( csa, line ) ;
 		}
@@ -198,13 +212,13 @@ public class DVBViewerAssignment extends MyTabPanel{
 	}
 	public DVBViewerAssignment( GUI parent, dvbv.dvbviewer.channels.Channels dChannels )
 	{
-		super( parent.getControl(), parent.getFrame() ) ;
+		super( parent, parent.getFrame() ) ;
 		
 		this.parent = parent ;
 		this.dvbViewerChannels = dChannels ;
 	}
 	public void paint()
-	{
+	{		
 		TitledBorder  tB = null ;
 		GridBagConstraints c = null ;
 		
@@ -373,7 +387,6 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.add( this.globalOffsetButton, c ) ;
 		
 		this.providerCombo.setSelectedItem( Provider.getProvider( control.getDefaultProvider() ) ) ;
-		
 	}
 	private void fillProviderChannelList( String providerName )
 	{
@@ -402,9 +415,12 @@ public class DVBViewerAssignment extends MyTabPanel{
 		}
 	}
 	@Override
-	public void update()
+	public void update( boolean active )
 	{
-		Provider p = (Provider)providerCombo.getSelectedItem() ;
-		this.fillProviderChannelList( p.getName() ) ;
+		if ( active )
+		{
+			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			this.fillProviderChannelList( p.getName() ) ;
+		}
 	}
 }

@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-02-02 20:15:15 +0100 (Di, 02. Feb 2010) $
-// $LastChangedRevision: 79 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbv.gui;
 
@@ -40,7 +40,6 @@ import javax.swing.table.TableRowSorter;
 import dvbv.Resources.ResourceManager;
 import dvbv.control.Channel;
 import dvbv.control.ChannelSet;
-import dvbv.control.Control;
 import dvbv.misc.Constants;
 import dvbv.provider.Provider;
 
@@ -80,7 +79,6 @@ public class ProviderAssignment  extends MyTabPanel{
 			deleteChannelButton.setEnabled( enable ) ;
 			updateTable() ;
 			table.setEnabled( enable ) ;
-			
 	    }
 	}
 	public class ProviderSelected implements ActionListener
@@ -216,7 +214,6 @@ public class ProviderAssignment  extends MyTabPanel{
 				channelCombo.setSelectedItem( o.toString() ) ;
 			}
 		}
-		
 	}
 	public class MyComparator implements Comparator< String>
 	{
@@ -227,9 +224,9 @@ public class ProviderAssignment  extends MyTabPanel{
 			return o1.compareToIgnoreCase(o2) ;
 		}
 	}
-	public ProviderAssignment( Control control, JFrame frame )
+	public ProviderAssignment( GUI gui, JFrame frame )
 	{
-		super( control, frame ) ;
+		super( gui, frame ) ;
 		
 		this.columnNames  = new String[ Provider.getProviders().size() + 1 ];
 		this. columnNames[ 0 ] = "" ;
@@ -663,6 +660,8 @@ public class ProviderAssignment  extends MyTabPanel{
             removeChannelSetIfEmpty( csid ) ;
             updateTable() ;
         	showTableLine( csid ) ;
+        	
+			gui.setChanged() ;
 		}
 	}
 	private boolean removeChannelSetIfEmpty( int csid )
@@ -685,9 +684,12 @@ public class ProviderAssignment  extends MyTabPanel{
 		return true ;
 	}
 	@Override
-	public void update()
+	public void update( boolean active )
 	{
-		this.unlockBox.setSelected( true ) ;
-		this.unlockBox.doClick() ;
+		if ( active )
+		{
+			this.unlockBox.setSelected( true ) ;
+			this.unlockBox.doClick() ;
+		}
 	}
 }

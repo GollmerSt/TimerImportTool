@@ -117,6 +117,10 @@ public final class TimerImportTool {
 					case CANCEL :
 						Log.out( "Configuration aborted" ) ;
 						System.exit( 0 ) ;
+						break ;
+					case SAVE_EXECUTE :
+						Log.out( "Configuration saved" ) ;
+						control.write() ;
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
