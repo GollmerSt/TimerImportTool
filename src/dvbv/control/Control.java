@@ -5,15 +5,9 @@
 package dvbv.control ;
 
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -114,7 +108,7 @@ public class Control
 			        JOptionPane.OK_CANCEL_OPTION );
 			if ( answer == JOptionPane.CANCEL_OPTION )
 				System.exit( 1 ) ;
-			this.createDefaultXML( f ) ;
+			ResourceManager.copyFile( f, "datafiles/DVBVTimerImportTool.xml" ) ;
 		}
 		if ( ! f.canRead() )
 			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
@@ -405,13 +399,6 @@ public class Control
 			e.printStackTrace();
 		}
 	}
-	public void writeOffsets( IndentingXMLStreamWriter sw, TimeOffsets offsets ) throws XMLStreamException
-	{
-		sw.writeStartElement( "Offsets" ) ;
-		
-//		for ( )
-		
-	}
 	public void setDVBViewerEntries( Provider provider )
 	{
 		this.dvbViewer.setSeparator( this.separator ) ;
@@ -429,25 +416,4 @@ public class Control
 	public void setSeparator( String separator ) { this.separator = separator ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
-	private void createDefaultXML( File f )
-	{
-		InputStream is = ResourceManager.createInputStream( "datafiles/DVBVTimerImportTool.xml" ) ;
-		
-		BufferedReader bufR = new BufferedReader( new InputStreamReader( is ) ) ;
-		
-		FileWriter fstream = null ;
-		try {
-			fstream = new FileWriter( f, true );
-			BufferedWriter bufW = new BufferedWriter( fstream ) ;
-		
-			String line = null ;
-		
-			while ( ( line = bufR.readLine() ) != null )
-				bufW.write( line ) ;
-			bufR.close() ;
-			bufW.close() ;
-		} catch (IOException e) {
-			throw new ErrorClass( "Unexpected error on writing default XML control file" );
-		}
-	}
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
     <Providers>
-        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="true" message="false" verbose="true">
+        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true">
             <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
         </Provider>
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true"></Provider>
