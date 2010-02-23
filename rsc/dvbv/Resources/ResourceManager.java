@@ -42,9 +42,15 @@ public class ResourceManager {
 
     	return inputStream ;
     }
-    public static void copyFile( File destination, String source )
+    public static void copyFile( String destinationPath, String source )
     {
 		InputStream is = ResourceManager.createInputStream( source ) ;
+		
+		String[] parts = source.split( "\\/" ) ;
+		
+		String destination = destinationPath + File.separator + parts[ parts.length-1 ] ;
+		
+		File file = new File( destination ) ;
 		
 		BufferedReader bufR = new BufferedReader( new InputStreamReader( is ) ) ;
 		
@@ -61,7 +67,7 @@ public class ResourceManager {
 			bufW.close() ;
 		} catch (IOException e) {
 			throw new ErrorClass(   "Unexpected error on writing file \"" 
-					              + destination.getAbsolutePath()
+					              + file.getAbsolutePath()
 					              + "\"." ) ;
 		}
 

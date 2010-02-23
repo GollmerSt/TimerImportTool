@@ -97,9 +97,8 @@ public class Control
 	}
 	public void read()
 	{	
-		File f = new File( this.dvbViewer.getPluginConfPath()
-		          + File.separator
-		          + NAME_XML_CONTROLFILE ) ;
+		String path = this.dvbViewer.getPluginConfPath() ;
+		File f = new File( path + File.separator + NAME_XML_CONTROLFILE ) ;
 		if ( ! f.exists() )
 		{
 			int answer = JOptionPane.showConfirmDialog( null,
@@ -108,7 +107,8 @@ public class Control
 			        JOptionPane.OK_CANCEL_OPTION );
 			if ( answer == JOptionPane.CANCEL_OPTION )
 				System.exit( 1 ) ;
-			ResourceManager.copyFile( f, "datafiles/DVBVTimerImportTool.xml" ) ;
+			ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xml" ) ;
+			ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xsd" ) ;
 		}
 		if ( ! f.canRead() )
 			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
