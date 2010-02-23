@@ -1,0 +1,836 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
+    <Providers>
+        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="true" message="false" verbose="true">
+            <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
+        </Provider>
+        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true"></Provider>
+    </Providers>
+    <DVBService enable="true" url="localhost:50425" username="admin" password="admin" timeZone="Europe/Berlin">
+        <WakeOnLAN enable="false" broadCastAddress="192.168.0.255" macAddress="00:1F:D0:20:CB:3A" waitTimeAfterWOL="14"></WakeOnLAN>
+    </DVBService>
+    <GUI>
+        <DefaultProvider>TVInfo</DefaultProvider>
+    </GUI>
+    <Offsets>
+        <Offset before="15" after="30"></Offset>
+    </Offsets>
+    <Separator>,,</Separator>
+    <Channels>
+        <Channel>
+            <Provider name="TVInfo">ARD</Provider>
+            <Provider name="ClickFinder">ARD</Provider>
+            <Merge>false</Merge>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ZDF</Provider>
+            <Provider name="ClickFinder">ZDF</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Bayern</Provider>
+            <Provider name="ClickFinder">B3</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">HR</Provider>
+            <Provider name="ClickFinder">H3</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">WDR</Provider>
+            <Provider name="ClickFinder">WDR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SWR</Provider>
+            <Provider name="ClickFinder">SWR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MDR</Provider>
+            <Provider name="ClickFinder">MDR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NDR</Provider>
+            <Provider name="ClickFinder">NDR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RBB</Provider>
+            <Provider name="ClickFinder">RBB</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Ki.Ka</Provider>
+            <Provider name="ClickFinder">Ki.Ka</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">3sat</Provider>
+            <Provider name="ClickFinder">3SAT</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Alpha</Provider>
+            <Provider name="ClickFinder">BR Alpha</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ORF2</Provider>
+            <Provider name="ClickFinder">ORF 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Tele 5</Provider>
+            <Provider name="ClickFinder">Tele5</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sat1</Provider>
+            <Provider name="ClickFinder">SAT1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Kabel1</Provider>
+            <Provider name="ClickFinder">Kabel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Pro7</Provider>
+            <Provider name="ClickFinder">PRO7</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTL</Provider>
+            <Provider name="ClickFinder">RTL</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTL2</Provider>
+            <Provider name="ClickFinder">RTL II</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Super RTL</Provider>
+            <Provider name="ClickFinder">S RTL</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">VOX</Provider>
+            <Provider name="ClickFinder">VOX</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">arte</Provider>
+            <Provider name="ClickFinder">Arte</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Das Vierte</Provider>
+            <Provider name="ClickFinder">Das Vierte</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">9 Live</Provider>
+            <Provider name="ClickFinder">9Live</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">BBC</Provider>
+            <Provider name="ClickFinder">BBC</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">BloombergTV</Provider>
+            <Provider name="ClickFinder">BloombergTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">CNBC</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">CNN</Provider>
+            <Provider name="ClickFinder">CNN</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Comedy Central</Provider>
+            <Provider name="ClickFinder">Comedy Central</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DSF</Provider>
+            <Provider name="ClickFinder">DSF</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">EinsExtra</Provider>
+            <Provider name="ClickFinder">EinsExtra</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">EinsFestival</Provider>
+            <Provider name="ClickFinder">EinsFestival</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">EinsPlus</Provider>
+            <Provider name="ClickFinder">EinsMuXx</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">N24</Provider>
+            <Provider name="ClickFinder">N24</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">n-tv</Provider>
+            <Provider name="ClickFinder">NTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Phoenix</Provider>
+            <Provider name="ClickFinder">Phoenix</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">EuroNews</Provider>
+            <Provider name="ClickFinder">EURONEWS</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Eurosport</Provider>
+            <Provider name="ClickFinder">EUROSPORT</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Home Shopping Europe</Provider>
+            <Provider name="ClickFinder">Home Shopping Europe</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MTV</Provider>
+            <Provider name="ClickFinder">MTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">münchen 2</Provider>
+            <Provider name="ClickFinder">münchen 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">münchen.tv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Nick</Provider>
+            <Provider name="ClickFinder">Nick</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTLSHOP</Provider>
+            <Provider name="ClickFinder">RTL Shop</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TRT</Provider>
+            <Provider name="ClickFinder">TRT</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">VIVA</Provider>
+            <Provider name="ClickFinder">VIVA</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ZDFinfokanal</Provider>
+            <Provider name="ClickFinder">ZDFInfo</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ZDFtheaterkanal</Provider>
+            <Provider name="ClickFinder">ZDF Theaterkanal</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ZDF_neo</Provider>
+            <Provider name="ClickFinder">ZDFneo</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">13th Street</Provider>
+            <Provider name="ClickFinder">13th Street</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Animal Planet</Provider>
+            <Provider name="ClickFinder">Animal Planet</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Anixe HD</Provider>
+            <Provider name="ClickFinder">Anixe HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ATVplus</Provider>
+            <Provider name="ClickFinder">ATV+</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Bahn TV</Provider>
+            <Provider name="ClickFinder">Bahn TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">BBC Prime</Provider>
+            <Provider name="ClickFinder">BBC Prime</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Beate Uhse TV</Provider>
+            <Provider name="ClickFinder">Beate-Uhse-TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Belgien 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Bibel TV</Provider>
+            <Provider name="ClickFinder">Bibel-TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Cartoon Network</Provider>
+            <Provider name="ClickFinder">Cartoon Network</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">CityInfo</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Classica</Provider>
+            <Provider name="ClickFinder">Classica</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Discovery Channel</Provider>
+            <Provider name="ClickFinder">Discovery Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Discovery Geschichte</Provider>
+            <Provider name="ClickFinder">Discovery Geschichte</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Discovery HD</Provider>
+            <Provider name="ClickFinder">Discovery HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Disney Channel</Provider>
+            <Provider name="ClickFinder">Disney Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DMAX</Provider>
+            <Provider name="ClickFinder">XXP</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DR1</Provider>
+            <Provider name="ClickFinder">DK1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DR2</Provider>
+            <Provider name="ClickFinder">DK2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DW-tv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Eurosport 2</Provider>
+            <Provider name="ClickFinder">Eurosport 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Extreme Sports Channel</Provider>
+            <Provider name="ClickFinder">Extreme Sports Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">FAB</Provider>
+            <Provider name="ClickFinder">FAB</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Focus Gesundheit</Provider>
+            <Provider name="ClickFinder">FOCUS Gesundheit</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Goldstar TV</Provider>
+            <Provider name="ClickFinder">Goldstar TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">gotv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Heimatkanal</Provider>
+            <Provider name="ClickFinder">Heimatkanal</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">HH1</Provider>
+            <Provider name="ClickFinder">HH1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">hit24</Provider>
+            <Provider name="ClickFinder">Hit24</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">intv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Jetix</Provider>
+            <Provider name="ClickFinder">Fox Kids</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Junior</Provider>
+            <Provider name="ClickFinder">Junior</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Kanal D</Provider>
+            <Provider name="ClickFinder">Kanal D</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MGM</Provider>
+            <Provider name="ClickFinder">MGM</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NBC</Provider>
+            <Provider name="ClickFinder">NBC</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NL 1</Provider>
+            <Provider name="ClickFinder">NL1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NL 2</Provider>
+            <Provider name="ClickFinder">NL2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NL3</Provider>
+            <Provider name="ClickFinder">NL3</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ORF1</Provider>
+            <Provider name="ClickFinder">ORF 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">OTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Planet</Provider>
+            <Provider name="ClickFinder">Planet</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Puls tv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">QVC</Provider>
+            <Provider name="ClickFinder">QVC</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">rheinmaintv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RNFplus</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTL Lux</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SaarTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sci Fi</Provider>
+            <Provider name="ClickFinder">SCI FI</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SF1</Provider>
+            <Provider name="ClickFinder">SF 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SF2</Provider>
+            <Provider name="ClickFinder">SF 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Action</Provider>
+            <Provider name="ClickFinder">SKY Action</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Cinema</Provider>
+            <Provider name="ClickFinder">SKY Cinema</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">SKY Cinema HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Cinema +1</Provider>
+            <Provider name="ClickFinder">SKY Cinema +1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Cinema +24</Provider>
+            <Provider name="ClickFinder">SKY Cinema +24</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Cinema Hits</Provider>
+            <Provider name="ClickFinder">SKY Cinema Hits</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Comedy</Provider>
+            <Provider name="ClickFinder">SKY Comedy</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Emotion</Provider>
+            <Provider name="ClickFinder">SKY Emotion</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Fussball Bundesliga</Provider>
+            <Provider name="ClickFinder">SKY Fussball Bundesliga</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Krimi</Provider>
+            <Provider name="ClickFinder">SKY Krimi</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Nostalgie</Provider>
+            <Provider name="ClickFinder">SKY Nostalgie</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Sport 1</Provider>
+            <Provider name="ClickFinder">SKY Sport 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Sport 2</Provider>
+            <Provider name="ClickFinder">SKY Sport 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Sport Austria</Provider>
+            <Provider name="ClickFinder">SKY Sport Austria</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Select</Provider>
+            <Provider name="ClickFinder">SKY</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sky Sport HD</Provider>
+            <Provider name="ClickFinder">SKY Sport HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Spi.ka tv</Provider>
+            <Provider name="ClickFinder">Spi.Ka TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Spreekanal</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Steiermark 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TIDE</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TSI1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TSI2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TSR1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TSR2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TV 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TV Franken</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TV Slovenija 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TV Slovenija 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TVBerlin</Provider>
+            <Provider name="ClickFinder">TV Berlin</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TW1</Provider>
+            <Provider name="ClickFinder">TW1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Disney Cinemagic</Provider>
+            <Provider name="ClickFinder">Disney Cinemagic</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Motor Vision TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Spiegel Geschichte</Provider>
+            <Provider name="ClickFinder">Spiegel Geschichte</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Kabel1 Classics</Provider>
+            <Provider name="ClickFinder">kabel eins classics</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TNT Serie</Provider>
+            <Provider name="ClickFinder">TNT Serie</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">VH-1 Classic</Provider>
+            <Provider name="ClickFinder">VH1 Classic</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">AXN</Provider>
+            <Provider name="ClickFinder">AXN</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Boomerang</Provider>
+            <Provider name="ClickFinder">Boomerang</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MTV Entertainment</Provider>
+            <Provider name="ClickFinder">MTV Entertainment</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Nick Premium</Provider>
+            <Provider name="ClickFinder">Nick Premium</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTL Living</Provider>
+            <Provider name="ClickFinder">RTL Living</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Romance TV</Provider>
+            <Provider name="ClickFinder">Romance TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sat.1 comedy</Provider>
+            <Provider name="ClickFinder">Sat.1 Comedy</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Biography Channel</Provider>
+            <Provider name="ClickFinder">The Biography Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TNT Film</Provider>
+            <Provider name="ClickFinder">Turner Classic Movies</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">PASSION</Provider>
+            <Provider name="ClickFinder">RTL Passion</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">History Channel</Provider>
+            <Provider name="ClickFinder">History Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">FOX</Provider>
+            <Provider name="ClickFinder">FOX Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Blue Movie 3</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Blue Movie2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Deutsches Wetterfernsehen</Provider>
+            <Provider name="ClickFinder">Wetter Fernsehen</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ESPN Amerika</Provider>
+            <Provider name="ClickFinder">NASN</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ESPN Classic Sport</Provider>
+            <Provider name="ClickFinder">ESPN Classic Sport</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Fashion TV</Provider>
+            <Provider name="ClickFinder">Fashion TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Gute Laune TV</Provider>
+            <Provider name="ClickFinder">Gute Laune TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Motors TV</Provider>
+            <Provider name="ClickFinder">Motors TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MTV Dance</Provider>
+            <Provider name="ClickFinder">MTV Dance</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">MTV Hits</Provider>
+            <Provider name="ClickFinder">MTV Hits</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">NRW TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Playboy TV</Provider>
+            <Provider name="ClickFinder">Playboy TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Playhouse Disney</Provider>
+            <Provider name="ClickFinder">Playhouse Disney</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sail TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Silverline</Provider>
+            <Provider name="ClickFinder">Silverline</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Spiegel TV</Provider>
+            <Provider name="ClickFinder">SPIEGEL TV XXP DIGITAL</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TIMM TV</Provider>
+            <Provider name="ClickFinder">TIMM</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Toon Disney</Provider>
+            <Provider name="ClickFinder">Toon Disney</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Toon Disney +1</Provider>
+            <Provider name="ClickFinder">Toon Disney +1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Trace TV</Provider>
+            <Provider name="ClickFinder">Trace.TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">TV gusto</Provider>
+            <Provider name="ClickFinder">tv.gusto</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Blue Movie 1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">DMC.TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">E! Entertainment</Provider>
+            <Provider name="ClickFinder">E! Entertainment Television</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">K TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Okto.TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">RTL TVI</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Super RTL CH</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Channel 21</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">TV5</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Kinowelt TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">K-TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">National Geographic</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">tv.gusto premium</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Sailing Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">RTL Crime</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MEZZO</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Animax</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MTV Base</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">e.clips</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MTV Music</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Zone Reality Europe</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MCM Top</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Zone Club</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Baby TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">The Karaoke Channel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">YAVIDO</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">ATV Avrupa</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Detski Mir / Teleclub</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Euro D</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Euro Star</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Fox Turk</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">iTVN</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">RTR-Planeta</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">TV Polonia</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">LIG TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">TVP Info</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">TVP Kultura</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Nashe Kino</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Show Turk</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">RTVi</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Türkmax</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">DELUXE MUSIC TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Kanal 7 Int</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">National Geographic Wild</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">TGRT EU</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">National Geographic HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Disney XD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">fashiontv HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">sportdigital.tv</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Disney Cinemagic HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Eurosport HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">B.TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">VIVAPlus</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MTV2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">fashion tv men</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Anixe HD2</Provider>
+        </Channel>
+    </Channels>
+</Importer>
