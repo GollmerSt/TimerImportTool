@@ -54,6 +54,7 @@ public class Miscellaneous extends MyTabPanel
 			{
 				new TVInfoDVBV( control ) ;
 				tvinfoDVBVButton.setText( GUIStrings.successful() ) ;
+				gui.setChanged() ;
 			}
 		}
 		
