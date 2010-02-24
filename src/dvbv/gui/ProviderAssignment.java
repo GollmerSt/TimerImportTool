@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.DefaultCellEditor;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;

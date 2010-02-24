@@ -461,11 +461,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 					int compNum = count ;
 					String sS ;
 					if ( ieS > string.length() )
-					{
-						if ( true ) break ;
-						sS = string.substring( ibS ) ;
-						compNum = string.length() - ibS ;
-					}
+						break ;
 					else
 						sS = string.substring( ibS, ieS ) ;
 					
