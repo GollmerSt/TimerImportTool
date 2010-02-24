@@ -237,7 +237,7 @@ public class DVBViewer {
 			}
 		}
 	}
-	public void setDVBViewerTimers() throws IOException, InterruptedException
+	public void setDVBViewerTimers() throws InterruptedException
 	{
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
@@ -266,8 +266,12 @@ public class DVBViewer {
 				rs += "-e " + Conversions.longToSvcDayString(  d.getStart() ) + " ";
 				rs += "-s " + Conversions.longToSvcTimeString( d.getStart() ) + " ";
 				rs += "-p " + Conversions.longToSvcTimeString( d.getEnd() ) + " ";
-				Runtime.getRuntime().exec( rs ).waitFor() ;
 				Log.out(true, rs) ;
+				try {
+					Runtime.getRuntime().exec( rs ).waitFor() ;
+				} catch (IOException e) {
+					throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
+				}
 			}
 		}
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
