@@ -88,6 +88,7 @@ public class GUI {
 			{
 				status = GUIStatus.APPLY ;
 				waitAPP() ;
+				isChanged = false ;
 			}
 			if ( button == executeButton )
 			{
