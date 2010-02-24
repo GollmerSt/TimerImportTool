@@ -359,8 +359,8 @@ public class ProviderAssignment  extends MyTabPanel{
 		
 		//this.deleteChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
 		JScrollPane scrollPane = new JScrollPane( this.table );
-		scrollPane.setPreferredSize( new Dimension( 16+150*Provider.getProviders().size(),200 ) ) ;
-		scrollPane.setMinimumSize( new Dimension( 16+150*Provider.getProviders().size(),200 ) ) ;
+		scrollPane.setPreferredSize( new Dimension( 150+150*Provider.getProviders().size(),200 ) ) ;
+		scrollPane.setMinimumSize( new Dimension( 150+150*Provider.getProviders().size(),200 ) ) ;
 		this.table.setFillsViewportHeight(false);
 		this.setupTable() ;
 		this.add( scrollPane, c ) ;
@@ -392,6 +392,7 @@ public class ProviderAssignment  extends MyTabPanel{
 	{
 	    this.sorter = new TableRowSorter<TableModel>(table.getModel());
 	    
+	    sorter.setComparator(  0, new MyTableComparator() ) ;
 	    sorter.setComparator(  1, new MyTableComparator() ) ;
 	    sorter.setComparator(  2, new MyTableComparator() ) ;
 	    
@@ -404,7 +405,9 @@ public class ProviderAssignment  extends MyTabPanel{
 		
 		this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		column = this.table.getColumnModel().getColumn( 0 ) ;
-		column.setPreferredWidth( 16 );
+		column.setPreferredWidth( 150 );
+//		column.setResizable( true ) ;
+//		column.setPreferredWidth( 16 );
 		for ( Iterator< Provider > itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
 		{
 			Provider p = itP.next() ;
@@ -549,9 +552,9 @@ public class ProviderAssignment  extends MyTabPanel{
 		 * 
 		 */
 		private static final long serialVersionUID = -4564280852966603471L;
-		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
+/*		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
 	    private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
-	    @Override
+*/	    @Override
 		public int getColumnCount() {
 			// TODO Auto-generated method stub
 			return Provider.getProviders().size() + 1 ;
@@ -563,9 +566,9 @@ public class ProviderAssignment  extends MyTabPanel{
 		@Override
 	    public Class getColumnClass(int col)
 		{
-			if ( col == 0 )
+/*			if ( col == 0 )
 				return ImageIcon.class ;
-			return Object.class ;
+*/			return MyTableObject.class ;
 		}
 		@Override
 		public boolean isCellEditable(int row, int col)
@@ -584,11 +587,19 @@ public class ProviderAssignment  extends MyTabPanel{
 				ChannelSet cs = control.getChannelSets().get(row) ;
 				if ( col == 0)
 				{
-					if ( cs.getDVBViewerChannel() != null )
-						return active ;
+					String dvbViewer = cs.getDVBViewerChannel() ;
+					if ( dvbViewer != null )
+					{
+						String parts[] = dvbViewer.split("\\|") ;
+						String out  = parts[ parts.length - 1 ] ;
+						return new MyTableObject( out, false ) ;
+					}
+					else
+						return new MyTableObject( "", false ) ;
+/*						return active ;
 					else
 						return inactive ;
-				}
+*/				}
 				Channel channel = cs.getChannel( col - 1 ) ;
 				if ( channel != null )
 					return new MyTableObject( channel.getName(), false ) ;
@@ -597,10 +608,11 @@ public class ProviderAssignment  extends MyTabPanel{
 			}
 			else
 			{
-				if ( col == 0 )
+/*				if ( col == 0 )
+					return "" ;
 					return inactive ;
 				else
-					return new MyTableObject( "", true ) ;
+*/					return new MyTableObject( "", true ) ;
 			}
 		}
 		@Override

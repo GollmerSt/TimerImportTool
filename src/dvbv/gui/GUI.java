@@ -195,7 +195,6 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-		this.frame.getRootPane().setDefaultButton(this.okButton);
 	    this.okButton.setText( GUIStrings.ok() ) ;
 	    this.okButton.addActionListener( new ButtonPressed() ) ;
 	    this.frame.add( this.okButton, c ) ;

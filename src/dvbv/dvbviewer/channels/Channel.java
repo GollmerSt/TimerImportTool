@@ -18,6 +18,7 @@ public class Channel {
 	public Channel()
 	{
 		this.channels = null ;
+		this.channelName = "<none>" ;
 	}
 	public void read()
 	{
@@ -37,7 +38,7 @@ public class Channel {
 	public String toString() { return this.channelName ; } ;
 	public String getChannelID()
 	{
-		if ( channelName == null )
+		if ( this.channels == null )
 			return null ;
 		long id = ( this.tuner.getType() + 1 ) << 29 ;
 		id |= this.tuner.getAudioPID() << 16 ;

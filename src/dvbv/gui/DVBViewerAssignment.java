@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -49,7 +50,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private final JButton channelOffsetButton = new JButton() ;
 	private final JButton globalOffsetButton = new JButton() ;
 	private final JComboBox mergeCombo = new JComboBox() ;
-	private TreeMap< String, Integer > dvbViewerChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
+	private TreeMap< String, Integer > dvbViewerLongChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
+	private HashMap< String, Integer > dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
 	private boolean ignoreNextDVBViewerChannelChange = false ;
 
 	public class MyComparator implements Comparator< String>
@@ -102,7 +104,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        ChannelSet channelSet = ((ChannelSetAssignment)value).channelSet ;
 	        if ( channelSet.getDVBViewerChannel() != null )
 	        {
-	        	if ( dvbViewerChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
+	        	if ( dvbViewerLongChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
 	        		if ( channelSet.getTimeOffsets().size() > 0 )
 	        			this.setIcon( this.offsets ) ;
 	        		else
@@ -139,10 +141,18 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	ChannelSet cs = csa.channelSet ;
 	    	String dvbViewerChannel = cs.getDVBViewerChannel() ;
 	    	int ix = 0 ;
-	    	if ( dvbViewerChannel != null && dvbViewerChannelAssignment.containsKey( dvbViewerChannel ))
-	    		ix = dvbViewerChannelAssignment.get( dvbViewerChannel ) ;
+	    	if ( dvbViewerChannel != null && dvbViewerLongChannelAssignment.containsKey( dvbViewerChannel ))
+	    	{
+	    		ix = dvbViewerLongChannelAssignment.get( dvbViewerChannel ) ;
+	    	}
+	    	else
+	    	{
+	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
+				String key = theBestChoice( name ) ;
+	    		ix = dvbViewerShortChannelAssignment.get( key ) ;
+	    	}
 	    	ignoreNextDVBViewerChannelChange = true ;
-	    	dvbViewerCombo.setSelectedIndex( ix ) ;
+    		dvbViewerCombo.setSelectedIndex( ix ) ;
 	    	mergeCombo.setSelectedIndex( cs.getMerge().ordinal() ) ;
 	    }
 	}
@@ -284,6 +294,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		dvbViewer.setBorder( tB ) ;
 		
 		dvbv.dvbviewer.channels.Channel emptyChannel = new dvbv.dvbviewer.channels.Channel() ;
+		
 
 		this.dvbViewerCombo.addItem( emptyChannel ) ;
 		this.dvbViewerCombo.addActionListener( new DVBViewerChannelSelected() ) ;
@@ -294,7 +305,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 		{
 			channelCount++ ;
 			dvbv.dvbviewer.channels.Channel channel = it.next() ;
-			this.dvbViewerChannelAssignment.put( channel.getChannelID(), channelCount) ;
+			this.dvbViewerLongChannelAssignment.put( channel.getChannelID(), channelCount) ;
+			this.dvbViewerShortChannelAssignment.put( channel.getChannelName(), channelCount) ;
 			this.dvbViewerCombo.addItem( channel ) ;
 		}
 		dvbViewer.add( this.dvbViewerCombo ) ;
@@ -422,5 +434,90 @@ public class DVBViewerAssignment extends MyTabPanel{
 			Provider p = (Provider)providerCombo.getSelectedItem() ;
 			this.fillProviderChannelList( p.getName() ) ;
 		}
+	}
+	private String theBestChoice( final String search )
+	{
+		String string = search.replaceAll("[-_\\.\\s]", "") ;
+		int count = 2 ;
+		ArrayList< String > results = new ArrayList< String >() ;
+		int charMax = -1 ;
+		for ( Iterator<dvbv.dvbviewer.channels.Channel> it = dvbViewerChannels.getChannels().values().iterator() ; it.hasNext() ; )
+		{
+			String choiceOrg = it.next().getChannelName() ;
+			String choice = choiceOrg.split( "\\(" )[0].trim() ;
+			choice = choice.replaceAll("[-_\\.\\s]", "") ;
+			int numChar = 0 ;
+			if( string.substring( 0, 1).equalsIgnoreCase( choice.substring( 0, 1) ) )
+				numChar = 2 ;
+			int iS = 0 ;
+			int iC = 0 ;
+			while ( iS < string.length() )
+			{
+				int firstS = string.length() ;
+				int firstC = choice.length() ;
+				for ( int ibS = iS ; ibS < string.length()  ; ibS++)
+				{
+					int ieS = ibS + count ;
+					int compNum = count ;
+					String sS ;
+					if ( ieS > string.length() )
+					{
+						if ( true ) break ;
+						sS = string.substring( ibS ) ;
+						compNum = string.length() - ibS ;
+					}
+					else
+						sS = string.substring( ibS, ieS ) ;
+					
+					for ( int ibC = iC ; ibC < choice.length() ; ibC++ )
+					{
+						int ieC = ibC + compNum ;
+						String sC ;
+						if ( ieC >= choice.length() )
+							sC = choice.substring( ibC ) ;
+						else
+							sC = choice.substring( ibC, ieC ) ;
+						if ( sS.equalsIgnoreCase( sC ) )
+						{
+							if ( firstC > ibC )
+							{
+								firstS = ibS ;
+								firstC = ibC ;
+								break ;
+							}
+						}
+					}
+					if ( firstC == iC )
+						break ;
+				}
+				if ( firstS >= string.length() )
+					break ;
+				iS = firstS + 1 ;
+				iC = firstC + 1 ;
+				numChar ++ ;
+			}
+			if ( numChar > charMax )
+			{
+				results.clear() ;
+				results.add( choiceOrg ) ;
+				charMax = numChar ;
+			}
+			else if ( numChar == charMax )
+				results.add( choiceOrg ) ;
+		}
+		String result = null ;
+		int minDiff = 99999 ;
+		for ( Iterator< String > it = results.iterator() ; it.hasNext() ; )
+		{
+			String s = it.next() ;
+			int diff = s.length() - string.length() ;
+			diff = diff < 0 ?-diff:diff ;
+			if ( diff < minDiff )
+			{
+				result = s ;
+				minDiff = diff ;
+			}
+		}
+		return result ;
 	}
 }
