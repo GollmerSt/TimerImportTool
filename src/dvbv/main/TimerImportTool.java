@@ -25,11 +25,6 @@ public final class TimerImportTool {
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER } ;
 	public static void main(String[] args) {
 		
-		String language = System.getProperty( "user.language" ) ;
-		System.out.println( language ) ;
-		
-		
-		
 		GUIStrings.setLanguage( "" ) ;
 
         try {

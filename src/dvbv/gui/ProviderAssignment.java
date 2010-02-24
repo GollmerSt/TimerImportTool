@@ -36,7 +36,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import dvbv.Resources.ResourceManager;
 import dvbv.control.Channel;
 import dvbv.control.ChannelSet;
 import dvbv.misc.Constants;
