@@ -725,12 +725,14 @@ public class ProviderService extends MyTabPanel {
 				this.lastProvider.setURL( this.urlBox.getText() ) ;
 				this.gui.setChanged() ;
 			}
-			if ( ! this.lastProvider.getUserName().equals( this.userNameBox.getText() ) )
+			if (    this.lastProvider.getUserName() != null
+				 && ! this.lastProvider.getUserName().equals( this.userNameBox.getText() ) )
 			{
 				this.lastProvider.setUserName( this.userNameBox.getText() ) ;
 				this.gui.setChanged() ;
 			}
-			if ( ! this.lastProvider.getPassword().equals( this.passwordBox.getText() ) )
+			if (    this.lastProvider.getPassword() != null
+				 && ! this.lastProvider.getPassword().equals( this.passwordBox.getText() ) )
 			{
 				this.lastProvider.setPassword( this.passwordBox.getText() ) ;
 				this.gui.setChanged() ;
