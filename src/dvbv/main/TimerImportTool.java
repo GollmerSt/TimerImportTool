@@ -129,14 +129,14 @@ public final class TimerImportTool {
 			{
 				case TVINFO : 
 					provider = Provider.getProvider( "TVInfo" ) ;
-					provider.setHistorie( ! getAll ) ;
+					provider.setFilter( ! getAll ) ;
 					break ;
 				case CLICKFINDER :
 					provider = Provider.getProvider( "ClickFinder" ) ;
 					break ;
 			}
 			
-			control.setDVBViewerEntries( provider ) ;
+			control.setDVBViewerEntries() ;
 			
 			showMessageBox |= provider.getMessage() ;
 			if ( provider.getVerbose() )
@@ -149,7 +149,7 @@ public final class TimerImportTool {
 
 			if ( provider == Provider.getProvider( "TVInfo" ))
 			{
-				AllTVInfoRecordings aR = new AllTVInfoRecordings( dvbViewer, 3, 3 );
+				AllTVInfoRecordings aR = new AllTVInfoRecordings( control, 3, 3 );
 				aR.process(getAll);
 				dvbViewer.setDVBViewerTimers();
 				aR.write() ;

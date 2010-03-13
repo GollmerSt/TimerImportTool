@@ -34,6 +34,7 @@ public class GUIStrings {
 	private static final String[] execute = { "Execute", "Ausführen" } ;
 	private static final String[] executing = { "Executing", "Ausführend" } ;
 	private static final String[] failed = { "Failed", "Fehler" } ;
+	private static final String[] filter = { "Filter", "Filter" } ;
 	private static final String[] global = { "Global" } ;
 	private static final String[] globalOffsets = { "Global lead / lag times ...", "Globale Vor- / Nachlaufzeiten ..." } ;
 	private static final String[] importTV = { "Import ", "Importiere " } ;
@@ -138,6 +139,7 @@ public class GUIStrings {
 	public static String execute() { return get( execute ) ; } ;
 	public static String executing() { return get( executing ) ; } ;
 	public static String failed() { return get( failed ) ; } ;
+	public static String filter() { return get( filter ) ; } ;
 	public static String global() { return get( global ) ; } ;
 	public static String globalOffsets() { return get( globalOffsets ) ; } ;
 	public static String importTV() { return get( importTV ) ; } ;

@@ -7,23 +7,53 @@ package dvbv.dvbviewer ;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Stack;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamSource;
 
 import dvbv.tvinfo.TVInfoRecording ;
+import dvbv.xml.StackXML;
 import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
+import dvbv.dvbviewer.DVBViewerEntry.ToDo;
+import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
+import dvbv.provider.Provider;
 
 public class DVBViewer {
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
+	private static final String NAME_RECORDING_FILE           = "DVBViewer.xml" ;
+
+	private static final StackXML<String> xmlPath = new StackXML< String >( "Processed", "Entry" ) ;
+
+	public class MaxID
+	{
+		long maxID = -1 ;
+		public long increment()
+		{
+			maxID++ ;
+			if ( maxID < 0L )
+				maxID = 0 ;			// wrap around
+			return( maxID ) ;
+		}
+	}
 
 	private DVBViewerService service = null ;
 	private ArrayList<DVBViewerEntry> recordEntries = null;
+	private MaxID maxID = new MaxID() ;
 	@SuppressWarnings("unused")
 	private ArrayList<TVInfoRecording> deletedRecodings = null;
 	private ArrayList< HashMap< String, Channel> > channelsLists 
@@ -32,7 +62,6 @@ public class DVBViewer {
 	private final String dataPath ;
 	private final String exeName ;
 	private final String pluginConfPath ;
-	private boolean generalMerge = false ;
 	private String separator      = ",," ;
 	public DVBViewer( String dataPath, String exeName )
 	{
@@ -50,7 +79,6 @@ public class DVBViewer {
 			for ( int ix = 0 ; ix < dvbv.provider.Provider.getProviders().size() ; ix++ )
 				channelsLists.add( new HashMap< String, Channel>() ) ;
 	}
-	public void setGeneralMerge( boolean merge ) { this.generalMerge = merge ; } ;
 	private String determineExePath( String dataPath )
 	{
 		String exePath = System.getProperty("user.dir") ;
@@ -146,25 +174,37 @@ public class DVBViewer {
 		if ( this.recordEntries == null )
 		{
 			if ( this.service != null && this.service.isEnabled() )
+			{
 				this.recordEntries = this.service.readTimers() ;
+				this.mergeXMLWithServiceData() ;
+			}
 			else
-				this.recordEntries = new ArrayList<DVBViewerEntry>() ;
+				this.recordEntries = this.readXML() ;
 		}
-		
 	}
-	public void addNewEntry( int type,
+	private void addRecordingEntry( DVBViewerEntry entry )
+	{
+		if ( entry.getID() < 0L )
+		{
+			entry.setID( this.maxID.increment() ) ;
+		}
+		this.recordEntries.add( entry ) ;
+	}
+	public void addNewEntry( Provider provider,
 							 String channel, 
 							 long start, 
 							 long end,
 							 String title )
 	{
 		this.checkRecordingEntries();
-		HashMap< String, Channel > channelMap = this.channelsLists.get( type ) ;
+		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
 		if ( ! channelMap.containsKey( channel ) )
 			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
 		Channel c =  channelMap.get( channel ) ;
 		TimeOffsets o = c.getOffsets() ;
+		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
+		long endOrg = end ;
 		end  += o.getPostOffset(end)*60000 ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
@@ -172,9 +212,31 @@ public class DVBViewer {
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
 											   start,
 											   end,
+											   startOrg,
+											   endOrg,
 											   title,
-											   c.getMerge( this.generalMerge ) ) ;
-		this.recordEntries.add( e ) ;
+											   c.getMerge( provider.getMerge() ),
+											   provider.isFiltered() ) ;
+
+		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry co = it.next() ; 
+			if ( co.isFilterElement() && e.isOrgEqual( co ) )
+			{
+				if ( provider.isFilterEnabled() )
+					return ;
+				else
+				{
+					co.prepareRemove() ;
+					if ( co.getServiceID() >= 0L )
+						co.setToDo( ToDo.DELETE ) ;
+					else
+						it.remove() ;
+					break ;
+				}
+			}
+		}
+		this.addRecordingEntry( e ) ;
 	}
 	public String getExePath()        { return this.exePath ; } ;
 	public String getExeName()        { return this.exeName ; } ;
@@ -229,7 +291,7 @@ public class DVBViewer {
 					{
 						DVBViewerEntry newEntry = o.update( i, this.separator ) ;
 						if ( newEntry != null )
-							this.recordEntries.add( newEntry ) ;
+							this.addRecordingEntry( newEntry ) ;
 						changed = true ;
 						break ;
 					}
@@ -258,7 +320,7 @@ public class DVBViewer {
 				this.service.setTimerEntry( d ) ;
 			}
 			else if (    d.getToDo() == DVBViewerEntry.ToDo.NEW
-					  || d.getToDo() == DVBViewerEntry.ToDo.NEW_UPDATED )
+/*					  || d.getToDo() == DVBViewerEntry.ToDo.NEW_UPDATED */ )
 			{
 				String rs = rsBase ;
 				rs += "-d \"" + d.getTitle() + "\" " ;
@@ -273,10 +335,98 @@ public class DVBViewer {
 					throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
 				}
 			}
+			if ( d.getToDo() == ToDo.DELETE )
+				it.remove() ;
 		}
+		this.writeXML();
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 	}
 	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
 	public void setSeparator( String s ) { this.separator = s ; } ;
+	public ArrayList<DVBViewerEntry> readXML()
+	{
+		ArrayList<DVBViewerEntry> result = new ArrayList<DVBViewerEntry>() ;
+		
+		HashMap< Long, DVBViewerEntry > idMap = new HashMap< Long, DVBViewerEntry >() ;
+		
+		File f = new File( this.dataPath + File.separator + NAME_RECORDING_FILE ) ;
+		if ( ! f.exists() )
+			return result ;
+		
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		try {
+			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
+			Stack<String>   stack = new Stack<String>();
+			
+			while( reader.hasNext() ) {
+				XMLEvent ev = reader.nextEvent();
+				if( ev.isStartElement() )
+				{
+					stack.push( ev.asStartElement().getName().getLocalPart() );
+					if ( ! stack.equals( DVBViewer.xmlPath ) )
+						continue ;
+					DVBViewerEntry entry = DVBViewerEntry.readXML( reader, ev, f ) ;
+					idMap.put( entry.getID(), entry ) ;
+					entry.setID( this.maxID.increment() ) ;
+					result.add( entry ) ;
+					stack.pop();
+					continue ;
+				}
+			    if( ev.isEndElement() ) stack.pop();
+			}
+			reader.close();
+		} catch (XMLStreamException e) {
+			throw new ErrorClass( e,   "Error on readin XML file \"" + f.getName() 
+					                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
+					                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+		}
+		catch (Exception  e) {
+			throw new ErrorClass( e, "Unexpected error on read XML file \"" + f.getName() ) ;
+		}
+		
+		DVBViewerEntry.assignMergedElements( idMap ) ;
+
+		DVBViewerEntry.removeOutdatedEntries( result ) ;
+		
+		return result ;
+	}
+	public void writeXML()
+	{
+		XMLOutputFactory output = XMLOutputFactory.newInstance ();
+		 
+		XMLStreamWriter writer = null ;
+		File file = new File( this.dataPath + File.separator + NAME_RECORDING_FILE ) ;
+
+		try {
+			try {
+				writer = output.createXMLStreamWriter(
+						new FileOutputStream( file), "ISO-8859-1");
+			} catch (FileNotFoundException e) {
+				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
+			}
+			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
+	        sw.setIndent( "    " );
+			sw.writeStartDocument("ISO-8859-1","1.0");
+			sw.writeStartElement("Processed");
+			for ( DVBViewerEntry e : recordEntries )
+			{
+				e.writeXML( sw, file ) ;
+			}
+			sw.writeEndElement();
+			sw.writeEndDocument();
+			sw.flush();
+			sw.close();
+		} catch (XMLStreamException e) {
+			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getAbsolutePath() 
+	                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
+	                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+		}
+	}
+	public void mergeXMLWithServiceData()
+	{
+		ArrayList<DVBViewerEntry> lastTimers = readXML() ;
+		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
+		this.recordEntries = lastTimers ;
+	}
 }

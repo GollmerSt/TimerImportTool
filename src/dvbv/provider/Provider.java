@@ -31,7 +31,6 @@ public abstract class Provider {
 	private final boolean hasURL ;
 	private final boolean canExecute ;
 	private final boolean canTest ;
-	private final boolean hasHistory ;
 	private final boolean mustInstall ;
 	private final String name ;
 	protected String url = "" ;
@@ -41,13 +40,14 @@ public abstract class Provider {
 	private boolean merge = false ;
 	private boolean verbose = false ;
 	private boolean message = false ;
-	private boolean history = false ;
+	private boolean filter = false ;
+	private boolean isFilterEnabled = true ;
 	public Provider( boolean hasAccount,
 			         boolean hasURL,
 			         String name,
 			         boolean canExecute,
 			         boolean canTest,
-			         boolean hasHistory,
+			         boolean filter,
 			         boolean mustInstall )
 	{
 		this.hasAccount   = hasAccount ;
@@ -56,9 +56,7 @@ public abstract class Provider {
 		this.id = Provider.providers.size() ;
 		this.canExecute = canExecute ;
 		this.canTest = canTest ;
-		this.hasHistory = hasHistory ;
-		if ( hasHistory )
-			this.history = true ;
+		this.filter = filter ;
 		this.mustInstall = mustInstall ;
 		Provider.names.add( name ) ;
 		Provider.providers.add( this ) ;
@@ -74,8 +72,10 @@ public abstract class Provider {
 	public void setPassword( final String password) { this.password = password ; } ;
 	public int getTriggerAction() { return this.triggerAction ; } ;
 	public void setTriggerAction( int triggerAction ) { this.triggerAction = triggerAction ; } ;
-	public boolean getHistorie() { return this.history ; } ;
-	public void setHistorie( boolean history ) { this.history = history ; } ;
+	public boolean isFiltered() { return this.filter ; } ;
+	public void setFilter( boolean filter ) { this.filter = filter ; } ;
+	public boolean isFilterEnabled() { return this.isFilterEnabled ; } ;
+	public void setFilterEnabled( boolean enable ) { this.isFilterEnabled = enable ; } ;
 	public boolean getMerge()   { return this.merge ; } ;
 	public void setMerge( boolean m)   { this.merge = m ; } ;
 	public boolean getVerbose() { return this.verbose ; } ;
@@ -84,7 +84,6 @@ public abstract class Provider {
 	public void setMessage( boolean message) { this.message = message ; } ;
 	public boolean hasURL() { return this.hasURL ; } ;
 	public boolean hasAccount() { return this.hasAccount ; } ;
-	public boolean hasHistory() { return this.hasHistory ; } ;
 	public boolean canExecute() { return this.canExecute ; } ;
 	public boolean canTest() { return this.canTest ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
@@ -152,6 +151,7 @@ public abstract class Provider {
 					boolean verbose = false ;
 					boolean message = false ;
 					boolean merge = false ;
+					boolean filter = false ;
 					
 					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
@@ -180,6 +180,8 @@ public abstract class Provider {
 		            			verbose = Conversions.getBoolean( value, ev, f ) ;
 			            	else if ( attributeName.equals( "message") )
 		            			message = Conversions.getBoolean( value, ev, f ) ;
+			            	else if ( attributeName.equals( "filter") )
+		            			filter = Conversions.getBoolean( value, ev, f ) ;
 		            	}
 					}
 					provider = Provider.getProvider( name ) ;
@@ -191,6 +193,7 @@ public abstract class Provider {
 					provider.verbose = verbose ;
 					provider.message = message ;
 					provider.merge = merge ;
+					provider.filter = filter ;
 				}
 			}
 			if ( ev.isCharacters() )
@@ -233,6 +236,7 @@ public abstract class Provider {
 			  sw.writeAttribute( "merge",   provider.merge ) ;
 			  sw.writeAttribute( "message", provider.message ) ;
 			  sw.writeAttribute( "verbose", provider.verbose ) ;
+			  sw.writeAttribute( "filter", provider.filter ) ;
 			  if ( provider.hasURL )
 			  {
 				  sw.writeStartElement( "Url") ;

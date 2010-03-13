@@ -60,7 +60,7 @@ public class Control
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
-	
+		
 	public Control( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
@@ -301,22 +301,21 @@ public class Control
 	        	if      ( stack.equals( this.pathChannel ) )
 					try {
 						this.channelSets.add( channelSet ) ;
-//						this.dvbViewer.addChannel(dvbViewerChannel, tvInfoChannel, clickFinderChannel, channelOffsets, channelMerge ) ;
 					} catch (ErrorClass e) {
 						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
 					}
 	        	stack.pop();
 	        }
-    		this.dvbViewer.setService(
-    				new DVBViewerService( dvbServiceEnable, dvbServiceURL, dvbServiceName, dvbServicePassword )
-    		) ;
-    		this.dvbViewer.setEnableWOL( dvbServiceEnableWOL ) ;
-    		if ( dvbServiceEnableWOL && ( dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null ) )
-    			throw new ErrorClass( ev, "Broadcast address or mac addres not given in file \"" + f.getName() + "\"" ) ;
-    		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
-    		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
-    		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
 		}
+		this.dvbViewer.setService(
+				new DVBViewerService( dvbServiceEnable, dvbServiceURL, dvbServiceName, dvbServicePassword )
+		) ;
+		this.dvbViewer.setEnableWOL( dvbServiceEnableWOL ) ;
+		if ( dvbServiceEnableWOL && ( dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null ) )
+			throw new ErrorClass( "Broadcast address or mac addres not given in file \"" + f.getName() + "\"" ) ;
+		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
+		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
+		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
 		try {
 			reader.close() ;
 		} catch (XMLStreamException e) {
@@ -399,10 +398,9 @@ public class Control
 			e.printStackTrace();
 		}
 	}
-	public void setDVBViewerEntries( Provider provider )
+	public void setDVBViewerEntries()
 	{
 		this.dvbViewer.setSeparator( this.separator ) ;
-		this.dvbViewer.setGeneralMerge( provider.getMerge() ) ;
 		for ( Iterator<ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ;)
 		{
 			this.dvbViewer.addChannel( it.next() ) ;

@@ -66,7 +66,7 @@ public class ClickFinder extends Provider {
 			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
 		}
 		long end = start + milliSeconds ;
-		this.dvbViewer.addNewEntry( this.getID(), channel, start, end, title) ;
+		this.dvbViewer.addNewEntry( this, channel, start, end, title ) ;
 		this.dvbViewer.merge() ;
 	}
 	

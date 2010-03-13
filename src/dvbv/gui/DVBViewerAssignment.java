@@ -11,12 +11,14 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -26,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.TitledBorder;
@@ -36,7 +39,9 @@ import dvbv.Resources.ResourceManager;
 import dvbv.control.ChannelSet;
 import dvbv.control.Channel;
 import dvbv.control.TimeOffsets;
+import dvbv.misc.Conversions;
 import dvbv.misc.Enums;
+import dvbv.misc.Function;
 import dvbv.provider.Provider;
 
 
@@ -132,8 +137,29 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        }
 	    }
 	}
+	public class DeleteAction extends AbstractAction
+	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -6583528140071524896L;
+
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+	        int ix = providerChannelList.getSelectedIndex() ;
+	        if ( ix >= 0 )
+	        {
+	        	gui.setChanged() ;
+	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
+	        	csa.channelSet.setDVBViewerChannel( null ) ;
+	        	DefaultListModel model = (DefaultListModel) providerChannelList.getModel() ;
+	        	model.set( ix, csa) ;
+	        } 
+		}
+	}
 	public class ProviderChannelSelected implements ListSelectionListener {
-	    public void valueChanged(ListSelectionEvent e)
+		public void valueChanged(ListSelectionEvent e)
 	    {
 	    	ChannelSetAssignment csa = (ChannelSetAssignment)((JList)e.getSource()).getSelectedValue() ;
 	    	if ( csa == null )
@@ -148,8 +174,25 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	else
 	    	{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
-				String key = theBestChoice( name ) ;
-	    		ix = dvbViewerShortChannelAssignment.get( key ) ;
+	    	    @SuppressWarnings("unchecked")
+				Object o = Conversions.theBestChoice( name, (Collection) dvbViewerChannels.getChannels().values(),
+						2, 2, new Function()
+						{
+							public String stringToString( String in )
+							{
+								String out = in.split( "\\(" )[0].trim() ;
+								out = out.toLowerCase() ;
+								out = Conversions.replaceDiacritical( out ) ;
+								out = out.replaceAll("[-_\\.\\s]", "") ;
+								if ( out.equals( "rtl"))
+									out = "rtltelevision" ;
+								if ( out.equals( "ard"))
+									out = "daserste" ;
+								return out ;
+							}
+						}
+				) ;
+	    		ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
 	    	}
 	    	ignoreNextDVBViewerChannelChange = true ;
     		dvbViewerCombo.setSelectedIndex( ix ) ;
@@ -267,6 +310,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.providerChannelList.setCellRenderer( new SpecialCellRenderer() ) ;
 		this.providerChannelList.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
 		this.providerChannelList.addListSelectionListener(  new ProviderChannelSelected() ) ;
+		this.providerChannelList.getInputMap().put( KeyStroke.getKeyStroke("DELETE"),"Del pressed") ;
+		this.providerChannelList.getActionMap().put("Del pressed", new DeleteAction() ) ;
+
 		this.fillProviderChannelList( control.getDefaultProvider() ) ;
 	    JScrollPane listScroller = new JScrollPane( this.providerChannelList );
 
@@ -434,86 +480,5 @@ public class DVBViewerAssignment extends MyTabPanel{
 			Provider p = (Provider)providerCombo.getSelectedItem() ;
 			this.fillProviderChannelList( p.getName() ) ;
 		}
-	}
-	private String theBestChoice( final String search )
-	{
-		String string = search.replaceAll("[-_\\.\\s]", "") ;
-		int count = 2 ;
-		ArrayList< String > results = new ArrayList< String >() ;
-		int charMax = -1 ;
-		for ( Iterator<dvbv.dvbviewer.channels.Channel> it = dvbViewerChannels.getChannels().values().iterator() ; it.hasNext() ; )
-		{
-			String choiceOrg = it.next().getChannelName() ;
-			String choice = choiceOrg.split( "\\(" )[0].trim() ;
-			choice = choice.replaceAll("[-_\\.\\s]", "") ;
-			int numChar = 0 ;
-			if( string.substring( 0, 1).equalsIgnoreCase( choice.substring( 0, 1) ) )
-				numChar = 2 ;
-			int iS = 0 ;
-			int iC = 0 ;
-			while ( iS < string.length() )
-			{
-				int firstS = string.length() ;
-				int firstC = choice.length() ;
-				for ( int ibS = iS ; ibS < string.length()  ; ibS++)
-				{
-					int ieS = ibS + count ;
-					int compNum = count ;
-					String sS ;
-					if ( ieS > string.length() )
-						break ;
-					else
-						sS = string.substring( ibS, ieS ) ;
-					
-					for ( int ibC = iC ; ibC < choice.length() ; ibC++ )
-					{
-						int ieC = ibC + compNum ;
-						String sC ;
-						if ( ieC >= choice.length() )
-							sC = choice.substring( ibC ) ;
-						else
-							sC = choice.substring( ibC, ieC ) ;
-						if ( sS.equalsIgnoreCase( sC ) )
-						{
-							if ( firstC > ibC )
-							{
-								firstS = ibS ;
-								firstC = ibC ;
-								break ;
-							}
-						}
-					}
-					if ( firstC == iC )
-						break ;
-				}
-				if ( firstS >= string.length() )
-					break ;
-				iS = firstS + 1 ;
-				iC = firstC + 1 ;
-				numChar ++ ;
-			}
-			if ( numChar > charMax )
-			{
-				results.clear() ;
-				results.add( choiceOrg ) ;
-				charMax = numChar ;
-			}
-			else if ( numChar == charMax )
-				results.add( choiceOrg ) ;
-		}
-		String result = null ;
-		int minDiff = 99999 ;
-		for ( Iterator< String > it = results.iterator() ; it.hasNext() ; )
-		{
-			String s = it.next() ;
-			int diff = s.length() - string.length() ;
-			diff = diff < 0 ?-diff:diff ;
-			if ( diff < minDiff )
-			{
-				result = s ;
-				minDiff = diff ;
-			}
-		}
-		return result ;
 	}
 }

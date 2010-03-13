@@ -51,6 +51,7 @@ public class ProviderService extends MyTabPanel {
 	private final JCheckBox verboseBox = new JCheckBox() ;
 	private final JCheckBox messageBox = new JCheckBox() ;
 	private final JCheckBox mergeBox = new JCheckBox() ;
+	private final JCheckBox filterBox = new JCheckBox() ;
 	private final JButton providerButton = new JButton() ;
 	private final JButton installButton = new JButton() ;
 	private final JButton uninstallButton = new JButton() ;
@@ -117,6 +118,7 @@ public class ProviderService extends MyTabPanel {
 	        verboseBox.setSelected( p.getVerbose() ) ;
 	        messageBox.setSelected( p.getMessage() ) ;
 	        mergeBox.setSelected( p.getMerge() ) ;
+	        filterBox.setSelected( p.isFiltered() ) ;
     		installButton.setText( GUIStrings.install() ) ;
     		uninstallButton.setText( GUIStrings.uninstall() ) ;
 	        installButton.setEnabled( p.mustInstall() ) ;
@@ -145,6 +147,8 @@ public class ProviderService extends MyTabPanel {
 				p.setMessage( messageBox.isSelected() ) ;
 			else if ( source == mergeBox )
 				p.setMerge( mergeBox.isSelected() ) ;
+			else if ( source ==filterBox )
+				p.setFilter( filterBox.isSelected() ) ;
 			gui.setChanged() ;
 		}
 	}
@@ -394,22 +398,25 @@ public class ProviderService extends MyTabPanel {
 
 
 		
+		JPanel checkBoxPanel = new JPanel( new GridBagLayout() ) ;
+
+		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 5 ;
+		c.gridy      = 0 ;
 		//c.weightx    = 0.5 ;
 		c.fill       = 2 ;
 		c.insets     = i ;
 		
 		this.verboseBox.setText( GUIStrings.verbose() ) ;
 		this.verboseBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
-		providerBox.add( this.verboseBox, c ) ;
+		checkBoxPanel.add( this.verboseBox, c ) ;
 		
 
 		
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 5 ;
+		c.gridy      = 0 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -417,13 +424,13 @@ public class ProviderService extends MyTabPanel {
 		
 		this.messageBox.setText( GUIStrings.message() ) ;
 		this.messageBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
-		providerBox.add( this.messageBox, c ) ;
+		checkBoxPanel.add( this.messageBox, c ) ;
 		
 
 		
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
-		c.gridy      = 5 ;
+		c.gridy      = 0 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -431,8 +438,32 @@ public class ProviderService extends MyTabPanel {
 		
 		this.mergeBox.setText( GUIStrings.merge() ) ;
 		this.mergeBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
-		providerBox.add( this.mergeBox, c ) ;
+		checkBoxPanel.add( this.mergeBox, c ) ;
 		
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 0 ;
+		c.weightx    = 0.5 ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.insets     = i ;
+		
+		this.filterBox.setText( GUIStrings.filter() ) ;
+		this.filterBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
+		checkBoxPanel.add( this.filterBox, c ) ;
+		
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 5 ;
+		c.weightx    = 0.5 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.insets     = i ;
+		
+		providerBox.add( checkBoxPanel, c ) ;
 
 		
 		c = new GridBagConstraints();
@@ -494,7 +525,7 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.BOTH ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 
-		providerBox.setPreferredSize( new Dimension( 300, 300 ) ) ;
+		providerBox.setPreferredSize( new Dimension( 350, 300 ) ) ;
 		this.add( providerBox, c ) ;
 
 	

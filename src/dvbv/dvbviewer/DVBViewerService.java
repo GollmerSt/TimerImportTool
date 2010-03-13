@@ -232,7 +232,12 @@ public class DVBViewerService {
 		if ( e.mustUpdated() )
 		{
 			command = "timeredit" ;
-			query += "&id=" + Long.toString( e.getID() ) ;
+			query += "&id=" + Long.toString( e.getServiceID() ) ;
+		}
+		else if ( e.mustDeleted() )
+		{
+			command = "timerdelete" ;
+			query += "&id=" + Long.toString( e.getServiceID() ) ;
 		}
 		else
 			command = "timeradd" ;
@@ -258,6 +263,8 @@ public class DVBViewerService {
 	} ;
 	public ArrayList<DVBViewerEntry> readTimers()
 	{
+		this.getVersion() ;
+		
 		ArrayList<DVBViewerEntry> result = new ArrayList<DVBViewerEntry>() ;
 		InputStream iS = connect( "timerlist" ) ; 
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
@@ -265,6 +272,7 @@ public class DVBViewerService {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( iS );
 			Stack<String>   stack = new Stack<String>() ;
 			
+			boolean enable      = true ;
 			String channel     = null;
 			String dateString  = null ;
 			String startString = null ;
@@ -370,7 +378,7 @@ public class DVBViewerService {
 						}
 						if ( start > end )
 							end += Constants.DAYMILLSEC ;
-						DVBViewerEntry entry = new DVBViewerEntry( id, channel, start, end, title, true ) ;
+						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, title, true ) ;
 						result.add(entry) ;
 					}
 					stack.pop() ;

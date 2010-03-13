@@ -4,8 +4,11 @@
 
 package dvbv.misc ;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -127,7 +130,7 @@ public final class Conversions {
 		result += svcDayFormat.parse( date ).getTime() ;
 		return result ;
 	}
-	public static String replaceDiacritical( String s )
+	public static String replaceDiacritical( final String s )
 	{
 		if ( ! s.matches(".*[‰ˆ¸ƒ÷‹ﬂ].*") ) //\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]") )
 			return s ;
@@ -144,6 +147,55 @@ public final class Conversions {
 		
 		//System.out.println( result ) ;
 		
+		return result ;
+	}
+	@SuppressWarnings("unchecked")
+	public static Object theBestChoice( String search, Collection list,
+			                            int weightOfFirstChar, int charCount,
+			                            Function rework )
+	{
+		String string = rework.stringToString( search ) ;
+		ArrayList< Object > results = new ArrayList< Object >() ;
+		int charMax = -1 ;
+		for ( Iterator it = list.iterator() ; it.hasNext() ; )
+		{
+			Object choiceObject = it.next() ;
+			String choiceOrg = choiceObject.toString() ;
+			String choice = rework.stringToString( choiceOrg ) ;
+			int numChar = 0 ;
+			if( string.trim().substring( 0, 1).equalsIgnoreCase( choice.trim().substring( 0, 1) ) )
+				numChar = weightOfFirstChar ;
+			int maxEqualLength = 0 ;
+			
+			for ( int ib = 0 ; ib < string.length() ; ib++ )
+				for ( int ie = ib + 1 ; ie <= string.length() ; ie++ )
+					if ( choice.contains( string.substring( ib, ie ) ) )
+						maxEqualLength = maxEqualLength < ie-ib ? ie-ib : maxEqualLength ;
+			numChar += maxEqualLength ;
+
+			if ( numChar > charMax )
+			{
+				results.clear() ;
+				results.add( choiceObject ) ;
+				charMax = numChar ;
+			}
+			else if ( numChar == charMax )
+				results.add( choiceObject ) ;
+		}
+		Object result = null ;
+		int minDiff = 99999 ;
+		for ( Iterator< Object > it = results.iterator() ; it.hasNext() ; )
+		{
+			Object o = it.next() ;
+			String s = o.toString() ;
+			int diff = s.length() - string.length() ;
+			diff = diff < 0 ?-diff:diff ;
+			if ( diff < minDiff )
+			{
+				result = o ;
+				minDiff = diff ;
+			}
+		}
 		return result ;
 	}
 }

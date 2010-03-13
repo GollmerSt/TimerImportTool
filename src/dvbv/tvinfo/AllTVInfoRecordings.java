@@ -26,15 +26,17 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import dvbv.control.Control;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.misc.* ;
+import dvbv.xml.StackXML;
 
 
 public final class AllTVInfoRecordings
 {
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
-	private final Stack<String> xmlPath ;
+	private final StackXML<String> xmlPath = new StackXML< String >( "TVInfoProcessed", "entry" ) ;
 	private final Stack<String> xmlPathTVinfoEntry ;
 	private final Stack<String> xmlPathTVinfoTitle ;
 	private HashMap<String,TVInfoRecording> map = null ;
@@ -42,26 +44,26 @@ public final class AllTVInfoRecordings
 	private int days = 0 ;
 	private int syncs = 0;
 	private String dataDirectory = null ;
-	private DVBViewer dvbViewer = null ;
-	public AllTVInfoRecordings( DVBViewer dvbViewer, int days, int syncs )
+	private final DVBViewer dvbViewer ;
+	private final Control control ;
+	public AllTVInfoRecordings( Control control, int days, int syncs )
 	{
 		this.map           = new HashMap<String,TVInfoRecording> ();
 		this.tvInfo        = (TVInfo) dvbv.provider.Provider.getProvider( "TVInfo") ;
-		this.dvbViewer     = dvbViewer ;
+		this.control       = control ;
+		this.dvbViewer     = control.getDVBViewer() ;
 		this.days          = days ;
 		this.syncs         = syncs ;
 		this.dataDirectory = dvbViewer.getDataPath() ;
 		
-		Stack<String> p ;
-		p = new Stack<String>() ;
-		Collections.addAll( p, "TVInfoProcessed", "entry" ) ;
-		this.xmlPath = p ;
-		p = new Stack<String>() ;
-		Collections.addAll( p, "epg_schedule", "epg_schedule_entry" ) ;
-		this.xmlPathTVinfoEntry = p ;
-		p = new Stack<String>() ;
-		Collections.addAll( p, "epg_schedule", "epg_schedule_entry", "title");
-		this.xmlPathTVinfoTitle = p ;
+//		this.xmlPath = new Stack<String>() ;
+//		Collections.addAll( this.xmlPath, "TVInfoProcessed", "entry" ) ;
+
+		this.xmlPathTVinfoEntry = new Stack<String>() ;
+		Collections.addAll( this.xmlPathTVinfoEntry, "epg_schedule", "epg_schedule_entry" ) ;
+
+		this.xmlPathTVinfoTitle = new Stack<String>() ;
+		Collections.addAll( this.xmlPathTVinfoTitle, "epg_schedule", "epg_schedule_entry", "title");
 	}
 	private boolean add( String tvInfoID,
 			         String channel,
@@ -206,11 +208,9 @@ public final class AllTVInfoRecordings
 	@SuppressWarnings("unchecked")
 	public void process( boolean all )
 	{
-		int providerType = dvbv.provider.Provider.getProviderID( "TVInfo" ) ;
-
-		if ( this.tvInfo.getHistorie() )
+/*		if ( this.tvInfo.isFilterEnabled() )
 			this.read() ;
-		
+*/		
 		InputStream iS = null ;
 		try {
 			iS = this.tvInfo.connect();
@@ -280,7 +280,7 @@ public final class AllTVInfoRecordings
 					if ( stack.equals( this.xmlPathTVinfoTitle ) )
 					{
 						title = ev.asCharacters().getData() ;
-						this.dvbViewer.addNewEntry( providerType, channel, start, end, title) ;
+						this.dvbViewer.addNewEntry( this.tvInfo, channel, start, end, title) ;
 					}
 				}					
 				if( ev.isEndElement() ) stack.pop();
