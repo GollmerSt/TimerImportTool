@@ -28,7 +28,6 @@ import dvbv.tvinfo.TVInfoRecording ;
 import dvbv.xml.StackXML;
 import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
-import dvbv.dvbviewer.DVBViewerEntry.ToDo;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
@@ -190,6 +189,32 @@ public class DVBViewer {
 		}
 		this.recordEntries.add( entry ) ;
 	}
+	private void prepareProvider( Provider provider )
+	{
+		if ( provider.isPrepared() )
+			return ;
+		
+		provider.setPrepared( true ) ;
+				
+		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry e = it.next() ;
+			if ( e.getProvider() == provider && ! e.isMergeElement() )
+			{
+				e.setMissing() ;
+			}
+		}
+	}
+	private void removeOutdatedProviderEntries()
+	{		
+		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry e = it.next() ;
+			if ( e.isOutdatedByProvider() )
+				e.setToDelete() ;
+		}
+	}
+	
 	public void addNewEntry( Provider provider,
 							 String channel, 
 							 long start, 
@@ -197,6 +222,7 @@ public class DVBViewer {
 							 String title )
 	{
 		this.checkRecordingEntries();
+		this.prepareProvider( provider ) ;
 		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
 		if ( ! channelMap.containsKey( channel ) )
 			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
@@ -216,20 +242,21 @@ public class DVBViewer {
 											   endOrg,
 											   title,
 											   c.getMerge( provider.getMerge() ),
-											   provider.isFiltered() ) ;
+											   provider ) ;
 
 		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
 		{
 			DVBViewerEntry co = it.next() ; 
 			if ( co.isFilterElement() && e.isOrgEqual( co ) )
 			{
+				co.resetMissing() ;
 				if ( provider.isFilterEnabled() )
 					return ;
 				else
 				{
 					co.prepareRemove() ;
 					if ( co.getServiceID() >= 0L )
-						co.setToDo( ToDo.DELETE ) ;
+						co.setToDelete() ;
 					else
 						it.remove() ;
 					break ;
@@ -301,6 +328,9 @@ public class DVBViewer {
 	}
 	public void setDVBViewerTimers() throws InterruptedException
 	{
+		if ( this.service != null && this.service.isEnabled() )
+			this.removeOutdatedProviderEntries();
+			
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
 		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
@@ -335,7 +365,7 @@ public class DVBViewer {
 					throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
 				}
 			}
-			if ( d.getToDo() == ToDo.DELETE )
+			if ( d.mustDeleted() )
 				it.remove() ;
 		}
 		this.writeXML();

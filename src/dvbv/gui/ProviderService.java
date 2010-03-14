@@ -30,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import dvbv.dvbviewer.DVBViewerService;
 import dvbv.misc.ErrorClass;
+import dvbv.provider.OutDatedInfo;
 import dvbv.provider.Provider;
 
 
@@ -48,6 +49,12 @@ public class ProviderService extends MyTabPanel {
 	private final JLabel passwordLabel = new JLabel() ;
 	private final JTextField passwordBox = new JTextField() ;
 	private final JSpinner triggerBox = new JSpinner();
+	
+	private final JLabel sinceLabel = new JLabel() ;
+	private final JSpinner sinceBox = new JSpinner();
+	private final JLabel sinceSyncLabel = new JLabel() ;
+	private final JSpinner sinceSyncBox = new JSpinner();
+	
 	private final JCheckBox verboseBox = new JCheckBox() ;
 	private final JCheckBox messageBox = new JCheckBox() ;
 	private final JCheckBox mergeBox = new JCheckBox() ;
@@ -74,6 +81,23 @@ public class ProviderService extends MyTabPanel {
 	private final JButton serviceButton = new JButton() ;
 	
 	private Provider lastProvider = null ;
+	
+	private void setOutDated( final OutDatedInfo o )
+	{
+		OutDatedInfo i = o ;
+		boolean enable = true ;
+		if ( i == null )
+		{
+			i = new OutDatedInfo() ;
+			enable = false ;
+		}
+		this.sinceLabel.    setEnabled( enable ) ;
+		this.sinceBox.      setEnabled( enable ) ;
+		this.sinceSyncLabel.setEnabled( enable ) ;
+		this.sinceSyncBox.  setEnabled( enable ) ;
+		this.sinceBox.setValue( i.getMissingSince() ) ;
+		this.sinceSyncBox.setValue( i.getMissingSyncSince() ) ;
+	}
 
 	public class ProviderSelected implements ActionListener
 	{
@@ -115,6 +139,7 @@ public class ProviderService extends MyTabPanel {
 	        	passwordBox.setText( "" ) ;
 	        	
 	        }
+	        setOutDated( p.getOutDatedLimits() ) ;
 	        verboseBox.setSelected( p.getVerbose() ) ;
 	        messageBox.setSelected( p.getMessage() ) ;
 	        mergeBox.setSelected( p.getMerge() ) ;
@@ -400,10 +425,63 @@ public class ProviderService extends MyTabPanel {
 		
 		JPanel checkBoxPanel = new JPanel( new GridBagLayout() ) ;
 
-		
+
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
+		c.fill       = GridBagConstraints.VERTICAL ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.insets     = i ;
+		
+		this.sinceLabel.setText( GUIStrings.missingSince() ) ;
+		checkBoxPanel.add( this.sinceLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 0 ;
+//		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.insets     = i ;
+		
+		model = new SpinnerNumberModel(
+                0, //initial value
+                0, 99, 1 ) ;
+		this.sinceBox.setModel( model );
+		checkBoxPanel.add( this.sinceBox, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 0 ;
+		c.fill       = GridBagConstraints.VERTICAL ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.insets     = i ;
+		
+		this.sinceSyncLabel.setText( GUIStrings.missingSinceSync() ) ;
+		checkBoxPanel.add( this.sinceSyncLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.insets     = i ;
+		
+		model = new SpinnerNumberModel(
+                0, //initial value
+                0, 99, 1 ) ;
+		this.sinceSyncBox.setModel( model );
+		checkBoxPanel.add( this.sinceSyncBox, c ) ;
+
+		
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 1 ;
 		//c.weightx    = 0.5 ;
 		c.fill       = 2 ;
 		c.insets     = i ;
@@ -416,7 +494,7 @@ public class ProviderService extends MyTabPanel {
 		
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 0 ;
+		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -430,7 +508,7 @@ public class ProviderService extends MyTabPanel {
 		
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
-		c.gridy      = 0 ;
+		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -444,7 +522,7 @@ public class ProviderService extends MyTabPanel {
 		
 		c = new GridBagConstraints();
 		c.gridx      = 3 ;
-		c.gridy      = 0 ;
+		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -461,7 +539,8 @@ public class ProviderService extends MyTabPanel {
 		c.gridy      = 5 ;
 		c.weightx    = 0.5 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.insets     = i ;
+		c.insets     = new Insets( 0, 0, 0, 0 );
+		c.fill       = GridBagConstraints.HORIZONTAL ;
 		
 		providerBox.add( checkBoxPanel, c ) ;
 
@@ -527,6 +606,7 @@ public class ProviderService extends MyTabPanel {
 
 		providerBox.setPreferredSize( new Dimension( 350, 300 ) ) ;
 		this.add( providerBox, c ) ;
+        this.setOutDated( defaultProvider.getOutDatedLimits() ) ;
 
 	
 	
@@ -773,6 +853,22 @@ public class ProviderService extends MyTabPanel {
 			{
 				this.lastProvider.setTriggerAction( trigger ) ;
 				this.gui.setChanged() ;
+			}
+			if ( this.lastProvider.getOutDatedLimits() != null )
+			{
+				OutDatedInfo i = this.lastProvider.getOutDatedLimits() ;
+				int missingSince = ((Integer)this.sinceBox.getValue()).intValue() ;
+				if ( missingSince != i.getMissingSince() )
+				{
+					i.setMissingSince( missingSince ) ;
+					this.gui.setChanged() ;
+				}
+				int missingSyncSince = ((Integer)this.sinceSyncBox.getValue()).intValue() ;
+				if ( missingSyncSince != i.getMissingSyncSince() )
+				{
+					i.setMissingSyncSince( missingSyncSince ) ;
+					this.gui.setChanged() ;
+				}
 			}
 		}
 	}

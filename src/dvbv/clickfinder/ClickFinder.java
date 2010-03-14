@@ -16,7 +16,7 @@ public class ClickFinder extends Provider {
 	private DVBViewer dvbViewer = null ;
 	public ClickFinder( DVBViewer dvbViewer )
 	{
-		super( false, false, "ClickFinder", false, false, false, true ) ;
+		super( false, false, "ClickFinder", false, false, false, true, false ) ;
 		this.dvbViewer = dvbViewer ;
 	}
 	private String getParaInfo()

@@ -17,11 +17,12 @@ import javax.xml.stream.events.XMLEvent;
 
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
+import dvbv.provider.OutDatedInfo;
 import dvbv.provider.Provider;
 import dvbv.xml.StackXML;
 
 
-public final class DVBViewerEntry {
+public final class DVBViewerEntry{
 	private enum CompStatus { DIFFER, EQUAL, IN_RANGE } ;
 	public enum StatusService { ENABLED, DISABLED, REMOVED } ;				    				// applied to Service 
 	public enum ToDo          { NONE, NEW, NEW_UPDATED, UPDATE, DELETE, MERGE } ;	//toDo by Service
@@ -43,8 +44,7 @@ public final class DVBViewerEntry {
 	private String title ;
 	private boolean canMerge;
 	private Provider provider ;
-	private long missingSince ;
-	private int missingSyncSince ;
+	private OutDatedInfo outDatedInfo = null ;
 	private ArrayList< Long > mergedIDs = new ArrayList< Long >() ;
 	private ArrayList< DVBViewerEntry > mergedEntries = null ;
 	private boolean mergingChanged = false ;
@@ -66,8 +66,7 @@ public final class DVBViewerEntry {
 							boolean canMerge ,
 							long mergeID, 
 							Provider provider ,
-							long missingSince ,
-							int missingSyncSince ,
+							OutDatedInfo outDatedInfo ,
 							ToDo toDo )
 	{
 		this.id = id ;
@@ -83,15 +82,14 @@ public final class DVBViewerEntry {
 		this.canMerge = canMerge ;
 		this.mergeID = mergeID ;
 		this.provider = provider ;
-		this.missingSince = missingSince ;
-		this.missingSyncSince = missingSyncSince ;
+		this.outDatedInfo = outDatedInfo.clone() ;
 		this.toDo = toDo ;
 	}
 
 	public DVBViewerEntry( boolean enable, String channel, long start, long end, String title )
 	{
 		this( -1, /*Type.NEW, */false, StatusService.ENABLED , -1, channel,
-			  start ,end , start, end, title, false, -1, null, -1, -1, ToDo.NEW ) ;
+			  start ,end , start, end, title, false, -1, null, new OutDatedInfo(), ToDo.NEW ) ;
 
 		this.statusService = enable? StatusService.ENABLED : StatusService.DISABLED ;
 
@@ -99,7 +97,7 @@ public final class DVBViewerEntry {
 	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end, String title, boolean merge )
 	{
 		this( -1, /*Type.NEW, */false, StatusService.ENABLED , serviceID, channel,
-				  start ,end , start, end, title, merge, -1, null, -1, -1, ToDo.NONE ) ;
+				  start ,end , start, end, title, merge, -1, null, new OutDatedInfo(), ToDo.NONE ) ;
 
 		this.statusService = enable? StatusService.ENABLED : StatusService.DISABLED ;
 		
@@ -111,10 +109,18 @@ public final class DVBViewerEntry {
 			               long endOrg,
 			               String title,
 			               boolean merge,
-			               boolean isFilterElement )
+			               Provider provider  )
 	{
-		this( -1, isFilterElement, StatusService.ENABLED , -1, channel,
-				  start ,end , startOrg, endOrg, title, merge, -1, null, -1, -1, ToDo.NEW ) ;
+		this( -1, false, StatusService.ENABLED , -1, channel,
+				  start ,end , startOrg, endOrg, title, merge,
+				  -1, provider, new OutDatedInfo(), ToDo.NEW ) ;
+		
+		boolean isFilterElement = false ;
+		if ( provider != null )
+		{
+			isFilterElement = provider.isFiltered() ;
+		}
+		this.isFilterElement = isFilterElement ;
 	}
 	public DVBViewerEntry clone()
 	{
@@ -122,10 +128,7 @@ public final class DVBViewerEntry {
 													this.statusService, this.serviceID, this.channel ,
 													this.start, this.end, this.startOrg,
 													this.endOrg, this.title, this.canMerge, this.mergeID,
-													this.provider, this.missingSince,
-													this.missingSyncSince, this.toDo ) ;
-		entry.missingSince =     this.missingSince ;
-		entry.missingSyncSince = this.missingSyncSince ;
+													this.provider, this.outDatedInfo.clone(), this.toDo ) ;
 		
 		if ( this.mergedEntries != null )
 		{
@@ -153,7 +156,6 @@ public final class DVBViewerEntry {
 		}
 		return title;
 	}
-	
 	private CompStatus compareWithService( final DVBViewerEntry service )
 	{
 		if ( ! this.channel.equals( service.channel ) )
@@ -176,8 +178,6 @@ public final class DVBViewerEntry {
 			return true ;
 		return false ;
 	}
-
-	
 	public static void updateXMLDataByServiceDataEqual(
 	          final ArrayList<DVBViewerEntry> xml, 
 	          final ArrayList<DVBViewerEntry> service )
@@ -192,35 +192,58 @@ public final class DVBViewerEntry {
 			if ( x.serviceID >= 0 )
 				continue ;
 			
+			ArrayList<DVBViewerEntry> list = new ArrayList< DVBViewerEntry >() ;
+			
 			for ( Iterator<DVBViewerEntry> itS = service.iterator() ; itS.hasNext() ; )
 			{
 				DVBViewerEntry s = itS.next() ;
-				
 				if ( x.compareWithService( s ) == CompStatus.EQUAL )
-				{
-					x.serviceID = s.serviceID ;
-					
-					if ( s.isEnabled() )
-					{
-						if ( x.mergeElement != null )
-						{
-							//x.canMerge = false ;
-							x.mergeElement.mergedEntries.remove( x ) ;
-							x.mergeElement.mergingChanged = true ;
-							x.mergeElement = null ;
-						}
-						if ( x.statusService == StatusService.DISABLED )
-							x.toDo = ToDo.MERGE ;
-						x.statusService = StatusService.ENABLED ;
-					}
-					else
-					{
-						x.statusService = StatusService.DISABLED ;
-					}
-					itS.remove() ;
-					break ;
-				}
+					list.add( s ) ;
 			}
+			
+			if ( list.size() == 0 )
+				continue ;
+			
+			if ( list.size() > 1 )
+			{
+				ArrayList<DVBViewerEntry> choices = Conversions.getTheBestChoices(
+                    x.getTitle(), list, 2, 3, new Function() ) ;
+				list = choices ;
+			}
+			
+			if ( list.size() > 1 )
+				for ( Iterator<DVBViewerEntry> itS = list.iterator() ; itS.hasNext() ; ) 
+				{
+					DVBViewerEntry s = itS.next() ;
+					if ( s.isEnabled() == x.isEnabled() )
+					{
+						list.set( 0, s ) ;
+						break ;
+					}
+				}
+			
+			DVBViewerEntry s = list.get( 0 ) ;  // get first choice
+						
+			x.serviceID = s.serviceID ;
+			
+			if ( s.isEnabled() )
+			{
+				if ( x.mergeElement != null )
+				{
+					//x.canMerge = false ;
+					x.mergeElement.mergedEntries.remove( x ) ;
+					x.mergeElement.mergingChanged = true ;
+					x.mergeElement = null ;
+				}
+				if ( x.statusService == StatusService.DISABLED )
+					x.toDo = ToDo.MERGE ;
+				x.statusService = StatusService.ENABLED ;
+			}
+			else
+			{
+				x.statusService = StatusService.DISABLED ;
+			}
+			service.remove( s ) ;
 		}
 	}
 	public static void reworkMergeElements( final ArrayList<DVBViewerEntry> xml,
@@ -268,22 +291,27 @@ public final class DVBViewerEntry {
 						if ( m.end > nEnd )
 						{
 							nEnd = m.end ;
-							nEndOrg = m.endOrg ;
-							nMergedEntries.add( m ) ;
-							itM.remove() ;
 							isChanged = true ;
 						}
 					}
 					else if ( nStart <= m.end && nEnd >= m.end )
 					{
-						nStart = m.start ;
-						nStartOrg = m.startOrg ;
-						nMergedEntries.add( m ) ;
-						itM.remove() ;
-						isChanged = true ;
+						if ( m.start < nEnd )
+						{
+							nStart = m.start ;
+							isChanged = true ;
+						}
 					}
 					else
 						isIn = false ;
+					
+					if ( isIn )
+					{
+						nStartOrg = Math.min( m.startOrg, nStartOrg ) ;
+						nEndOrg = Math.max( m.endOrg, nEndOrg ) ;
+						nMergedEntries.add( m ) ;
+						itM.remove() ;
+					}
 				}
 				if ( isChanged )
 					continue ;
@@ -302,6 +330,7 @@ public final class DVBViewerEntry {
 					if ( n.serviceID >= 0 )
 						n.toDo = ToDo.UPDATE ;
 					newMergeEntries.add( n ) ;
+					n.mergingChanged = false ;
 					x.id = maxID.increment() ;
 					x.serviceID = -1 ;
 					x.toDo = ToDo.NEW ;
@@ -309,13 +338,7 @@ public final class DVBViewerEntry {
 				}
 				else
 				{
-					if ( nStart >= 0 && nMergedEntries.size() > 1 )
-					{
-						x.mergedEntries = nMergedEntries ;
-						if ( ( x.start != nStart || x.end != nEnd ) && x.serviceID >= 0  )
-							x.toDo = ToDo.UPDATE ;
-					}
-					else
+					if ( nStart < 0 || nMergedEntries.size() <= 1)
 					{
 						if ( nStart > 0 )
 						{
@@ -330,14 +353,18 @@ public final class DVBViewerEntry {
 							itX.remove() ;
 						break ;
 					}
+					x.mergedEntries = nMergedEntries ;
+					String titleOld = x.title ;
+					x.title = x.createTitle( separator ) ;
+					if (    x.toDo == ToDo.NONE  && x.serviceID >= 0
+						 && ( x.start != nStart || x.end != nEnd || ! titleOld.equals( x.title ) ) )
+						x.toDo = ToDo.UPDATE ;
 					x.start = nStart ;
 					x.end   = nEnd ;
 					x.startOrg = nStartOrg ;
 					x.endOrg = nEndOrg ;
-					x.title = x.createTitle( separator ) ;
-					if ( x.toDo == ToDo.NONE  && ( x.start != nStart || x.end != nEnd ) )
-						x.toDo = ToDo.UPDATE ;
 					nStart = -1 ;
+					x.mergingChanged = false ;
 					break ;
 				}
 			}
@@ -375,7 +402,7 @@ public final class DVBViewerEntry {
 			if ( list.size() == 0 )
 				continue ;
 			
-			DVBViewerEntry s  = (DVBViewerEntry) Conversions.theBestChoice(
+			DVBViewerEntry s  = (DVBViewerEntry) Conversions.getTheBestChoice(
 					                       x.toString(), list, 2, 3, new Function() ) ;
 						
 			x.start     = s.start ;
@@ -396,7 +423,7 @@ public final class DVBViewerEntry {
 			if ( x.serviceID >= 0 )
 				continue ;
 			
-			if ( x.isFilterElement() || x.mergeElement != null )
+			if ( x.isFilterElement || x.mergeElement != null )
 			{
 				if ( x.statusService == StatusService.REMOVED )
 					continue ;
@@ -510,11 +537,13 @@ public final class DVBViewerEntry {
 	}
 	public void disable()
 	{
-		if ( this.toDo == ToDo.NEW  )
-			this.statusService = StatusService.DISABLED ;
-		else if ( this.toDo == ToDo.NONE )
+		if ( this.toDo == ToDo.DELETE )
+			throw new ErrorClass( "Unexpected error in DVBViewerEntry.disable" ) ;
+		
+		this.statusService = StatusService.DISABLED ;
+
+		if ( this.toDo == ToDo.NONE )
 		{
-			this.statusService = StatusService.DISABLED ;
 			this.toDo = ToDo.UPDATE ;
 		}
 		else if ( this.toDo == ToDo.MERGE )
@@ -522,14 +551,13 @@ public final class DVBViewerEntry {
 			this.statusService = StatusService.DISABLED ;
 			this.toDo = ToDo.UPDATE ;
 		}
-		else if ( this.toDo == ToDo.DELETE )
-			throw new ErrorClass( "Unexpected error in DVBViewerEntry.disable" ) ;
 	}
 	public long getID() { return this.id ; } ;
 	public void setID( long id ) { this.id = id ; } ;
 	public long getServiceID() { return this.serviceID ; } ;
 	public String getChannel() { return this.channel ; } ;
 	public String getTitle() {return this.title ; } ;
+	public String toString() {return this.title ; } ;
 	public long getStart() { return this.start ; } ;
 	public long getEnd()   { return this.end ; } ;
 	public 	boolean isInRange( long start, long end )
@@ -565,6 +593,15 @@ public final class DVBViewerEntry {
 	}
 	public void setToDo( ToDo t ) { this.toDo = t ; } ;
 	public ToDo getToDo() { return this.toDo ; } ;
+	public Provider getProvider() { return this.provider ; } ;
+	public void setMissing()
+	{
+		this.outDatedInfo.setMissing() ;
+	}
+	public void resetMissing()
+	{
+		this.outDatedInfo.resetMissing() ;
+	}
 	public boolean isDisabled() { return this.statusService == StatusService.DISABLED ; } ;
 	public boolean isEnabled()
 	{
@@ -574,7 +611,10 @@ public final class DVBViewerEntry {
 	{
 		return this.mergedEntries != null && this.mergedEntries.size() != 0 ;
 	} ;
-	public boolean isFilterElement() { return this.isFilterElement ; } ;
+	public boolean isFilterElement()
+	{ 
+		return this.isFilterElement && this.toDo == ToDo.NONE ;
+	}
 	public static void assignMergedElements( HashMap< Long, DVBViewerEntry> map )
 	{
 		for ( Iterator< DVBViewerEntry > itE = map.values().iterator() ; itE.hasNext() ; )
@@ -612,6 +652,7 @@ public final class DVBViewerEntry {
 	} ;
 	public boolean mustUpdated() { return this.toDo == ToDo.UPDATE ; } ;
 	public boolean mustDeleted() { return this.toDo == ToDo.DELETE ; } ;
+	public void setToDelete() { this.toDo = ToDo.DELETE ; } ;
 	public void prepareRemove()
 	{
 		if ( this.mergedEntries != null )
@@ -622,6 +663,7 @@ public final class DVBViewerEntry {
 			this.mergeElement.mergedEntries.remove( this ) ;	
 		this.mergeElement = null ;
 	}
+	public boolean isOutdatedByProvider() { return this.outDatedInfo.isOutdated( this.provider ) ; } ;
 	public static void removeOutdatedEntries( final ArrayList<DVBViewerEntry> list )
 	{
 		long now = System.currentTimeMillis() ;
@@ -668,8 +710,7 @@ public final class DVBViewerEntry {
 					boolean canMerge = false ;
 					long mergeID = -1 ;
 					Provider provider = null ;
-					long missingSince = -1 ;
-					int missingSyncSince = -1 ;
+					OutDatedInfo outDatedInfo = new OutDatedInfo() ;
 
 					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
@@ -698,18 +739,16 @@ public final class DVBViewerEntry {
 			        		canMerge = dvbv.xml.Conversions.getBoolean( value, ev, f ) ;
 			        	else if ( attributeName.equals( "mergeID" ) )
 			        		mergeID = Integer.valueOf( value ) ;
-				        else if ( attributeName.equals( "providerID" ) )
+				        else if ( attributeName.equals( "provider" ) )
 				        	provider = Provider.getProvider( value ) ;
-			        	else if ( attributeName.equals( "missingSince" ) )
-			        		missingSince = Long.valueOf( value ) ;
-			        	else if ( attributeName.equals( "missingSyncSince" ) )
-			        		missingSyncSince = Integer.valueOf( value ) ;
+			        	else
+			        		outDatedInfo.readXML( attributeName, value) ;
 			        }
 			        entry = new DVBViewerEntry( id , isFilterElement,
 												statusService , -1, channel,
 												start, end, startOrg, endOrg,
 												"", canMerge, mergeID, provider,
-												missingSince, missingSyncSince,
+												outDatedInfo,
 												ToDo.NONE ) ;
 		        }
 			}
@@ -765,8 +804,7 @@ public final class DVBViewerEntry {
 			  }
 			  if ( this.provider != null )
 				  sw.writeAttribute( "provider",     this.provider.getName() ) ;
-			  sw.writeAttribute( "missingSince",     Long.toString( this.missingSince ) ) ;
-			  sw.writeAttribute( "missingSyncSince", Integer.toString( this.missingSyncSince ) ) ;
+			  this.outDatedInfo.writeXML( sw ) ;
 	  
 			  sw.writeStartElement( "Title" ) ;
 			    sw.writeCharacters( this.title ) ;

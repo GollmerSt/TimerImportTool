@@ -158,7 +158,9 @@
   		use="optional">
   	</xsd:attribute>
   	<xsd:attribute name="merge" type="xsd:boolean"></xsd:attribute>
-        <xsd:attribute name="message" type="xsd:boolean" use="optional"></xsd:attribute>
-        <xsd:attribute name="verbose" type="xsd:boolean" use="optional"></xsd:attribute>
+  	<xsd:attribute name="message" type="xsd:boolean" use="optional"></xsd:attribute>
+  	<xsd:attribute name="verbose" type="xsd:boolean" use="optional"></xsd:attribute>
+
+  	<xsd:attribute name="filter" type="xsd:boolean"></xsd:attribute>
   </xsd:complexType>
 </xsd:schema>

@@ -42,13 +42,16 @@ public abstract class Provider {
 	private boolean message = false ;
 	private boolean filter = false ;
 	private boolean isFilterEnabled = true ;
+	private boolean isPrepared = false ;
+	private OutDatedInfo outDatedLimits = null ;
 	public Provider( boolean hasAccount,
 			         boolean hasURL,
 			         String name,
 			         boolean canExecute,
 			         boolean canTest,
 			         boolean filter,
-			         boolean mustInstall )
+			         boolean mustInstall,
+			         boolean isOutDatedLimitsEnabled )
 	{
 		this.hasAccount   = hasAccount ;
 		this.hasURL       = hasURL ;
@@ -58,6 +61,11 @@ public abstract class Provider {
 		this.canTest = canTest ;
 		this.filter = filter ;
 		this.mustInstall = mustInstall ;
+		this.isPrepared = ! isOutDatedLimitsEnabled ;
+		if ( isOutDatedLimitsEnabled)
+		{
+			outDatedLimits = new OutDatedInfo() ;
+		}
 		Provider.names.add( name ) ;
 		Provider.providers.add( this ) ;
 	}
@@ -87,6 +95,9 @@ public abstract class Provider {
 	public boolean canExecute() { return this.canExecute ; } ;
 	public boolean canTest() { return this.canTest ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
+	public boolean isPrepared() { return this.isPrepared ; } ;
+	public void setPrepared( boolean prepared ) { this.isPrepared = prepared ; } ;
+	public OutDatedInfo getOutDatedLimits() { return this.outDatedLimits ; } ;
 	public boolean install()   { return true ; } ;
 	public boolean uninstall() { return true ; } ;
 	public ArrayList< String > getChannels() { return channels ; } ;
@@ -152,6 +163,8 @@ public abstract class Provider {
 					boolean message = false ;
 					boolean merge = false ;
 					boolean filter = false ;
+					OutDatedInfo info = new OutDatedInfo() ;
+					
 					
 					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
@@ -182,6 +195,14 @@ public abstract class Provider {
 		            			message = Conversions.getBoolean( value, ev, f ) ;
 			            	else if ( attributeName.equals( "filter") )
 		            			filter = Conversions.getBoolean( value, ev, f ) ;
+			            	else
+			            	{
+			            		try {
+			            			info.readXML( attributeName, value ) ;
+			            		} catch ( ErrorClass e ) {
+			            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
+			            		}
+			            	}
 		            	}
 					}
 					provider = Provider.getProvider( name ) ;
@@ -194,6 +215,8 @@ public abstract class Provider {
 					provider.message = message ;
 					provider.merge = merge ;
 					provider.filter = filter ;
+					if ( provider.outDatedLimits != null )
+						provider.outDatedLimits = info ;
 				}
 			}
 			if ( ev.isCharacters() )
@@ -237,6 +260,8 @@ public abstract class Provider {
 			  sw.writeAttribute( "message", provider.message ) ;
 			  sw.writeAttribute( "verbose", provider.verbose ) ;
 			  sw.writeAttribute( "filter", provider.filter ) ;
+			  if ( provider.outDatedLimits != null )
+				  provider.outDatedLimits.writeXML( sw ) ;
 			  if ( provider.hasURL )
 			  {
 				  sw.writeStartElement( "Url") ;

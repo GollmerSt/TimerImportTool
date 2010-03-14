@@ -149,17 +149,17 @@ public final class Conversions {
 		
 		return result ;
 	}
-	@SuppressWarnings("unchecked")
-	public static Object theBestChoice( String search, Collection list,
+	public static <T> ArrayList< T > getTheBestChoices( String search, Collection< T > list,
 			                            int weightOfFirstChar, int charCount,
 			                            Function rework )
 	{
 		String string = rework.stringToString( search ) ;
-		ArrayList< Object > results = new ArrayList< Object >() ;
+		ArrayList< T > results = new ArrayList< T >() ;
 		int charMax = -1 ;
-		for ( Iterator it = list.iterator() ; it.hasNext() ; )
+		int minDiff = 99999 ;
+		for ( Iterator< T > it = list.iterator() ; it.hasNext() ; )
 		{
-			Object choiceObject = it.next() ;
+			T choiceObject = it.next() ;
 			String choiceOrg = choiceObject.toString() ;
 			String choice = rework.stringToString( choiceOrg ) ;
 			int numChar = 0 ;
@@ -175,27 +175,33 @@ public final class Conversions {
 
 			if ( numChar > charMax )
 			{
+				minDiff = 99999 ;
 				results.clear() ;
-				results.add( choiceObject ) ;
 				charMax = numChar ;
 			}
-			else if ( numChar == charMax )
-				results.add( choiceObject ) ;
-		}
-		Object result = null ;
-		int minDiff = 99999 ;
-		for ( Iterator< Object > it = results.iterator() ; it.hasNext() ; )
-		{
-			Object o = it.next() ;
-			String s = o.toString() ;
-			int diff = s.length() - string.length() ;
-			diff = diff < 0 ?-diff:diff ;
-			if ( diff < minDiff )
+			if ( numChar == charMax )
 			{
-				result = o ;
-				minDiff = diff ;
+				results.add( choiceObject ) ;
+				int diff = Math.abs( choiceObject.toString().length() - string.length() ) ;
+				if ( diff < minDiff )
+					minDiff = diff ;
 			}
 		}
-		return result ;
+		for ( Iterator< T > it = results.iterator() ; it.hasNext() ; )
+		{
+			T o = it.next() ;
+			int d = Math.abs( o.toString().length() - string.length() ) ;
+			if ( minDiff != d )
+				it.remove() ;
+		}
+		return results.size() == 0 ? null : results ;
+	}
+	public static <T> T getTheBestChoice( String search, Collection<T> list,
+            int weightOfFirstChar, int charCount,
+            Function rework )
+	{
+		ArrayList< T > objects = getTheBestChoices( search, list, weightOfFirstChar, charCount, rework ) ;
+		
+		return objects != null ? objects.get( 0 ) : null ;
 	}
 }

@@ -19,7 +19,7 @@ import dvbv.provider.Provider;
 public final class TVInfo extends Provider {	
 	public TVInfo()
 	{
-		super( true, true, "TVInfo", true, true, true, false ) ;
+		super( true, true, "TVInfo", true, true, true, false, true ) ;
 	}
 	private String getMD5()
 	{

@@ -44,6 +44,8 @@ public class GUIStrings {
 	private static final String[] merge = { "Merge", "Verbinden" } ;
 	private static final String[] message = { "Message", "Meldung" } ;
 	private static final String[] miscellaneous = { "Miscellaneous", "Verschiedenes" } ;
+	private static final String[] missingSince = { "Missing since", "Fehlend seit" } ;
+	private static final String[] missingSinceSync = { "Missing since Sync.", "Fehlend seit Synchr." } ;
 	private static final String[] modify = { "Modify", "Modifiziere" } ;
 	private static final String[] newEntry = { "New entry", "Neuer Eintrag" } ;
 	private static final String[] no = { "No", "Nein" } ;
@@ -149,6 +151,8 @@ public class GUIStrings {
 	public static String merge() { return get( merge ) ; } ;
 	public static String message() { return get( message ) ; } ;
 	public static String miscellaneous() { return get( miscellaneous ) ; } ;
+	public static String missingSince() { return get( missingSince ) ; } ;
+	public static String missingSinceSync() { return get( missingSinceSync ) ; } ;
 	public static String modify() { return get( modify ) ; } ;
 	public static String newEntry() { return get( newEntry ) ; } ;
 	public static String no() { return get( no ) ; } ;
