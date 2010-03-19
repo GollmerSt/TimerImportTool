@@ -1,93 +1,143 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<TVInfoProcessed xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportPrcd.xsd">
-<entry uid="260962129" channel="ARD" start="1265436600000" 
-       end="1265438100000" missingSince="0" missingSyncSince="0"
-       hashCode="42abbc681976d63944535cf4bfdc1196"></entry>
-<entry uid="261774557" channel="Sat1" start="1264888200000"
-       end="1264890000000" missingSince="0" missingSyncSince="0"
-       hashCode="7d6259a8b5bf81e450ef624c2305d089"></entry>
-<entry uid="250247267" channel="Das Vierte" start="1265224500000"
-       end="1265232000000" missingSince="0" missingSyncSince="0"
-       hashCode="252b0a782c98884e89eb91c00ce92488"></entry>
-<entry uid="266218147" channel="Sat1" start="1264941000000"
-       end="1264943100000" missingSince="0" missingSyncSince="0"
-       hashCode="2925df35748ae8c5b2eec90fc3dc7afc"></entry>
-<entry uid="252018869" channel="Sat1" start="1265411700000"
-       end="1265413500000" missingSince="0" missingSyncSince="0"
-       hashCode="79237f1ea521fb40c04000a56e20263c"></entry>
-<entry uid="247662645" channel="RTL" start="1264927200000"
-       end="1264933500000" missingSince="0" missingSyncSince="0"
-       hashCode="94fb8b76aecb5f20894ae60347d76d6d"></entry>
-<entry uid="250247269" channel="Das Vierte" start="1265248800000"
-       end="1265254500000" missingSince="0" missingSyncSince="0"
-       hashCode="a45c51a0ed8ef7e08e9bffc66c69c943"></entry>
-<entry uid="250247257" channel="ARD" start="1264831800000"
-       end="1264833300000" missingSince="0" missingSyncSince="0"
-       hashCode="93528de8d0b5805b921696d5bb3f23bd"></entry>
-<entry uid="260962121" channel="Sat1" start="1265402700000"
-       end="1265404800000" missingSince="0" missingSyncSince="0"
-       hashCode="a2df695b25a15e0250f5cb3e8cda960c"></entry>
-<entry uid="270159781" channel="Sat1" start="1265138100000"
-       end="1265145300000" missingSince="0" missingSyncSince="0"
-       hashCode="feb1674b9a5823e10c8934a01f541734"></entry>
-<entry uid="266218099" channel="Sat1" start="1264950300000"
-       end="1264952100000" missingSince="0" missingSyncSince="0"
-       hashCode="0ab44215686f80fd7b85ce25425b82e7"></entry>
-<entry uid="270159779" channel="EinsFestival" start="1265068500000"
-       end="1265074200000" missingSince="0" missingSyncSince="0"
-       hashCode="5e474eb064c7f54d03d528227d2553f3"></entry>
-<entry uid="270159785" channel="Sat1" start="1265445300000"
-       end="1265452200000" missingSince="0" missingSyncSince="0"
-       hashCode="e4d7676362b3f80f2eb5762a3d4ee73b"></entry>
-<entry uid="249368775" channel="Pro7" start="1265157000000"
-       end="1265158800000" missingSince="0" missingSyncSince="0"
-       hashCode="d4a08fd853b28503ab16f5fe6cbb0238"></entry>
-<entry uid="246060195" channel="Sat1" start="1264806900000"
-       end="1264808700000" missingSince="0" missingSyncSince="0"
-       hashCode="f008f72c7f9b966e5790dc0e0cd24142"></entry>
-<entry uid="252018871" channel="Sat1" start="1265413500000"
-       end="1265415300000" missingSince="0" missingSyncSince="0"
-       hashCode="749ee7f9914fb7ba59c17b490ee18611"></entry>
-<entry uid="251080635" channel="Sat1" start="1264937400000"
-       end="1264939200000" missingSince="0" missingSyncSince="0"
-       hashCode="436879ad0a3b9a5dce5c46f98e27e38b"></entry>
-<entry uid="247662643" channel="Alpha" start="1264929300000"
-       end="1264931100000" missingSince="0" missingSyncSince="0"
-       hashCode="44578f81802785318be97667bc6f15ec"></entry>
-<entry uid="252890697" channel="Sat1" start="1265494200000"
-       end="1265496000000" missingSince="0" missingSyncSince="0"
-       hashCode="4c3a8a0612cf11b4a37431efa45abc4f"></entry>
-<entry uid="261774559" channel="Sat1" start="1264890000000"
-       end="1264891800000" missingSince="0" missingSyncSince="0"
-       hashCode="1eb7e10c07d58049a2043bbca8660578"></entry>
-<entry uid="252890701" channel="Pro7" start="1265451300000"
-       end="1265453100000" missingSince="0" missingSyncSince="0"
-       hashCode="7b2518642bf3a7ca20032f3a0e4388bf"></entry>
-<entry uid="260962123" channel="Sat1" start="1265542500000"
-       end="1265544300000" missingSince="0" missingSyncSince="0"
-       hashCode="1e037f2c3a58d299d26dc76da29e070a"></entry>
-<entry uid="266218145" channel="Sat1" start="1264939200000"
-       end="1264941000000" missingSince="0" missingSyncSince="0"
-       hashCode="5ac656840cecf6b3250db10c5c6ffec6"></entry>
-<entry uid="246860721" channel="Pro7" start="1264847400000"
-       end="1264849200000" missingSince="0" missingSyncSince="0"
-       hashCode="26fab658da5861dcbbf5bee41a332ee3"></entry>
-<entry uid="252890699" channel="Sat1" start="1265496000000"
-       end="1265497800000" missingSince="0" missingSyncSince="0"
-       hashCode="6c2b4622677bd825118b76b6507d07bd"></entry>
-<entry uid="247662653" channel="Sat1" start="1264952100000"
-       end="1264953900000" missingSince="0" missingSyncSince="0"
-       hashCode="c76283999daa6fdcd01a9c86bc56c110"></entry>
-<entry uid="270159775" channel="EinsFestival" start="1265055000000"
-       end="1265060700000" missingSince="0" missingSyncSince="0"
-       hashCode="45abb176e660fcdf640fb415247b11a0"></entry>
-<entry uid="246060197" channel="Sat1" start="1264808700000"
-       end="1264810200000" missingSince="0" missingSyncSince="0"
-       hashCode="5e7170dd30041184ebbcedbba3637a00"></entry>
-<entry uid="253735115" channel="Alpha" start="1265534100000"
-       end="1265535900000" missingSince="0" missingSyncSince="0"
-       hashCode="3eebb53a8b3cdad4ebbd2465af3ced17"></entry>
-<entry uid="253735125" channel="RTL" start="1265531100000"
-       end="1265538600000" missingSince="0" missingSyncSince="0"
-       hashCode="a7241b1d2b94a9ef29400e2231137495"></entry>
-</TVInfoProcessed>
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Processed xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportPrcd.xsd">
+    <Entry id="0" isFilterElement="true" statusService="REMOVED" channel="545271540|RTL2" start="1268712300000" end="1268717400000" startOrg="1268713200000" endOrg="1268715600000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Hanfdampf in allen Gassen (Zero Tolerance)</Title>
+    </Entry>
+    <Entry id="1" isFilterElement="true" statusService="REMOVED" channel="543583690|Das Erste (deu)" start="1268730900000" end="1268739000000" startOrg="1268731800000" endOrg="1268737200000" canMerge="false" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Der Maulkorb</Title>
+    </Entry>
+    <Entry id="2" isFilterElement="false" statusService="ENABLED" channel="545271540|RTL2" start="1268748900000" end="1268755200000" startOrg="1268749800000" endOrg="1268753400000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Job hin, Job her (Take This Job And Bleep It),,Hinterm Sofa an der Front - Um Kopf und Kragen geredet (Kenny Doesn't Live Here Anymore)</Title>
+        <MergedWith>
+            <Id>30</Id>
+            <Id>3</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="3" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268748900000" end="1268755200000" startOrg="1268749800000" endOrg="1268753400000" canMerge="true" mergeID="2" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Um Kopf und Kragen geredet (Kenny Doesn't Live Here Anymore)</Title>
+    </Entry>
+    <Entry id="4" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1268751900000" end="1268755200000" startOrg="1268752800000" endOrg="1268753400000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Classic Cartoon - Der rosarote Panther: Der rosarote Fotoschreck</Title>
+    </Entry>
+    <Entry id="5" isFilterElement="true" statusService="ENABLED" channel="637534319|TELE 5 - CV" start="1268766000000" end="1268775600000" startOrg="1268766900000" endOrg="1268773800000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Balduin, der Geldsschrankknacker</Title>
+    </Entry>
+    <Entry id="6" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1268786400000" end="1268791200000" startOrg="1268787300000" endOrg="1268789400000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Bully &amp; Rick - Best of (1)</Title>
+    </Entry>
+    <Entry id="7" isFilterElement="false" statusService="ENABLED" channel="545271540|RTL2" start="1268798700000" end="1268803800000" startOrg="1268799600000" endOrg="1268802000000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Job hin, Job her (Take This Job And Bleep It),,Hinterm Sofa an der Front - Um Kopf und Kragen geredet (Kenny Doesn't Live Here Anymore)</Title>
+        <MergedWith>
+            <Id>31</Id>
+            <Id>8</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="8" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268798700000" end="1268803800000" startOrg="1268799600000" endOrg="1268802000000" canMerge="true" mergeID="7" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Um Kopf und Kragen geredet (Kenny Doesn't Live Here Anymore)</Title>
+    </Entry>
+    <Entry id="9" isFilterElement="false" statusService="ENABLED" channel="545271540|RTL2" start="1268835300000" end="1268841600000" startOrg="1268836200000" endOrg="1268839800000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Krieg und Unfrieden (The War Of The Golds),,Hinterm Sofa an der Front - Kranke Kompositionen (The White Shadow)</Title>
+        <MergedWith>
+            <Id>32</Id>
+            <Id>10</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="10" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268835300000" end="1268841600000" startOrg="1268836200000" endOrg="1268839800000" canMerge="true" mergeID="9" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Kranke Kompositionen (The White Shadow)</Title>
+    </Entry>
+    <Entry id="11" isFilterElement="true" statusService="ENABLED" channel="576351790|rbb Berlin" start="1268861400000" end="1268870100000" startOrg="1268862300000" endOrg="1268868300000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Obsession</Title>
+    </Entry>
+    <Entry id="12" isFilterElement="true" statusService="ENABLED" channel="545271540|RTL2" start="1268886300000" end="1268890200000" startOrg="1268887200000" endOrg="1268888400000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Krieg und Unfrieden (The War Of The Golds)</Title>
+    </Entry>
+    <Entry id="13" isFilterElement="false" statusService="ENABLED" channel="545271540|RTL2" start="1268921700000" end="1268928000000" startOrg="1268922600000" endOrg="1268926200000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Gut abgegangen! (The Graduate),,Hinterm Sofa an der Front - Wer ohne Schuld ist... der wohne nicht bei den Golds (A Bitter Pill To Swallow)</Title>
+        <MergedWith>
+            <Id>33</Id>
+            <Id>14</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="14" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268921700000" end="1268928000000" startOrg="1268922600000" endOrg="1268926200000" canMerge="true" mergeID="13" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Wer ohne Schuld ist... der wohne nicht bei den Golds (A Bitter Pill To Swallow)</Title>
+    </Entry>
+    <Entry id="15" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1268958900000" end="1268967000000" startOrg="1268959800000" endOrg="1268965200000" canMerge="false" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Die zwölf Geschworenen</Title>
+    </Entry>
+    <Entry id="16" isFilterElement="false" statusService="ENABLED" channel="545271540|RTL2" start="1268971500000" end="1268976600000" startOrg="1268972400000" endOrg="1268974800000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Gut abgegangen! (The Graduate),,Hinterm Sofa an der Front - Wer ohne Schuld ist... der wohne nicht bei den Golds (A Bitter Pill To Swallow)</Title>
+        <MergedWith>
+            <Id>34</Id>
+            <Id>17</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="17" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268971500000" end="1268976600000" startOrg="1268972400000" endOrg="1268974800000" canMerge="true" mergeID="16" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Wer ohne Schuld ist... der wohne nicht bei den Golds (A Bitter Pill To Swallow)</Title>
+    </Entry>
+    <Entry id="18" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1269030600000" end="1269035400000" startOrg="1269031500000" endOrg="1269033600000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Pastewka - Der Kochkurs</Title>
+    </Entry>
+    <Entry id="19" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269039600000" end="1269045900000" startOrg="1269040500000" endOrg="1269044100000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!,,WAS GUCKST DU?!</Title>
+        <MergedWith>
+            <Id>35</Id>
+            <Id>20</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="20" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269041400000" end="1269045900000" startOrg="1269042300000" endOrg="1269044100000" canMerge="true" mergeID="19" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!</Title>
+    </Entry>
+    <Entry id="21" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1269064500000" end="1269068700000" startOrg="1269065400000" endOrg="1269066900000" canMerge="false" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Shaun, das Schaf - Die Nichte des Farmers / Schnarchalarm / Pizzaservice</Title>
+    </Entry>
+    <Entry id="22" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1269079500000" end="1269084300000" startOrg="1269080400000" endOrg="1269082500000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Bully &amp; Rick - Best of (2)</Title>
+    </Entry>
+    <Entry id="23" isFilterElement="true" statusService="ENABLED" channel="545271540|RTL2" start="1269150900000" end="1269159900000" startOrg="1269151800000" endOrg="1269158100000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Flug in die Vergangenheit</Title>
+    </Entry>
+    <Entry id="24" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1269152700000" end="1269158400000" startOrg="1269153600000" endOrg="1269156600000" canMerge="false" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Meister Eder und sein Pumuckl - Das Spanferkelessen / Pumuckl und Puwackl</Title>
+    </Entry>
+    <Entry id="25" isFilterElement="true" statusService="ENABLED" channel="582905296|BR-alpha*" start="1269162000000" end="1269166500000" startOrg="1269162900000" endOrg="1269164700000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Bibliothek der Sachgeschichten - E (3) - wie E-Werk, Eidechsengeburt, Eisbär</Title>
+    </Entry>
+    <Entry id="26" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269168300000" end="1269176400000" startOrg="1269169200000" endOrg="1269174600000" canMerge="true" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!,,WAS GUCKST DU?!,,Mensch Markus</Title>
+        <MergedWith>
+            <Id>36</Id>
+            <Id>27</Id>
+            <Id>28</Id>
+        </MergedWith>
+    </Entry>
+    <Entry id="27" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269170100000" end="1269174600000" startOrg="1269171000000" endOrg="1269172800000" canMerge="true" mergeID="26" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!</Title>
+    </Entry>
+    <Entry id="28" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269171900000" end="1269176400000" startOrg="1269172800000" endOrg="1269174600000" canMerge="true" mergeID="26" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Mensch Markus</Title>
+    </Entry>
+    <Entry id="29" isFilterElement="true" statusService="REMOVED" channel="545271540|RTL2" start="1268712300000" end="1268717400000" startOrg="1268713200000" endOrg="1268715600000" canMerge="true" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Oma, Sex und erste Liebe (No Weddings And A Funeral)</Title>
+    </Entry>
+    <Entry id="30" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268748900000" end="1268755200000" startOrg="1268749800000" endOrg="1268753400000" canMerge="true" mergeID="2" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Job hin, Job her (Take This Job And Bleep It)</Title>
+    </Entry>
+    <Entry id="31" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268798700000" end="1268803800000" startOrg="1268799600000" endOrg="1268802000000" canMerge="true" mergeID="7" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Job hin, Job her (Take This Job And Bleep It)</Title>
+    </Entry>
+    <Entry id="32" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268835300000" end="1268841600000" startOrg="1268836200000" endOrg="1268839800000" canMerge="true" mergeID="9" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Krieg und Unfrieden (The War Of The Golds)</Title>
+    </Entry>
+    <Entry id="33" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268921700000" end="1268928000000" startOrg="1268922600000" endOrg="1268926200000" canMerge="true" mergeID="13" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Gut abgegangen! (The Graduate)</Title>
+    </Entry>
+    <Entry id="34" isFilterElement="true" statusService="DISABLED" channel="545271540|RTL2" start="1268971500000" end="1268976600000" startOrg="1268972400000" endOrg="1268974800000" canMerge="true" mergeID="16" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>Hinterm Sofa an der Front - Gut abgegangen! (The Graduate)</Title>
+    </Entry>
+    <Entry id="35" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269039600000" end="1269044100000" startOrg="1269040500000" endOrg="1269042300000" canMerge="true" mergeID="19" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!</Title>
+    </Entry>
+    <Entry id="36" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269168300000" end="1269172800000" startOrg="1269169200000" endOrg="1269171000000" canMerge="true" mergeID="26" provider="TVInfo" missingSince="0" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!</Title>
+    </Entry>
+</Processed>

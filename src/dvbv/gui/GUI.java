@@ -32,7 +32,7 @@ import dvbv.misc.Constants;
 import dvbv.provider.Provider;
 
 public class GUI {
-	public enum GUIStatus { INVALID, OK, CANCEL, APPLY, EXECUTE, SAVE_EXECUTE } ;
+	public enum GUIStatus { INVALID, OK, CANCEL, APPLY, EXECUTE, SAVE_EXECUTE, UPDATE } ;
 	private final Control control ;
 	private final dvbv.dvbviewer.channels.Channels dChannels ;
 
@@ -49,6 +49,7 @@ public class GUI {
 	private final JTabbedPane tabbedPane = new JTabbedPane() ;
 	private final JCheckBox forceBox = new JCheckBox() ;
     private final JButton executeButton = new JButton() ;
+    private final JButton updateButton = new JButton() ;
     private final JButton okButton = new JButton() ;
     private final JButton cancelButton = new JButton() ;
     private final JButton applyButton = new JButton() ;
@@ -147,6 +148,11 @@ public class GUI {
 					status = GUIStatus.EXECUTE ;
 				waitAPP() ;
 			}
+			if ( button == updateButton )
+			{
+				status = GUIStatus.UPDATE ;
+				waitAPP() ;
+			}
 		}
 	}
 	public class AllTimersChanged implements ItemListener
@@ -241,6 +247,17 @@ public class GUI {
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
 		c.gridy      = 1 ;
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.insets     = i ;
+	    
+	    this.updateButton.setText( GUIStrings.updateList() ) ;
+	    this.updateButton.addActionListener( new ButtonPressed() ) ;
+	    this.frame.add( this.updateButton, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 1 ;
 		c.weightx    = 1.0 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -252,7 +269,7 @@ public class GUI {
 		
 
 		c = new GridBagConstraints();
-		c.gridx      = 3 ;
+		c.gridx      = 4 ;
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -263,7 +280,7 @@ public class GUI {
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 4 ;
+		c.gridx      = 5 ;
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -279,6 +296,8 @@ public class GUI {
         
         this.frame.addWindowListener( new MyWindowListener() ) ;
         
+        this.updateExecuteButton() ;
+        
 		this.frame.setVisible( true );         
 	}
 	public void updateExecuteButton()
@@ -289,7 +308,7 @@ public class GUI {
 			Provider p = Provider.getProvider( control.getDefaultProvider() ) ;
 			this.executeButton.setEnabled( p.canExecute() ) ;
 			this.executeButton.setVisible( true ) ;
-			this.forceBox.setEnabled( p.isFiltered() ) ;
+			this.forceBox.setEnabled( p.isFiltered() && p.canExecute() ) ;
 			this.forceBox.setVisible( true ) ;
 		}
 		else

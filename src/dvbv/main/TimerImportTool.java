@@ -22,10 +22,12 @@ import dvbv.gui.GUI.GUIStatus;
 
 public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
-	private enum ImportType{ GUI, TVINFO, CLICKFINDER } ;
+	private enum ImportType{ GUI, TVINFO, CLICKFINDER, UPDATE } ;
 	public static void main(String[] args) {
 		
 		GUIStrings.setLanguage( "" ) ;
+		
+		DVBViewer dvbViewer = null ;
 
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -77,11 +79,13 @@ public final class TimerImportTool {
 						throw new ErrorClass( "A directory path is necessary after the flag -path" ) ;
 					dataPath = args[ i ] ;
 				}
+				else if ( args[i].equalsIgnoreCase("-update") )
+					type = ImportType.UPDATE ;
 			}
 			
 			Log.setToDisplay(true);
 
-			DVBViewer dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
+			dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
 			
 			Channels channels = new Channels( dvbViewer ) ;
 			channels.read() ;
@@ -121,6 +125,9 @@ public final class TimerImportTool {
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
 						finished = true ;
 						break ;
+					case UPDATE :
+						Log.out( "Timer update started" ) ;
+						dvbViewer.updateDVBViewer() ;
 					}
 				}
 			}
@@ -134,13 +141,18 @@ public final class TimerImportTool {
 				case CLICKFINDER :
 					provider = Provider.getProvider( "ClickFinder" ) ;
 					break ;
+				case UPDATE :
+					dvbViewer.updateDVBViewer() ;
 			}
 			
 			control.setDVBViewerEntries() ;
 			
-			showMessageBox |= provider.getMessage() ;
-			if ( provider.getVerbose() )
-				Log.setVerbose( true ) ;
+			if ( provider != null )
+			{
+				showMessageBox |= provider.getMessage() ;
+				if ( provider.getVerbose() )
+					Log.setVerbose( true ) ;
+			}
 			
 			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
 			
@@ -152,7 +164,6 @@ public final class TimerImportTool {
 				AllTVInfoRecordings aR = new AllTVInfoRecordings( control, 3, 3 );
 				aR.process(getAll);
 				dvbViewer.setDVBViewerTimers();
-				aR.write() ;
 			}
 			else if ( provider == Provider.getProvider( "ClickFinder" ))
 			{
@@ -181,6 +192,8 @@ public final class TimerImportTool {
 			if ( showMessageBox )
 				JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status", JOptionPane.INFORMATION_MESSAGE);
 		}
+		if ( dvbViewer != null )
+			dvbViewer.writeXML() ;
 		System.exit(0);
 	}
 

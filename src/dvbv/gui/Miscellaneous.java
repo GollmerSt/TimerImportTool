@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import dvbv.gui.GUIStrings.ActionAfterItems;
+import dvbv.gui.GUIStrings.Language;
 import dvbv.importer.TVInfoDVBV;
 
 public class Miscellaneous extends MyTabPanel
@@ -25,6 +27,7 @@ public class Miscellaneous extends MyTabPanel
 	private static final long serialVersionUID = 6271528915024437692L;
 	
 	private final JComboBox languageBox = new JComboBox() ;
+	private final JComboBox actionAfterBox = new JComboBox() ;
 	private final JTextField separatorBox = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
 		
@@ -32,17 +35,29 @@ public class Miscellaneous extends MyTabPanel
 	{
 		super( gui, frame );
 	}
-	class LanguageSelected implements ActionListener
+	class ComboSelected implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			String language = (String) languageBox.getSelectedItem() ;
-			if ( language == null )
+			JComboBox c = (JComboBox)e.getSource() ;
+			
+			Object o = c.getSelectedItem() ;
+			
+			if ( o == null )
 				return ;
-			String internal = GUIStrings.toInternalLanguage( language ) ;
-			if ( ! internal.equals( control.getLanguage() ) )
+			
+			if ( c == languageBox )
 			{
-				control.setLanguage( GUIStrings.toInternalLanguage( language ) ) ;
+				String internal = ((Language)o).getShort() ;
+				if ( ! internal.equals( control.getLanguage() ) )
+				{
+					control.setLanguage( internal ) ;
+					gui.setChanged() ;
+				}
+			}
+			else if ( c == actionAfterBox )
+			{
+				control.getDVBViewer().setAfterRecordingAction( (ActionAfterItems)o ) ;
 				gui.setChanged() ;
 			}
 		}
@@ -90,13 +105,39 @@ public class Miscellaneous extends MyTabPanel
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		for ( int ix = 0 ; ix < GUIStrings.languageStrings().length ; ix++ )
-		{
-			this.languageBox.addItem( GUIStrings.languageStrings()[ ix ] ) ;
-		}
-		this.languageBox.addActionListener( new LanguageSelected() ) ;
-		this.languageBox.setSelectedItem( GUIStrings.getLanguage( this.control.getLanguage() ) ) ;
+		for ( Language l : Language.values() )
+			this.languageBox.addItem( l ) ;
+		this.languageBox.addActionListener( new ComboSelected() ) ;
+		this.languageBox.setSelectedItem( GUIStrings.languageEnum ) ;
 		this.add( this.languageBox, c ) ;
+
+		
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel actionAfterLabel = new JLabel( GUIStrings.actionAfter() ) ;
+		this.add( actionAfterLabel, c ) ;
+
+		
+		
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		for (ActionAfterItems a : ActionAfterItems.values())
+			this.actionAfterBox.addItem( a ) ;
+		this.actionAfterBox.setSelectedItem( this.control.getDVBViewer().getAfterRecordingAction() ) ;
+		this.actionAfterBox.addActionListener( new ComboSelected() ) ;
+		this.add( this.actionAfterBox, c ) ;
 
 		
 
@@ -116,8 +157,9 @@ public class Miscellaneous extends MyTabPanel
 		
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
-		c.gridy      = 0 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridy      = 1 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 

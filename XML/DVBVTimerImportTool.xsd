@@ -7,12 +7,29 @@
       	<xsd:element name="Providers">
       		<xsd:complexType>
       			<xsd:sequence>
-      				<xsd:element name="Provider" type="Provider" maxOccurs="unbounded" minOccurs="1">
+      				<xsd:element name="Provider" type="Provider"
+      					maxOccurs="unbounded" minOccurs="1">
       				</xsd:element>
       			</xsd:sequence>
       		</xsd:complexType>
-      	</xsd:element>
+      	</xsd:element>
 
+
+      	<xsd:element name="DVBViewer">
+
+      		<xsd:complexType>
+      			<xsd:attribute name="afterRecordingAction">
+      				<xsd:simpleType>
+      					<xsd:restriction base="xsd:string">
+      						<xsd:enumeration value="NONE"></xsd:enumeration>
+      						<xsd:enumeration value="POWER_OFF"></xsd:enumeration>
+      						<xsd:enumeration value="STANDBY"></xsd:enumeration>
+      						<xsd:enumeration value="HIBERNATE"></xsd:enumeration>
+      					</xsd:restriction>
+      				</xsd:simpleType>
+      			</xsd:attribute>
+      		</xsd:complexType>
+      	</xsd:element>
       	<xsd:element name="DVBService" minOccurs="0">
       		<xsd:complexType>
       			<xsd:all>
@@ -29,8 +46,7 @@
       					</xsd:complexType>
       				</xsd:element>
       			</xsd:all>
-      			<xsd:attribute name="enable"
-      				type="xsd:boolean">
+      			<xsd:attribute name="enable" type="xsd:boolean">
       			</xsd:attribute>
       			<xsd:attribute name="url" type="xsd:string"
       				use="required" />
@@ -61,9 +77,11 @@
       				</xsd:element>
       			</xsd:sequence>
       		</xsd:complexType>
-      	</xsd:element>
-                <xsd:element name="Offsets" type="myOffsetsType" minOccurs="0" />
-                <xsd:element name="Separator" type="xsd:string" minOccurs="0" />
+      	</xsd:element>
+
+      	<xsd:element name="Offsets" type="myOffsetsType"
+      		minOccurs="0" />
+      	<xsd:element name="Separator" type="xsd:string" minOccurs="0" />
 
       	<xsd:element name="Channels" minOccurs="1">
       		<xsd:complexType>
@@ -71,21 +89,28 @@
       				<xsd:element name="Channel" maxOccurs="unbounded"
       					minOccurs="1">
       					<xsd:complexType>
-                                    <xsd:sequence>
-      							<xsd:element name="Provider" minOccurs="0" maxOccurs="unbounded">
+      						<xsd:sequence>
+      							<xsd:element name="Provider"
+      								minOccurs="0" maxOccurs="unbounded">
       								<xsd:complexType>
 
       									<xsd:simpleContent>
-      										<xsd:extension base="xsd:string">
-      											<xsd:attribute name="name" type="providerName">
+      										<xsd:extension
+      											base="xsd:string">
+      											<xsd:attribute
+      												name="name" type="providerName">
       											</xsd:attribute>
       										</xsd:extension>
       									</xsd:simpleContent>
       								</xsd:complexType>
-      							</xsd:element>
-      							<xsd:element name="DVBViewer" type="myDVBViewerChannelType" minOccurs="0" />
-      							<xsd:element name="Offsets" type="myOffsetsType" minOccurs="0" />
-      							<xsd:element name="Merge" type="xsd:boolean" minOccurs="0" />
+      							</xsd:element>
+
+      							<xsd:element name="DVBViewer"
+      								type="myDVBViewerChannelType" minOccurs="0" />
+      							<xsd:element name="Offsets"
+      								type="myOffsetsType" minOccurs="0" />
+      							<xsd:element name="Merge"
+      								type="xsd:boolean" minOccurs="0" />
       						</xsd:sequence>
       					</xsd:complexType>
       				</xsd:element>

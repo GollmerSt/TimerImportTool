@@ -10,11 +10,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
 import dvbv.gui.GUIStrings;
+import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.swing.JOptionPane;
@@ -33,27 +33,29 @@ import dvbv.dvbviewer.DVBViewerService ;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
 import dvbv.tvinfo.TVInfo;
+import dvbv.xml.StackXML;
 
 public class Control
 {
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
 	
-	private enum BlockType { INVALID , CHANNEL_PROVIDER, DVBSERVICE,
+	private enum BlockType { INVALID , CHANNEL_PROVIDER, DVBSERVICE, DVBVIEWER, 
 		                     GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
 	private DVBViewer dvbViewer = null ;
-	private final Stack<String> pathProviders			= new Stack<String>() ;
-	private final Stack<String> pathService				= new Stack<String>() ;
-	private final Stack<String> pathGlobalOffsets		= new Stack<String>() ;
-	private final Stack<String> pathChannel				= new Stack<String>() ;
-	private final Stack<String> pathChannelOffsets		= new Stack<String>() ;
-	private final Stack<String> pathChannelProvider		= new Stack<String>() ;
-	private final Stack<String> pathChannelDVBViewer	= new Stack<String>() ;
-	private final Stack<String> pathChannelMerge		= new Stack<String>() ;
-	private final Stack<String> pathSeparator			= new Stack<String>() ;
-	private final Stack<String> pathWOL					= new Stack<String>() ;
-	private final Stack<String> pathDefaultProvider		= new Stack<String>() ;
-	private final Stack<String> pathLanguage			= new Stack<String>() ;
+	private final StackXML<String> pathProviders		= new StackXML<String>( "Importer", "Providers" ) ;
+	private final StackXML<String> pathService			= new StackXML<String>( "Importer", "DVBService" ) ;
+	private final StackXML<String> pathGlobalOffsets	= new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
+	private final StackXML<String> pathChannel			= new StackXML<String>( "Importer", "Channels", "Channel" ) ;
+	private final StackXML<String> pathChannelOffsets	= new StackXML<String>( "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
+	private final StackXML<String> pathChannelProvider	= new StackXML<String>( "Importer", "Channels", "Channel", "Provider" ) ;
+	private final StackXML<String> pathChannelDVBViewer	= new StackXML<String>( "Importer", "Channels", "Channel", "DVBViewer" ) ;
+	private final StackXML<String> pathChannelMerge		= new StackXML<String>( "Importer", "Channels", "Channel", "Merge" ) ;
+	private final StackXML<String> pathSeparator		= new StackXML<String>( "Importer",  "Separator" ) ;
+	private final StackXML<String> pathWOL				= new StackXML<String>( "Importer",  "DVBService", "WakeOnLAN") ;
+	private final StackXML<String> pathDefaultProvider	= new StackXML<String>( "Importer",  "GUI", "DefaultProvider" ) ;
+	private final StackXML<String> pathLanguage			= new StackXML<String>( "Importer",  "GUI", "Language" ) ;
+	private final StackXML<String> pathDVBViewer		= new StackXML<String>( "Importer",  "DVBViewer" ) ;
 	
 	private String defaultProvider = null ;
 	private String language = "" ;
@@ -68,30 +70,6 @@ public class Control
 		new TVInfo( ) ;
 		new dvbv.clickfinder.ClickFinder( dvbViewer ) ;
 		dvbViewer.setProvider() ;
-		
-		Collections.addAll( this.pathProviders, "Importer", "Providers" ) ;
-		
-		Collections.addAll( this.pathService, "Importer", "DVBService" ) ;
-
-		Collections.addAll( this.pathGlobalOffsets, "Importer", "Offsets", "Offset" ) ;
-
-		Collections.addAll( this.pathChannel, "Importer", "Channels", "Channel" ) ;
-
-		Collections.addAll( this.pathChannelOffsets, "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
-
-		Collections.addAll( this.pathChannelProvider, "Importer", "Channels", "Channel", "Provider" ) ;
-
-		Collections.addAll( this.pathChannelDVBViewer, "Importer", "Channels", "Channel", "DVBViewer" ) ;
-		
-		Collections.addAll( this.pathChannelMerge, "Importer", "Channels", "Channel", "Merge" ) ;
-		
-		Collections.addAll( this.pathSeparator, "Importer",  "Separator" ) ;
-		
-		Collections.addAll( this.pathWOL, "Importer",  "DVBService", "WakeOnLAN" ) ;
-		
-		Collections.addAll( this.pathDefaultProvider, "Importer",  "GUI", "DefaultProvider" ) ;
-		
-		Collections.addAll( this.pathLanguage, "Importer",  "GUI", "Language" ) ;
 		
 		this.read() ;
 	}
@@ -141,6 +119,7 @@ public class Control
 		String  dvbServiceBroadCastAddress = null ;
 		String  dvbServiceMacAddress       = null ;
 		int     dvbServiceWaitTimeAfterWOL = 15 ;
+		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		
 
 		while( reader.hasNext() )
@@ -188,6 +167,8 @@ public class Control
 				}
 				else if ( stack.equals( this.pathWOL ) )
 					type = BlockType.WOL ;
+				else if ( stack.equals( this.pathDVBViewer ) )
+					type = BlockType.DVBVIEWER ;
 				else
 					continue ;
 				if (    type == BlockType.CHANNEL_OFFSETS
@@ -262,6 +243,18 @@ public class Control
 	            				throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + f.getName() + "\"" ) ;
 	            			dvbServiceWaitTimeAfterWOL = Integer.valueOf( value ) ;
 	            		}
+	            		break ;
+	            	case DVBVIEWER :
+	            		if      ( attributeName.equals( "afterRecordingAction" ) )
+	            		{
+	            			try {
+	            				dvbViewerActionAfter = ActionAfterItems.valueOf( value ) ;
+	            			} catch ( IllegalArgumentException e ) {
+	            				throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + f.getName() + "\"" ) ;
+	            			}
+	            			
+	            		}
+	            		break ;
 	            	}
 	            }
 	            if (    type == BlockType.CHANNEL_OFFSETS
@@ -316,6 +309,7 @@ public class Control
 		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
 		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
 		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
+		this.dvbViewer.setAfterRecordingAction( dvbViewerActionAfter ) ;
 		try {
 			reader.close() ;
 		} catch (XMLStreamException e) {
@@ -345,6 +339,9 @@ public class Control
 		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
 		      Provider.writeXML( sw ) ;
+		      sw.writeStartElement( "DVBViewer" ) ;
+			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
+			  sw.writeEndElement();
 			  sw.writeStartElement( "DVBService" ) ;
 			  	DVBViewerService dvbs = this.dvbViewer.getService() ;
 			    sw.writeAttribute( "enable",   dvbs.isEnabled() ) ;

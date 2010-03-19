@@ -28,13 +28,14 @@ import dvbv.tvinfo.TVInfoRecording ;
 import dvbv.xml.StackXML;
 import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
+import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
 
 public class DVBViewer {
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
-	private static final String NAME_RECORDING_FILE           = "DVBViewer.xml" ;
+	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	private static final StackXML<String> xmlPath = new StackXML< String >( "Processed", "Entry" ) ;
 
@@ -48,6 +49,7 @@ public class DVBViewer {
 				maxID = 0 ;			// wrap around
 			return( maxID ) ;
 		}
+		private void reset() { maxID = -1 ; } ;
 	}
 
 	private DVBViewerService service = null ;
@@ -62,6 +64,7 @@ public class DVBViewer {
 	private final String exeName ;
 	private final String pluginConfPath ;
 	private String separator      = ",," ;
+	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	public DVBViewer( String dataPath, String exeName )
 	{
 		this.exeName = exeName + ".jar" ;
@@ -167,6 +170,22 @@ public class DVBViewer {
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + iniFile + "\" should be checked." ) ;
 		Log.setFile(path) ;
 		return path ;
+	}
+	public void updateDVBViewer()
+	{
+		if ( this.service != null && this.service.isEnabled() )
+		{
+			this.recordEntries = this.service.readTimers() ;
+			this.mergeXMLWithServiceData() ;
+			this.merge() ;
+			try {
+				this.setDVBViewerTimers() ;
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			this.writeXML() ;
+		}
 	}
 	private void checkRecordingEntries()
 	{
@@ -275,6 +294,8 @@ public class DVBViewer {
 	public void setBroadCastAddress( String b ) { this.service.setBroadCastAddress( b ) ; } ;
 	public void setMacAddress( String m ) { this.service.setMacAddress( m ) ; } ;
 	public void setWaitTimeAfterWOL( int w ) { this.service.setWaitTimeAfterWOL( w ) ; } ;
+	public void setAfterRecordingAction( ActionAfterItems dvbViewerActionAfter ) { this.afterRecordingAction = dvbViewerActionAfter ; } ;
+	public ActionAfterItems getAfterRecordingAction() { return this.afterRecordingAction ; } ;
 	private void addChannel( HashMap< String, Channel> channels, 
 			                 String channelName, 
 			                 Channel channel,
@@ -326,6 +347,27 @@ public class DVBViewer {
 			}
 		}
 	}
+	public void setDVBViewerTimer( DVBViewerEntry d  ) throws InterruptedException
+	{
+		if (    d.getToDo() == DVBViewerEntry.ToDo.NEW )
+		{
+			String rs = this.exePath + File.separator + "dvbv_tvg.exe " ;
+			rs += "-a0 -t0 " ;
+			rs += "-d \"" + d.getTitle() + "\" " ;
+			rs += "-c \"" + d.getChannel() + "\" " ;
+			rs += "-e " + Conversions.longToSvcDayString(  d.getStart() ) + " ";
+			rs += "-s " + Conversions.longToSvcTimeString( d.getStart() ) + " ";
+			rs += "-p " + Conversions.longToSvcTimeString( d.getEnd() ) + " ";
+			if ( this.afterRecordingAction != ActionAfterItems.DEFAULT )
+			rs += "-a " + this.afterRecordingAction.getID() ;
+			Log.out(true, rs) ;
+			try {
+				Runtime.getRuntime().exec( rs ).waitFor() ;
+			} catch (IOException e) {
+			throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
+			}
+		}
+	}
 	public void setDVBViewerTimers() throws InterruptedException
 	{
 		if ( this.service != null && this.service.isEnabled() )
@@ -340,47 +382,44 @@ public class DVBViewer {
 		{
 			DVBViewerEntry d = it.next();
 			
+			if ( d.mustDeleted() )
+			{
+				if ( this.service != null && this.service.isEnabled() )
+					this.service.setTimerEntry( d, this.afterRecordingAction ) ;
+				else
+					this.setDVBViewerTimer( d  ) ;
+			}			
+		}
+		for ( Iterator<DVBViewerEntry> it = this.recordEntries.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry d = it.next();
+			if ( d.mustDeleted() )
+				continue ;
 			if ( d.mustUpdated() )
 				updatedEntries++ ;
 			else if ( ! d.mustIgnored() )
 				newEntries++ ;
 
 			if ( this.service != null && this.service.isEnabled() )
-			{
-				this.service.setTimerEntry( d ) ;
-			}
-			else if (    d.getToDo() == DVBViewerEntry.ToDo.NEW
-/*					  || d.getToDo() == DVBViewerEntry.ToDo.NEW_UPDATED */ )
-			{
-				String rs = rsBase ;
-				rs += "-d \"" + d.getTitle() + "\" " ;
-				rs += "-c \"" + d.getChannel() + "\" " ;
-				rs += "-e " + Conversions.longToSvcDayString(  d.getStart() ) + " ";
-				rs += "-s " + Conversions.longToSvcTimeString( d.getStart() ) + " ";
-				rs += "-p " + Conversions.longToSvcTimeString( d.getEnd() ) + " ";
-				Log.out(true, rs) ;
-				try {
-					Runtime.getRuntime().exec( rs ).waitFor() ;
-				} catch (IOException e) {
-					throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
-				}
-			}
-			if ( d.mustDeleted() )
-				it.remove() ;
+				this.service.setTimerEntry( d, this.afterRecordingAction ) ;
+			else
+				this.setDVBViewerTimer( d  ) ;
 		}
-		this.writeXML();
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
+		DVBViewerEntry.postProcess( this.recordEntries ) ;
 	}
 	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
 	public void setSeparator( String s ) { this.separator = s ; } ;
 	public ArrayList<DVBViewerEntry> readXML()
 	{
+		maxID.reset() ;
+		
 		ArrayList<DVBViewerEntry> result = new ArrayList<DVBViewerEntry>() ;
 		
 		HashMap< Long, DVBViewerEntry > idMap = new HashMap< Long, DVBViewerEntry >() ;
 		
-		File f = new File( this.dataPath + File.separator + NAME_RECORDING_FILE ) ;
+		File f = new File( this.dataPath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
 		if ( ! f.exists() )
 			return result ;
 		
@@ -426,7 +465,7 @@ public class DVBViewer {
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();
 		 
 		XMLStreamWriter writer = null ;
-		File file = new File( this.dataPath + File.separator + NAME_RECORDING_FILE ) ;
+		File file = new File( this.dataPath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
 
 		try {
 			try {
@@ -439,6 +478,8 @@ public class DVBViewer {
 	        sw.setIndent( "    " );
 			sw.writeStartDocument("ISO-8859-1","1.0");
 			sw.writeStartElement("Processed");
+		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
+		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportPrcd.xsd");
 			for ( DVBViewerEntry e : recordEntries )
 			{
 				e.writeXML( sw, file ) ;

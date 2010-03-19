@@ -5,35 +5,63 @@
 package dvbv.gui;
 
 public class GUIStrings {
-	private enum Language { INVALID, ENGLISH, GERMAN } ;
-	private static Language languageEnum = Language.INVALID ;
-	private static final String[] languagesInternal= { "", "en", "de" } ;
-	public static final String[][] languageStrings= {
-														{ "System", "English",  "German"  } ,
-														{ "System", "Englisch", "Deutsch" }
-													} ;
-	
-	private static final String[] add = { "Add", "Hinzufügen" } ;
-	private static final String[] allTimers = { "All timers", "Alle Timer" } ;
-	private static final String[] apply = { "Apply", "Übernehmen" } ;
-	private static final String[] assignedError = { "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" } ;
-	private static final String[] broadCastAddress = { "Broadast address", "Broadcast-Adresse" } ;
-	private static final String[] cancel = { "Cancel", "Abbruch" } ;
-	private static final String[] cannotDeleted = { "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" } ;
-	private static final String[] channel = { "Channel", "Kanal" } ;
-	private static final String[] check = { "Check", "Teste" } ;
-	private static final String[] copyDefaultControlFile = { "Control file doesn't exist, file will be recreated?",
-		                                                     "Steuerdatei existiert nicht, soll Datei neu erstellt werden?" } ;
-	private static final String[] delete = { "Delete", "Löschen" } ;
-	private static final String[] dvbViewer = { "DVBViewer" } ;
-	private static final String[] dvbViewerAssignment = { "DVBViewer assignment",
-											       "DVBViewer-Zuordnung" } ;
-	private static final String[] dvbViewerService = { "DVBViewerService" } ;
-	private static final String[] enable = { "Enable", "Aktivieren" } ;
-	private static final String[] end = { "End", "Ende" } ;
-	private static final String[] execute = { "Execute", "Ausführen" } ;
-	private static final String[] executing = { "Executing", "Ausführend" } ;
-	private static final String[] failed = { "Failed", "Fehler" } ;
+	public enum ActionAfterItems
+	{
+		NONE     (  0, "Nothing", "Keine Aktion" ) ,
+		POWER_OFF(  1, "Shutdown", "Herunterfahren" ) ,
+		STANDBY  (  2, "Standby" ) ,
+		HIBERNATE(  3, "Hibernate", "Ruhemodus" ),
+		DEFAULT  ( -1, "Default", "Voreinstellung" );
+		
+		private final int id ;
+		private final String [] items ;
+		
+		private ActionAfterItems( int id, String... strings )
+		{
+			this.id = id ;
+			this.items = strings ;
+		}
+		@Override
+		public String toString() { return GUIStrings.get( this.items ) ; } ;
+		public int getID() { return this.id ; } ;
+	}
+	public enum Language
+	{
+		INVALID( "", "System", "System" ),
+		ENGLISH( "en", "English", "Englisch" ),
+		GERMAN( "de", "German", "Deutsch" ) ;
+		
+		private final String shortForm ;
+		private final String [] strings ;
+		
+		Language( String shortForm, String ... strings )
+		{
+			this.shortForm = shortForm ;
+			this.strings = strings ;
+		}
+		@Override
+		public String toString() { return GUIStrings.get( this.strings ) ; } ;
+		public String getShort() { return this.shortForm ; } ;
+	}
+	public static Language languageEnum = Language.INVALID ;
+
+	public static void setLanguage( final String language )
+	{
+		String l = language ;
+		if ( l.length() == 0 )
+			l = System.getProperty( "user.language") ;
+		
+		if (    l.equals( "de" )
+				 || l.equals( "at" )
+				 || l.equals( "ch" )
+				 || l.equals( "li" )
+				 || l.equals( "lu" ) )
+			GUIStrings.languageEnum = Language.GERMAN ;
+		else
+			GUIStrings.languageEnum = Language.ENGLISH ;
+	} ;
+
+
 	private static final String[] filter = { "Filter", "Filter" } ;
 	private static final String[] global = { "Global" } ;
 	private static final String[] globalOffsets = { "Global lead / lag times ...", "Globale Vor- / Nachlaufzeiten ..." } ;
@@ -67,7 +95,7 @@ public class GUIStrings {
 	private static final String[] timeBefore = { "Lead time", "Vorlauf" } ;
 	private static final String[] timeAfter = { "Lag time", "Nachlauf" } ;
 	private static final String[] triggerAction = { "Trigger action" } ;
-	
+	private static final String[] updateList = { "update timer list", "aktualisiere Timer-Liste" } ;
 	private static final String[] uninstall = { "Uninstall", "Deinstallieren" } ;
 	private static final String[] unlock = { "Unlock", "Freigeben" } ;
 	private static final String[] url = { "URL" } ;
@@ -78,69 +106,35 @@ public class GUIStrings {
 	private static final String[] waitTime = { "Wait time after WOL", "Warte-Zeit nach WOL" } ;
 	
 
-	public static void setLanguage( final String language )
-	{
-		String l = language ;
-		if ( l.length() == 0 )
-			l = System.getProperty( "user.language") ;
-		
-		if (    l.equals( "de" )
-				 || l.equals( "at" )
-				 || l.equals( "ch" )
-				 || l.equals( "li" )
-				 || l.equals( "lu" ) )
-			GUIStrings.languageEnum = Language.GERMAN ;
-		else
-			GUIStrings.languageEnum = Language.ENGLISH ;
-	} ;
-	public static String[] languageStrings()
-	{
-		if ( languageStrings.length < GUIStrings.languageEnum.ordinal() )
-			return languageStrings[ 0 ] ;
-		else
-			return languageStrings[ GUIStrings.languageEnum.ordinal() - 1 ] ;
-	}
-	public static String toInternalLanguage( String language )
-	{
-		for ( int ix = 0 ; ix < GUIStrings.languageStrings().length ; ix++ )
-			if ( GUIStrings.languageStrings()[ ix ].equals( language ) )
-				return  GUIStrings.languagesInternal[ ix ] ;
-		return( "" ) ;
-	}
-	public static String getLanguage( String internalLanguage )
-	{
-		for ( int ix = 0 ; ix < GUIStrings.languagesInternal.length ; ix++ )
-			if ( GUIStrings.languagesInternal[ ix ].equals( internalLanguage ) )
-				return  GUIStrings.languageStrings()[ ix ] ;
-		return( "" ) ;
-	}
-	
-	private static String get( String[] strings )
+	private static String get( String... strings )
 	{
 		if ( strings.length < GUIStrings.languageEnum.ordinal() )
 			return strings[ 0 ] ;
 		else
 			return strings[ GUIStrings.languageEnum.ordinal() - 1 ] ;
 	}
-	public static String add() { return get( add ) ; } ;
-	public static String allTimers() { return get( allTimers ) ; } ;
-	public static String apply() { return get( apply ) ; } ;
-	public static String assignedError() { return get( assignedError ) ; } ;
-	public static String broadCastAddress() { return get( broadCastAddress ) ; } ;
-	public static String cancel() { return get( cancel ) ; } ;
-	public static String cannotDeleted() { return get( cannotDeleted ) ; } ;
-	public static String channel() { return get( channel ) ; } ;
-	public static String check() { return get( check ) ; } ;
-	public static String copyDefaultControlFile() { return get( copyDefaultControlFile ) ; } ;
-	public static String delete() { return get( delete ) ; } ;
-	public static String dvbViewer() { return get( dvbViewer ) ; } ;
-	public static String dvbViewerAssignment() { return get( dvbViewerAssignment ) ; } ;
-	public static String dvbViewerService() { return get( dvbViewerService ) ; } ;
-	public static String enable() { return get( enable ) ; } ;
-	public static String end() { return get( end ) ; } ;
-	public static String execute() { return get( execute ) ; } ;
-	public static String executing() { return get( executing ) ; } ;
-	public static String failed() { return get( failed ) ; } ;
+	public static String actionAfter()            { return get( "Post record action", "Nach Aufnahme" ) ; } ;
+	public static String add()                    { return get( "Add", "Hinzufügen" ) ; } ;
+	public static String allTimers()              { return get( "All timers", "Alle Timer" ) ; } ;
+	public static String apply()                  { return get( "Apply", "Übernehmen" ) ; } ;
+	public static String assignedError()          { return get( "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" ) ; } ;
+	public static String broadCastAddress()       { return get( "Broadast address", "Broadcast-Adresse" ) ; } ;
+	public static String cancel()                 { return get( "Cancel", "Abbruch" ) ; } ;
+	public static String cannotDeleted()          { return get( "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" ) ; } ;
+	public static String channel()                { return get( "Channel", "Kanal" ) ; } ;
+	public static String check()                  { return get( "Check", "Teste" ) ; } ;
+	public static String copyDefaultControlFile() { return get( "Control file doesn't exist, file will be recreated?",
+                                                                "Steuerdatei existiert nicht, soll Datei neu erstellt werden?" ) ; } ;
+	public static String delete()                 { return get( "Delete", "Löschen" ) ; } ;
+	public static String dvbViewer()              { return get( "DVBViewer" ) ; } ;
+	public static String dvbViewerAssignment()    { return get( "DVBViewer assignment",
+		                                                        "DVBViewer-Zuordnung" ) ; } ;
+	public static String dvbViewerService()       { return get( "DVBViewerService" ) ; } ;
+	public static String enable()                 { return get( "Enable", "Aktivieren" ) ; } ;
+	public static String end()                    { return get( "End", "Ende" ) ; } ;
+	public static String execute()                { return get( "Execute", "Ausführen" ) ; } ;
+	public static String executing()              { return get( "Executing", "Ausführend" ) ; } ;
+	public static String failed()                 { return get( "Failed", "Fehler" ) ; } ;
 	public static String filter() { return get( filter ) ; } ;
 	public static String global() { return get( global ) ; } ;
 	public static String globalOffsets() { return get( globalOffsets ) ; } ;
@@ -174,6 +168,7 @@ public class GUIStrings {
 	public static String triggerAction() { return get( triggerAction ) ; } ;
 	public static String uninstall() { return get( uninstall ) ; } ;
 	public static String unlock() { return get( unlock ) ; } ;
+	public static String updateList() { return get( updateList ) ; } ;
 	public static String url() { return get( url ) ; } ;
 	public static String userName() { return get( userName ) ; } ;
 	public static String verbose() { return get( verbose ) ; } ;

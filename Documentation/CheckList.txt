@@ -1,0 +1,53 @@
+To do 16.03.2010:
+
+1. After recording must be implemented
+2. Disable of cleaning by checkbox
+
+Feature:
+1. Remove all disabled merged entries, GUI/command line
+
+
+
+
+Checklist:
+
+1. Delete DVBViewer.xml
+2. TVInfo import without merge, without filter
+3. Delete DVBViewer entries
+4. TVInfo import without merge, without filter
+5. Delete DVBViewer entries
+6. TVInfo import without merge, without filter
+7. TVInfo import without merge, without filter
+9. Only recordings are duplicated (Service feature?)
+10. Delete DVBViewer entries
+11. TVInfo import without merge, but with filter
+12. Delete DVBViewer entries
+13. TVInfo import without merge, but with filter
+14. DVBViewer list must be empty
+
+20. Delete DVBViewer.xml
+21. TVInfo import with merge and filter
+22. Check the dvbviewer timerlist
+23. TVInfo import with merge and filter
+25. TVInfo import with merge and filter
+24. Open the xml file
+25. TVInfo import with merge and filter
+24. the xml file must not be changed
+
+30. Activate a disabled merged entry from a merge case of two records
+31. TVInfo import with merge and filter
+32. Check the dvbviewer timerlist
+
+35. Activate a disabled merged entry from a merge case more than two records
+36. TVInfo import with merge and filter
+37. Check the dvbviewer timerlist
+
+40. Activatetwoa disabled merged entries from a merge case more than three records
+41. TVInfo import with merge and filter
+42. Check the dvbviewer timerlist, one merge of four -> two merges of two
+
+45. Modify a entry in Range
+46. TVInfo import with merge and filter
+47. Check the dvbviewer timerlist and the xml file
+
+

@@ -14,7 +14,7 @@ import java.text.SimpleDateFormat;
 
  
 public final class Conversions {
-	private final static SimpleDateFormat tvInfoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss ZZZZZ"); ;
+	private final static SimpleDateFormat tvInfoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
 	private final static SimpleDateFormat clickFinderoFormat = new SimpleDateFormat("yyyyMMddHHmm"); ;
 	private final static SimpleDateFormat dayTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
@@ -71,7 +71,7 @@ public final class Conversions {
 	{
 		//Workaround in case of a wrong time zone of the TVInfo output
 		// must be checked on summer time
-		Date d = new Date( tvInfoFormat.parse(time).getTime()  + 60 *60 * 1000) ;
+		Date d = new Date( tvInfoFormat.parse(time).getTime() ) ; //  + 60 *60 * 1000) ;
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
 	}
@@ -149,53 +149,6 @@ public final class Conversions {
 		
 		return result ;
 	}
-	public static <T> ArrayList< T > getTheBestChoices( String search, Collection< T > list,
-			                            int weightOfFirstChar, int charCount,
-			                            Function rework )
-	{
-		String string = rework.stringToString( search ) ;
-		ArrayList< T > results = new ArrayList< T >() ;
-		int charMax = -1 ;
-		int minDiff = 99999 ;
-		for ( Iterator< T > it = list.iterator() ; it.hasNext() ; )
-		{
-			T choiceObject = it.next() ;
-			String choiceOrg = choiceObject.toString() ;
-			String choice = rework.stringToString( choiceOrg ) ;
-			int numChar = 0 ;
-			if( string.trim().substring( 0, 1).equalsIgnoreCase( choice.trim().substring( 0, 1) ) )
-				numChar = weightOfFirstChar ;
-			int maxEqualLength = 0 ;
-			
-			for ( int ib = 0 ; ib < string.length() ; ib++ )
-				for ( int ie = ib + 1 ; ie <= string.length() ; ie++ )
-					if ( choice.contains( string.substring( ib, ie ) ) )
-						maxEqualLength = maxEqualLength < ie-ib ? ie-ib : maxEqualLength ;
-			numChar += maxEqualLength ;
-
-			if ( numChar > charMax )
-			{
-				minDiff = 99999 ;
-				results.clear() ;
-				charMax = numChar ;
-			}
-			if ( numChar == charMax )
-			{
-				results.add( choiceObject ) ;
-				int diff = Math.abs( choiceObject.toString().length() - string.length() ) ;
-				if ( diff < minDiff )
-					minDiff = diff ;
-			}
-		}
-		for ( Iterator< T > it = results.iterator() ; it.hasNext() ; )
-		{
-			T o = it.next() ;
-			int d = Math.abs( o.toString().length() - string.length() ) ;
-			if ( minDiff != d )
-				it.remove() ;
-		}
-		return results.size() == 0 ? null : results ;
-	}
 	public static <T> T getTheBestChoice( String search, Collection<T> list,
             int weightOfFirstChar, int charCount,
             Function rework )
@@ -203,5 +156,112 @@ public final class Conversions {
 		ArrayList< T > objects = getTheBestChoices( search, list, weightOfFirstChar, charCount, rework ) ;
 		
 		return objects != null ? objects.get( 0 ) : null ;
+	}
+	public static <T> ArrayList< T > getTheBestChoices( String search, Collection< T > list,
+			int weightOfFirstChar, int charCount,
+			Function reworkFunc )
+	{
+		return getTheBestChoices( search, list, weightOfFirstChar, charCount, reworkFunc, null ) ;
+	}
+	public static <T> ArrayList< T > getTheBestChoices( String search, Collection< T > list,
+			int weightOfFirstChar, int charCount,
+			Function reworkFunc, Function weightFunc )
+	{
+		if ( reworkFunc == null )
+			reworkFunc = new Function() ;
+		if ( weightFunc == null )
+			weightFunc = new Function() ;
+		String string = reworkFunc.stringToString( search ) ;
+		ArrayList< T > results = new ArrayList< T >() ;
+		int weightMax = -1 ;
+		int minDiff = 99999 ;
+		for ( Iterator< T > it = list.iterator() ; it.hasNext() ; )
+		{
+			T choiceObject = it.next() ;
+			String choiceOrg = choiceObject.toString() ;
+			String choice = reworkFunc.stringToString( choiceOrg ) ;
+			int wiegthFirstChar = 0 ;
+			if( string.trim().substring( 0, charCount).equalsIgnoreCase( choice.trim().substring( 0, charCount) ) )
+				wiegthFirstChar = weightOfFirstChar ;
+			
+			
+			ArrayList< Integer > partLength = getSplitedLength( string, choice, charCount ) ;
+			
+			int weight = weightFunc.arrayIntToInt( partLength, wiegthFirstChar, string, choiceOrg ) ;
+
+			if ( weight > weightMax )
+			{
+				minDiff = 99999 ;
+				results.clear() ;
+				weightMax = weight ;
+			}
+			if ( weight == weightMax )
+			{
+				results.add( choiceObject ) ;
+				int diff = Math.abs( choiceObject.toString().length() - string.length() ) ;
+				if ( diff < minDiff )
+					minDiff = diff ;
+			}
+			}
+			for ( Iterator< T > it = results.iterator() ; it.hasNext() ; )
+			{
+				T o = it.next() ;
+				int d = Math.abs( o.toString().length() - string.length() ) ;
+				if ( minDiff != d )
+					it.remove() ;
+			}
+		return results.size() == 0 ? null : results ;
+	}
+	private static ArrayList< Integer > getSplitedLength( final String left, final String right, int minChar )
+	{
+		ArrayList< Integer > result = new ArrayList< Integer >() ;
+		
+		int maxEqualLength = -1 ;
+		int maxStart = -1 ;
+		int maxEnd = -1 ;
+		int maxPos = -1 ;
+		
+		int length = Math.min( left.length(), right.length() ) ;
+		
+		for ( int ib = 0 ; ib < left.length() ; ib++ )
+		{
+			int ie = ib + length > left.length() ? left.length() : ib + length ;
+			for ( ; ie > ib ; ie-- )
+			{
+				if ( ie - ib < minChar )
+					break ;
+				int pos = right.indexOf( left.substring( ib, ie ) )  ;
+				if ( pos >= 0 )
+					if ( maxEqualLength < ie - ib )
+					{
+						if ( minChar > ie - ib )
+							continue ;
+						maxEqualLength = ie-ib ;
+						maxStart = ib ;
+						maxEnd = ie ;
+						maxPos = pos ;
+					}
+			}
+		}
+		length = maxEnd - maxStart ;
+		
+		if ( maxStart > 0 && maxPos > 0 )
+		{
+			result.addAll( Conversions.getSplitedLength( 
+					              left.substring( 0, maxStart ),
+					              right.substring( 0, maxPos ),
+					              minChar ) ) ;
+		}
+		if ( maxStart >= 0 )
+		{
+			result.add( length ) ;
+
+			if ( maxEnd < left.length() && maxPos + length < right.length() )
+				result.addAll( Conversions.getSplitedLength(
+						          left.substring( maxEnd ), 
+						          right.substring( maxPos + length), 
+						          minChar ) ) ;
+		}
+		return result ;
 	}
 }

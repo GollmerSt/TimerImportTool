@@ -176,7 +176,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
 	    	    @SuppressWarnings("unchecked")
 				Object o = Conversions.getTheBestChoice( name, (Collection) dvbViewerChannels.getChannels().values(),
-						2, 2, new Function()
+						3, 2, new Function()
 						{
 							public String stringToString( String in )
 							{
@@ -188,6 +188,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 									out = "rtltelevision" ;
 								if ( out.equals( "ard"))
 									out = "daserste" ;
+								if ( out.equals( "b3"))
+									out = "bayer" ;
+								if ( out.equals( "srtl" ))
+									out = "superrtl" ;
 								return out ;
 							}
 						}

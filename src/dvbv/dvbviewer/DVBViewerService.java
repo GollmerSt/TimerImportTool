@@ -30,6 +30,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.misc.* ;
 
 public class DVBViewerService {
@@ -202,7 +203,7 @@ public class DVBViewerService {
 		
 		return result ;
 	}
-	public void setTimerEntry( DVBViewerEntry e )
+	public void setTimerEntry( DVBViewerEntry e, ActionAfterItems afterRecordingAction )
 	{
 		if ( e.mustIgnored() )
 			return ;
@@ -214,6 +215,8 @@ public class DVBViewerService {
 			query += "&start=" + Conversions.longToSvcMinutesString( e.getStart() ) ;
 			query += "&stop=" + Conversions.longToSvcMinutesString( e.getEnd() ) ;
 			String title = e.getTitle() ;
+			if ( afterRecordingAction != ActionAfterItems.DEFAULT )
+				query += "&endact=" + afterRecordingAction.getID() ;
 			if ( this.version <= 10500077 )
 				title = Conversions.replaceDiacritical( title ) ;
 			
@@ -378,7 +381,7 @@ public class DVBViewerService {
 						}
 						if ( start > end )
 							end += Constants.DAYMILLSEC ;
-						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, title, true ) ;
+						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, title ) ;
 						result.add(entry) ;
 					}
 					stack.pop() ;

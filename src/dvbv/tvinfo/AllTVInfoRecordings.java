@@ -4,9 +4,6 @@
 
 package dvbv.tvinfo ;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.security.DigestException;
 import java.security.NoSuchAlgorithmException;
@@ -19,9 +16,7 @@ import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
@@ -29,22 +24,18 @@ import javax.xml.transform.stream.StreamSource;
 import dvbv.control.Control;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.misc.* ;
-import dvbv.xml.StackXML;
 
 
 public final class AllTVInfoRecordings
 {
-	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
-
-	private final StackXML<String> xmlPath = new StackXML< String >( "TVInfoProcessed", "entry" ) ;
 	private final Stack<String> xmlPathTVinfoEntry ;
 	private final Stack<String> xmlPathTVinfoTitle ;
 	private HashMap<String,TVInfoRecording> map = null ;
 	private TVInfo tvInfo = null ;
 	private int days = 0 ;
 	private int syncs = 0;
-	private String dataDirectory = null ;
 	private final DVBViewer dvbViewer ;
+	@SuppressWarnings("unused")
 	private final Control control ;
 	public AllTVInfoRecordings( Control control, int days, int syncs )
 	{
@@ -54,7 +45,6 @@ public final class AllTVInfoRecordings
 		this.dvbViewer     = control.getDVBViewer() ;
 		this.days          = days ;
 		this.syncs         = syncs ;
-		this.dataDirectory = dvbViewer.getDataPath() ;
 		
 //		this.xmlPath = new Stack<String>() ;
 //		Collections.addAll( this.xmlPath, "TVInfoProcessed", "entry" ) ;
@@ -109,103 +99,6 @@ public final class AllTVInfoRecordings
 			map.remove( s ) ;
 		return result ;
 	}
-	@SuppressWarnings("unchecked")
-	private void read()
-	{	
-		File f = new File( dataDirectory
-		          + File.separator
-		          + NAME_XML_PROCESSED_RECORDINGS ) ;
-		if ( ! f.exists() )
-			return ;
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
-		try {
-			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
-			Stack<String>   stack = new Stack<String>();
-			
-			while( reader.hasNext() ) {
-				XMLEvent ev = reader.nextEvent();
-				if( ev.isStartElement() )
-				{
-					stack.push( ev.asStartElement().getName().getLocalPart() );
-					if ( ! stack.equals( this.xmlPath ) ) continue ;
-					String tvInfoID = null ;
-					String channel = null;
-					String start = null ;
-					String end = null ;
-					String missingSince = null ;
-					String missingSyncSince = null ;
-					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
-			        while( iter.hasNext() )
-			        {
-			        	Attribute a = iter.next();
-			        	String attributeName = a.getName().getLocalPart() ;
-			        	String value = a.getValue() ;
-			        	if (      attributeName.equals( "uid" ) )
-			        		tvInfoID = value ;
-			        	else if ( attributeName.equals( "channel" ) )
-			        		channel = value ;
-			        	else if ( attributeName.equals( "start" ) )
-			        		start = value ;
-			        	else if ( attributeName.equals( "end") )
-			        		end = value ;
-			        	else if ( attributeName.equals( "missingSince") )
-			        		missingSince = value ;
-			        	else if ( attributeName.equals( "missingSyncSince") )
-			        		missingSyncSince = value ;
-			        }
-			        TVInfoRecording t = new TVInfoRecording( tvInfoID, channel, start, end, missingSince, missingSyncSince ) ;
-			        this.map.put(t.getHash(), t) ;
-				}
-			    if( ev.isEndElement() ) stack.pop();
-			}
-			reader.close();
-		} catch (XMLStreamException e) {
-			throw new ErrorClass( e,   "Error on readin XML file \"" + f.getName() 
-					                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
-					                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
-		}
-		catch (Exception  e) {
-			throw new ErrorClass( e, "Unexpected error on read XML file \"" + f.getName() ) ;
-		}
-	}
-	public void write()
-	{
-		XMLOutputFactory output = XMLOutputFactory.newInstance ();
-		 
-		String fileName = dataDirectory + File.separator + NAME_XML_PROCESSED_RECORDINGS ;
-		XMLStreamWriter writer = null ;
-		try {
-			try {
-				writer = output.createXMLStreamWriter(
-						new FileOutputStream( new File( fileName )), "ISO-8859-1");
-			} catch (FileNotFoundException e) {
-				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + fileName + "\". Write protected?" ) ;
-			}
-			writer.writeStartDocument("ISO-8859-1","1.0");
-			writer.writeStartElement("TVInfoProcessed");
-			for ( TVInfoRecording r : map.values() )
-			{
-				writer.writeStartElement("entry");
-				writer.writeAttribute("uid", r.getID() ) ;
-				writer.writeAttribute("channel", r.getChannel() ) ;
-				writer.writeAttribute("start", r.getStart() ) ;
-				writer.writeAttribute("end", r.getEnd() ) ;
-				writer.writeAttribute("missingSince", r.getMissingSince() ) ;
-				writer.writeAttribute("missingSyncSince", r.getMissingSyncSince() ) ;
-				writer.writeAttribute("hashCode", r.getHash() ) ;
-				writer.writeEndElement();
-			}
-			writer.writeEndElement();
-			writer.writeEndDocument();
-			writer.flush();
-			writer.close();
-		} catch (XMLStreamException e) {
-			throw new ErrorClass( e,   "Error on writing XML file \"" + fileName 
-	                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
-	                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
-		}
-	}
-	@SuppressWarnings("unchecked")
 	public void process( boolean all )
 	{
 /*		if ( this.tvInfo.isFilterEnabled() )
@@ -243,6 +136,7 @@ public final class AllTVInfoRecordings
 					start = 0 ;
 					end   = 0 ;
 					title = null ;
+					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 					while( iter.hasNext() )
 					{
