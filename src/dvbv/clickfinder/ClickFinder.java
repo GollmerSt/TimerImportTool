@@ -7,6 +7,7 @@ package dvbv.clickfinder ;
 import java.io.File;
 import java.text.ParseException;
 
+import dvbv.control.Control;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
@@ -14,16 +15,17 @@ import dvbv.provider.Provider;
 
 public class ClickFinder extends Provider {
 	private DVBViewer dvbViewer = null ;
-	public ClickFinder( DVBViewer dvbViewer )
+	public ClickFinder( Control control )
 	{
-		super( false, false, "ClickFinder", false, false, false, true, false ) ;
-		this.dvbViewer = dvbViewer ;
+		super( control, false, false, "ClickFinder", false, false, false, true, false, false ) ;
+		this.dvbViewer = control.getDVBViewer() ;
 	}
 	private String getParaInfo()
 	{
 		return 
 		", necessary parameters:\n   -ClickFinder [-path dataPath] Sender=ccc Begin=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
+	@Override
 	public void processEntry( String[] args )
 	{		
 		String channel = null ;

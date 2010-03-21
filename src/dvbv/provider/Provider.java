@@ -6,10 +6,10 @@ package dvbv.provider;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.Stack;
 
+import dvbv.control.Control;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLEventReader;
@@ -18,15 +18,21 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import dvbv.xml.Conversions;
+import dvbv.xml.StackXML;
 
 import dvbv.misc.ErrorClass;
 
 public abstract class Provider {
+
+	private static final StackXML<String> pathProvider = new StackXML<String>( "Providers", "Provider" ) ;
+	private static final StackXML<String> pathURL = new StackXML<String>( "Providers", "Provider", "Url" ) ;
+	private static final StackXML<String> pathMissing = new StackXML<String>( "Providers", "Provider", "Missing" ) ;
+
+	private enum XMLStatus { UKNOWN, MISSING, PROVIDER } ;
 	private static ArrayList< String > names = new ArrayList< String >() ;
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
 	private final int id ;
-	protected boolean isValid = false ;
-	protected ArrayList< String > channels = new ArrayList< String >() ;
+	protected final Control control ;
 	private final boolean hasAccount ;
 	private final boolean hasURL ;
 	private final boolean canExecute ;
@@ -44,15 +50,18 @@ public abstract class Provider {
 	private boolean isFilterEnabled = true ;
 	private boolean isPrepared = false ;
 	private OutDatedInfo outDatedLimits = null ;
-	public Provider( boolean hasAccount,
+	public Provider( Control control,
+					 boolean hasAccount,
 			         boolean hasURL,
 			         String name,
 			         boolean canExecute,
 			         boolean canTest,
 			         boolean filter,
 			         boolean mustInstall,
+			         boolean canImport,
 			         boolean isOutDatedLimitsEnabled )
 	{
+		this.control      = control ;
 		this.hasAccount   = hasAccount ;
 		this.hasURL       = hasURL ;
 		this.name = name ;
@@ -64,7 +73,7 @@ public abstract class Provider {
 		this.isPrepared = ! isOutDatedLimitsEnabled ;
 		if ( isOutDatedLimitsEnabled)
 		{
-			outDatedLimits = new OutDatedInfo() ;
+			outDatedLimits = new OutDatedInfo( true ) ;
 		}
 		Provider.names.add( name ) ;
 		Provider.providers.add( this ) ;
@@ -93,14 +102,18 @@ public abstract class Provider {
 	public boolean hasURL() { return this.hasURL ; } ;
 	public boolean hasAccount() { return this.hasAccount ; } ;
 	public boolean canExecute() { return this.canExecute ; } ;
-	public boolean canTest() { return this.canTest ; } ;
+	public boolean canTest()   { return this.canTest ; } ;
+	public boolean canImport() { return this.importChannels( true ) >= 0 ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
 	public void setPrepared( boolean prepared ) { this.isPrepared = prepared ; } ;
 	public OutDatedInfo getOutDatedLimits() { return this.outDatedLimits ; } ;
 	public boolean install()   { return true ; } ;
 	public boolean uninstall() { return true ; } ;
-	public ArrayList< String > getChannels() { return channels ; } ;
+	public int importChannels( boolean check ) { return -1 ; } ;
+	public int importChannels() { return this.importChannels( false ) ; } ;
+	public void process( boolean getAll ) {} ;
+	public void processEntry( String[] args ) {} ;
 	public void check()
 	{
 		if ( this.hasAccount && ( this.username == null || this.password == null ) )
@@ -129,18 +142,25 @@ public abstract class Provider {
 	}
 	public static void readXML( XMLEventReader reader, File f ) throws XMLStreamException
 	{
-		Stack<String> pathProvider = new Stack<String>() ;
-		Collections.addAll( pathProvider, "Providers", "Provider" ) ;
-		
-		Stack<String> pathURL = new Stack<String>() ;
-		Collections.addAll( pathURL, "Providers", "Provider", "Url" ) ;
-
 		Stack<String> stack = new Stack<String>() ;
 		stack.push( "Providers" ) ;
 		XMLEvent ev = null ;
 
 		Provider provider = null ;
 				
+		String name = null;
+		String username = null ;
+		String password = null ;
+		int triggerAction = -1 ;
+		boolean verbose = false ;
+		boolean message = false ;
+		boolean merge = false ;
+		boolean filter = false ;
+		OutDatedInfo info = new OutDatedInfo( true ) ;
+		String url = "" ;
+		
+		XMLStatus xmlStatus = XMLStatus.UKNOWN ;
+
 		while( reader.hasNext() )
 		{
 			try {
@@ -153,28 +173,39 @@ public abstract class Provider {
 			{
 				stack.push( ev.asStartElement().getName().getLocalPart() ) ;
 				
+
 				if      ( stack.equals( pathProvider ) )
 				{
-					String name = null;
-					String username = null ;
-					String password = null ;
-					int triggerAction = -1 ;
-					boolean verbose = false ;
-					boolean message = false ;
-					boolean merge = false ;
-					boolean filter = false ;
-					OutDatedInfo info = new OutDatedInfo() ;
+					name = null;
+					username = null ;
+					password = null ;
+					triggerAction = -1 ;
+					verbose = false ;
+					message = false ;
+					merge = false ;
+					filter = false ;
 					
+					xmlStatus = XMLStatus.PROVIDER ;
+				}
+				else if ( stack.equals( pathMissing ))
+				{
+					info = new OutDatedInfo( true ) ;
 					
-					@SuppressWarnings("unchecked")
-					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
+					xmlStatus = XMLStatus.MISSING ;
+				}
 					
-					while ( iter.hasNext() )
-					{
-		            	Attribute a = iter.next();
-		            	String attributeName = a.getName().getLocalPart() ;
-		            	String value = a.getValue().trim() ;
-		            	{
+				@SuppressWarnings("unchecked")
+				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
+					
+				while ( iter.hasNext() )
+				{
+		            Attribute a = iter.next();
+		            String attributeName = a.getName().getLocalPart() ;
+		            String value = a.getValue().trim() ;
+		            
+		            switch ( xmlStatus)
+		            {
+		            	case  PROVIDER :
 		            		if      ( attributeName.equals( "name") )
 		            			name = value ;
 		            		else if ( attributeName.equals( "username") )
@@ -195,16 +226,27 @@ public abstract class Provider {
 		            			message = Conversions.getBoolean( value, ev, f ) ;
 			            	else if ( attributeName.equals( "filter") )
 		            			filter = Conversions.getBoolean( value, ev, f ) ;
-			            	else
-			            	{
-			            		try {
-			            			info.readXML( attributeName, value ) ;
-			            		} catch ( ErrorClass e ) {
-			            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
-			            		}
-			            	}
-		            	}
+		            		break ;
+		            	
+		            	case MISSING :
+		            		try {
+		            			info.readXML( attributeName, value ) ;
+		            		} catch ( ErrorClass e ) {
+		            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
+		            		}
+		            		break ;
 					}
+				}
+			}
+			if ( ev.isCharacters() )
+			{
+				if ( stack.equals( pathURL ) )
+					url += ev.asCharacters().getData().trim() ;
+			}
+			if ( ev.isEndElement() )
+			{
+				if ( stack.equals( pathProvider ))
+				{
 					provider = Provider.getProvider( name ) ;
 					if ( provider == null )
             			throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
@@ -216,20 +258,16 @@ public abstract class Provider {
 					provider.merge = merge ;
 					provider.filter = filter ;
 					if ( provider.outDatedLimits != null )
+					{
 						provider.outDatedLimits = info ;
+						info = null ;
+					}
+					provider.url = url ;
+					url = "" ;
 				}
-			}
-			if ( ev.isCharacters() )
-			{
-				if ( stack.equals( pathURL ) )
-					provider.url += ev.asCharacters().getData().trim() ;
-			}
-			if ( ev.isEndElement() )
-			{
 				stack.pop() ;
 				if ( stack.size() == 1 )
 					try {
-						provider.isValid = true ;
 						provider.check() ;
 					} catch( ErrorClass e ) {
 						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\""  ) ;
@@ -245,8 +283,6 @@ public abstract class Provider {
 		  for ( Iterator<Provider> it = Provider.providers.iterator() ; it.hasNext() ;)
 		  {
 			  Provider provider = it.next();
-			  if ( ! provider.isValid )
-				  continue ;
 			  sw.writeStartElement( "Provider" ) ;
 			  sw.writeAttribute( "name", provider.name) ;
 			  if ( provider.hasAccount )
@@ -261,7 +297,12 @@ public abstract class Provider {
 			  sw.writeAttribute( "verbose", provider.verbose ) ;
 			  sw.writeAttribute( "filter", provider.filter ) ;
 			  if ( provider.outDatedLimits != null )
+			  {
+				  sw.writeStartElement( "Missing" ) ;
 				  provider.outDatedLimits.writeXML( sw ) ;
+				  sw.writeEndElement() ;
+			  }
+				  
 			  if ( provider.hasURL )
 			  {
 				  sw.writeStartElement( "Url") ;

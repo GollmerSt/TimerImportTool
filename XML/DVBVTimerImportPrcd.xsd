@@ -54,7 +54,7 @@
     	<xsd:attribute name="end" type="long" use="required"></xsd:attribute>
     	<xsd:attribute name="startOrg" type="long" use="required"></xsd:attribute>
     	<xsd:attribute name="endOrg" type="long" use="required"></xsd:attribute>
-    	<xsd:attribute name="canMerge" type="xsd:boolean"
+    	<xsd:attribute name="mergeStatus" type="MergeStatus"
     		use="required">
     	</xsd:attribute>
     	<xsd:attribute name="mergeID" type="long" use="optional"></xsd:attribute>
@@ -83,6 +83,17 @@
     <xsd:simpleType name="long">
     	<xsd:restriction base="xsd:string">
     		<xsd:pattern value="(-)?\d+"></xsd:pattern>
+    	</xsd:restriction>
+    </xsd:simpleType>
+
+    <xsd:simpleType name="MergeStatus">
+    	<xsd:restriction base="xsd:string">
+    		<xsd:enumeration value="UNKNOWN"></xsd:enumeration>
+    		<xsd:enumeration value="DISABLED"></xsd:enumeration>
+    		<xsd:enumeration value="ENABLED"></xsd:enumeration>
+    		<xsd:enumeration value="MERGE"></xsd:enumeration>
+    		<xsd:enumeration value="JUST_SEPARATED"></xsd:enumeration>
+    		<xsd:enumeration value="SEPARATED_FIXED"></xsd:enumeration>
     	</xsd:restriction>
     </xsd:simpleType>
 </xsd:schema>

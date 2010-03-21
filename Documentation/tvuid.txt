@@ -1,0 +1,178 @@
+// TVgenial TV-channel list
+// created at: 20.03.2010 16:16:06
+// more informations about TVUID-system at  www.arakon-systems.de
+0010001|ARD|Das Erste
+0010002|ZDF|Zweites Deutsches Fernsehen
+0010004|RTL|RTL Television
+0010005|Sat.1|Satellitenfernsehen 1
+0010006|Pro7|Pro Sieben
+0010013|mdr|MDR Fernsehen
+0010014|WDR|West Deutscher Rundfunk
+0010011|VOX|VOX
+0010015|3sat|Drittes Satellitenfernsehen
+0010018|BR|Bayrischer Rundfunk
+0010008|Kabel1|Kabel 1
+0010009|RTL II|Radio Television Luxemburg 2
+0010106|TNTser|TNT Serie
+0010010|arte|Arte Deutschland TV
+0010019|NDR|Norddeutsches Fernsehen
+0010107|TNTfilm|TNT Film Germany
+0010020|hr|Hessischer Rundfunk
+0010023|MünTV|München TV
+0010024|tvB|TV Berlin
+0010025|FrankTV|Franken TV
+0010017|SWR|Südwestrundfunk (Südwest)
+0010026|Spreekanal|Spreekanal
+0110002|BBCe|BBC Entertainment
+0010028|alpha|BR alpha
+0010555|DCM|Disney Cinemagic
+0010012|DSF|Deutsches Sport Fernsehen
+0010046|Eurosport|Eurosport
+0010031|SRTL|Super RTL
+0010032|KI.KA|Der Kinderkanal
+0120005|Cartoon|Cartoon Networks
+0010108|TIMM|TIMM TV
+0010058|HH1|Hamburg 1
+0070001|Euronews|Euronews
+0010033|MTV|Music Television Germany
+0010036|VIVA|VIVA Deutschland
+0010038|Phoenix|Phoenix
+0010057|QVC|QVC Deutschland
+0010007|n-tv|n-tv Deutschland
+0010040|N24|Der Nachrichten Sender
+0120001|CNN|CNN Europe
+0110001|BBC|BBC World News
+0010045|bloom|Bloomberg Television
+0010073|Comedy|Comedy Central (Germany)
+0010074|rheinmTV|RheinMain TV
+0010075|Kinowelt|Kinowelt TV
+0010048|HSE|Home Shopping Europe
+0010049|9live|9 live
+0010076|Silver|Silverline Movie Channel
+0010029|DW|Deutsche Welle TV
+0110008|Animal|Animal Planet Europe
+0030012|TSR1|Télévision Suisse Romande 1
+0030013|TSR2|Télévision Suisse Romande 2
+0030014|RSI LA1|radiotelevisione svizzera 1
+0030015|RSI LA2|radiotelevisione svizzera LA2
+0010063|Tele5|Tele 5
+0010021|RBB|Rundfunk Berlin Brandenburg
+0010069|OTV|Oberpfalz TV
+0010070|Bibel|Bibel TV
+0090005|Canale 5|Canale 5
+0090006|Italia1|Italia 1
+0020004|TW1|TW1 Tourismus Fernsehen
+0070004|France2|France 2
+0070005|France3|France 3
+0110003|ngc Eu|National Geographic Channel Europe
+0010066|DC Ges|Discovery Channel Geschichte
+0030011|TZüri|Tele Züri
+0040005|extreme|Extreme Sports Channel
+0010530|FoGes|Premiere Focus Gesundheit
+0140001|TRT Türk|Turkiye Radyo Televizyon Türk
+0010701|1plus|ARD EinsPlus
+0010703|theater|ZDF Theaterkanal
+0010702|1festival|ARD Eins Festival
+0010067|nick|Nickelodeon Deutschland
+0010068|Vierte|Das Vierte
+0060003|TV2|Television 2 Danmark
+0010533|Dis.HD|Discovery HD
+0010512|Classica|Classica
+0010510|Discovery|Discovery Channel Deutschland
+0010508|Disney|Disney Channel
+0010524|Goldstar|Goldstar TV
+0010526|Heimat|Heimatkanal
+0010515|Junior|sky Junior
+0010071|DMAX|DMAX
+0010521|13th|Studio Universal 13th Street
+0010511|Uhse|Premiere Beate Uhse TV
+0010700|1extra|ARD EinsExtra
+0010705|Info|ZDFinfokanal
+0010517|Planet|Planet TV
+0010047|RTLShop|RTL Shop
+0010531|SciFi|SciFi Deutschland
+0010538|Action|Sky Action
+0070010|Fashion|Fashion TV
+0120007|E! E.|E! Entertainment TV
+0010077|History|History
+0090008|Nat.Geo|National Geographic Channel Italia
+0010079|Gusto|TV Gusto Premium
+0110010|VH1Class|VH1 Classic Europe
+0010080|Toon|Toon Disney Deutschland
+0010081|Toon 2|Toon Disney Deutschland 2  (+1 Stunde)
+0010082|Wetter|Deutsches Wetter Fernsehen
+0090009|Yacht|Yacht & Sail
+0010083|Play|Playhouse Disney Deutschland
+0070011|Motors|Motors TV
+0010084|ESPNa|ESPN Amerika
+0070012|Trace|Trace TV
+0110011|Dance|MTV Dance UK
+0110012|HitsUK|MTV Hits UK
+0110013|Playboy|Playboy TV Europe
+0010085|AXN|AXN Deutschland
+0110014|ESPN|ESPN Classic Europe
+0020005|K-TV|K-TV Fernsehen
+0010087|Spiegel|Spiegel TV Digital
+0010088|Gute Lau|Gute Laune TV
+0010091|Sat 1 Com|Sat.1 Comedy
+0010092|K1 Class|Kabel Eins Classics
+0010093|Boom|Boomerang Deutschland
+0110015|BlueH|Blue Hustler Europe
+0010094|Crime|RTL Crime
+0010095|Living|RTL Living
+0010096|Passion|Passion TV Germany
+0070014|MEZZO|MEZZO
+0010097|Deluxe|Deluxe Music TV Europe
+0020001|ORF1|Österreichischer Rundfunk 1
+0020002|ORF2|Österreichischer Rundfunk 2
+0030002|SFzwei|Schweizer Fernsehen Zwei
+0040001|NL 1|Nederland 1
+0040002|NL 2|Nederland 2
+0040003|NL 3|Nederland 3
+0060001|DR1|Danmark Television 1
+0070013|Eurosp2|Eurosport 2
+0070006|TV5|TV5 Monde Europe
+0110016|TCM|Turner Classic Movies Europe
+0010004|RTL*|RTL Television  (frei)
+0030001|SF1|Schweizer Fernsehen 1
+0010005|Sat.1*|Satellitenfernsehen 1 (frei)
+0010006|Pro7*|Pro Sieben
+0010011|VOX*|VOX
+0090001|RAIuno|RAI UNO
+0010009|RTL II*|Radio Television Luxemburg 2 (frei)
+0030010|3+|3 Plus
+0010099|MTVen|MTV Entertainment
+0010100|Animax|Animax Deutschland
+0010101|e.clips|e.clips
+0010102|NickPrm|Nickelodeon Premium
+0010103|Romance|Romance TV
+0010104|FOX|Fox Channel Deutschland
+0010105|AnixeHD|Anixe HD
+0010539|Cinema|Sky Cinema
+0010540|Cine+1|Sky Cinema/+1
+0010541|skyCom|Sky Comedy
+0010542|Emotion|Sky Emotion
+0110009|CNBC|CNBC Eeurope
+0010543|FBliga|Sky Fußball Bundesliga
+0010544|Krimi|Sky Krimi
+0010545|Nostalgie|Sky Nostalgie
+0010546|Sport1|Sky Sport 1
+0010547|Sport2|Sky Sport 2
+0010548|SportAu|Sky Sport Austria
+0010519|DisnXD|Disney XD
+0010549|Sport HD|Sky Sport HD
+0010550|skynews|sky News
+0010525|MGM|Metro Goldwyn Mayer
+0020003|ATV|Austria TV
+0090002|RAIdue|RAI DUE
+0010551|CineHits|sky Cinema Hits
+0010552|Cine+24|Sky Cinema +24
+0010553|NGW|National Geographic Wild Germany
+0010087|SpGes|Spiegel TV Geschichte
+0010557|Motorvis|Motorvision TV
+0010556|DCM HD|Disney Cinemagic HD Deutschland
+0010554|CineHD|Sky Cinema HD
+0010558|NGHD|National Geographic HD
+0010559|Hist.HD|History HD
+0010704|zdf_neo|zdf_neo
+0010560|Select|Sky Select

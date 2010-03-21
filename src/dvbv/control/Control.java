@@ -28,10 +28,12 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import dvbv.Resources.ResourceManager;
+import dvbv.clickfinder.ClickFinder;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.dvbviewer.DVBViewerService ;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
+import dvbv.tvgenial.TVGenial;
 import dvbv.tvinfo.TVInfo;
 import dvbv.xml.StackXML;
 
@@ -67,8 +69,9 @@ public class Control
 	{
 		this.dvbViewer = dvbViewer ;
 		
-		new TVInfo( ) ;
-		new dvbv.clickfinder.ClickFinder( dvbViewer ) ;
+		new TVInfo( this ) ;
+		new TVGenial( this ) ;
+		new ClickFinder( this ) ;
 		dvbViewer.setProvider() ;
 		
 		this.read() ;
@@ -108,6 +111,7 @@ public class Control
 		String offsetEnd    = null ;
 		
 		Provider provider = null ;
+		long channelID    = -1L ;
 		
 		ChannelSet channelSet = null ;
 		
@@ -162,6 +166,7 @@ public class Control
 				{
 					type = BlockType.CHANNEL ;
 					provider = null ;
+					channelID = -1L ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
 				}
@@ -188,9 +193,18 @@ public class Control
 	            	switch ( type )
 	            	{
 	            	case CHANNEL_PROVIDER :
-	            		provider = Provider.getProvider( value ) ;
-	            		if ( provider == null )
-            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
+	            		if      ( attributeName.equals( "name" ) )
+	            		{
+	            			provider = Provider.getProvider( value ) ;
+	            			if ( provider == null )
+	            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
+	            		}
+	            		else if ( attributeName.equals( "channelID" ) )
+	            		{
+	            			if ( ! value.matches("\\d+"))
+	            				throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + f.getName() + "\"" ) ;
+	            			channelID = Long.valueOf( value ) ;
+	            		}
 	            		break ;
 	            	case DVBSERVICE :
 	            		if      ( attributeName.equals( "enable" ) )
@@ -271,7 +285,7 @@ public class Control
 				if ( data.length() > 0 )
 				{
 					if      ( stack.equals( this.pathChannelProvider ) )
-						channelSet.add( provider.getID(), data ) ;
+						channelSet.add( provider.getID(), data, channelID ) ;
 					else if ( stack.equals( this.pathChannelDVBViewer ) )
 						channelSet.setDVBViewerChannel( data ) ;
 					else if ( stack.equals( this.pathChannelMerge ) )

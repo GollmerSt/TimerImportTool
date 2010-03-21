@@ -13,8 +13,6 @@ import dvbv.misc.* ;
 import dvbv.provider.Provider;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.control.Control ;
-import dvbv.tvinfo.AllTVInfoRecordings ;
-import dvbv.clickfinder.ClickFinder ;
 import dvbv.dvbviewer.channels.Channels ;
 import dvbv.gui.GUI;
 import dvbv.gui.GUIStrings;
@@ -22,7 +20,7 @@ import dvbv.gui.GUI.GUIStatus;
 
 public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
-	private enum ImportType{ GUI, TVINFO, CLICKFINDER, UPDATE } ;
+	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
 		
 		GUIStrings.setLanguage( "" ) ;
@@ -70,6 +68,8 @@ public final class TimerImportTool {
 					type = ImportType.CLICKFINDER ;
 				else if ( args[i].equalsIgnoreCase("-TVInfo") )
 					type = ImportType.TVINFO ;
+				else if ( args[i].equalsIgnoreCase("-TVGenial") )
+					type = ImportType.TVGENIAL ;
 				else if ( args[i].equalsIgnoreCase("-message") )
 					showMessageBox = true ;
 				else if ( args[i].equalsIgnoreCase("-path") )
@@ -141,6 +141,9 @@ public final class TimerImportTool {
 				case CLICKFINDER :
 					provider = Provider.getProvider( "ClickFinder" ) ;
 					break ;
+				case TVGENIAL :
+					provider = Provider.getProvider( "TVGenial" ) ;
+					break ;
 				case UPDATE :
 					dvbViewer.updateDVBViewer() ;
 			}
@@ -158,19 +161,11 @@ public final class TimerImportTool {
 			
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;
-
-			if ( provider == Provider.getProvider( "TVInfo" ))
-			{
-				AllTVInfoRecordings aR = new AllTVInfoRecordings( control, 3, 3 );
-				aR.process(getAll);
-				dvbViewer.setDVBViewerTimers();
-			}
-			else if ( provider == Provider.getProvider( "ClickFinder" ))
-			{
-				ClickFinder click = (ClickFinder) provider ;
-				click.processEntry( args ) ;
-				dvbViewer.setDVBViewerTimers();
-			}
+			
+			provider.process(getAll); ;
+			provider.processEntry( args ) ;
+			dvbViewer.setDVBViewerTimers();
+			
 		} catch (ErrorClass e) {
 			Log.error(e.getLocalizedMessage());
 			Log.out("Import terminated with errors" ) ;

@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
     <Providers>
-        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="true" message="false" verbose="true">
+        <Provider name="TVInfo" username="SGollmer" password="esamikro" triggeraction="16640" merge="true" message="false" verbose="true" filter="true">
+            <Missing enable="false" missingSince="259200000" missingSyncSince="3"></Missing>
             <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
         </Provider>
-        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true"></Provider>
+        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true" filter="false"></Provider>
     </Providers>
+    <DVBViewer afterRecordingAction="NONE"></DVBViewer>
     <DVBService enable="true" url="localhost:50425" username="admin" password="admin" timeZone="Europe/Berlin">
-        <WakeOnLAN enable="false" broadCastAddress="192.168.0.255" macAddress="00:1F:D0:20:CB:3A" waitTimeAfterWOL="14"></WakeOnLAN>
+        <WakeOnLAN enable="false" broadCastAddress="192.168.43.255" macAddress="01:23:45:67:89:AB" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
         <DefaultProvider>TVInfo</DefaultProvider>
@@ -21,216 +23,318 @@
         <Channel>
             <Provider name="TVInfo">ARD</Provider>
             <Provider name="ClickFinder">ARD</Provider>
+            <Provider name="TVGenial" channelID="10001">ARD</Provider>
+            <DVBViewer>543583690|Das Erste (deu)</DVBViewer>
             <Merge>false</Merge>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDF</Provider>
             <Provider name="ClickFinder">ZDF</Provider>
+            <Provider name="TVGenial" channelID="10002">ZDF</Provider>
+            <DVBViewer>544763238|ZDF (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Bayern</Provider>
             <Provider name="ClickFinder">B3</Provider>
+            <Provider name="TVGenial" channelID="10018">BR</Provider>
+            <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">HR</Provider>
             <Provider name="ClickFinder">H3</Provider>
+            <Provider name="TVGenial" channelID="10020">hr</Provider>
+            <DVBViewer>556690892|hr-fernsehen (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">WDR</Provider>
             <Provider name="ClickFinder">WDR</Provider>
+            <Provider name="TVGenial" channelID="10014">WDR</Provider>
+            <DVBViewer>576351695|WDR Köln (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SWR</Provider>
             <Provider name="ClickFinder">SWR</Provider>
+            <Provider name="TVGenial" channelID="10017">SWR</Provider>
+            <DVBViewer>740191815|SWR Fernsehen RP (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MDR</Provider>
             <Provider name="ClickFinder">MDR</Provider>
+            <Provider name="TVGenial" channelID="10013">mdr</Provider>
+            <DVBViewer>727084614|MDR Thüringen (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NDR</Provider>
             <Provider name="ClickFinder">NDR</Provider>
+            <Provider name="TVGenial" channelID="10019">NDR</Provider>
+            <DVBViewer>707423809|NDR FS HH (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RBB</Provider>
             <Provider name="ClickFinder">RBB</Provider>
+            <Provider name="TVGenial" channelID="10021">RBB</Provider>
+            <DVBViewer>576351790|rbb Berlin</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Ki.Ka</Provider>
             <Provider name="ClickFinder">Ki.Ka</Provider>
+            <Provider name="TVGenial" channelID="10032">KI.KA</Provider>
+            <DVBViewer>557870440|KiKa</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">3sat</Provider>
             <Provider name="ClickFinder">3SAT</Provider>
+            <Provider name="TVGenial" channelID="10015">3sat</Provider>
+            <DVBViewer>551316839|3sat (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SR</Provider>
+            <DVBViewer>622227270|SR Fernsehen</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Alpha</Provider>
             <Provider name="ClickFinder">BR Alpha</Provider>
+            <Provider name="TVGenial" channelID="10028">alpha</Provider>
+            <DVBViewer>582905296|BR-alpha*</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF2</Provider>
             <Provider name="ClickFinder">ORF 2</Provider>
+            <Provider name="TVGenial" channelID="20002">ORF2</Provider>
+            <DVBViewer>747962478|ORF2 - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Tele 5</Provider>
             <Provider name="ClickFinder">Tele5</Provider>
+            <Provider name="TVGenial" channelID="10063">Tele5</Provider>
+            <DVBViewer>637534319|TELE 5 - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sat1</Provider>
             <Provider name="ClickFinder">SAT1</Provider>
+            <Provider name="TVGenial" channelID="10005">Sat.1</Provider>
+            <DVBViewer>553665628|SAT.1</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Kabel1</Provider>
             <Provider name="ClickFinder">Kabel</Provider>
+            <Provider name="TVGenial" channelID="10008">Kabel1</Provider>
+            <DVBViewer>587220062|kabel eins</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Pro7</Provider>
             <Provider name="ClickFinder">PRO7</Provider>
+            <Provider name="TVGenial" channelID="10006">Pro7</Provider>
+            <DVBViewer>570442845|ProSieben</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL</Provider>
             <Provider name="ClickFinder">RTL</Provider>
+            <Provider name="TVGenial" channelID="10004">RTL</Provider>
+            <DVBViewer>543698659|RTL Television</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL2</Provider>
             <Provider name="ClickFinder">RTL II</Provider>
+            <Provider name="TVGenial" channelID="10009">RTL II</Provider>
+            <DVBViewer>545271540|RTL2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Super RTL</Provider>
             <Provider name="ClickFinder">S RTL</Provider>
+            <Provider name="TVGenial" channelID="10031">SRTL</Provider>
+            <DVBViewer>544747272|Super RTL</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VOX</Provider>
             <Provider name="ClickFinder">VOX</Provider>
+            <Provider name="TVGenial" channelID="10011">VOX</Provider>
+            <DVBViewer>545795868|VOX</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">arte</Provider>
             <Provider name="ClickFinder">Arte</Provider>
+            <Provider name="TVGenial" channelID="10010">arte</Provider>
+            <DVBViewer>563245108|arte (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Das Vierte</Provider>
             <Provider name="ClickFinder">Das Vierte</Provider>
+            <Provider name="TVGenial" channelID="10068">Vierte</Provider>
+            <DVBViewer>671088743|DAS VIERTE - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">9 Live</Provider>
             <Provider name="ClickFinder">9Live</Provider>
+            <Provider name="TVGenial" channelID="10049">9live</Provider>
+            <DVBViewer>620774496|9Live</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">BBC</Provider>
             <Provider name="ClickFinder">BBC</Provider>
+            <Provider name="TVGenial" channelID="110001">BBC</Provider>
+            <DVBViewer>542900425|BBC World - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">BloombergTV</Provider>
             <Provider name="ClickFinder">BloombergTV</Provider>
+            <Provider name="TVGenial" channelID="10045">bloom</Provider>
+            <DVBViewer>623378533|Bloomberg European TV - C</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CNBC</Provider>
+            <Provider name="TVGenial" channelID="110009">CNBC</Provider>
+            <DVBViewer>557056202|CNBC Europe - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CNN</Provider>
             <Provider name="ClickFinder">CNN</Provider>
+            <Provider name="TVGenial" channelID="120001">CNN</Provider>
+            <DVBViewer>543424715|CNN Int. - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Comedy Central</Provider>
             <Provider name="ClickFinder">Comedy Central</Provider>
+            <Provider name="TVGenial" channelID="10073">Comedy</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DSF</Provider>
             <Provider name="ClickFinder">DSF</Provider>
+            <Provider name="TVGenial" channelID="10012">DSF</Provider>
+            <DVBViewer>603979880|DSF - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsExtra</Provider>
             <Provider name="ClickFinder">EinsExtra</Provider>
+            <Provider name="TVGenial" channelID="10700">1extra</Provider>
+            <DVBViewer>543584305|EinsExtra</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsFestival</Provider>
             <Provider name="ClickFinder">EinsFestival</Provider>
+            <Provider name="TVGenial" channelID="10702">1festival</Provider>
+            <DVBViewer>550137906|Einsfestival</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EinsPlus</Provider>
             <Provider name="ClickFinder">EinsMuXx</Provider>
+            <Provider name="TVGenial" channelID="10701">1plus</Provider>
+            <DVBViewer>556691507|EinsPlus</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">N24</Provider>
             <Provider name="ClickFinder">N24</Provider>
+            <Provider name="TVGenial" channelID="10040">N24</Provider>
+            <DVBViewer>603997279|N24</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">n-tv</Provider>
             <Provider name="ClickFinder">NTV</Provider>
+            <Provider name="TVGenial" channelID="10007">n-tv</Provider>
+            <DVBViewer>541667130|n-tv</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Phoenix</Provider>
             <Provider name="ClickFinder">Phoenix</Provider>
+            <Provider name="TVGenial" channelID="10038">Phoenix</Provider>
+            <DVBViewer>569798709|Phoenix</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">EuroNews</Provider>
             <Provider name="ClickFinder">EURONEWS</Provider>
+            <Provider name="TVGenial" channelID="70001">Euronews</Provider>
+            <DVBViewer>696320204|EuroNews - CV (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Eurosport</Provider>
             <Provider name="ClickFinder">EUROSPORT</Provider>
+            <Provider name="TVGenial" channelID="10046">Eurosport</Provider>
+            <DVBViewer>543621325|Eurosport - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Home Shopping Europe</Provider>
             <Provider name="ClickFinder">Home Shopping Europe</Provider>
+            <Provider name="TVGenial" channelID="10048">HSE</Provider>
+            <DVBViewer>620757198|HSE - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV</Provider>
             <Provider name="ClickFinder">MTV</Provider>
+            <Provider name="TVGenial" channelID="10033">MTV</Provider>
+            <DVBViewer>801112170|MTV Germany - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">münchen 2</Provider>
             <Provider name="ClickFinder">münchen 2</Provider>
+            <DVBViewer>550109291|Muenchen2 - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">münchen.tv</Provider>
+            <Provider name="TVGenial" channelID="10023">MünTV</Provider>
+            <DVBViewer>539689068|MuenchenTV - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Nick</Provider>
             <Provider name="ClickFinder">Nick</Provider>
+            <Provider name="TVGenial" channelID="10067">nick</Provider>
+            <DVBViewer>805699693|NICK/COMEDY - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTLSHOP</Provider>
             <Provider name="ClickFinder">RTL Shop</Provider>
+            <Provider name="TVGenial" channelID="10047">RTLShop</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TRT</Provider>
             <Provider name="ClickFinder">TRT</Provider>
+            <Provider name="TVGenial" channelID="140001">TRT Türk</Provider>
+            <DVBViewer>583598289|TRT Int. - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VIVA</Provider>
             <Provider name="ClickFinder">VIVA</Provider>
+            <Provider name="TVGenial" channelID="10036">VIVA</Provider>
+            <DVBViewer>803078256|VIVA Germany - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDFinfokanal</Provider>
             <Provider name="ClickFinder">ZDFInfo</Provider>
+            <Provider name="TVGenial" channelID="10705">Info</Provider>
+            <DVBViewer>577531243|ZDFinfokanal</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDFtheaterkanal</Provider>
             <Provider name="ClickFinder">ZDF Theaterkanal</Provider>
+            <Provider name="TVGenial" channelID="10703">theater</Provider>
+            <DVBViewer>610299248|ZDFtheaterkanal (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDF_neo</Provider>
             <Provider name="ClickFinder">ZDFneo</Provider>
+            <Provider name="TVGenial" channelID="10704">zdf_neo</Provider>
+            <DVBViewer>580808046|zdf_neo (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">13th Street</Provider>
             <Provider name="ClickFinder">13th Street</Provider>
+            <Provider name="TVGenial" channelID="10521">13th</Provider>
+            <DVBViewer>587202602|13th Street</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Animal Planet</Provider>
             <Provider name="ClickFinder">Animal Planet</Provider>
+            <Provider name="TVGenial" channelID="110008">Animal</Provider>
+            <DVBViewer>617611887|Animal Planet</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Anixe HD</Provider>
             <Provider name="ClickFinder">Anixe HD</Provider>
+            <Provider name="TVGenial" channelID="10105">AnixeHD</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ATVplus</Provider>
             <Provider name="ClickFinder">ATV+</Provider>
+            <Provider name="TVGenial" channelID="20003">ATV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Bahn TV</Provider>
@@ -243,6 +347,7 @@
         <Channel>
             <Provider name="TVInfo">Beate Uhse TV</Provider>
             <Provider name="ClickFinder">Beate-Uhse-TV</Provider>
+            <Provider name="TVGenial" channelID="10511">Uhse</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Belgien 1</Provider>
@@ -250,10 +355,13 @@
         <Channel>
             <Provider name="TVInfo">Bibel TV</Provider>
             <Provider name="ClickFinder">Bibel-TV</Provider>
+            <Provider name="TVGenial" channelID="10070">Bibel</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Cartoon Network</Provider>
             <Provider name="ClickFinder">Cartoon Network</Provider>
+            <Provider name="TVGenial" channelID="120005">Cartoon</Provider>
+            <DVBViewer>564416152|Cartoon Network (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CityInfo</Provider>
@@ -261,30 +369,40 @@
         <Channel>
             <Provider name="TVInfo">Classica</Provider>
             <Provider name="ClickFinder">Classica</Provider>
+            <Provider name="TVGenial" channelID="10512">Classica</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Discovery Channel</Provider>
             <Provider name="ClickFinder">Discovery Channel</Provider>
+            <Provider name="TVGenial" channelID="10510">Discovery</Provider>
+            <DVBViewer>721571571|Discovery Channel</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Discovery Geschichte</Provider>
             <Provider name="ClickFinder">Discovery Geschichte</Provider>
+            <Provider name="TVGenial" channelID="10066">DC Ges</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Discovery HD</Provider>
             <Provider name="ClickFinder">Discovery HD</Provider>
+            <Provider name="TVGenial" channelID="10533">Dis.HD</Provider>
+            <DVBViewer>604176514|Discovery HD</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Disney Channel</Provider>
             <Provider name="ClickFinder">Disney Channel</Provider>
+            <Provider name="TVGenial" channelID="10508">Disney</Provider>
+            <DVBViewer>704643106|Disney Channel</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DMAX</Provider>
             <Provider name="ClickFinder">XXP</Provider>
+            <Provider name="TVGenial" channelID="10071">DMAX</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DR1</Provider>
             <Provider name="ClickFinder">DK1</Provider>
+            <Provider name="TVGenial" channelID="60001">DR1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DR2</Provider>
@@ -292,14 +410,17 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">DW-tv</Provider>
+            <Provider name="TVGenial" channelID="10029">DW</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Eurosport 2</Provider>
             <Provider name="ClickFinder">Eurosport 2</Provider>
+            <Provider name="TVGenial" channelID="70013">Eurosp2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Extreme Sports Channel</Provider>
             <Provider name="ClickFinder">Extreme Sports Channel</Provider>
+            <Provider name="TVGenial" channelID="40005">extreme</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">FAB</Provider>
@@ -308,10 +429,14 @@
         <Channel>
             <Provider name="TVInfo">Focus Gesundheit</Provider>
             <Provider name="ClickFinder">FOCUS Gesundheit</Provider>
+            <Provider name="TVGenial" channelID="10530">FoGes</Provider>
+            <DVBViewer>613679721|FOCUS GESUNDHEIT</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Goldstar TV</Provider>
             <Provider name="ClickFinder">Goldstar TV</Provider>
+            <Provider name="TVGenial" channelID="10524">Goldstar</Provider>
+            <DVBViewer>587203078|Goldstar TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">gotv</Provider>
@@ -319,10 +444,13 @@
         <Channel>
             <Provider name="TVInfo">Heimatkanal</Provider>
             <Provider name="ClickFinder">Heimatkanal</Provider>
+            <Provider name="TVGenial" channelID="10526">Heimat</Provider>
+            <DVBViewer>637534230|Heimatkanal</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">HH1</Provider>
             <Provider name="ClickFinder">HH1</Provider>
+            <Provider name="TVGenial" channelID="10058">HH1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">hit24</Provider>
@@ -338,6 +466,8 @@
         <Channel>
             <Provider name="TVInfo">Junior</Provider>
             <Provider name="ClickFinder">Junior</Provider>
+            <Provider name="TVGenial" channelID="10515">Junior</Provider>
+            <DVBViewer>553648147|Junior</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Kanal D</Provider>
@@ -346,6 +476,8 @@
         <Channel>
             <Provider name="TVInfo">MGM</Provider>
             <Provider name="ClickFinder">MGM</Provider>
+            <Provider name="TVGenial" channelID="10525">MGM</Provider>
+            <DVBViewer>570425859|MGM (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NBC</Provider>
@@ -354,25 +486,31 @@
         <Channel>
             <Provider name="TVInfo">NL 1</Provider>
             <Provider name="ClickFinder">NL1</Provider>
+            <Provider name="TVGenial" channelID="40001">NL 1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NL 2</Provider>
             <Provider name="ClickFinder">NL2</Provider>
+            <Provider name="TVGenial" channelID="40002">NL 2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NL3</Provider>
             <Provider name="ClickFinder">NL3</Provider>
+            <Provider name="TVGenial" channelID="40003">NL 3</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF1</Provider>
             <Provider name="ClickFinder">ORF 1</Provider>
+            <Provider name="TVGenial" channelID="20001">ORF1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">OTV</Provider>
+            <Provider name="TVGenial" channelID="10069">OTV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Planet</Provider>
             <Provider name="ClickFinder">Planet</Provider>
+            <Provider name="TVGenial" channelID="10517">Planet</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Puls tv</Provider>
@@ -380,9 +518,12 @@
         <Channel>
             <Provider name="TVInfo">QVC</Provider>
             <Provider name="ClickFinder">QVC</Provider>
+            <Provider name="TVGenial" channelID="10057">QVC</Provider>
+            <DVBViewer>547750095|QVC Deutschland - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">rheinmaintv</Provider>
+            <Provider name="TVGenial" channelID="10074">rheinmTV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RNFplus</Provider>
@@ -396,77 +537,112 @@
         <Channel>
             <Provider name="TVInfo">Sci Fi</Provider>
             <Provider name="ClickFinder">SCI FI</Provider>
+            <Provider name="TVGenial" channelID="10531">SciFi</Provider>
+            <DVBViewer>603979812|SciFi</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SF1</Provider>
             <Provider name="ClickFinder">SF 1</Provider>
+            <Provider name="TVGenial" channelID="30001">SF1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">SF2</Provider>
             <Provider name="ClickFinder">SF 2</Provider>
+            <Provider name="TVGenial" channelID="30002">SFzwei</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Action</Provider>
             <Provider name="ClickFinder">SKY Action</Provider>
+            <Provider name="TVGenial" channelID="10538">Action</Provider>
+            <DVBViewer>587202569|Sky Action</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Cinema</Provider>
             <Provider name="ClickFinder">SKY Cinema</Provider>
+            <Provider name="TVGenial" channelID="10539">Cinema</Provider>
+            <DVBViewer>570425354|Sky Cinema (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">SKY Cinema HD</Provider>
+            <Provider name="TVGenial" channelID="10554">CineHD</Provider>
+            <DVBViewer>620953731|Sky Cinema HD (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Cinema +1</Provider>
             <Provider name="ClickFinder">SKY Cinema +1</Provider>
+            <Provider name="TVGenial" channelID="10540">Cine+1</Provider>
+            <DVBViewer>654311435|Sky Cinema +1 (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Cinema +24</Provider>
             <Provider name="ClickFinder">SKY Cinema +24</Provider>
+            <Provider name="TVGenial" channelID="10552">Cine+24</Provider>
+            <DVBViewer>688062507|Sky Cinema +24 (AC3,deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Cinema Hits</Provider>
             <Provider name="ClickFinder">SKY Cinema Hits</Provider>
+            <Provider name="TVGenial" channelID="10551">CineHits</Provider>
+            <DVBViewer>603979817|Sky Cinema Hits</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Comedy</Provider>
             <Provider name="ClickFinder">SKY Comedy</Provider>
+            <Provider name="TVGenial" channelID="10541">skyCom</Provider>
+            <DVBViewer>704643080|Sky Comedy</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Emotion</Provider>
             <Provider name="ClickFinder">SKY Emotion</Provider>
+            <Provider name="TVGenial" channelID="10542">Emotion</Provider>
+            <DVBViewer>721420308|Sky Emotion (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Fussball Bundesliga</Provider>
             <Provider name="ClickFinder">SKY Fussball Bundesliga</Provider>
+            <Provider name="TVGenial" channelID="10543">FBliga</Provider>
+            <DVBViewer>587202783|Sky Bundesliga</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Krimi</Provider>
             <Provider name="ClickFinder">SKY Krimi</Provider>
+            <Provider name="TVGenial" channelID="10544">Krimi</Provider>
+            <DVBViewer>570425367|Sky Krimi</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Nostalgie</Provider>
             <Provider name="ClickFinder">SKY Nostalgie</Provider>
+            <Provider name="TVGenial" channelID="10545">Nostalgie</Provider>
+            <DVBViewer>637534724|Sky Nostalgie</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Sport 1</Provider>
             <Provider name="ClickFinder">SKY Sport 1</Provider>
+            <Provider name="TVGenial" channelID="10546">Sport1</Provider>
+            <DVBViewer>671088861|Sky Sport 1</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Sport 2</Provider>
             <Provider name="ClickFinder">SKY Sport 2</Provider>
+            <Provider name="TVGenial" channelID="10547">Sport2</Provider>
+            <DVBViewer>687866078|Sky Sport 2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Sport Austria</Provider>
             <Provider name="ClickFinder">SKY Sport Austria</Provider>
+            <Provider name="TVGenial" channelID="10548">SportAu</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Select</Provider>
             <Provider name="ClickFinder">SKY</Provider>
+            <Provider name="TVGenial" channelID="10560">Select</Provider>
+            <DVBViewer>721420306|Sky Select</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Sport HD</Provider>
             <Provider name="ClickFinder">SKY Sport HD</Provider>
+            <Provider name="TVGenial" channelID="10549">Sport HD</Provider>
+            <DVBViewer>587399297|Sky Sport HD (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Spi.ka tv</Provider>
@@ -474,6 +650,7 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">Spreekanal</Provider>
+            <Provider name="TVGenial" channelID="10026">Spreekanal</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Steiermark 1</Provider>
@@ -489,15 +666,19 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">TSR1</Provider>
+            <Provider name="TVGenial" channelID="30012">TSR1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TSR2</Provider>
+            <Provider name="TVGenial" channelID="30013">TSR2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TV 2</Provider>
+            <Provider name="TVGenial" channelID="60003">TV2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TV Franken</Provider>
+            <Provider name="TVGenial" channelID="10025">FrankTV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TV Slovenija 1</Provider>
@@ -508,61 +689,87 @@
         <Channel>
             <Provider name="TVInfo">TVBerlin</Provider>
             <Provider name="ClickFinder">TV Berlin</Provider>
+            <Provider name="TVGenial" channelID="10024">tvB</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TW1</Provider>
             <Provider name="ClickFinder">TW1</Provider>
+            <Provider name="TVGenial" channelID="20004">TW1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Disney Cinemagic</Provider>
-            <Provider name="ClickFinder">Disney Cinemagic</Provider>
+            <Provider name="TVGenial" channelID="10555">DCM</Provider>
+            <Provider name="ClickFinder" channelID="10555">Disney Cinemagic</Provider>
+            <DVBViewer>620757017|Disney Cinemagic (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Motor Vision TV</Provider>
+            <Provider name="TVGenial" channelID="10557">Motorvis</Provider>
+            <DVBViewer>603979944|Motorvision TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Spiegel Geschichte</Provider>
             <Provider name="ClickFinder">Spiegel Geschichte</Provider>
+            <Provider name="TVGenial" channelID="10087">SpGes</Provider>
+            <DVBViewer>603979828|Spiegel Geschichte</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Kabel1 Classics</Provider>
             <Provider name="ClickFinder">kabel eins classics</Provider>
+            <Provider name="TVGenial" channelID="10092">K1 Class</Provider>
+            <DVBViewer>654328930|kabel eins classics</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TNT Serie</Provider>
             <Provider name="ClickFinder">TNT Serie</Provider>
+            <Provider name="TVGenial" channelID="10106">TNTser</Provider>
+            <DVBViewer>704643122|TNT Serie (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VH-1 Classic</Provider>
             <Provider name="ClickFinder">VH1 Classic</Provider>
+            <Provider name="TVGenial" channelID="110010">VH1Class</Provider>
+            <DVBViewer>755126005|VH1 Classic</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">AXN</Provider>
             <Provider name="ClickFinder">AXN</Provider>
+            <Provider name="TVGenial" channelID="10085">AXN</Provider>
+            <DVBViewer>563629708|AXN (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Boomerang</Provider>
             <Provider name="ClickFinder">Boomerang</Provider>
+            <Provider name="TVGenial" channelID="10093">Boom</Provider>
+            <DVBViewer>622218897|Boomerang (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV Entertainment</Provider>
             <Provider name="ClickFinder">MTV Entertainment</Provider>
+            <Provider name="TVGenial" channelID="10099">MTVen</Provider>
+            <DVBViewer>671239920|MTV Entertainment</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Nick Premium</Provider>
             <Provider name="ClickFinder">Nick Premium</Provider>
+            <Provider name="TVGenial" channelID="10102">NickPrm</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL Living</Provider>
             <Provider name="ClickFinder">RTL Living</Provider>
+            <Provider name="TVGenial" channelID="10095">Living</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Romance TV</Provider>
             <Provider name="ClickFinder">Romance TV</Provider>
+            <Provider name="TVGenial" channelID="10103">Romance</Provider>
+            <DVBViewer>570576618|Romance TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sat.1 comedy</Provider>
             <Provider name="ClickFinder">Sat.1 Comedy</Provider>
+            <Provider name="TVGenial" channelID="10091">Sat 1 Com</Provider>
+            <DVBViewer>637551713|Sat.1 Comedy</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Biography Channel</Provider>
@@ -571,56 +778,77 @@
         <Channel>
             <Provider name="TVInfo">TNT Film</Provider>
             <Provider name="ClickFinder">Turner Classic Movies</Provider>
+            <Provider name="TVGenial" channelID="10107">TNTfilm</Provider>
+            <DVBViewer>564350615|TNT Film (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">PASSION</Provider>
             <Provider name="ClickFinder">RTL Passion</Provider>
+            <Provider name="TVGenial" channelID="10096">Passion</Provider>
+            <DVBViewer>553648157|RTL Passion</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">History Channel</Provider>
             <Provider name="ClickFinder">History Channel</Provider>
+            <Provider name="TVGenial" channelID="10077">History</Provider>
+            <DVBViewer>564285078|History</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">FOX</Provider>
             <Provider name="ClickFinder">FOX Channel</Provider>
+            <Provider name="TVGenial" channelID="10104">FOX</Provider>
+            <DVBViewer>620757008|Fox Serie (deu)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Blue Movie 3</Provider>
+            <DVBViewer>721420653|Blue Movie 3</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Blue Movie2</Provider>
+            <DVBViewer>687866211|Blue Movie 2</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Deutsches Wetterfernsehen</Provider>
             <Provider name="ClickFinder">Wetter Fernsehen</Provider>
+            <Provider name="TVGenial" channelID="10082">Wetter</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ESPN Amerika</Provider>
             <Provider name="ClickFinder">NASN</Provider>
+            <Provider name="TVGenial" channelID="10084">ESPNa</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ESPN Classic Sport</Provider>
             <Provider name="ClickFinder">ESPN Classic Sport</Provider>
+            <Provider name="TVGenial" channelID="110014">ESPN</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Fashion TV</Provider>
             <Provider name="ClickFinder">Fashion TV</Provider>
+            <Provider name="TVGenial" channelID="70010">Fashion</Provider>
+            <DVBViewer>541538780|World Fashion Channel</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Gute Laune TV</Provider>
             <Provider name="ClickFinder">Gute Laune TV</Provider>
+            <Provider name="TVGenial" channelID="10088">Gute Lau</Provider>
+            <DVBViewer>704794354|Gute Laune TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Motors TV</Provider>
             <Provider name="ClickFinder">Motors TV</Provider>
+            <Provider name="TVGenial" channelID="70011">Motors</Provider>
+            <DVBViewer>564612754|Motors TV Deutschland (ge</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV Dance</Provider>
             <Provider name="ClickFinder">MTV Dance</Provider>
+            <Provider name="TVGenial" channelID="110011">Dance</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV Hits</Provider>
             <Provider name="ClickFinder">MTV Hits</Provider>
+            <Provider name="TVGenial" channelID="110012">HitsUK</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NRW TV</Provider>
@@ -628,44 +856,58 @@
         <Channel>
             <Provider name="TVInfo">Playboy TV</Provider>
             <Provider name="ClickFinder">Playboy TV</Provider>
+            <Provider name="TVGenial" channelID="110013">Playboy</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Playhouse Disney</Provider>
             <Provider name="ClickFinder">Playhouse Disney</Provider>
+            <Provider name="TVGenial" channelID="10083">Play</Provider>
+            <DVBViewer>671088666|Playhouse Disney</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sail TV</Provider>
+            <Provider name="TVGenial" channelID="90009">Yacht</Provider>
+            <Provider name="ClickFinder" channelID="90009">Sailing Channel</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Silverline</Provider>
             <Provider name="ClickFinder">Silverline</Provider>
+            <Provider name="TVGenial" channelID="10076">Silver</Provider>
+            <DVBViewer>563826319|Silverline</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Spiegel TV</Provider>
             <Provider name="ClickFinder">SPIEGEL TV XXP DIGITAL</Provider>
+            <Provider name="TVGenial" channelID="10087">Spiegel</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TIMM TV</Provider>
             <Provider name="ClickFinder">TIMM</Provider>
+            <Provider name="TVGenial" channelID="10108">TIMM</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Toon Disney</Provider>
             <Provider name="ClickFinder">Toon Disney</Provider>
+            <Provider name="TVGenial" channelID="10080">Toon</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Toon Disney +1</Provider>
             <Provider name="ClickFinder">Toon Disney +1</Provider>
+            <Provider name="TVGenial" channelID="10081">Toon 2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Trace TV</Provider>
             <Provider name="ClickFinder">Trace.TV</Provider>
+            <Provider name="TVGenial" channelID="70012">Trace</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TV gusto</Provider>
             <Provider name="ClickFinder">tv.gusto</Provider>
+            <Provider name="TVGenial" channelID="10079">Gusto</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Blue Movie 1</Provider>
+            <DVBViewer>671088985|Blue Movie 1</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DMC.TV</Provider>
@@ -673,9 +915,13 @@
         <Channel>
             <Provider name="TVInfo">E! Entertainment</Provider>
             <Provider name="ClickFinder">E! Entertainment Television</Provider>
+            <Provider name="TVGenial" channelID="120007">E! E.</Provider>
+            <DVBViewer>620973805|E! Entertainment (D/E) (g</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">K TV</Provider>
+            <Provider name="TVGenial" channelID="20005">K-TV</Provider>
+            <Provider name="ClickFinder" channelID="20005">K-TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Okto.TV</Provider>
@@ -685,42 +931,50 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">Super RTL CH</Provider>
+            <DVBViewer>546385673|Super RTL CH</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Channel 21</Provider>
+            <DVBViewer>545861439|Channel 21</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">TV5</Provider>
+            <Provider name="TVGenial" channelID="70006">TV5</Provider>
+            <DVBViewer>539885779|TV5MONDE EUROPE - CV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Kinowelt TV</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">K-TV</Provider>
+            <Provider name="TVGenial" channelID="10075">Kinowelt</Provider>
+            <DVBViewer>730336134|Kinowelt TV</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">National Geographic</Provider>
+            <Provider name="TVGenial" channelID="90008">Nat.Geo</Provider>
+            <DVBViewer>754974733|National Geographic</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">tv.gusto premium</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">Sailing Channel</Provider>
-        </Channel>
-        <Channel>
             <Provider name="ClickFinder">RTL Crime</Provider>
+            <Provider name="TVGenial" channelID="10094">Crime</Provider>
+            <DVBViewer>654311451|RTL Crime</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">MEZZO</Provider>
+            <Provider name="TVGenial" channelID="70014">MEZZO</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Animax</Provider>
+            <Provider name="TVGenial" channelID="10100">Animax</Provider>
+            <DVBViewer>736889834|Animax</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">MTV Base</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">e.clips</Provider>
+            <Provider name="TVGenial" channelID="10101">e.clips</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">MTV Music</Provider>
@@ -789,31 +1043,16 @@
             <Provider name="ClickFinder">Türkmax</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">DELUXE MUSIC TV</Provider>
-        </Channel>
-        <Channel>
             <Provider name="ClickFinder">Kanal 7 Int</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">National Geographic Wild</Provider>
-        </Channel>
-        <Channel>
             <Provider name="ClickFinder">TGRT EU</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">National Geographic HD</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">Disney XD</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">fashiontv HD</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">sportdigital.tv</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">Disney Cinemagic HD</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Eurosport HD</Provider>
@@ -832,6 +1071,79 @@
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Anixe HD2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="110002">BBCe</Provider>
+            <DVBViewer>604131052|BBC Entertainment</DVBViewer>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="30014">RSI LA1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="30015">RSI LA2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="90005">Canale 5</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="90006">Italia1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="70004">France2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="70005">France3</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="110003">ngc Eu</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="30011">TZüri</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="110015">BlueH</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10097">Deluxe</Provider>
+            <Provider name="ClickFinder" channelID="10097">DELUXE MUSIC TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="110016">TCM</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="90001">RAIuno</Provider>
+            <DVBViewer>622200084|RAI Uno</DVBViewer>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="30010">3+</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10519">DisnXD</Provider>
+            <Provider name="ClickFinder" channelID="10519">Disney XD</Provider>
+            <DVBViewer>620757020|Disney XD</DVBViewer>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10550">skynews</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="90002">RAIdue</Provider>
+            <DVBViewer>625476934|RAI Due</DVBViewer>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10553">NGW</Provider>
+            <Provider name="ClickFinder" channelID="10553">National Geographic Wild</Provider>
+            <DVBViewer>570425356|NatGeo Wild</DVBViewer>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10556">DCM HD</Provider>
+            <Provider name="ClickFinder" channelID="10556">Disney Cinemagic HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10558">NGHD</Provider>
+            <Provider name="ClickFinder" channelID="10558">National Geographic HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10559">Hist.HD</Provider>
         </Channel>
     </Channels>
 </Importer>

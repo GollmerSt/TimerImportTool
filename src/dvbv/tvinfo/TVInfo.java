@@ -12,19 +12,37 @@ import java.net.URLConnection;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
+import java.util.Iterator;
+import java.util.Stack;
 
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.XMLEvent;
+import javax.xml.transform.stream.StreamSource;
+
+import dvbv.control.Control;
+import dvbv.dvbviewer.DVBViewer;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
+import dvbv.xml.StackXML;
 
 public final class TVInfo extends Provider {	
-	public TVInfo()
+
+	private final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>( "epg_schedule", "epg_schedule_entry" ) ;
+	private final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>( "epg_schedule", "epg_schedule_entry", "title" ) ;
+
+	private final DVBViewer dvbViewer ;
+
+	public TVInfo( Control control )
 	{
-		super( true, true, "TVInfo", true, true, true, false, true ) ;
+		super( control, true, true, "TVInfo", true, true, true, false, false, true ) ;
+		this.dvbViewer = this.control.getDVBViewer() ;
 	}
 	private String getMD5()
 	{
-		if ( ! this.isValid )
-			throw new ErrorClass( "Provider \"TVInfo\" data is missing in the control file" ) ;
 		MessageDigest md = null ;
 		try {
 			md = MessageDigest.getInstance("MD5");
@@ -44,7 +62,6 @@ public final class TVInfo extends Provider {
 		try {
 			tvInfoURL = new URL( completeURL );
 		} catch (MalformedURLException e2) {
-			// TODO Auto-generated catch block
 			throw new ErrorClass( e2, "TVInfo URL not correct, the TVInfo should be checked." ) ;
 		}
 
@@ -54,7 +71,6 @@ public final class TVInfo extends Provider {
 			tvInfo = tvInfoURL.openConnection();
 			result = tvInfo.getInputStream() ;
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			throw new ErrorClass( e, "TVInfo data not available." );
 		}
 		return result ;
@@ -84,5 +100,84 @@ public final class TVInfo extends Provider {
 		if ( ! content.equals( comp ) )
 			return false ;
 		return true ;
+	}
+	@Override
+	public void process( boolean all )
+	{
+		InputStream iS = null ;
+		try {
+			iS = this.connect();
+		} catch (DigestException e) {
+			e.printStackTrace();
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		}
+		
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		try {
+			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( iS ) );
+			Stack<String>   stack = new Stack<String>() ;
+			String channel = null;
+			long  start = 0;
+			long  end   = 0 ;
+			String title = null ;
+			while( reader.hasNext() ) {
+				XMLEvent ev = reader.nextEvent();
+				if( ev.isStartElement() )
+				{
+					stack.push( ev.asStartElement().getName().getLocalPart() );
+					if ( ! stack.equals( this.xmlPathTVinfoEntry ) ) continue ;
+					channel = null;
+					start = 0 ;
+					end   = 0 ;
+					title = null ;
+					@SuppressWarnings("unchecked")
+					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
+					while( iter.hasNext() )
+					{
+						Attribute a = iter.next();
+						String attributeName = a.getName().getLocalPart() ;
+						String value = a.getValue() ;
+						try
+						{
+							if      ( attributeName.equals( "channel" ) )
+								channel = value ;
+							else if ( attributeName.equals( "starttime" ) )
+								start = Conversions.tvInfoTimeToLong( value ) ;
+							else if ( attributeName.equals( "endtime" ) )
+								end  = Conversions.tvInfoTimeToLong( value ) ;
+							else if ( attributeName.equals( "title" ) )
+								title = value ;
+						} catch (ParseException e)
+						{
+							throw new ErrorClass( ev, "Illegal TVinfo time" ) ;
+						}
+					}
+					if ( ( start & end ) == 0 )
+						throw new ErrorClass( ev, "Error in  TVinfo data, start or end time not given" ) ; 
+					if ( channel.length() == 0 )
+						throw new ErrorClass( ev, "Error in  TVinfo data, channel not given" ) ; 
+				}
+				if ( ev.isCharacters() )
+				{
+					if ( stack.equals( this.xmlPathTVinfoTitle ) )
+					{
+						title = ev.asCharacters().getData() ;
+						this.dvbViewer.addNewEntry( this, channel, start, end, title) ;
+					}
+				}					
+				if( ev.isEndElement() ) stack.pop();
+			}
+			reader.close();
+		} catch (XMLStreamException e) {
+			if ( e.getLocation().getLineNumber() == 1 && e.getLocation().getColumnNumber() == 1 )
+				throw new ErrorClass( "No data available from TVInfo, account data should be checked." ) ;
+			else
+				throw new ErrorClass( e,   "Error on reading TVInfo data."
+	                 + " Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
+	                 +        ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+			
+		}
+		dvbViewer.merge() ;
 	}
 }

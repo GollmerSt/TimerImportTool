@@ -24,7 +24,6 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import dvbv.tvinfo.TVInfoRecording ;
 import dvbv.xml.StackXML;
 import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
@@ -55,8 +54,6 @@ public class DVBViewer {
 	private DVBViewerService service = null ;
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
-	@SuppressWarnings("unused")
-	private ArrayList<TVInfoRecording> deletedRecodings = null;
 	private ArrayList< HashMap< String, Channel> > channelsLists 
 	        = new ArrayList< HashMap< String, Channel> >( dvbv.provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
@@ -409,7 +406,6 @@ public class DVBViewer {
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 		DVBViewerEntry.postProcess( this.recordEntries ) ;
 	}
-	public void setDeletedRecordings( ArrayList<TVInfoRecording> l ){ this.deletedRecodings = l ; } ;
 	public void setSeparator( String s ) { this.separator = s ; } ;
 	public ArrayList<DVBViewerEntry> readXML()
 	{

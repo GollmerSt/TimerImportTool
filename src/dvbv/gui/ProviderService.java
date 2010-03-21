@@ -50,6 +50,7 @@ public class ProviderService extends MyTabPanel {
 	private final JTextField passwordBox = new JTextField() ;
 	private final JSpinner triggerBox = new JSpinner();
 	
+	private final JCheckBox enableSinceBox = new JCheckBox() ;
 	private final JLabel sinceLabel = new JLabel() ;
 	private final JSpinner sinceBox = new JSpinner();
 	private final JLabel sinceSyncLabel = new JLabel() ;
@@ -85,16 +86,23 @@ public class ProviderService extends MyTabPanel {
 	private void setOutDated( final OutDatedInfo o )
 	{
 		OutDatedInfo i = o ;
+		boolean inhibit = false ;
 		boolean enable = true ;
-		if ( i == null )
+		if ( i == null  )
 		{
 			i = new OutDatedInfo() ;
-			enable = false ;
+			inhibit = true ;
+			enable  = false ;
 		}
-		this.sinceLabel.    setEnabled( enable ) ;
+		enable = i.isEnabled() ?  enable : false ;
+		
+		this.enableSinceBox.setEnabled( ! inhibit ) ;
+		this.sinceLabel.    setEnabled( ! inhibit ) ;
 		this.sinceBox.      setEnabled( enable ) ;
-		this.sinceSyncLabel.setEnabled( enable ) ;
+		this.sinceSyncLabel.setEnabled( ! inhibit ) ;
 		this.sinceSyncBox.  setEnabled( enable ) ;
+		
+		this.enableSinceBox.setSelected( i.isEnabled() ) ;
 		this.sinceBox.setValue( i.getMissingSince() ) ;
 		this.sinceSyncBox.setValue( i.getMissingSyncSince() ) ;
 	}
@@ -165,15 +173,20 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void itemStateChanged(ItemEvent e) {
 			Provider p = (Provider) providerCombo.getSelectedItem() ;
-			Object source = e.getItemSelectable();
+			JCheckBox source = (JCheckBox) e.getItemSelectable();
 			if( source == verboseBox )
-				p.setVerbose( verboseBox.isSelected() ) ;
+				p.setVerbose( source.isSelected() ) ;
 			else if ( source == messageBox )
-				p.setMessage( messageBox.isSelected() ) ;
+				p.setMessage( source.isSelected() ) ;
 			else if ( source == mergeBox )
-				p.setMerge( mergeBox.isSelected() ) ;
-			else if ( source ==filterBox )
-				p.setFilter( filterBox.isSelected() ) ;
+				p.setMerge( source.isSelected() ) ;
+			else if ( source == filterBox )
+				p.setFilter( source.isSelected() ) ;
+			else if ( source == enableSinceBox && p.getOutDatedLimits() != null )
+			{
+				p.getOutDatedLimits().setEnabled( source.isSelected() ) ;
+				setOutDated( p.getOutDatedLimits() ) ;
+			}
 			gui.setChanged() ;
 		}
 	}
@@ -203,14 +216,18 @@ public class ProviderService extends MyTabPanel {
 	        	JButton button = (JButton)e.getSource() ;
 	        	if ( button == installButton )
 	        	{
-	        		p.install();
-	        		installButton.setText( GUIStrings.successful() ) ;
+	        		if ( p.install() )
+	        			installButton.setText( GUIStrings.successful() ) ;
+	        		else
+	        			installButton.setText( GUIStrings.failed() ) ;
 	        		uninstallButton.setText( GUIStrings.uninstall() ) ;
 	        	}
 	        	else if ( button == uninstallButton )
 	        	{
-	        		p.uninstall();
-	        		uninstallButton.setText( GUIStrings.successful() ) ;
+	        		if ( p.uninstall() )
+	        			uninstallButton.setText( GUIStrings.successful() ) ;
+	        		else
+	        			installButton.setText( GUIStrings.failed() ) ;
 	        		installButton.setText( GUIStrings.install() ) ;
 	        	}
 	        }
@@ -429,6 +446,17 @@ public class ProviderService extends MyTabPanel {
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.insets     = i ;
+		
+		this.enableSinceBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
+		checkBoxPanel.add( this.enableSinceBox, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 0 ;
 		c.fill       = GridBagConstraints.VERTICAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -438,7 +466,7 @@ public class ProviderService extends MyTabPanel {
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 1 ;
+		c.gridx      = 2 ;
 		c.gridy      = 0 ;
 //		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -453,7 +481,7 @@ public class ProviderService extends MyTabPanel {
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 2 ;
+		c.gridx      = 3 ;
 		c.gridy      = 0 ;
 		c.fill       = GridBagConstraints.VERTICAL ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
@@ -464,7 +492,7 @@ public class ProviderService extends MyTabPanel {
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 3 ;
+		c.gridx      = 4 ;
 		c.gridy      = 0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -483,7 +511,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridx      = 0 ;
 		c.gridy      = 1 ;
 		//c.weightx    = 0.5 ;
-		c.fill       = 2 ;
+		c.gridwidth  = 2 ;
 		c.insets     = i ;
 		
 		this.verboseBox.setText( GUIStrings.verbose() ) ;
@@ -493,7 +521,7 @@ public class ProviderService extends MyTabPanel {
 
 		
 		c = new GridBagConstraints();
-		c.gridx      = 1 ;
+		c.gridx      = 2 ;
 		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -507,7 +535,7 @@ public class ProviderService extends MyTabPanel {
 
 		
 		c = new GridBagConstraints();
-		c.gridx      = 2 ;
+		c.gridx      = 3 ;
 		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -521,7 +549,7 @@ public class ProviderService extends MyTabPanel {
 
 		
 		c = new GridBagConstraints();
-		c.gridx      = 3 ;
+		c.gridx      = 4 ;
 		c.gridy      = 1 ;
 		c.weightx    = 0.5 ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -604,7 +632,7 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.BOTH ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 
-		providerBox.setPreferredSize( new Dimension( 350, 300 ) ) ;
+		providerBox.setPreferredSize( new Dimension( 380, 300 ) ) ;
 		this.add( providerBox, c ) ;
         this.setOutDated( defaultProvider.getOutDatedLimits() ) ;
 

@@ -100,6 +100,9 @@
       											<xsd:attribute
       												name="name" type="providerName">
       											</xsd:attribute>
+      											<xsd:attribute
+      												name="channelID" type="xsd:long">
+      											</xsd:attribute>
       										</xsd:extension>
       									</xsd:simpleContent>
       								</xsd:complexType>
@@ -163,6 +166,7 @@
   	<xsd:restriction base="xsd:string">
   		<xsd:enumeration value="TVInfo"></xsd:enumeration>
   		<xsd:enumeration value="ClickFinder"></xsd:enumeration>
+  		<xsd:enumeration value="TVGenial"></xsd:enumeration>
   	</xsd:restriction>
   </xsd:simpleType>
 
@@ -171,9 +175,12 @@
   		<xsd:element name="Url" type="xsd:string" maxOccurs="1"
   			minOccurs="0">
   		</xsd:element>
-  		<xsd:element name="Merge" type="xsd:boolean" minOccurs="0"
-  			maxOccurs="1">
-  		</xsd:element>
+  		<xsd:element name="Missing" minOccurs="0" maxOccurs="1">
+  			<xsd:complexType>
+  				<xsd:attribute name="enable" type="xsd:boolean" />
+  				<xsd:attribute name="missingSince" type="xsd:long" />
+  				<xsd:attribute name="missingSyncSince" type="xsd:int" />
+  			</xsd:complexType></xsd:element>
   	</xsd:all>
   	<xsd:attribute name="name" type="providerName" use="required"></xsd:attribute>
   	<xsd:attribute name="username" type="xsd:string" use="optional"></xsd:attribute>

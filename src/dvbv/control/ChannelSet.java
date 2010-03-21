@@ -20,10 +20,11 @@ public class ChannelSet {
 	private TimeOffsets timeOffsets = new TimeOffsets() ;
 	private Merge merge = Merge.INVALID ;
 	
-	public void add( int type, String name )
+	public Channel add( int type, String name, long id )
 	{
-		Channel channel = new Channel( type, name ) ;
+		Channel channel = new Channel( type, name, id ) ;
 		channels.add( channel ) ;
+		return channel ;
 	}
 	public void remove( int type )
 	{
