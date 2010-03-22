@@ -174,7 +174,6 @@ public class DVBViewer {
 		{
 			this.recordEntries = this.service.readTimers() ;
 			this.mergeXMLWithServiceData() ;
-			this.merge() ;
 			try {
 				this.setDVBViewerTimers() ;
 			} catch (InterruptedException e) {
@@ -184,7 +183,7 @@ public class DVBViewer {
 			this.writeXML() ;
 		}
 	}
-	private void checkRecordingEntries()
+	public void prepare()
 	{
 		if ( this.recordEntries == null )
 		{
@@ -237,7 +236,6 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		this.checkRecordingEntries();
 		this.prepareProvider( provider ) ;
 		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
 		if ( ! channelMap.containsKey( channel ) )
@@ -270,16 +268,44 @@ public class DVBViewer {
 					return ;
 				else
 				{
-					co.prepareRemove() ;
-					if ( co.getServiceID() >= 0L )
-						co.setToDelete() ;
-					else
-						it.remove() ;
+					co.setToDelete() ;
 					break ;
 				}
 			}
 		}
 		this.addRecordingEntry( e ) ;
+	}
+	public void deleteEntry( Provider provider,
+			 String channel, 
+			 long start, 
+			 long end,
+			 String title )
+	{
+		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
+		if ( ! channelMap.containsKey( channel ) )
+			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
+		Channel c =  channelMap.get( channel ) ;
+		String dvbViewerChannel = c.getDVBViewer() ;
+		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
+			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
+		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+											   start,
+											   end,
+											   start,
+											   end,
+											   title,
+											   c.getMerge( provider.getMerge() ),
+											   provider ) ;
+
+		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry co = it.next() ; 
+			if ( e.isOrgEqual( co ) )
+			{
+				co.setToDelete() ;
+				break ;
+			}
+		}
 	}
 	public String getExePath()        { return this.exePath ; } ;
 	public String getExeName()        { return this.exeName ; } ;
@@ -318,7 +344,6 @@ public class DVBViewer {
 	}
 	public void merge()
 	{
-		this.checkRecordingEntries();
 		for ( int iO = 0 ; iO < this.recordEntries.size() ; iO++ )
 		{
 			if ( ! this.recordEntries.get( iO ).toMerge() )
@@ -369,6 +394,10 @@ public class DVBViewer {
 	{
 		if ( this.service != null && this.service.isEnabled() )
 			this.removeOutdatedProviderEntries();
+		DVBViewerEntry.beforeRecordingSettingProcces( this.recordEntries,
+				                                      this.separator, this.maxID ) ;
+		this.merge() ;
+
 			
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
@@ -404,7 +433,8 @@ public class DVBViewer {
 		}
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
-		DVBViewerEntry.postProcess( this.recordEntries ) ;
+
+		DVBViewerEntry.afterRecordingSettingProcces( this.recordEntries ) ;
 	}
 	public void setSeparator( String s ) { this.separator = s ; } ;
 	public ArrayList<DVBViewerEntry> readXML()

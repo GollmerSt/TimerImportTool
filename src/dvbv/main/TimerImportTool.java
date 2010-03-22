@@ -131,7 +131,7 @@ public final class TimerImportTool {
 					}
 				}
 			}
-
+			
 			switch ( type )
 			{
 				case TVINFO : 
@@ -162,6 +162,7 @@ public final class TimerImportTool {
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;
 			
+			control.getDVBViewer().prepare() ;
 			provider.process(getAll); ;
 			provider.processEntry( args ) ;
 			dvbViewer.setDVBViewerTimers();
@@ -175,6 +176,8 @@ public final class TimerImportTool {
 			e.printStackTrace();
 			System.exit(2);
 		}
+		if ( dvbViewer != null )
+			dvbViewer.writeXML() ;
 		if ( ErrorClass.isWarning() )
 		{
 			Log.out( "Import finished, but warnings occurs. The messages should be checked"  ) ;
@@ -187,8 +190,6 @@ public final class TimerImportTool {
 			if ( showMessageBox )
 				JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status", JOptionPane.INFORMATION_MESSAGE);
 		}
-		if ( dvbViewer != null )
-			dvbViewer.writeXML() ;
 		System.exit(0);
 	}
 

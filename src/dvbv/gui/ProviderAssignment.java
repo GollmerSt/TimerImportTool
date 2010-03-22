@@ -88,14 +88,14 @@ public class ProviderAssignment  extends MyTabPanel
     
 	private final JLabel messageLabel = new JLabel() ;
 	
-	private void enableByProvider()
+	private void enableByProvider( boolean enable )
 	{
 		Provider p = (Provider) providerCombo.getSelectedItem() ;
 		
 		boolean canImport = p.canImport() ;
 		
-		this.addChannelButton.setEnabled   ( ! canImport ) ;
-		this.importButton.setEnabled       ( canImport ) ;
+		this.addChannelButton.setEnabled   ( ! canImport && enable ) ;
+		this.importButton.setEnabled       ( canImport && enable ) ;
 	}
 
 	public class LockBoxChanged implements ActionListener
@@ -106,7 +106,10 @@ public class ProviderAssignment  extends MyTabPanel
 			importButton.setText( GUIStrings.importTV() ) ;
 			boolean enable = unlockBox.isSelected() ;
 			providerCombo.setEnabled( enable ) ;
-			enableByProvider() ;
+			channelCombo.setEnabled( enable ) ;
+			channelCombo.setEditable( enable ) ;
+			modifyChannelButton.setEnabled( enable ) ;
+			enableByProvider( enable ) ;
 			updateTable() ;
 			table.setEnabled( enable ) ;
 	    }
@@ -118,7 +121,7 @@ public class ProviderAssignment  extends MyTabPanel
 			messageLabel.setText( "") ;
 			importButton.setText( GUIStrings.importTV() ) ;
 			
-			enableByProvider() ;
+			enableByProvider( true ) ;
 			
 	    	updateChannelComboBox() ;
 

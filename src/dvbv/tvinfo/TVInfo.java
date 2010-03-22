@@ -178,6 +178,5 @@ public final class TVInfo extends Provider {
 	                 +        ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
 			
 		}
-		dvbViewer.merge() ;
 	}
 }

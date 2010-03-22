@@ -69,7 +69,6 @@ public class ClickFinder extends Provider {
 		}
 		long end = start + milliSeconds ;
 		this.dvbViewer.addNewEntry( this, channel, start, end, title ) ;
-		this.dvbViewer.merge() ;
 	}
 	
 	public boolean install() // boolean setDataDir )

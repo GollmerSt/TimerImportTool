@@ -58,7 +58,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		public MergeStatus post() { return post( this ) ; } ;
 	} ;
 	public enum StatusService { ENABLED, DISABLED, REMOVED } ;				    				// applied to Service 
-	public enum ToDo          { NONE, NEW, UPDATE, DELETE } ;	//toDo by Service
+	public enum ToDo          { NONE, NEW, UPDATE, DELETE, DELETE_BY_PROVIDER } ;	//toDo by Service
 
 	private static final StackXML< String > entryXML  = new StackXML< String >( "Entry" ) ;
 	private static final StackXML< String > titleXML  = new StackXML< String >( "Entry", "Title") ;
@@ -208,6 +208,9 @@ public final class DVBViewerEntry  implements Cloneable{
 	public boolean isOrgEqual( final DVBViewerEntry e )
 	{
 		if ( ! this.channel.equals( e.channel ) )
+			return false ;
+		
+		if ( this.provider != e.provider )
 			return false ;
 		
 		if ( ! this.title.equals( e.title ) )
@@ -512,8 +515,23 @@ public final class DVBViewerEntry  implements Cloneable{
 			xml.add( e ) ;
 		}
 	}
+	private static void removeOutdatedProviderEntries( final ArrayList<DVBViewerEntry> xml )
+	{		
+		for ( Iterator< DVBViewerEntry > it = xml.iterator() ; it.hasNext() ; )
+		{
+			DVBViewerEntry e = it.next() ;
+			if ( e.isOutdatedByProvider() )
+				e.setToDelete() ;
+		}
+	}
 	
-	public static void postProcess( final ArrayList<DVBViewerEntry> xml )
+	public static void beforeRecordingSettingProcces( final ArrayList<DVBViewerEntry> xml,
+													  final String separator, DVBViewer.MaxID maxID )
+	{
+		DVBViewerEntry.removeOutdatedProviderEntries( xml ) ;
+		DVBViewerEntry.reworkMergeElements( xml, separator, maxID ) ;
+	}
+	public static void afterRecordingSettingProcces( final ArrayList<DVBViewerEntry> xml )
 	{
 		for ( Iterator< DVBViewerEntry > it = xml.iterator() ; it.hasNext() ; )
 		{
@@ -690,7 +708,11 @@ public final class DVBViewerEntry  implements Cloneable{
 	} ;
 	public boolean mustUpdated() { return this.toDo == ToDo.UPDATE ; } ;
 	public boolean mustDeleted() { return this.toDo == ToDo.DELETE ; } ;
-	public void setToDelete() { this.toDo = ToDo.DELETE ; } ;
+	public void setToDelete()
+	{
+		this.toDo = ToDo.DELETE ;
+		this.prepareRemove() ;
+	} ;
 	public void prepareRemove()
 	{
 		if ( this.mergedEntries != null )
@@ -698,7 +720,10 @@ public final class DVBViewerEntry  implements Cloneable{
 				it.next().mergeElement = null ;
 		this.mergedEntries = null ;
 		if ( this.mergeElement != null )
-			this.mergeElement.mergedEntries.remove( this ) ;	
+		{
+			this.mergeElement.mergedEntries.remove( this ) ;
+			this.mergeElement.mergingChanged = true ;
+		}
 		this.mergeElement = null ;
 	}
 	public boolean isOutdatedByProvider() { return this.outDatedInfo.isOutdated( this.provider ) ; } ;

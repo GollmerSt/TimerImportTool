@@ -81,6 +81,9 @@ public class ProviderService extends MyTabPanel {
 	private final JTextField macBox = new JTextField() ;
 	private final JButton serviceButton = new JButton() ;
 	
+	private ProviderCheckBoxesChanged providerCheckBoxesListener = null ;
+	private boolean providerCheckBoxesListenerEnabled = false ;
+	
 	private Provider lastProvider = null ;
 	
 	private void setOutDated( final OutDatedInfo o )
@@ -115,6 +118,7 @@ public class ProviderService extends MyTabPanel {
 	        Object o = cb.getSelectedItem() ;
 	        if ( o == null )
 	        	return ;
+	        setListenerProviderCheckBoxes( false ) ;
 	        updateProvider() ;
 	        Provider p = (Provider)cb.getSelectedItem() ;
 	        lastProvider = p ;
@@ -156,6 +160,8 @@ public class ProviderService extends MyTabPanel {
     		uninstallButton.setText( GUIStrings.uninstall() ) ;
 	        installButton.setEnabled( p.mustInstall() ) ;
 	        uninstallButton.setEnabled( p.mustInstall() ) ;
+	        setListenerProviderCheckBoxes( true ) ;
+
 	    }
 	}
 	public class LockBoxChanged implements ItemListener
@@ -166,6 +172,31 @@ public class ProviderService extends MyTabPanel {
 			Provider p = (Provider) providerCombo.getSelectedItem() ;
 			if ( p.hasURL() )
 				urlBox.setEnabled( lockBox.isSelected() ) ;
+		}
+	}
+	public void setListenerProviderCheckBoxes( boolean enable )
+	{
+		if ( this.providerCheckBoxesListener == null )
+			providerCheckBoxesListener = new ProviderCheckBoxesChanged() ;
+		
+		if ( providerCheckBoxesListenerEnabled == enable )
+			return ;
+
+		providerCheckBoxesListenerEnabled = enable ;
+		
+		if ( enable )
+		{
+			this.verboseBox.addItemListener( providerCheckBoxesListener ) ;
+			this.messageBox.addItemListener( providerCheckBoxesListener ) ;
+			this.mergeBox.addItemListener(   providerCheckBoxesListener ) ;
+			this.filterBox.addItemListener(  providerCheckBoxesListener ) ;
+		}
+		else
+		{
+			this.verboseBox.removeItemListener( providerCheckBoxesListener ) ;
+			this.messageBox.removeItemListener( providerCheckBoxesListener ) ;
+			this.mergeBox.removeItemListener(   providerCheckBoxesListener ) ;
+			this.filterBox.removeItemListener(  providerCheckBoxesListener ) ;
 		}
 	}
 	public class ProviderCheckBoxesChanged implements ItemListener
@@ -190,6 +221,9 @@ public class ProviderService extends MyTabPanel {
 			gui.setChanged() ;
 		}
 	}
+	
+
+	
 	public class ProviderTestButton implements ActionListener
 	{
 		@Override
@@ -515,7 +549,6 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		this.verboseBox.setText( GUIStrings.verbose() ) ;
-		this.verboseBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
 		checkBoxPanel.add( this.verboseBox, c ) ;
 		
 
@@ -529,7 +562,6 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		this.messageBox.setText( GUIStrings.message() ) ;
-		this.messageBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
 		checkBoxPanel.add( this.messageBox, c ) ;
 		
 
@@ -543,7 +575,6 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		this.mergeBox.setText( GUIStrings.merge() ) ;
-		this.mergeBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
 		checkBoxPanel.add( this.mergeBox, c ) ;
 		
 
@@ -557,7 +588,6 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		this.filterBox.setText( GUIStrings.filter() ) ;
-		this.filterBox.addItemListener( new ProviderCheckBoxesChanged() ) ;
 		checkBoxPanel.add( this.filterBox, c ) ;
 		
 
@@ -850,6 +880,8 @@ public class ProviderService extends MyTabPanel {
 
 		serviceBox.setPreferredSize( new Dimension( 300, 300 ) ) ;
 		this.add( serviceBox, c ) ;
+
+		this.setListenerProviderCheckBoxes( true ) ;
 }
 	public void updateLockBox()
 	{

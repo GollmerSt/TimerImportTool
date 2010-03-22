@@ -48,10 +48,10 @@ public class ResourceManager {
     }
     public static void copyFile( String destinationPath, String source )
     {
-    	ResourceManager.copyFile( destinationPath, source, null ) ;
+    	ResourceManager.copyFile( destinationPath, source, null, false ) ;
     }
 
-        public static void copyFile( String destinationPath, String source, ArrayList< String[] > keywords )
+        public static void copyFile( String destinationPath, String source, ArrayList< String[] > keywords, boolean removeComment )
     {
 		InputStream is = ResourceManager.createInputStream( source ) ;
 		
@@ -85,6 +85,16 @@ public class ResourceManager {
 							pos += keyPair[1].length() ;
 						}
 					}
+				int pos = 0 ;
+				if ( (pos = line.indexOf( "//", pos )) >= 0 )
+				{
+					if ( line.contains( "////" ) )
+						line = line.substring( pos + 2 ) ;
+					else
+						line = line.substring( 0, pos ) ;
+				}
+				if ( line.length() == 0 )
+					continue ;
 				line += lineSeparator ;
 				bufW.write( line ) ;
 			}

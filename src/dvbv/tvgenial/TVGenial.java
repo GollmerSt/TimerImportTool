@@ -1,3 +1,7 @@
+// $LastChangedDate: 2010-03-21 22:47:26 +0100 (So, 21. Mrz 2010) $
+// $LastChangedRevision: 200 $
+// $LastChangedBy: Stefan Gollmer $
+
 package dvbv.tvgenial;
 
 import java.io.BufferedReader;
@@ -21,8 +25,12 @@ import dvbv.provider.Provider;
 
 public class TVGenial extends Provider {
 
-	private static final String NAME_PLUGIN_PATH            = "DVBViewer" ;
-	private static final String NAME_CHANNEL_FILE           = "tvuid.txt" ;
+	private static final String NAME_PLUGIN_PATH   = "DVBViewer" ;
+	private static final String NAME_CHANNEL_FILE  = "tvuid.txt" ;
+	private static final String PATH_SCRIPT_FILE   = "TVGenial/DVBViewer.txt" ;
+	private static final String PATH_LOGO_FILE     = "TVGenial/Logo.png" ;
+	private static final String PATH_RECORDER_FILE = "TVGenial/recorder.ini" ;
+	private static final String PATH_SETUP_FILE    = "TVGenial/Setup.ini" ;
 	
 	public TVGenial( Control control ) {
 		super( control, false, false, "TVGenial", false, false, false, true, true, false);
@@ -49,11 +57,31 @@ public class TVGenial extends Provider {
 		stringSet[1] = jarFile ;
 		
 		keyList.add( stringSet ) ;
+				
+		ResourceManager.copyFile( file.getPath(), PATH_SCRIPT_FILE, keyList, true ) ;
+		ResourceManager.copyBinaryFile( file.getPath(), PATH_LOGO_FILE ) ;
+		ResourceManager.copyFile( file.getPath(), PATH_RECORDER_FILE ) ;
+		ResourceManager.copyFile( file.getPath(), PATH_SETUP_FILE ) ;
 		
-		ResourceManager.copyFile( file.getPath(), "TVGenial/DVBViewer.txt", keyList ) ;
-		ResourceManager.copyBinaryFile( file.getPath(), "TVGenial/Logo.png" ) ;
-		ResourceManager.copyFile( file.getPath(), "TVGenial/recorder.ini" ) ;
-		ResourceManager.copyFile( file.getPath(), "TVGenial/Setup.ini" ) ;
+		return true ;
+	}
+	@Override
+	public boolean uninstall()
+	{
+		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		if ( programDir == null )
+			return false ;
+		
+		File dir = new File( programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH  ) ;
+		
+		String [] files = { PATH_SCRIPT_FILE, PATH_LOGO_FILE, PATH_RECORDER_FILE, PATH_SETUP_FILE } ;
+		
+		for ( String fs : files )
+		{
+			File f = new File( dir.getPath() + File.separator + fs.split( "/" )[1] ) ;
+			f.delete() ;
+		}
+		dir.delete() ;
 		
 		return true ;
 	}
@@ -146,6 +174,8 @@ public class TVGenial extends Provider {
 		long milliSeconds = -1 ;
 		String title = null ;
 		
+		boolean mustDelete = false ;
+		
 		for ( int i = 0 ; i < args.length ; i++ )
 		{
 			String p = args[i] ;
@@ -174,6 +204,8 @@ public class TVGenial extends Provider {
 			}
 			else if ( key.equalsIgnoreCase("Sendung"))
 				title = value ;
+			else if ( key.equalsIgnoreCase("-delete"))
+				mustDelete = true ;
 		}
 		if ( tvuid < 0 || startTime == null || milliSeconds < 0 || title == null )
 		{
@@ -202,8 +234,9 @@ public class TVGenial extends Provider {
 				break ;
 			}
 		}
-		
-		this.control.getDVBViewer().addNewEntry( this, channel, start, end, title ) ;
-		this.control.getDVBViewer().merge() ;
+		if ( mustDelete )
+			this.control.getDVBViewer().deleteEntry( this, channel, start, end, title) ;
+		else
+			this.control.getDVBViewer().addNewEntry( this, channel, start, end, title ) ;
 	}
 }

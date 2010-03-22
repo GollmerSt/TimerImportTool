@@ -41,7 +41,7 @@ Checklist:
 36. TVInfo import with merge and filter
 37. Check the dvbviewer timerlist
 
-40. Activatetwoa disabled merged entries from a merge case more than three records
+40. Activate two a disabled merged entries from a merge case more than three records
 41. TVInfo import with merge and filter
 42. Check the dvbviewer timerlist, one merge of four -> two merges of two
 
