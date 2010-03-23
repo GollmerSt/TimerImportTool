@@ -82,7 +82,6 @@ public class Miscellaneous extends MyTabPanel
 			{
 				control.getDVBViewer().setAfterRecordingAction( (ActionAfterItems)o ) ;
 				gui.setChanged() ;
-				setInfoText( GUIStrings.changeEffect() ) ;
 			}
 			else if ( c == lookAndFeelBox )
 				gui.setLookAndFeel( (String)o ) ;
@@ -236,8 +235,8 @@ public class Miscellaneous extends MyTabPanel
 		
 		for ( Language l : Language.values() )
 			this.languageBox.addItem( l ) ;
-		this.languageBox.addActionListener( new ComboSelected() ) ;
 		this.languageBox.setSelectedItem( GUIStrings.languageEnum ) ;
+		this.languageBox.addActionListener( new ComboSelected() ) ;
 		guiPanel.add( this.languageBox, c ) ;
 
 

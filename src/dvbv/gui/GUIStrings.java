@@ -27,12 +27,13 @@ public class GUIStrings {
 	}
 	public enum Language
 	{
-		INVALID( "", "System", "System" ),
+		SYSTEM( "", "System", "System" ),
 		ENGLISH( "en", "English", "Englisch" ),
 		GERMAN( "de", "German", "Deutsch" ) ;
 
 		private final String shortForm ;
 		private final String [] strings ;
+		Language assigned = this ;
 
 		Language( String shortForm, String ... strings )
 		{
@@ -42,31 +43,44 @@ public class GUIStrings {
 		@Override
 		public String toString() { return GUIStrings.get( this.strings ) ; } ;
 		public String getShort() { return this.shortForm ; } ;
+		public Language getAssigned() { return this.assigned ; } ;
+		public void setAssigned( Language assigned ) { this.assigned = assigned ; } ;
+		
 	}
-	public static Language languageEnum = Language.INVALID ;
+	public static Language languageEnum = Language.SYSTEM ;
 
 	public static void setLanguage( final String language )
 	{
 		String l = language ;
 		if ( l.length() == 0 )
+		{
 			l = System.getProperty( "user.language") ;
-
+		}
+		GUIStrings.Language t = null ;
 		if (    l.equals( "de" )
 				 || l.equals( "at" )
 				 || l.equals( "ch" )
 				 || l.equals( "li" )
 				 || l.equals( "lu" ) )
-			GUIStrings.languageEnum = Language.GERMAN ;
+			t = Language.GERMAN ;
 		else
-			GUIStrings.languageEnum = Language.ENGLISH ;
+			t = Language.ENGLISH ;
+		if ( language.length() == 0 )
+		{
+			GUIStrings.languageEnum = Language.SYSTEM ;
+			GUIStrings.languageEnum.setAssigned( t ) ;
+		}
+		else
+			GUIStrings.languageEnum = t ;
 	} ;
 
 	private static String get( String... strings )
 	{
-		if ( strings.length < GUIStrings.languageEnum.ordinal() )
+		int ix =  GUIStrings.languageEnum.getAssigned().ordinal() ; 
+		if ( strings.length < ix )
 			return strings[ 0 ] ;
 		else
-			return strings[ GUIStrings.languageEnum.ordinal() - 1 ] ;
+			return strings[ ix - 1 ] ;
 	}
 	public static String actionAfter()            { return get( "Post record action", "Nach Aufnahme" ) ; } ;
 	public static String add()                    { return get( "Add", "Hinzufügen" ) ; } ;

@@ -12,7 +12,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -617,9 +616,12 @@ public class DVBViewer {
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
 		
 		File channelFile = new File( path + File.separator + Channels.CHANNEL_FILE_NAME ) ;
+
 		if ( ! channelFile.isFile() )
+		{
+			f.delete() ;
 			return null ;
-		
+		}
 		Log.setFile(path) ;
 		
 		return path ;

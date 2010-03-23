@@ -268,7 +268,7 @@ public class ProviderAssignment  extends MyTabPanel
 		super( gui, frame ) ;
 		
 		this.columnNames  = new String[ Provider.getProviders().size() + 1 ];
-		this. columnNames[ 0 ] = "" ;
+		this. columnNames[ 0 ] = GUIStrings.dvbViewer() ;
 		
 		int ip = 0 ;
 		for ( Iterator< Provider> itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
