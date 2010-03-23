@@ -29,6 +29,7 @@ import javax.xml.transform.stream.StreamSource;
 import dvbv.xml.StackXML;
 import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
+import dvbv.dvbviewer.channels.Channels;
 import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
@@ -64,9 +65,9 @@ public class DVBViewer {
 	private final String exePath ;
 	private boolean usePathFile = false ;
 	private boolean createPathFile = false ;
-	private String dataPath ;
+	private String dataPath = null ;
 	private String savedDataPath = "" ;
-	private String pluginConfPath ;
+	private String pluginConfPath = null ;
 	private final String exeName ;
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
@@ -78,23 +79,30 @@ public class DVBViewer {
 		{
 			this.dataPath = dataPath ;
 			this.pluginConfPath = this.dataPath ;
+			Log.setFile( this.dataPath ) ;
+		}
+	}
+	public boolean initDataPath()
+	{
+		if ( this.dataPath != null )
+			return true ;
+		String path =this.readDataPathFromIni() ;
+		if ( path == null )
+		{
+			this.dataPath = this.determineDataPath() ;
+			if ( this.dataPath == null )
+				return false ;
+			this.pluginConfPath = this.dataPath + File.separator + NAME_CONFIG_PATH ;
 		}
 		else
 		{
-			String path =this.readDataPathFromIni() ;
-			if ( path == null )
-			{
-				this.dataPath = this.determineDataPath() ;
-				this.pluginConfPath = this.dataPath + File.separator + NAME_CONFIG_PATH ;
-			}
-			else
-			{
-				this.savedDataPath = path ;
-				this.usePathFile = true ;
-				this.dataPath = path ;
-				this.pluginConfPath = this.dataPath ;
-			}
+			this.savedDataPath = path ;
+			this.usePathFile = true ;
+			this.dataPath = path ;
+			this.pluginConfPath = this.dataPath ;
 		}
+		Log.setFile( this.dataPath ) ;
+		return true ;
 	}
 	public void setDataPath( String path )
 	{
@@ -102,6 +110,7 @@ public class DVBViewer {
 		this.dataPath = path ;
 		this.savedDataPath = path ;
 		this.pluginConfPath = this.dataPath ;
+		Log.setFile( this.dataPath ) ;
 	}
 	public void setProvider()
 	{
@@ -137,7 +146,7 @@ public class DVBViewer {
 		try {
 			bR = new BufferedReader(new FileReader(f));
 		} catch (FileNotFoundException e) {
-			throw new ErrorClass( e, NAME_USERMODE_FILE + " not found. The importer must be located in the DVBViewer directory.");
+			return null ;
 		}
 		String line = null ;
 		boolean modeBlock = false ;
@@ -197,7 +206,6 @@ public class DVBViewer {
 		File directory = new File( path ) ;
 		if ( !directory.isDirectory() )
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + iniFile + "\" should be checked." ) ;
-		Log.setFile(path) ;
 		return path ;
 	}
 	public void updateDVBViewer()
@@ -607,13 +615,22 @@ public class DVBViewer {
 		File directory = new File( path ) ;
 		if ( !directory.isDirectory() )
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
+		
+		File channelFile = new File( path + Channels.CHANNEL_FILE_NAME ) ;
+		if ( ! channelFile.isFile() )
+			return null ;
+		
 		Log.setFile(path) ;
+		
 		return path ;
 	}
 	public void writeDataPathFromIni()
 	{
 		String name = this.exePath + File.separator + NAME_IMPORT_INI_FILE ;
 		File f = new File( name ) ;
+		
+		String lineSeparator = System.getProperty("line.separator") ;
+
 		
 		if ( ! this.usePathFile )
 		{
@@ -626,8 +643,8 @@ public class DVBViewer {
 		
 		try {
 			BufferedWriter bW = new BufferedWriter( new FileWriter( f, false ) ) ;
-			bW.write( "[Pathes]\n") ;
-			bW.write( "Data=" + this.dataPath + "\n" ) ;
+			bW.write( "[Pathes]" + lineSeparator ) ;
+			bW.write( "Data=" + this.dataPath + lineSeparator ) ;
 			bW.close() ;
 		} catch (IOException e) {
 			throw new ErrorClass( e, "Error on writing file " + name ) ;
@@ -638,21 +655,18 @@ public class DVBViewer {
 	{
 		if ( use == this.usePathFile )
 			return false ;
-		this.usePathFile = use ;
 		
 		if ( ! use )
 		{
-			try
-			{
-				String path = this.determineDataPath() ;
-				this.dataPath = path ;
-				this.pluginConfPath = path + File.separator + NAME_CONFIG_PATH ;
-			} catch ( ErrorClass e ) {
+			String path = this.determineDataPath() ;
+			if ( path == null )
 				return false ;
-			}
+			this.dataPath = path ;
+			this.pluginConfPath = path + File.separator + NAME_CONFIG_PATH ;
 		}
 		else
 			this.dataPath = this.savedDataPath ;
+		this.usePathFile = use ;
 		return true ;
 	}
 }

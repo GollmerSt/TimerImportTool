@@ -27,7 +27,7 @@ public class Channels {
 	private static final String SUPPORTED_FILE_ID          = "B2C2";
 	private static final byte SUPPORTED_VERSION_HIGH       = 1 ;
 	private static final byte SUPPORTED_VERSION_LOW        = 8 ;
-	private static final String CHANNEL_FILE_NAME           = "channels.dat" ;
+	public  static final String CHANNEL_FILE_NAME           = "channels.dat" ;
 	private static final int SUPPORTED_CHANNEL_ENTRY_LENGTH = Channel.ENTRY_LENGTH ;
 	private static final FileChannel.MapMode READ_ONLY      = FileChannel.MapMode.READ_ONLY ;
 

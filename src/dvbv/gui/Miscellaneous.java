@@ -131,6 +131,8 @@ public class Miscellaneous extends MyTabPanel
 					setInfoText( GUIStrings.changeEffect() ) ;
 					gui.setChanged() ;
 				}
+				else
+					source.setSelected( ! dvbViewer.isPathFileUsed() ) ;
 			}
 
 		}

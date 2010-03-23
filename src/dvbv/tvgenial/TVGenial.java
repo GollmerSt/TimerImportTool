@@ -164,7 +164,7 @@ public class TVGenial extends Provider {
 	private String getParaInfo()
 	{
 		return 
-		", necessary parameters:\n   -TVGenial TVUID=ccc Begin=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
+		", necessary parameters:\n   -TVGenial TVUID=ccc Beginn=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	@Override
 	public void processEntry( String[] args )
@@ -179,9 +179,14 @@ public class TVGenial extends Provider {
 		for ( int i = 0 ; i < args.length ; i++ )
 		{
 			String p = args[i] ;
+			
 			int pos = p.indexOf('=') ;
 			if ( pos < 0 )
+			{
+				if ( p.trim().equalsIgnoreCase("-delete"))
+					mustDelete = true ;
 				continue ;
+			}
 			String key   = p.substring(0, pos).trim() ;
 			String value = p.substring(pos+1).trim() ;
 			
@@ -204,8 +209,6 @@ public class TVGenial extends Provider {
 			}
 			else if ( key.equalsIgnoreCase("Sendung"))
 				title = value ;
-			else if ( key.equalsIgnoreCase("-delete"))
-				mustDelete = true ;
 		}
 		if ( tvuid < 0 || startTime == null || milliSeconds < 0 || title == null )
 		{

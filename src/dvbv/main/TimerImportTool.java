@@ -6,7 +6,6 @@ package dvbv.main ;
 
 
 import javax.swing.JOptionPane;
-import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -29,8 +28,6 @@ public final class TimerImportTool {
 		
 		DVBViewer dvbViewer = null ;
 		
-		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels() ;
-
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         	//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -91,19 +88,16 @@ public final class TimerImportTool {
 
 			dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
 			
-			Channels channels = new Channels( dvbViewer ) ;
-			while ( true )
+			while ( ! dvbViewer.initDataPath() )
 			{
-				try
-				{
-					channels.read() ;
-					break ;
-				} catch (ErrorClass e ) {
-					boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
-					if ( aborted )
-						System.exit( 0 ) ;
-				}
-			}
+				boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
+				if ( aborted )
+					System.exit( 0 ) ;
+				dvbViewer.setPathFileIsUsed( true ) ;
+			}			
+			Channels channels = new Channels( dvbViewer ) ;
+			channels.read() ;
+
 			Control control = new Control(dvbViewer);
 
 			if ( type == ImportType.GUI )
