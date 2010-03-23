@@ -6,6 +6,7 @@ package dvbv.main ;
 
 
 import javax.swing.JOptionPane;
+import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -16,6 +17,7 @@ import dvbv.control.Control ;
 import dvbv.dvbviewer.channels.Channels ;
 import dvbv.gui.GUI;
 import dvbv.gui.GUIStrings;
+import dvbv.gui.WorkPathSelector;
 import dvbv.gui.GUI.GUIStatus;
 
 public final class TimerImportTool {
@@ -26,6 +28,8 @@ public final class TimerImportTool {
 		GUIStrings.setLanguage( "" ) ;
 		
 		DVBViewer dvbViewer = null ;
+		
+		UIManager.LookAndFeelInfo[] info = UIManager.getInstalledLookAndFeels() ;
 
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -88,8 +92,18 @@ public final class TimerImportTool {
 			dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
 			
 			Channels channels = new Channels( dvbViewer ) ;
-			channels.read() ;
-			
+			while ( true )
+			{
+				try
+				{
+					channels.read() ;
+					break ;
+				} catch (ErrorClass e ) {
+					boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
+					if ( aborted )
+						System.exit( 0 ) ;
+				}
+			}
 			Control control = new Control(dvbViewer);
 
 			if ( type == ImportType.GUI )
@@ -107,10 +121,12 @@ public final class TimerImportTool {
 					case APPLY :
 						Log.out( "Configuration saved" ) ;
 						control.write() ;
+						dvbViewer.writeDataPathFromIni() ;
 						break ;
 					case OK :
 						control.write() ;
 						Log.out( "Configuration saved and terminated" ) ;
+						dvbViewer.writeDataPathFromIni() ;
 						System.exit( 0 ) ;
 						break ;
 					case CANCEL :
@@ -123,6 +139,7 @@ public final class TimerImportTool {
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
+						dvbViewer.writeDataPathFromIni() ;
 						finished = true ;
 						break ;
 					case UPDATE :

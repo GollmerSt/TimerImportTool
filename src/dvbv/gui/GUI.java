@@ -15,6 +15,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.ArrayList;
+import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
 import javax.swing.ImageIcon;
@@ -23,6 +25,10 @@ import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -54,6 +60,10 @@ public class GUI {
     private final JButton cancelButton = new JButton() ;
     private final JButton applyButton = new JButton() ;
     
+	private final TreeMap< String, LookAndFeelInfo > lookAndFeelAssignment  
+    = new TreeMap< String, LookAndFeelInfo >() ;
+	private final ArrayList< String > lookAndFeelNames = new ArrayList< String >() ;
+	
     private class MyWindowListener implements WindowListener
     {
 
@@ -167,6 +177,19 @@ public class GUI {
 	{
 		this.control = control ;
 		this.dChannels = dChannels ;
+		
+		String className = UIManager.getSystemLookAndFeelClassName() ;
+		LookAndFeelInfo systemLookAndFeelInfo = new LookAndFeelInfo( Constants.SYSTEM_LOOK_AND_FEEL_NAME, className ) ;
+		this.lookAndFeelAssignment.put( Constants.SYSTEM_LOOK_AND_FEEL_NAME, systemLookAndFeelInfo ) ;
+		this.lookAndFeelNames.add( Constants.SYSTEM_LOOK_AND_FEEL_NAME ) ;
+		for ( LookAndFeelInfo lf : UIManager.getInstalledLookAndFeels() )
+		{
+			this.lookAndFeelAssignment.put( lf.getName(), lf ) ;
+			this.lookAndFeelNames.add( lf.getName() ) ;
+		}
+		
+		this.setLookAndFeel( control.getLookAndFeelName() ) ;
+		this.isChanged = false ;
 	}
 	public Control getControl() { return this.control ; } ;
 	public JFrame getFrame() { return frame ; } ;
@@ -352,5 +375,31 @@ public class GUI {
 		        JOptionPane.YES_NO_OPTION );
 		return( answer == JOptionPane.YES_OPTION ) ;
 	}
-	
+	public ArrayList< String > getLookAndFeelNames() { return lookAndFeelNames ; } ;
+	public void setLookAndFeel( String name )
+	{
+		if ( ! this.lookAndFeelAssignment.containsKey( name ) )
+			name = Constants.SYSTEM_LOOK_AND_FEEL_NAME ;
+		this.control.setLookAndFeelName( name ) ;
+		
+		LookAndFeelInfo lfi = this.lookAndFeelAssignment.get( name ) ;
+		try {
+			UIManager.setLookAndFeel( lfi.getClassName() ) ;
+		} catch (ClassNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (InstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IllegalAccessException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedLookAndFeelException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		SwingUtilities.updateComponentTreeUI( this.frame );
+		this.frame.pack();
+		this.isChanged = true ;
+	}
 }

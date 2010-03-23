@@ -5,10 +5,12 @@
 package dvbv.dvbviewer ;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -33,7 +35,10 @@ import dvbv.misc.* ;
 import dvbv.provider.Provider;
 
 public class DVBViewer {
+	
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
+	private static final String NAME_CONFIG_PATH              = "Plugins" ;
+	private static final String NAME_IMPORT_INI_FILE          = "timerimporttool.ini" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	private static final StackXML<String> xmlPath = new StackXML< String >( "Processed", "Entry" ) ;
@@ -57,20 +62,46 @@ public class DVBViewer {
 	private ArrayList< HashMap< String, Channel> > channelsLists 
 	        = new ArrayList< HashMap< String, Channel> >( dvbv.provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
-	private final String dataPath ;
+	private boolean usePathFile = false ;
+	private boolean createPathFile = false ;
+	private String dataPath ;
+	private String savedDataPath = "" ;
+	private String pluginConfPath ;
 	private final String exeName ;
-	private final String pluginConfPath ;
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
-	public DVBViewer( String dataPath, String exeName )
+	public DVBViewer( final String dataPath, String exeName )
 	{
 		this.exeName = exeName + ".jar" ;
 		this.exePath = determineExePath( dataPath ) ;
 		if ( dataPath != null )
+		{
 			this.dataPath = dataPath ;
+			this.pluginConfPath = this.dataPath ;
+		}
 		else
-			this.dataPath = this.determineDataPath() ;
-		this.pluginConfPath = this.dataPath + File.separator + "Plugins" ;
+		{
+			String path =this.readDataPathFromIni() ;
+			if ( path == null )
+			{
+				this.dataPath = this.determineDataPath() ;
+				this.pluginConfPath = this.dataPath + File.separator + NAME_CONFIG_PATH ;
+			}
+			else
+			{
+				this.savedDataPath = path ;
+				this.usePathFile = true ;
+				this.dataPath = path ;
+				this.pluginConfPath = this.dataPath ;
+			}
+		}
+	}
+	public void setDataPath( String path )
+	{
+		createPathFile = true ;
+		this.dataPath = path ;
+		this.savedDataPath = path ;
+		this.pluginConfPath = this.dataPath ;
 	}
 	public void setProvider()
 	{
@@ -157,6 +188,7 @@ public class DVBViewer {
 					}
 				}
 			}
+			bR.close() ;
 		} catch (IOException e) {
 			throw new ErrorClass( e, "Error on reading the file \"" + iniFile + "\"." );
 		}
@@ -525,5 +557,102 @@ public class DVBViewer {
 		ArrayList<DVBViewerEntry> lastTimers = readXML() ;
 		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
 		this.recordEntries = lastTimers ;
+	}
+	private String readDataPathFromIni()
+	{
+		String name = this.exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		
+		File f = new File( name ) ;
+		
+		if ( ! f.isFile() )
+			return null ;
+		
+		BufferedReader bR;
+		try {
+			bR = new BufferedReader(new FileReader(f));
+		} catch (FileNotFoundException e) {
+			throw new ErrorClass( e, NAME_IMPORT_INI_FILE + " not found. The importer must be located in the DVBViewer directory.");
+		}
+		String line = null ;
+		boolean pathBlock = false ;
+		
+		String path = "" ;
+		try {
+			while ((line = bR.readLine()) != null)
+			{
+				line = line.trim() ;
+				if ( !pathBlock )
+				{
+					if ( line.equalsIgnoreCase( "[Pathes]") )
+						pathBlock = true ;
+				}
+				else
+				{
+					String [] parts = line.split( "=" ) ;
+					if ( parts.length != 2)
+						continue ;
+					if ( parts[0].trim().equalsIgnoreCase( "Data" ))
+					{
+						path = parts[1].trim() ;
+						break ;
+					}
+				}
+			}
+			bR.close() ;
+		} catch (IOException e) {
+			throw new ErrorClass( e, "Error on reading the file \"" + name + "\"." );
+		}
+		if ( path.length() == 0 )
+			throw new ErrorClass( "Illegal format of the file \"" + name + "\"." ) ;
+		File directory = new File( path ) ;
+		if ( !directory.isDirectory() )
+			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
+		Log.setFile(path) ;
+		return path ;
+	}
+	public void writeDataPathFromIni()
+	{
+		String name = this.exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		File f = new File( name ) ;
+		
+		if ( ! this.usePathFile )
+		{
+			if ( f.isFile() )
+				f.delete() ;	// TODO   Admin-Mode?????????
+			return ;
+		}
+		if ( ! this.createPathFile )
+			return ;
+		
+		try {
+			BufferedWriter bW = new BufferedWriter( new FileWriter( f, false ) ) ;
+			bW.write( "[Pathes]\n") ;
+			bW.write( "Data=" + this.dataPath + "\n" ) ;
+			bW.close() ;
+		} catch (IOException e) {
+			throw new ErrorClass( e, "Error on writing file " + name ) ;
+		}
+	}
+	public boolean isPathFileUsed() { return this.usePathFile ; } ;
+	public boolean setPathFileIsUsed( boolean use )
+	{
+		if ( use == this.usePathFile )
+			return false ;
+		this.usePathFile = use ;
+		
+		if ( ! use )
+		{
+			try
+			{
+				String path = this.determineDataPath() ;
+				this.dataPath = path ;
+				this.pluginConfPath = path + File.separator + NAME_CONFIG_PATH ;
+			} catch ( ErrorClass e ) {
+				return false ;
+			}
+		}
+		else
+			this.dataPath = this.savedDataPath ;
+		return true ;
 	}
 }

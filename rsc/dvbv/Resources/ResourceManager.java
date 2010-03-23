@@ -75,6 +75,7 @@ public class ResourceManager {
 			while ( ( line = bufR.readLine() ) != null )
 			{
 				if ( keywords != null )
+				{
 					for ( Iterator< String[] > it = keywords.iterator() ; it.hasNext() ; )
 					{
 						String [] keyPair = it.next() ;
@@ -85,13 +86,14 @@ public class ResourceManager {
 							pos += keyPair[1].length() ;
 						}
 					}
-				int pos = 0 ;
-				if ( (pos = line.indexOf( "//", pos )) >= 0 )
-				{
-					if ( line.contains( "////" ) )
-						line = line.substring( pos + 2 ) ;
-					else
-						line = line.substring( 0, pos ) ;
+					int pos = 0 ;
+					if ( (pos = line.indexOf( "//", pos )) >= 0 )
+					{
+						if ( line.contains( "////" ) )
+							line = line.substring( pos + 2 ) ;
+						else
+							line = line.substring( 0, pos ) ;
+					}
 				}
 				if ( line.length() == 0 )
 					continue ;

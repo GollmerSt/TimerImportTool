@@ -57,10 +57,12 @@ public class Control
 	private final StackXML<String> pathWOL				= new StackXML<String>( "Importer",  "DVBService", "WakeOnLAN") ;
 	private final StackXML<String> pathDefaultProvider	= new StackXML<String>( "Importer",  "GUI", "DefaultProvider" ) ;
 	private final StackXML<String> pathLanguage			= new StackXML<String>( "Importer",  "GUI", "Language" ) ;
+	private final StackXML<String> pathLookAndFeel	    = new StackXML<String>( "Importer",  "GUI", "LookAndFeel" ) ;
 	private final StackXML<String> pathDVBViewer		= new StackXML<String>( "Importer",  "DVBViewer" ) ;
 	
 	private String defaultProvider = null ;
 	private String language = "" ;
+	private String lookAndFeelName = Constants.SYSTEM_LOOK_AND_FEEL_NAME ;
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
@@ -301,6 +303,8 @@ public class Control
 						this.language = data ;
 						GUIStrings.setLanguage( data ) ;
 					}
+					else if ( stack.equals( this.pathLookAndFeel) )
+						this.lookAndFeelName = data ;
 				}					
 			}					
 	        if( ev.isEndElement() )
@@ -384,6 +388,9 @@ public class Control
 				  sw.writeCharacters( this.language ) ;
 				  sw.writeEndElement() ;
 			  }
+			    sw.writeStartElement( "LookAndFeel" ) ;
+			    sw.writeCharacters( this.lookAndFeelName ) ;
+			    sw.writeEndElement() ;
 			  sw.writeEndElement() ;
 			  
 			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
@@ -421,6 +428,8 @@ public class Control
 	public void setDefaultProvider( String defaultProvider ) { this.defaultProvider = defaultProvider ; } ;
 	public String getLanguage() { return this.language ; } ;
 	public void setLanguage( String language ) { this.language = language ; } ;
+	public String getLookAndFeelName() { return this.lookAndFeelName ; } ;
+	public void setLookAndFeelName( String name ) { this.lookAndFeelName = name ; } ;
 	public String getSeparator() { return this.separator ; } ;
 	public void setSeparator( String separator ) { this.separator = separator ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;

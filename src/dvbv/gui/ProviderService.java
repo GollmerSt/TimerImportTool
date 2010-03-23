@@ -657,12 +657,12 @@ public class ProviderService extends MyTabPanel {
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
-		c.weightx    = 0.5 ;
+		c.weightx    = 1 ;
 		//c.weighty    = 0.5 ;
 		c.fill       = GridBagConstraints.BOTH ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 
-		providerBox.setPreferredSize( new Dimension( 380, 300 ) ) ;
+		//providerBox.setPreferredSize( new Dimension( 380, 350 ) ) ;
 		this.add( providerBox, c ) ;
         this.setOutDated( defaultProvider.getOutDatedLimits() ) ;
 

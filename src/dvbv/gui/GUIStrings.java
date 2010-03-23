@@ -75,6 +75,8 @@ public class GUIStrings {
 	public static String assignedError()          { return get( "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" ) ; } ;
 	public static String broadCastAddress()       { return get( "Broadast address", "Broadcast-Adresse" ) ; } ;
 	public static String cancel()                 { return get( "Cancel", "Abbruch" ) ; } ;
+	public static String changeEffect()           { return get( "The change will take effect after restarting the program ",
+			                                                    "Die Änderung ist erst nach einem Neustart des Programms wirksam" ) ; } ;
 	public static String cannotDeleted()          { return get( "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" ) ; } ;
 	public static String channel()                { return get( "Channel", "Kanal" ) ; } ;
 	public static String channelsImported()       { return get( " channels added", " Kanäle hinzugefügt" ) ; } ;
@@ -82,7 +84,8 @@ public class GUIStrings {
 	public static String check()                  { return get( "Check", "Teste" ) ; } ;
 	public static String copyDefaultControlFile() { return get( "Control file doesn't exist, file will be recreated?",
                                                                 "Steuerdatei existiert nicht, soll Datei neu erstellt werden?" ) ; } ;
-	public static String delete()                 { return get( "Delete", "Löschen" ) ; } ;
+    public static String delete()                 { return get( "Delete", "Löschen" ) ; } ;
+	public static String dataPath()               { return get( "Data path", "Daten-Pfad" ) ; } ;
 	public static String dvbViewer()              { return get( "DVBViewer" ) ; } ;
 	public static String dvbViewerAssignment()    { return get( "DVBViewer assignment",
 		                                                        "DVBViewer-Zuordnung" ) ; } ;
@@ -95,6 +98,7 @@ public class GUIStrings {
 	public static String filter()                 { return get( "Filter", "Filter" ) ; } ;
 	public static String global()                 { return get( "Global" ) ; } ;
 	public static String globalOffsets()          { return get( "Global lead / lag times ...", "Globale Vor- / Nachlaufzeiten ..." ) ; } ;
+	public static String gui()                    { return get( "GUI" ) ; } ;
 	public static String importTV()               { return get( "Import ", "Importiere " ) ; } ;
 	public static String install()                { return get( "Install", "Installieren" ) ; } ;
 	public static String language()               { return get( "Language", "Sprache" ) ; } ;
@@ -115,6 +119,8 @@ public class GUIStrings {
 	public static String provider()               { return get( "Provider", "Anbieter" ) ; } ;
 	public static String providerService()        { return get( "Provider / Service", "Anbieter / Service" ) ; } ;
 	public static String providerAssignment()     { return get( "Provider assignment", "Anbieter-Zuordnung" ) ; } ;
+	public static String select()                 { return get( "Select", "Auswählen" ) ; } ;
+	public static String selectChannelFile()      { return get( "Select the DVBViewer channel file", "Wähle das DVBViewer-Channel-File aus" ) ; } ;
 	public static String setupChanged()           { return get( "Setup is changed!\nTerminating without saving?",
 	                                                            "Einstellungen wurden verändert!\nBeenden ohne Speichern?" ) ; } ;
 	public static String setupSave()              { return get( "Setup is changed!\nShould the setup saved??",
@@ -131,6 +137,7 @@ public class GUIStrings {
 	public static String url()                    { return get( "URL" ) ; } ;
 	public static String userName()               { return get( "Username", "Kennung" ) ; } ;
 	public static String verbose()                { return get( "Verbose", "Ausführlich" ) ; } ;
+	public static String view()                   { return get( "View", "Ansicht" ) ; } ;
 	public static String waitTime()               { return get( "Wait time after WOL", "Warte-Zeit nach WOL" ) ; } ;
 	public static String weekDays()               { return get( "Mo  Tu   We  Th   Fr   Sa   Su", "Mo   Di    Mi   Do   Fr   Sa   So" ) ; } ;
 	public static String wol()                    { return get( "WOL" ) ; } ;
