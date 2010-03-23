@@ -121,7 +121,7 @@ public class DVBViewer {
 	private String determineExePath( String dataPath )
 	{
 		String exePath = System.getProperty("user.dir") ;
-		String iniFile =   exePath + File.separator + NAME_USERMODE_FILE ;
+/*		String iniFile =   exePath + File.separator + NAME_USERMODE_FILE ;
 		File f = new File( iniFile ) ;
 		if ( ! f.exists() && dataPath == null )
 		{
@@ -136,7 +136,7 @@ public class DVBViewer {
 			exePath = jarFile.getParent() ;
 			//System.out.println( this.exePath ) ;
 		}
-		return exePath ;
+*/		return exePath ;
 	}
 	private String determineDataPath()
 	{
@@ -616,7 +616,7 @@ public class DVBViewer {
 		if ( !directory.isDirectory() )
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
 		
-		File channelFile = new File( path + Channels.CHANNEL_FILE_NAME ) ;
+		File channelFile = new File( path + File.separator + Channels.CHANNEL_FILE_NAME ) ;
 		if ( ! channelFile.isFile() )
 			return null ;
 		
