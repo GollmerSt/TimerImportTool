@@ -194,7 +194,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	}
 	private CompStatus compareWithService( final DVBViewerEntry service )
 	{
-		if ( ! this.channel.equals( service.channel ) )
+		if ( ! this.channel.split("\\|")[0].equals( service.channel.split("\\|")[0] ) )
 			return CompStatus.DIFFER ;
 		
 		if ( this.start == service.start && this.end == service.end )
