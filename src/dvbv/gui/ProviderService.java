@@ -261,7 +261,7 @@ public class ProviderService extends MyTabPanel {
 	        		if ( p.uninstall() )
 	        			uninstallButton.setText( GUIStrings.successful() ) ;
 	        		else
-	        			installButton.setText( GUIStrings.failed() ) ;
+	        			uninstallButton.setText( GUIStrings.failed() ) ;
 	        		installButton.setText( GUIStrings.install() ) ;
 	        	}
 	        }

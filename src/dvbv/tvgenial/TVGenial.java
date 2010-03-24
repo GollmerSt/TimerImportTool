@@ -20,6 +20,7 @@ import dvbv.control.ChannelSet;
 import dvbv.control.Control;
 import dvbv.misc.Conversions;
 import dvbv.misc.ErrorClass;
+import dvbv.misc.Log;
 import dvbv.misc.Registry;
 import dvbv.provider.Provider;
 
@@ -40,7 +41,10 @@ public class TVGenial extends Provider {
 	{
 		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
 		if ( programDir == null )
+		{
+			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
 			return false ;
+		}
 		
 		File file = new File( programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH  ) ;
 		file.mkdir() ;
@@ -70,7 +74,10 @@ public class TVGenial extends Provider {
 	{
 		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
 		if ( programDir == null )
+		{
+			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
 			return false ;
+		}
 		
 		File dir = new File( programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH  ) ;
 		

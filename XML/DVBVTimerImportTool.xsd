@@ -75,6 +75,9 @@
       						</xsd:restriction>
       					</xsd:simpleType>
       				</xsd:element>
+      				<xsd:element name="LookAndFeel"
+      					type="xsd:string">
+      				</xsd:element>
       			</xsd:sequence>
       		</xsd:complexType>
       	</xsd:element>

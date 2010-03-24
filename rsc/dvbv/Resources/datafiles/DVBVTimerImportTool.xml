@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
     <Providers>
-        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="false">
+        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
             <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
             <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
         </Provider>
-        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true" filter="false"></Provider>
+        <Provider name="TVGenial" merge="false" message="false" verbose="true" filter="false"></Provider>
+        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
     </Providers>
     <DVBViewer afterRecordingAction="NONE"></DVBViewer>
     <DVBService enable="true" url="localhost" username="admin" password="admin" timeZone="Europe/Berlin">
@@ -13,7 +14,7 @@
     </DVBService>
     <GUI>
         <DefaultProvider>TVInfo</DefaultProvider>
-        <Language>de</Language>
+        <LookAndFeel>System</LookAndFeel>
     </GUI>
     <Offsets>
         <Offset before="15" after="30"></Offset>

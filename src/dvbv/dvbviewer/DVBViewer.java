@@ -440,6 +440,7 @@ public class DVBViewer {
 			
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
+		int deletedEntries = 0 ;
 		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
 		rsBase += "-a0 -t0 " ;
 
@@ -449,6 +450,7 @@ public class DVBViewer {
 			
 			if ( d.mustDeleted() )
 			{
+				deletedEntries++ ;
 				if ( this.service != null && this.service.isEnabled() )
 					this.service.setTimerEntry( d, this.afterRecordingAction ) ;
 				else
@@ -471,6 +473,7 @@ public class DVBViewer {
 				this.setDVBViewerTimer( d  ) ;
 		}
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
+			           + "\nNumber of deleted entries: " + Integer.toString( deletedEntries )
 				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 
 		DVBViewerEntry.afterRecordingSettingProcces( this.recordEntries ) ;
