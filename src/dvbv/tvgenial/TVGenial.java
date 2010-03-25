@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import dvbv.Resources.ResourceManager;
 import dvbv.control.Channel;
@@ -107,9 +106,8 @@ public class TVGenial extends Provider {
 		
 		int pid = this.getID() ;
 		
-		for ( Iterator< ChannelSet > it = this.control.getChannelSets().iterator() ; it.hasNext() ; )
+		for ( ChannelSet cs : this.control.getChannelSets() )
 		{
-			ChannelSet cs = it.next() ;
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
 				continue ;
@@ -233,9 +231,9 @@ public class TVGenial extends Provider {
 		
 		String channel = null ; ;
 				
-		for ( Iterator< ChannelSet > it = control.getChannelSets().iterator() ; it.hasNext() ; )
+		for ( ChannelSet cs : control.getChannelSets() )
 		{
-			Channel c = it.next().getChannel( this.getID() ) ;
+			Channel c = cs.getChannel( this.getID() ) ;
 			if ( c == null )
 				continue ;
 			if ( tvuid == c.getID() )

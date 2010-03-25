@@ -14,7 +14,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.TreeMap;
 
 import dvbv.dvbviewer.DVBViewer;
@@ -149,9 +148,9 @@ public class Channels {
 		{
 			Collection<Channel> values = this.channelMap.values() ;
 			
-			for ( Iterator<Channel> it = values.iterator() ; it.hasNext(); )
+			for ( Channel c : values )
 			{
-				System.out.println(" ChannelID: " + it.next().getChannelID() ) ;
+				System.out.println(" ChannelID: " + c.getChannelID() ) ;
 			}
 		}
 		try {

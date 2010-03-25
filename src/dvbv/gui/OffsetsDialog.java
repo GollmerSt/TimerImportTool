@@ -304,9 +304,13 @@ public class OffsetsDialog extends JDialog {
 				return new WeekDayObject( entry.getWeekDays() ) ;
 			case 3 :
 			case 4 :
-				long dayTime = entry.getDayTimes()[ col - 3 ] ;
-				if ( dayTime == Constants.DAYMILLSEC )
-					dayTime = Constants.LASTMINUTE ;
+				long dayTime = 0L;
+				try {
+					dayTime = Conversions.dayTimeToLong( entry.getDayTimes()[ col - 3 ] );
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return new Integer( (int)dayTime ) ;
 			}
 			return null ;
@@ -335,7 +339,12 @@ public class OffsetsDialog extends JDialog {
 				long dayTime = ((Integer)value).longValue() ;
 				if ( dayTime == Constants.LASTMINUTE )
 					dayTime = Constants.DAYMILLSEC ;
-				entry.getDayTimes()[ col - 3 ] = dayTime ;
+				try {
+					entry.getDayTimes()[ col - 3 ] = Conversions.longToDayTime( dayTime ) ;
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				break ;
 			}
 		}
@@ -484,7 +493,7 @@ public class OffsetsDialog extends JDialog {
 			long time = ((Integer)value).longValue() ;
 			String d = null ;
 			try {
-				d = Conversions.longTodayTime( time );
+				d = Conversions.longToDayTime( time );
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -182,13 +182,13 @@ public final class DVBViewerEntry  implements Cloneable{
 		
 		String title = "" ;
 		
-		for ( Iterator< DVBViewerEntry > it = this.mergedEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry e : this.mergedEntries )
 		{
 			if ( first )
 				first = false ;
 			else
 				title += separator ;
-			title += it.next().title ;
+			title += e.title ;
 		}
 		return title;
 	}
@@ -228,18 +228,15 @@ public final class DVBViewerEntry  implements Cloneable{
 // Find and assign all easy to assign service entries, remove the entries from
 // the merge elements if entry is enabled
 
-		for ( Iterator<DVBViewerEntry> itX = xml.iterator() ; itX.hasNext() ; )
+		for ( DVBViewerEntry x : xml )
 		{
-			DVBViewerEntry x = itX.next() ;
-
 			if ( x.serviceID >= 0 || ( x.mergedEntries != null && ! allElements ) )
 				continue ;
 			
 			ArrayList<DVBViewerEntry> list = new ArrayList< DVBViewerEntry >() ;
 			
-			for ( Iterator<DVBViewerEntry> itS = service.iterator() ; itS.hasNext() ; )
+			for ( DVBViewerEntry s : service )
 			{
-				DVBViewerEntry s = itS.next() ;
 				CompStatus co = x.compareWithService( s ) ;
 				if ( co == CompStatus.EQUAL || co == CompStatus.IN_RANGE )
 					list.add( s ) ;
@@ -271,9 +268,8 @@ public final class DVBViewerEntry  implements Cloneable{
 				ArrayList<DVBViewerEntry> choices = new ArrayList<DVBViewerEntry>() ;
 				long minDiff = 999999999999999L ;
 				
-				for ( Iterator<DVBViewerEntry> itS = list.iterator() ; itS.hasNext() ; ) 
+				for ( DVBViewerEntry s : list ) 
 				{
-					DVBViewerEntry s = itS.next() ;
 					long diff = s.start - x.start ;
 					diff = diff < 0 ? 0 : diff ;
 					long diff1 = x.end - s.end ;
@@ -291,9 +287,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			if ( list.size() > 1 )
 			{
 				ArrayList<DVBViewerEntry> choices = new ArrayList<DVBViewerEntry>() ;
-				for ( Iterator<DVBViewerEntry> itS = list.iterator() ; itS.hasNext() ; ) 
+				for ( DVBViewerEntry s : list ) 
 				{
-					DVBViewerEntry s = itS.next() ;
 					if ( s.isEnabled() == x.isEnabled() )
 					{
 						choices.add( s ) ;
@@ -507,9 +502,8 @@ public final class DVBViewerEntry  implements Cloneable{
 
 		setToRemovedOrDeleteUnassignedXMLEntries( xml ) ;
 
-		for ( Iterator< DVBViewerEntry > it = service.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry e : service )
 		{
-			DVBViewerEntry e = it.next() ;
 			e.mergeStatus = MergeStatus.MERGE ;
 			e.id = maxID.increment() ;
 			xml.add( e ) ;
@@ -517,9 +511,8 @@ public final class DVBViewerEntry  implements Cloneable{
 	}
 	private static void removeOutdatedProviderEntries( final ArrayList<DVBViewerEntry> xml )
 	{		
-		for ( Iterator< DVBViewerEntry > it = xml.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry e : xml )
 		{
-			DVBViewerEntry e = it.next() ;
 			if ( e.isOutdatedByProvider() )
 				e.setToDelete() ;
 		}
@@ -538,8 +531,10 @@ public final class DVBViewerEntry  implements Cloneable{
 			DVBViewerEntry e = it.next() ;
 			
 			if ( e.mustDeleted() )
+			{
 				it.remove() ;
-			
+				continue ;
+			}
 			e.mergeStatus = e.mergeStatus.post() ;
 			e.serviceID = -1 ;
 			e.toDo = ToDo.NONE ;
@@ -675,15 +670,12 @@ public final class DVBViewerEntry  implements Cloneable{
 	}
 	public static void assignMergedElements( HashMap< Long, DVBViewerEntry> map )
 	{
-		for ( Iterator< DVBViewerEntry > itE = map.values().iterator() ; itE.hasNext() ; )
+		for ( DVBViewerEntry entry : map.values() )
 		{
-			DVBViewerEntry entry = itE.next() ;
-			
 			if ( entry.mergedIDs != null && entry.mergedIDs.size() > 0 )
 			{
-				for ( Iterator< Long > itID = entry.mergedIDs.iterator() ; itID.hasNext() ; )
+				for ( long id : entry.mergedIDs )
 				{
-					long id = itID.next() ;
 					if ( ! map.containsKey( id ))
 						throw new ErrorClass( "Unexpected error on search for IDs" ) ;
 					if ( entry.mergedEntries == null )
@@ -716,8 +708,8 @@ public final class DVBViewerEntry  implements Cloneable{
 	public void prepareRemove()
 	{
 		if ( this.mergedEntries != null )
-			for ( Iterator< DVBViewerEntry > it = this.mergedEntries.iterator() ; it.hasNext() ; )
-				it.next().mergeElement = null ;
+			for ( DVBViewerEntry e : this.mergedEntries )
+				e.mergeElement = null ;
 		this.mergedEntries = null ;
 		if ( this.mergeElement != null )
 		{
@@ -876,10 +868,10 @@ public final class DVBViewerEntry  implements Cloneable{
 			  if (mergedEntries != null )
 			  {
 				  sw.writeStartElement( "MergedWith" ) ;
-				  for ( Iterator< DVBViewerEntry > it = this.mergedEntries.iterator() ; it.hasNext() ; )
+				  for ( DVBViewerEntry e : this.mergedEntries )
 				  {
 					  sw.writeStartElement( "Id" ) ;
-					  sw.writeCharacters( Long.toString( it.next().id ) ) ;
+					  sw.writeCharacters( Long.toString( e.id ) ) ;
 					  sw.writeEndElement() ;
 				  }
 				  sw.writeEndElement() ;

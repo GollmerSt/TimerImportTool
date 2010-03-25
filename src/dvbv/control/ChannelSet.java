@@ -51,9 +51,8 @@ public class ChannelSet {
 	public ArrayList< Channel > getChannels() { return channels ; } ;
 	public Channel getChannel( int providerID )
 	{
-		for ( Iterator< Channel > it = channels.iterator() ; it.hasNext() ; )
+		for ( Channel c : channels )
 		{
-			Channel c = it.next() ;
 			if ( c.getType() == providerID )
 				return c ;
 		}
@@ -62,8 +61,8 @@ public class ChannelSet {
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
 	{
 		sw.writeStartElement( "Channel" ) ;
-		  for ( Iterator<Channel> it = this.channels.iterator() ; it.hasNext() ; )
-			  it.next().writeXML( sw ) ;
+		  for ( Channel c : this.channels )
+			  c.writeXML( sw ) ;
 		
 		  if ( this.dvbViewerChannel != null )
 		  {

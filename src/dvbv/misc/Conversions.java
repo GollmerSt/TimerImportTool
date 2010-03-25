@@ -16,10 +16,9 @@ import java.text.SimpleDateFormat;
 public final class Conversions {
 	private final static SimpleDateFormat tvInfoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
 	private final static SimpleDateFormat clickFinderoFormat = new SimpleDateFormat("yyyyMMddHHmm"); ;
-	private final static SimpleDateFormat dayTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
 	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
-	private final static long dayTimeOrigin = Conversions.calcSvcTimeCorrection() ;
+	private final static SimpleDateFormat svcDayTimeFormat = new SimpleDateFormat("dd.MM.yyyyHH:mm"); ;
 	
 	static long calcSvcTimeCorrection()
 	{
@@ -83,19 +82,9 @@ public final class Conversions {
 		return d.getTime() ;
 	}
 	
-	public static long dayTimeToLong( String time ) throws ParseException
+	public static String longToDateString( long d )
 	{
-		long t = dayTimeFormat.parse(time).getTime() - dayTimeOrigin ;
-		//System.out.println( "dayTimeToLong: "+ Long.toString( t ) ) ;
-		return t ;
-	}
-	public static String longTodayTime( long d ) throws ParseException
-	{
-		if ( d == Constants.DAYMILLSEC )
-			return "24.00" ;
-		Date dt = new Date( d + dayTimeOrigin ) ;
-		//System.out.println( "dayTimeToLong: "+ Long.toString( t ) ) ;
-		return Conversions.dayTimeFormat.format(  dt ) ;
+		return longToSvcDayString( d ) ;
 	}
 	public static String longToSvcDayString( long d )
 	{
@@ -123,12 +112,13 @@ public final class Conversions {
 		               + c.get( java.util.Calendar.MINUTE ) ;
 		return Integer.toString( minutes ) ;
 	}
+	public static long timeToLong( String time, String date ) throws ParseException
+	{
+		return svcTimeToLong( time, date ) ;
+	}
 	public static long svcTimeToLong( String time, String date ) throws ParseException
 	{
-		
-		long result = svcTimeFormat.parse( time ).getTime() - Conversions.dayTimeOrigin ;
-		result += svcDayFormat.parse( date ).getTime() ;
-		return result ;
+		return svcDayTimeFormat.parse( date + time ).getTime() ;
 	}
 	public static String replaceDiacritical( final String s )
 	{
@@ -175,9 +165,8 @@ public final class Conversions {
 		ArrayList< T > results = new ArrayList< T >() ;
 		int weightMax = -1 ;
 		int minDiff = 99999 ;
-		for ( Iterator< T > it = list.iterator() ; it.hasNext() ; )
+		for ( T choiceObject : list )
 		{
-			T choiceObject = it.next() ;
 			String choiceOrg = choiceObject.toString() ;
 			String choice = reworkFunc.stringToString( choiceOrg ) ;
 			int wiegthFirstChar = 0 ;
@@ -263,5 +252,25 @@ public final class Conversions {
 						          minChar ) ) ;
 		}
 		return result ;
+	}
+
+	
+	public static long dayTimeToLong( String time ) throws ParseException
+	{
+		String [] parts = time.split(":") ;
+		if ( parts.length != 2)
+		{
+			throw new ParseException( "Illegal time format: "+ time, 0 ) ;
+		}
+		long t = ( Long.valueOf( parts[0] ) * 60L + Long.valueOf( parts[1] ) ) * 60L * 1000L ;
+		return t ;
+	}
+	//Only for offset!!!
+	public static String longToDayTime( long d ) throws ParseException
+	{
+		long t = d / 1000L / 60L ;
+		int h = (int) (t / 60L) ;
+		int m = (int) (t % 60L) ;
+		return String.format( "%02d:%02d", h, m ) ;
 	}
 }

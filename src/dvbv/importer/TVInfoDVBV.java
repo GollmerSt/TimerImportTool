@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 
 
 import dvbv.control.Channel;
@@ -29,9 +28,8 @@ public class TVInfoDVBV {
 		
 		int pid = Provider.getProviderID( "TVInfo" ) ;
 		
-		for ( Iterator< ChannelSet > it = control.getChannelSets().iterator() ; it.hasNext() ; )
+		for ( ChannelSet cs :  control.getChannelSets() )
 		{
-			ChannelSet cs = it.next() ;
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
 				continue ;

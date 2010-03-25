@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -271,9 +270,8 @@ public class ProviderAssignment  extends MyTabPanel
 		this. columnNames[ 0 ] = GUIStrings.dvbViewer() ;
 		
 		int ip = 0 ;
-		for ( Iterator< Provider> itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
+		for ( Provider provider : Provider.getProviders() )
 		{
-			Provider provider = itP.next() ;
 			int providerID = provider.getID() ;
 
 			this.providerMaps.add( providerID, new TreeMap< String, ChannelAssignment >( new MyComparator() ) ) ;
@@ -342,9 +340,9 @@ public class ProviderAssignment  extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		for ( Iterator< Provider > it = Provider.getProviders().iterator() ; it.hasNext() ; )
+		for ( Provider provider : Provider.getProviders() )
 		{
-			this.providerCombo.addItem( it.next() ) ;
+			this.providerCombo.addItem( provider ) ;
 		}
 		this.providerCombo.addActionListener( new ProviderSelected() ) ;
 		this.providerCombo.setSelectedItem( defaultProvider ) ;
@@ -438,8 +436,8 @@ public class ProviderAssignment  extends MyTabPanel
 		int pid = provider.getID() ;
 		this.channelCombo.removeAllItems() ;
 		this.channelCombo.addItem( "" ) ;
-		for ( Iterator< String > it = this.providerMaps.get( pid).keySet().iterator() ; it.hasNext() ; )
-			this.channelCombo.addItem( it.next() ) ;
+		for ( String names : this.providerMaps.get( pid).keySet() )
+			this.channelCombo.addItem( names ) ;
 		this.channelCombo.setSelectedIndex( 0 ) ;
 	}
 	private void setupTable()
@@ -462,9 +460,8 @@ public class ProviderAssignment  extends MyTabPanel
 		column.setPreferredWidth( 150 );
 //		column.setResizable( true ) ;
 //		column.setPreferredWidth( 16 );
-		for ( Iterator< Provider > itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
+		for ( Provider p : Provider.getProviders() )
 		{
-			Provider p = itP.next() ;
 			int pid = p.getID() ;
 		    JComboBox comboBox = new JComboBox();
 		    comboBox.addPopupMenuListener( new PopupCellChanged() ) ;
@@ -501,9 +498,9 @@ public class ProviderAssignment  extends MyTabPanel
 	}
 	private void cancelCellEditing()
 	{
-		for ( Iterator< Provider > itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
+		for ( Provider p : Provider.getProviders() )
 		{
-			int pid = itP.next().getID() ;
+			int pid = p.getID() ;
 			TableColumn column = this.table.getColumnModel().getColumn( pid + 1 ) ;
 			DefaultCellEditor editor = (DefaultCellEditor) column.getCellEditor() ;
 			if ( editor == null )
@@ -518,9 +515,8 @@ public class ProviderAssignment  extends MyTabPanel
 	}
 	private void updateTableComboBoxes()
 	{
-		for ( Iterator< Provider > itP = Provider.getProviders().iterator() ; itP.hasNext() ; )
+		for ( Provider p : Provider.getProviders() )
 		{
-			Provider p = itP.next() ;
 			int pid = p.getID() ;
 			TableColumn column = this.table.getColumnModel().getColumn( pid + 1 ) ;
 			DefaultCellEditor editor = (DefaultCellEditor) column.getCellEditor() ;
@@ -528,9 +524,9 @@ public class ProviderAssignment  extends MyTabPanel
 			comboBox.hidePopup() ;
 			comboBox.removeAllItems() ;
 			comboBox.addItem( "" ) ;
-		    for ( Iterator< String > itCS = this.providerMaps.get( pid ).keySet().iterator() ; itCS.hasNext() ; )
+		    for ( String name : this.providerMaps.get( pid ).keySet() )
 		    {
-		    	comboBox.addItem( itCS.next() ) ;
+		    	comboBox.addItem( name ) ;
 		    }
 		}
 	}
@@ -749,11 +745,10 @@ public class ProviderAssignment  extends MyTabPanel
 		if ( control.getChannelSets().get( csid ).getChannels().size() != 0 )
 			return false ;
 		control.getChannelSets().remove( csid ) ;
-		for ( Iterator< TreeMap< String, ChannelAssignment > > itP = this.providerMaps.iterator() ; itP.hasNext() ; )
+		for ( TreeMap< String, ChannelAssignment > map : this.providerMaps )
 		{
-			for ( Iterator< Map.Entry< String, ChannelAssignment > > itV = itP.next().entrySet().iterator(); itV.hasNext() ; )
+			for ( Map.Entry< String, ChannelAssignment > entry : map.entrySet() )
 			{
-				Map.Entry< String, ChannelAssignment > entry = itV.next() ;
 				int value = entry.getValue().listIndex ;
 				if ( value == csid )
 					entry.getValue().setIndex( -1 ) ;

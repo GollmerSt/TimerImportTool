@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 
@@ -76,9 +75,8 @@ public class ResourceManager {
 			{
 				if ( keywords != null )
 				{
-					for ( Iterator< String[] > it = keywords.iterator() ; it.hasNext() ; )
+					for ( String [] keyPair : keywords )
 					{
-						String [] keyPair = it.next() ;
 						int pos = 0 ;
 						while ( ( pos = line.indexOf( keyPair[0], pos ) ) >= 0 )
 						{

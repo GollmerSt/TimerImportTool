@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -294,9 +293,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		for ( Iterator< Provider > it = Provider.getProviders().iterator() ; it.hasNext() ; )
+		for ( Provider p : Provider.getProviders() )
 		{
-			this.providerCombo.addItem( it.next() ) ;
+			this.providerCombo.addItem( p ) ;
 		}
 		this.providerCombo.addActionListener( new ProviderSelected() ) ;
 		provider.add( this.providerCombo, c ) ;
@@ -351,10 +350,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		int channelCount = 0 ;
 
-		for ( Iterator<dvbv.dvbviewer.channels.Channel> it = dvbViewerChannels.getChannels().values().iterator() ; it.hasNext() ; )
+		for ( dvbv.dvbviewer.channels.Channel channel : dvbViewerChannels.getChannels().values() )
 		{
 			channelCount++ ;
-			dvbv.dvbviewer.channels.Channel channel = it.next() ;
 			this.dvbViewerLongChannelAssignment.put( channel.getChannelID(), channelCount) ;
 			this.dvbViewerShortChannelAssignment.put( channel.getChannelName(), channelCount) ;
 			this.dvbViewerCombo.addItem( channel ) ;
@@ -458,9 +456,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		TreeMap< String, ChannelSet > channelMap = new TreeMap< String, ChannelSet >( new MyComparator() ) ;
 		
-		for ( Iterator< ChannelSet > itS = sets.iterator() ; itS.hasNext(); )
+		for ( ChannelSet channelSet : sets )
 		{
-			ChannelSet channelSet = itS.next() ;
 			Channel c = channelSet.getChannel( providerID ) ;
 			if ( c == null )
 				continue ;
@@ -470,11 +467,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 		DefaultListModel map = (DefaultListModel) this.providerChannelList.getModel() ;
 		map.clear() ;
 				
-		for ( Iterator< Map.Entry<String, ChannelSet > > it = channelMap.entrySet().iterator() ; it.hasNext() ; )
-		{
-			Map.Entry<String, ChannelSet > e = it.next() ;
+		for ( Map.Entry<String, ChannelSet > e : channelMap.entrySet() )
 			map.addElement( new ChannelSetAssignment( e.getKey(), e.getValue()) ) ;
-		}
 	}
 	@Override
 	public void update( boolean active )

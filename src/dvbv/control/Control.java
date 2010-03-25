@@ -139,8 +139,6 @@ public class Control
 			if( ev.isStartElement() )
 			{
 				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
-				@SuppressWarnings("unchecked")
-				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 				BlockType type = BlockType.INVALID ;
 				if ( stack.equals( this.pathProviders ) )
 					try {
@@ -187,6 +185,8 @@ public class Control
 					offsetBegin  = "" ;
 					offsetEnd    = "" ;
 				}
+				@SuppressWarnings("unchecked")
+				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
 	            while( iter.hasNext() )
 	            {
 	            	Attribute a = iter.next();
@@ -402,8 +402,8 @@ public class Control
 				  sw.writeEndElement() ;
 			  }
 			  sw.writeStartElement( "Channels" ) ;
-			    for ( Iterator< ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ; )
-			    	it.next().writeXML( sw ) ;
+			    for ( ChannelSet cs : this.channelSets )
+			    	cs.writeXML( sw ) ;
 			  sw.writeEndElement();
 			sw.writeEndElement();
 			writer.writeEndDocument();
@@ -419,9 +419,9 @@ public class Control
 	public void setDVBViewerEntries()
 	{
 		this.dvbViewer.setSeparator( this.separator ) ;
-		for ( Iterator<ChannelSet> it = this.channelSets.iterator() ; it.hasNext() ;)
+		for ( ChannelSet cs : this.channelSets )
 		{
-			this.dvbViewer.addChannel( it.next() ) ;
+			this.dvbViewer.addChannel( cs ) ;
 		}
 	}
 	public String getDefaultProvider() { return this.defaultProvider ; } ;

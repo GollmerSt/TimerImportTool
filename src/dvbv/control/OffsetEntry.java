@@ -18,7 +18,7 @@ public class OffsetEntry implements Cloneable {
 	private static final String[] ATTRIBUTES = { "before", "after" } ;
 	private final int[] minutes ;
 	private final boolean[] weekdays ;
-	private final long[] times  = new long[ 2 ] ;
+	private final String[] times  = new String[ 2 ] ;
 	
 	public OffsetEntry()
 	{
@@ -26,8 +26,8 @@ public class OffsetEntry implements Cloneable {
 		this.minutes[0] = -1 ;
 		this.minutes[1] = -1 ;
 		this.weekdays = new boolean[7] ;
-		this.times[0] = 0;
-		this.times[1] = Constants.DAYMILLSEC ;
+		this.times[0] = "00:00";
+		this.times[1] = "23:59" ;
 	}
 	public OffsetEntry( String preMinuteString, 
 						String postMinuteString, 
@@ -66,22 +66,14 @@ public class OffsetEntry implements Cloneable {
 		}
 		this.weekdays = w ;
 		if ( startTime.length() != 0 )
-			try {
-				this.times[0] = Conversions.dayTimeToLong( startTime ) ;
-			} catch (ParseException e) {
-				throw new ErrorClass("Illegal begin time (must be hh:mm)") ;
-			}
+			this.times[0] = startTime ;
 		else
-			this.times[0] = 0 ;
+			this.times[0] = "00:00" ;
 
 		if ( endTime.length() != 0 )
-			try {
-				this.times[1] = Conversions.dayTimeToLong( endTime ) ;
-			} catch (ParseException e) {
-				throw new ErrorClass("Illegal end time (must be hh:mm)") ;
-			}
+			this.times[1] = endTime ;
 		else
-			this.times[1] = Constants.DAYMILLSEC ;
+			this.times[1] = "23:59" ;
 	}
 	@Override
 	public OffsetEntry clone()
@@ -104,13 +96,18 @@ public class OffsetEntry implements Cloneable {
 		d = d % 7 ;
 		if ( ! this.weekdays[ d ] )
 			return false ;
-		cal.set( java.util.Calendar.HOUR_OF_DAY , 0) ;
-		cal.set( java.util.Calendar.MINUTE  , 0) ;
-		cal.set( java.util.Calendar.SECOND  , 0) ;
-		cal.set( java.util.Calendar.MILLISECOND  , 0) ;
-		long dayTime = time - cal.getTime().getTime();
+		String day = Conversions.longToDateString( time ) ;
+		long lowerTime = 0L;
+		long upperTime = 0L;
+		try {
+			lowerTime = Conversions.timeToLong( this.times[0], day );
+			upperTime = Conversions.timeToLong( this.times[1], day );
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		//System.out.println(  dayTime ) ;
-		return dayTime >= times[0] && dayTime <= times[1] ;
+		return time >= lowerTime && time <= upperTime ;
 	}
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
 	{
@@ -129,13 +126,13 @@ public class OffsetEntry implements Cloneable {
 		  if ( ! weekdays.equals( "1111111" ) )
 			  sw.writeAttribute( "days", weekdays) ;
 		  
-		  if ( this.times[0] != 0 )
-			  sw.writeAttribute( "begin", Conversions.longTodayTime( this.times[0] ) ) ;
-		  if ( this.times[1] != Constants.DAYMILLSEC )
-			  sw.writeAttribute( "end",   Conversions.longTodayTime( this.times[1] ) ) ;
+		  if ( ! this.times[0].equals( "00:00") )
+			  sw.writeAttribute( "begin", this.times[0] ) ;
+		  if ( ! this.times[1].equals( "23:59") )
+			  sw.writeAttribute( "end",   this.times[1] ) ;
 		sw.writeEndElement() ;
 	}
 	public boolean[] getWeekDays() { return this.weekdays ; } ;
-	public long[] getDayTimes() { return this.times ; } ;
+	public String[] getDayTimes() { return this.times ; } ;
 }
 	

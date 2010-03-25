@@ -14,7 +14,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
@@ -250,9 +249,8 @@ public class DVBViewer {
 		
 		provider.setPrepared( true ) ;
 				
-		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry e : this.recordEntries )
 		{
-			DVBViewerEntry e = it.next() ;
 			if ( e.getProvider() == provider && ! e.isMergeElement() )
 			{
 				e.setMissing() ;
@@ -261,9 +259,8 @@ public class DVBViewer {
 	}
 	private void removeOutdatedProviderEntries()
 	{		
-		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry e : this.recordEntries )
 		{
-			DVBViewerEntry e = it.next() ;
 			if ( e.isOutdatedByProvider() )
 				e.setToDelete() ;
 		}
@@ -297,9 +294,8 @@ public class DVBViewer {
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
 
-		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry co : this.recordEntries )
 		{
-			DVBViewerEntry co = it.next() ; 
 			if ( co.isFilterElement() && e.isOrgEqual( co ) )
 			{
 				co.resetMissing() ;
@@ -336,9 +332,8 @@ public class DVBViewer {
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
 
-		for ( Iterator< DVBViewerEntry > it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry co : this.recordEntries )
 		{
-			DVBViewerEntry co = it.next() ; 
 			if ( e.isOrgEqual( co ) )
 			{
 				co.setToDelete() ;
@@ -374,9 +369,8 @@ public class DVBViewer {
 		Channel c = new Channel( channelSet.getDVBViewerChannel(),
 				                 channelSet.getTimeOffsets(),
 				                 channelSet.getMerge() ) ;
-		for ( Iterator<dvbv.control.Channel> it = channelSet.getChannels().iterator() ; it.hasNext() ; )
+		for ( dvbv.control.Channel cC : channelSet.getChannels() )
 		{
-			dvbv.control.Channel cC = it.next() ;
 			int type = cC.getType() ;
 			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}
@@ -444,10 +438,8 @@ public class DVBViewer {
 		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
 		rsBase += "-a0 -t0 " ;
 
-		for ( Iterator<DVBViewerEntry> it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry d : this.recordEntries )
 		{
-			DVBViewerEntry d = it.next();
-			
 			if ( d.mustDeleted() )
 			{
 				deletedEntries++ ;
@@ -457,9 +449,8 @@ public class DVBViewer {
 					this.setDVBViewerTimer( d  ) ;
 			}			
 		}
-		for ( Iterator<DVBViewerEntry> it = this.recordEntries.iterator() ; it.hasNext() ; )
+		for ( DVBViewerEntry d : this.recordEntries )
 		{
-			DVBViewerEntry d = it.next();
 			if ( d.mustDeleted() )
 				continue ;
 			if ( d.mustUpdated() )

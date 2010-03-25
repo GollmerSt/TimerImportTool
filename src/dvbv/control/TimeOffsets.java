@@ -6,7 +6,6 @@ package dvbv.control ;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -24,8 +23,8 @@ public class TimeOffsets  implements Cloneable {
 	public TimeOffsets clone()
 	{
 		TimeOffsets offsets = new TimeOffsets() ;
-		for ( Iterator< OffsetEntry > it = this.offsets.iterator() ; it.hasNext() ; )
-			offsets.offsets.add( it.next().clone() ) ;
+		for ( OffsetEntry oe : this.offsets )
+			offsets.offsets.add( oe.clone() ) ;
 		return offsets ;
 	}
 	public void assign( TimeOffsets offsets )
@@ -52,9 +51,8 @@ public class TimeOffsets  implements Cloneable {
 		long o = 0 ;
 		if ( offset > 0 )
 			o = offset ;
-		for ( Iterator<OffsetEntry> i = list.iterator() ; i.hasNext(); )
+		for ( OffsetEntry e : list )
 		{
-			OffsetEntry e = i.next();
 			if ( ! e.isInTimeRange ( time ) )
 				continue ;
 			int[] n = e.getMinutes() ;
@@ -85,8 +83,8 @@ public class TimeOffsets  implements Cloneable {
 		
 		sw.writeStartElement( "Offsets" ) ;
 		
-		for ( Iterator<OffsetEntry> it = this.offsets.iterator() ; it.hasNext() ; )
-			it.next().writeXML( sw ) ;
+		for ( OffsetEntry e : this.offsets )
+			e.writeXML( sw ) ;
 		
 		sw.writeEndElement() ;
 	}

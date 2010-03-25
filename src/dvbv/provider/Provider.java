@@ -280,9 +280,8 @@ public abstract class Provider {
 	public static void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException
 	{
 		sw.writeStartElement( "Providers" ) ;
-		  for ( Iterator<Provider> it = Provider.providers.iterator() ; it.hasNext() ;)
+		  for ( Provider provider : Provider.providers )
 		  {
-			  Provider provider = it.next();
 			  sw.writeStartElement( "Provider" ) ;
 			  sw.writeAttribute( "name", provider.name) ;
 			  if ( provider.hasAccount )

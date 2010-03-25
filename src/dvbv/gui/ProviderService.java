@@ -12,7 +12,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -368,10 +367,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		this.providerCombo.addActionListener( new ProviderSelected() ) ;
-		for ( Iterator< Provider > it = Provider.getProviders().iterator() ; it.hasNext() ; )
-		{
-			this.providerCombo.addItem( it.next() ) ;
-		}
+		for ( Provider p : Provider.getProviders() )
+			this.providerCombo.addItem( p ) ;
 		this.providerCombo.setSelectedItem( defaultProvider ) ;
 		this.lastProvider = defaultProvider ;
 		providerBox.add( this.providerCombo, c ) ;
