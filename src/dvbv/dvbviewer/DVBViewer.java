@@ -12,6 +12,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -119,9 +120,7 @@ public class DVBViewer {
 	private String determineExePath( String dataPath )
 	{
 		String exePath = System.getProperty("user.dir") ;
-/*		String iniFile =   exePath + File.separator + NAME_USERMODE_FILE ;
-		File f = new File( iniFile ) ;
-		if ( ! f.exists() && dataPath == null )
+		if ( ! this.findIni( exePath ) )
 		{
 			File jarFile = null ;
 			try {
@@ -131,10 +130,27 @@ public class DVBViewer {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			exePath = jarFile.getParent() ;
+			if ( this.findIni( jarFile.getParent() ) )
+				exePath = jarFile.getParent() ;
 			//System.out.println( this.exePath ) ;
 		}
-*/		return exePath ;
+		return exePath ;
+	}
+	private boolean findIni( String exePath )
+	{
+		String [] iniFiles = new String[ 2 ] ;
+		iniFiles[ 0 ] = exePath + File.separator + NAME_USERMODE_FILE ;
+		iniFiles[ 1 ] = exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		
+		boolean found = false ;
+		
+		for ( String iniFile : iniFiles )
+		{
+			File f = new File( iniFile ) ;
+			if ( f.exists() )
+				found = true ;
+		}
+		return found ;
 	}
 	private String determineDataPath()
 	{
