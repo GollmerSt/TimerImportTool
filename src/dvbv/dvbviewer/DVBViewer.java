@@ -62,6 +62,8 @@ public class DVBViewer {
 	private ArrayList< HashMap< String, Channel> > channelsLists 
 	        = new ArrayList< HashMap< String, Channel> >( dvbv.provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
+	private final String iniPath ;
+	private final String dvbViewerPath ;
 	private boolean usePathFile = false ;
 	private boolean createPathFile = false ;
 	private String dataPath = null ;
@@ -70,16 +72,15 @@ public class DVBViewer {
 	private final String exeName ;
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
-	public DVBViewer( final String dataPath, String exeName )
+	public DVBViewer( final String iniPath, String exeName )
 	{
 		this.exeName = exeName + ".jar" ;
 		this.exePath = determineExePath( dataPath ) ;
-		if ( dataPath != null )
-		{
-			this.dataPath = dataPath ;
-			this.pluginConfPath = this.dataPath ;
-			Log.setFile( this.dataPath ) ;
-		}
+		if ( iniPath != null )
+			this.iniPath = iniPath ;
+		else
+			this.iniPath = exePath ;
+		this.dvbViewerPath = iniPath ;    // TODO:   Richtig oder nicht?
 	}
 	public boolean initDataPath()
 	{
@@ -120,20 +121,23 @@ public class DVBViewer {
 	private String determineExePath( String dataPath )
 	{
 		String exePath = System.getProperty("user.dir") ;
-		if ( ! this.findIni( exePath ) )
-		{
-			File jarFile = null ;
-			try {
-				jarFile = new File(dvbv.main.TimerImportTool.class.getProtectionDomain()
-						.getCodeSource().getLocation().toURI());
-			} catch (URISyntaxException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if ( this.findIni( jarFile.getParent() ) )
-				exePath = jarFile.getParent() ;
-			//System.out.println( this.exePath ) ;
+		
+		File jarFile = new File(  exePath + File.separator + Constants.PROGRAM_NAME + ".jar" ) ;
+		
+		if ( jarFile.exists() )
+			return exePath ;
+
+		jarFile = null ;
+		try {
+			jarFile = new File(dvbv.main.TimerImportTool.class.getProtectionDomain()
+					.getCodeSource().getLocation().toURI());
+		} catch (URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		if ( this.findIni( jarFile.getParent() ) )
+			exePath = jarFile.getParent() ;
+		//System.out.println( this.exePath ) ;
 		return exePath ;
 	}
 	private boolean findIni( String exePath )
@@ -154,7 +158,7 @@ public class DVBViewer {
 	}
 	private String determineDataPath()
 	{
-		String iniFile = this.exePath + File.separator + NAME_USERMODE_FILE ;
+		String iniFile = this.iniPath + File.separator + NAME_USERMODE_FILE ;
 		File f = new File( iniFile ) ;
 		BufferedReader bR;
 		try {
@@ -190,7 +194,7 @@ public class DVBViewer {
 						{
 							userMode = true ;
 							if ( value.equals( "0" ) )
-								path = exePath + path ;
+								path = iniPath + path ;
 							else if ( value.equals( "1" ) )
 								path = System.getenv( "APPDATA") + path ;
 							else if ( value.equals( "2" ) )
@@ -422,7 +426,7 @@ public class DVBViewer {
 	{
 		if (    d.getToDo() == DVBViewerEntry.ToDo.NEW )
 		{
-			String rs = this.exePath + File.separator + "dvbv_tvg.exe " ;
+			String rs = this.dvbViewerPath + File.separator + "dvbv_tvg.exe " ;
 			rs += "-a0 -t0 " ;
 			rs += "-d \"" + d.getTitle() + "\" " ;
 			rs += "-c \"" + d.getChannel() + "\" " ;
@@ -451,8 +455,6 @@ public class DVBViewer {
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
 		int deletedEntries = 0 ;
-		String rsBase = this.exePath + File.separator + "dvbv_tvg.exe " ;
-		rsBase += "-a0 -t0 " ;
 
 		for ( DVBViewerEntry d : this.recordEntries )
 		{
@@ -510,7 +512,7 @@ public class DVBViewer {
 					stack.push( ev.asStartElement().getName().getLocalPart() );
 					if ( ! stack.equals( DVBViewer.xmlPath ) )
 						continue ;
-					DVBViewerEntry entry = DVBViewerEntry.readXML( reader, ev, f ) ;
+					DVBViewerEntry entry = DVBViewerEntry.readXML( reader, ev, f.getName() ) ;
 					idMap.put( entry.getID(), entry ) ;
 					entry.setID( this.maxID.increment() ) ;
 					result.add( entry ) ;
@@ -577,7 +579,7 @@ public class DVBViewer {
 	}
 	private String readDataPathFromIni()
 	{
-		String name = this.exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		String name = this.iniPath + File.separator + NAME_IMPORT_INI_FILE ;
 		
 		File f = new File( name ) ;
 		
@@ -636,9 +638,9 @@ public class DVBViewer {
 		
 		return path ;
 	}
-	public void writeDataPathFromIni()
+	public void writeDataPathToIni()
 	{
-		String name = this.exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		String name = this.iniPath + File.separator + NAME_IMPORT_INI_FILE ;
 		File f = new File( name ) ;
 		
 		String lineSeparator = System.getProperty("line.separator") ;

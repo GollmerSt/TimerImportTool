@@ -95,7 +95,7 @@ public class ClickFinder extends Provider {
 		Registry.setValue("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ExeDateiname", "javaw" ) ;
 		Registry.setValue("HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ParameterFest", "-jar \"\"\""
 				           + this.dvbViewer.getExePath() + File.separator + this.dvbViewer.getExeName()
-				           + "\"\"\" -ClickFinder" + dataPathPara ) ;
+				           + "\"\"\" -ClickFinder" + " -iniPath \"\"\"" + this.dvbViewer.getExePath() + "\"\"\" " + dataPathPara ) ;
 		return true ;
 	}
 	 public boolean uninstall()

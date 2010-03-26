@@ -8,6 +8,7 @@ package dvbv.control ;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -78,29 +79,42 @@ public class Control
 		
 		this.read() ;
 	}
-	public void read()
+	public Control( Control control )   // only for preparing XML read
+	{
+	}
+	public void read() { this.read( null, null ) ; } ;
+
+	public void read( InputStream inputStream, String name )
 	{	
-		String path = this.dvbViewer.getPluginConfPath() ;
-		File f = new File( path + File.separator + NAME_XML_CONTROLFILE ) ;
-		if ( ! f.exists() )
+		StreamSource source = null ;
+		if ( inputStream == null )
 		{
-			int answer = JOptionPane.showConfirmDialog( null,
-					GUIStrings.copyDefaultControlFile(), 
-			        Constants.PROGRAM_NAME, 
-			        JOptionPane.OK_CANCEL_OPTION );
-			if ( answer == JOptionPane.CANCEL_OPTION )
-				System.exit( 1 ) ;
-			ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xml" ) ;
-			ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xsd" ) ;
+			String path = this.dvbViewer.getPluginConfPath() ;
+			File f = new File( path + File.separator + NAME_XML_CONTROLFILE ) ;
+			if ( ! f.exists() )
+			{
+				int answer = JOptionPane.showConfirmDialog( null,
+						GUIStrings.COPY_DEFAULT_CONTROL_FILE.toString(), 
+				        Constants.PROGRAM_NAME, 
+				        JOptionPane.OK_CANCEL_OPTION );
+				if ( answer == JOptionPane.CANCEL_OPTION )
+					System.exit( 1 ) ;
+				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xml" ) ;
+				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xsd" ) ;
+			}
+			name = f.getName() ;
+			if ( ! f.canRead() )
+				throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
+			source = new StreamSource( f ) ;
 		}
-		if ( ! f.canRead() )
-			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
-		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		else
+			source = new StreamSource( inputStream ) ;
 		XMLEventReader reader = null ;
+		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
-			reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
+			reader = inputFactory.createXMLEventReader( source );
 		} catch (XMLStreamException e2) {
-			throw new ErrorClass( e2, "Unexpected error on opening the file \"" + f.getName() + "\"" );
+			throw new ErrorClass( e2, "Unexpected error on opening the file \"" + name + "\"" );
 		}
 		Stack<String>   stack = new Stack<String>();
 		
@@ -134,7 +148,7 @@ public class Control
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e1) {
-				throw new ErrorClass( e1, "XML syntax error in file \"" + f.getName() + "\"" );
+				throw new ErrorClass( e1, "XML syntax error in file \"" + name + "\"" );
 			}
 			if( ev.isStartElement() )
 			{
@@ -142,11 +156,11 @@ public class Control
 				BlockType type = BlockType.INVALID ;
 				if ( stack.equals( this.pathProviders ) )
 					try {
-						Provider.readXML( reader, f ) ;
+						Provider.readXML( reader, name ) ;
 						stack.pop() ;
 						continue ;
 					} catch (XMLStreamException e1) {
-						throw new ErrorClass( e1, "XML syntax error in file \"" + f.getName() + "\"" );
+						throw new ErrorClass( e1, "XML syntax error in file \"" + name + "\"" );
 					}
 				if ( stack.equals( this.pathChannelProvider ) )
 					type = BlockType.CHANNEL_PROVIDER ;
@@ -199,18 +213,18 @@ public class Control
 	            		{
 	            			provider = Provider.getProvider( value ) ;
 	            			if ( provider == null )
-	            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + name + "\"" ) ;
 	            		}
 	            		else if ( attributeName.equals( "channelID" ) )
 	            		{
 	            			if ( ! value.matches("\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + name + "\"" ) ;
 	            			channelID = Long.valueOf( value ) ;
 	            		}
 	            		break ;
 	            	case DVBSERVICE :
 	            		if      ( attributeName.equals( "enable" ) )
-	            			dvbServiceEnable   = dvbv.xml.Conversions.getBoolean( value, ev, f ) ;
+	            			dvbServiceEnable   = dvbv.xml.Conversions.getBoolean( value, ev, name ) ;
 	            		if      ( attributeName.equals( "url" ) )
 	            			dvbServiceURL      = value ;
 	            		else if ( attributeName.equals( "username" ) )
@@ -239,24 +253,24 @@ public class Control
 	            			else if ( value.equalsIgnoreCase( "false" ) )
 	            				dvbServiceEnableWOL = false ;
 	            			else
-	            				throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + name + "\"" ) ;
 	            		}
 	            		else if ( attributeName.equals( "broadCastAddress" ) )
 	            		{
 	            			if ( ! value.matches("\\d+\\.\\d+\\.\\d+\\.\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + name + "\"" ) ;
 	            			dvbServiceBroadCastAddress = value ;
 	            		}
 	            		else if ( attributeName.equals( "macAddress" ) )
 	            		{
 	            			if ( ! value.matches("([\\dA-Fa-f]+[\\:\\-])+[\\dA-Fa-f]+"))
-	            				throw new ErrorClass ( ev, "Wrong mac address format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong mac address format in file \"" + name + "\"" ) ;
 	            			dvbServiceMacAddress = value ;
 	            		}
 	            		else if ( attributeName.equals( "waitTimeAfterWOL" ) )
 	            		{
 	            			if ( ! value.matches("\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + name + "\"" ) ;
 	            			dvbServiceWaitTimeAfterWOL = Integer.valueOf( value ) ;
 	            		}
 	            		break ;
@@ -266,7 +280,7 @@ public class Control
 	            			try {
 	            				dvbViewerActionAfter = ActionAfterItems.valueOf( value ) ;
 	            			} catch ( IllegalArgumentException e ) {
-	            				throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + f.getName() + "\"" ) ;
+	            				throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + name + "\"" ) ;
 	            			}
 	            			
 	            		}
@@ -278,7 +292,7 @@ public class Control
 					try {
 						offsets.add(offsetBefore, offsetAfter, offsetDays, offsetBegin, offsetEnd) ;
 					} catch (ErrorClass e) {
-						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" );
+						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + name + "\"" );
 					}
 			}
 			if ( ev.isCharacters() )
@@ -292,7 +306,7 @@ public class Control
 						channelSet.setDVBViewerChannel( data ) ;
 					else if ( stack.equals( this.pathChannelMerge ) )
 					{
-						channelSet.setMerge( dvbv.xml.Conversions.getBoolean( data, ev, f ) ) ;
+						channelSet.setMerge( dvbv.xml.Conversions.getBoolean( data, ev, name ) ) ;
 					}
 					else if ( stack.equals( this.pathSeparator) )
 						this.separator = data ;
@@ -313,29 +327,36 @@ public class Control
 					try {
 						this.channelSets.add( channelSet ) ;
 					} catch (ErrorClass e) {
-						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
+						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + name + "\"" ) ;
 					}
 	        	stack.pop();
 	        }
 		}
-		this.dvbViewer.setService(
-				new DVBViewerService( dvbServiceEnable, dvbServiceURL, dvbServiceName, dvbServicePassword )
-		) ;
-		this.dvbViewer.setEnableWOL( dvbServiceEnableWOL ) ;
-		if ( dvbServiceEnableWOL && ( dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null ) )
-			throw new ErrorClass( "Broadcast address or mac addres not given in file \"" + f.getName() + "\"" ) ;
-		this.dvbViewer.setBroadCastAddress( dvbServiceBroadCastAddress ) ;
-		this.dvbViewer.setMacAddress( dvbServiceMacAddress ) ;
-		this.dvbViewer.setWaitTimeAfterWOL( dvbServiceWaitTimeAfterWOL ) ;
-		this.dvbViewer.setAfterRecordingAction( dvbViewerActionAfter ) ;
+		if ( this.dvbViewer != null )
+		{
+			this.dvbViewer.setService(new DVBViewerService(dvbServiceEnable,
+					dvbServiceURL, dvbServiceName, dvbServicePassword));
+			this.dvbViewer.setEnableWOL(dvbServiceEnableWOL);
+			if (dvbServiceEnableWOL
+					&& (dvbServiceBroadCastAddress == null || dvbServiceMacAddress == null))
+				throw new ErrorClass(
+						"Broadcast address or mac addres not given in file \""
+								+ name + "\"");
+			this.dvbViewer.setBroadCastAddress(dvbServiceBroadCastAddress);
+			this.dvbViewer.setMacAddress(dvbServiceMacAddress);
+			this.dvbViewer.setWaitTimeAfterWOL(dvbServiceWaitTimeAfterWOL);
+			this.dvbViewer.setAfterRecordingAction(dvbViewerActionAfter);
+		}
 		try {
 			reader.close() ;
 		} catch (XMLStreamException e) {
-			throw new ErrorClass( e, "Unexpected error on closing the file \"" + f.getName() + "\"" );
+			throw new ErrorClass( e, "Unexpected error on closing the file \"" + name + "\"" );
 		}
 	}
 	public void write()
 	{
+		if ( this.dvbViewer == null )
+			return ;
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
         
 		File file = new File( this.dvbViewer.getPluginConfPath()
@@ -418,6 +439,8 @@ public class Control
 	}
 	public void setDVBViewerEntries()
 	{
+		if ( this.dvbViewer == null)
+			return ;
 		this.dvbViewer.setSeparator( this.separator ) ;
 		for ( ChannelSet cs : this.channelSets )
 		{

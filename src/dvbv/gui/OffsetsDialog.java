@@ -105,17 +105,17 @@ public class OffsetsDialog extends JDialog {
 		this.gui = gui ;
 		
 		
-		this.columnNames[0] = GUIStrings.timeBefore() ;
-		this.columnNames[1] = GUIStrings.timeAfter() ;
-		this.columnNames[2] = GUIStrings.weekDays() ;
-		this.columnNames[3] = GUIStrings.start() ;
-		this.columnNames[4] = GUIStrings.end() ;
+		this.columnNames[0] = GUIStrings.TIME_BEFORE.toString() ;
+		this.columnNames[1] = GUIStrings.TIME_AFTER.toString() ;
+		this.columnNames[2] = GUIStrings.WEEKDAYS.toString() ;
+		this.columnNames[3] = GUIStrings.START.toString() ;
+		this.columnNames[4] = GUIStrings.END.toString() ;
 		
 		paint() ;
 	}
 	public void paint()
 	{
-	    this.setTitle( GUIStrings.offsetDialog() ) ;
+	    this.setTitle( GUIStrings.OFFSET_DIALOG.toString() ) ;
 	    this.setLayout(  new GridBagLayout() ) ;
 		
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -144,7 +144,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.newButton.addActionListener( new ButtonsPressed() ) ;
-		this.newButton.setText( GUIStrings.newEntry() ) ;
+		this.newButton.setText( GUIStrings.NEW_ENTRY.toString() ) ;
 		this.add( this.newButton, c ) ;
 
 		
@@ -155,7 +155,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.deleteButton.addActionListener( new ButtonsPressed() ) ;
-		this.deleteButton.setText( GUIStrings.delete() ) ;
+		this.deleteButton.setText( GUIStrings.DELETE.toString() ) ;
 		this.add( this.deleteButton, c ) ;
 
 		
@@ -169,7 +169,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.okButton.addActionListener( new ButtonsPressed() ) ;
-		this.okButton.setText( GUIStrings.ok() ) ;
+		this.okButton.setText( GUIStrings.OK.toString() ) ;
 		this.add( this.okButton, c ) ;
 
 		
@@ -181,7 +181,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.cancelButton.addActionListener( new ButtonsPressed() ) ;
-		this.cancelButton.setText( GUIStrings.cancel() ) ;
+		this.cancelButton.setText( GUIStrings.CANCEL.toString() ) ;
 		this.add( this.cancelButton, c ) ;
 
 		

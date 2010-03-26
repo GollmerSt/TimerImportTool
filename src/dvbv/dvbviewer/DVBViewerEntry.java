@@ -744,7 +744,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		}
 	}
 	
-	public static DVBViewerEntry readXML( final XMLEventReader  reader, XMLEvent ev, File f )
+	public static DVBViewerEntry readXML( final XMLEventReader  reader, XMLEvent ev, String name )
 	{
 		Stack< String > stack = new Stack< String >() ;
 		DVBViewerEntry entry = null ;
@@ -777,7 +777,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			        	if (      attributeName.equals( "id" ) )
 			        		id = Integer.valueOf( value ) ;
 			        	else if ( attributeName.equals( "isFilterElement" ) )
-			        		isFilterElement = dvbv.xml.Conversions.getBoolean( value, ev, f ) ;
+			        		isFilterElement = dvbv.xml.Conversions.getBoolean( value, ev, name ) ;
 			        	else if ( attributeName.equals( "statusService" ) )
 			        		statusService = StatusService.valueOf( value ) ;
 			        	else if ( attributeName.equals( "channel" ) )
@@ -832,7 +832,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e) {
-				throw new ErrorClass( e, "Unexpected error on closing the file \"" + f.getName() + "\"" );
+				throw new ErrorClass( e, "Unexpected error on closing the file \"" + name + "\"" );
 			}
 		}
 		return entry ;

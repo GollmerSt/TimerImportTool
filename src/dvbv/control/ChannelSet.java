@@ -82,4 +82,15 @@ public class ChannelSet {
 		  }
 		sw.writeEndElement() ;
 	}
+	@Override
+	public String toString()
+	{
+		String out = "" ;
+		
+		if ( this.dvbViewerChannel != null )
+			out += "DVBViewer channel: " + this.dvbViewerChannel.toString() + "\n" ;
+		for ( Channel c : this.channels )
+			out += c.toString() + "\n" ;
+		return out ;
+	}
 }

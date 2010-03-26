@@ -280,7 +280,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel provider = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.provider() ) ;
+		tB = BorderFactory.createTitledBorder( GUIStrings.PROVIDER.toString() ) ;
 		provider.setBorder( tB ) ;
 
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -339,7 +339,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel dvbViewer = new JPanel() ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.dvbViewer() ) ;
+		tB = BorderFactory.createTitledBorder( GUIStrings.DVBVIEWER.toString() ) ;
 		dvbViewer.setBorder( tB ) ;
 		
 		dvbv.dvbviewer.channels.Channel emptyChannel = new dvbv.dvbviewer.channels.Channel() ;
@@ -371,7 +371,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel channelPane = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.channel() ) ;
+		tB = BorderFactory.createTitledBorder( GUIStrings.CHANNEL.toString() ) ;
 		channelPane.setBorder( tB ) ;
 		
 		c = new GridBagConstraints();
@@ -383,7 +383,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.channelOffsetButton.setText( GUIStrings.offsets() ) ;
+		this.channelOffsetButton.setText( GUIStrings.OFFSETS.toString() ) ;
 		this.channelOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
 		channelPane.add( this.channelOffsetButton, c ) ;
 		
@@ -397,7 +397,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		c.fill       = GridBagConstraints.BOTH ;
 
-		JLabel mergeTxt = new JLabel( GUIStrings.merge() ) ;
+		JLabel mergeTxt = new JLabel( GUIStrings.MERGE.toString() ) ;
 		channelPane.add( mergeTxt, c ) ;
 
 		
@@ -410,9 +410,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.mergeCombo.addItem( GUIStrings.global() ) ;
-		this.mergeCombo.addItem( GUIStrings.execute() ) ;
-		this.mergeCombo.addItem( GUIStrings.no() ) ;
+		this.mergeCombo.addItem( GUIStrings.GLOBAL.toString() ) ;
+		this.mergeCombo.addItem( GUIStrings.EXECUTE.toString() ) ;
+		this.mergeCombo.addItem( GUIStrings.NO.toString() ) ;
 		this.mergeCombo.addActionListener( new MergeChanged() ) ;
 		channelPane.add( this.mergeCombo, c ) ;
 		
@@ -442,7 +442,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 //		c.insets     = new Insets( 40, 5, 5, 5 ); ;
 
-		this.globalOffsetButton.setText( GUIStrings.globalOffsets() ) ;
+		this.globalOffsetButton.setText( GUIStrings.GLOBAL_OFFSETS.toString() ) ;
 		this.globalOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
 		this.add( this.globalOffsetButton, c ) ;
 		

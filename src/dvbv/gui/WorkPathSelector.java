@@ -40,8 +40,8 @@ public class WorkPathSelector
             }
 		}
 		);
-		chooser.setDialogTitle( GUIStrings.selectChannelFile() ) ;
-		int returnVal = chooser.showDialog( frame, GUIStrings.select() ) ;
+		chooser.setDialogTitle( GUIStrings.SELECT_CHANNEL_FILE.toString() ) ;
+		int returnVal = chooser.showDialog( frame, GUIStrings.SELECT.toString() ) ;
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             File file = chooser.getSelectedFile() ;

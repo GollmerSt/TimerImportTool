@@ -35,4 +35,12 @@ public class Channel {
 		sw.writeCharacters( name ) ;
 		sw.writeEndElement() ;
 	}
+	@Override
+	public String toString()
+	{
+		String out = this.getTypeName() + " channel: Name = \"" + name + "\"" ;
+		if ( id >= 0L )
+			out += "  Id = \"" + id + "\"" ;
+		return out ;
+	}
 }

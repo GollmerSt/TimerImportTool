@@ -21,6 +21,13 @@ public class Log {
 	private static File file = null ;
 	private static boolean toDisplay = false ;
 	private static boolean verbose = false ;
+	public static String getFile()
+	{
+		if ( file != null )
+			return file.getPath() ;
+		else
+			return "" ;
+	}
 	public static void setFile( String dataPath )
 	{
 		File dir = new File( dataPath ) ;

@@ -4,7 +4,102 @@
 
 package dvbv.gui;
 
-public class GUIStrings {
+import dvbv.misc.Log;
+
+public enum GUIStrings {
+	ACTION_AFTER             ( "Post record action", "Nach Aufnahme" ) ,
+	ADD                      ( "Add", "Hinzufügen" ) ,
+	ALL_TIMERS               ( "All timers", "Alle Timer" ) ,
+	APPLY                    ( "Apply", "Übernehmen" ) ,
+	ASSIGNED_ERROR           ( "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" ) ,
+	BROAD_CAST_ADDRESS       ( "Broadast address", "Broadcast-Adresse" ) ,
+	CANCEL                   ( "Cancel", "Abbruch" ) ,
+	CHANGE_EFFECT            ( "The change will take effect after restarting the program ",
+	                           "Die Änderung ist erst nach einem Neustart des Programms wirksam" ) ,
+	CANNOT_DELETED           ( "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" ) ,
+	CHANNEL                  ( "Channel", "Kanal" ) ,
+	CHANNELS_IMPORTED        ( " channels added", " Kanäle hinzugefügt" ) ,
+	CHECK                    ( "Check", "Teste" ) ,
+	COPY_DEFAULT_CONTROL_FILE( "Control file doesn't exist, file will be recreated?",
+                               "Steuerdatei existiert nicht, soll Datei neu erstellt werden?" ) ,
+    DELETE                   ( "Delete", "Löschen" ) ,
+	DATA_PATH                ( "Data path", "Daten-Pfad" ) ,
+	DVBVIEWER                ( "DVBViewer" ) ,
+	DVBVIEWER_ASSIGNMENT     ( "DVBViewer assignment", "DVBViewer-Zuordnung" ) ,
+	DVBVIEWER_SERVICE        ( "DVBViewerService" ) ,
+	ENABLE                   ( "Enable", "Aktivieren" ) ,
+	END                      ( "End", "Ende" ) ,
+	EXECUTE                  ( "Execute", "Ausführen" ) ,
+	EXECUTING                ( "Executing", "Ausführend" ) ,
+	FAILED                   ( "Failed", "Fehler" ) ,
+	FILTER                   ( "Filter", "Filter" ) ,
+	GLOBAL                   ( "Global" ) ,
+	GLOBAL_OFFSETS           ( "Global lead / lag times ...", "Globale Vor- / Nachlaufzeiten ..." ) ,
+	GUI                      ( "GUI" ) ,
+	IMPORT_TV                ( "Import ", "Importiere " ) ,
+	INSTALL                  ( "Install", "Installieren" ) ,
+	LANGUAGE                 ( "Language", "Sprache" ) ,
+	MAC_ADDRESS              ( "MAC address", "MAC-Adresse" ) ,
+	MERGE                    ( "Merge", "Verbinden" ) ,
+	MESSAGE                  ( "Message", "Meldung" ) ,
+	MISCELLANEOUS            ( "Miscellaneous", "Verschiedenes" ) ,
+	MISSING_SINCE            ( "Missing since", "Fehlend seit" ) ,
+	MISSING_SINCE_SYNC       ( "Missing since Sync.", "Fehlend seit Synchr." ) ,
+	MODIFY                   ( "Modify", "Modifiziere" ) ,
+	MORE_NOFO_LOG            ( "More information in log file \"" + Log.getFile() + "\"",
+			                   "Mehr Information im Log-File \"" + Log.getFile() + "\"" ) ,
+	NEW_ENTRY                ( "New entry", "Neuer Eintrag" ) ,
+	NO                       ( "No", "Nein" ) ,
+	OFFSET_DIALOG            ( "Lead / Lag times", "Vor- / Nachlaufzeiten" ) ,
+	OFFSETS                  ( "Lead / Lag times ...", "Vor- / Nachlaufzeiten ..." ) ,
+	OK                       ( "OK" ) ,
+	PASS                     ( "Pass", "Bestanden" ) ,
+	PASSWORD                 ( "Password", "Passwort" ) ,
+	PROVIDER                 ( "Provider", "Anbieter" ) ,
+	PROVIDER_SERVICE         ( "Provider / Service", "Anbieter / Service" ) ,
+	PROVIDER_ASSIGNMENT      ( "Provider assignment", "Anbieter-Zuordnung" ) ,
+	SELECT                   ( "Select", "Auswählen" ) ,
+	SELECT_CHANNEL_FILE      ( "Select the DVBViewer channel file",
+			                   "Wähle das DVBViewer-Channel-File aus" ) ,
+	SETUP_CHANGED            ( "Setup is changed!\nTerminating without saving?",
+	                           "Einstellungen wurden verändert!\nBeenden ohne Speichern?" ) ,
+	SETUP_SAVE               ( "Setup is changed!\nShould the setup saved??",
+			                   "Einstellungen wurden verändert!\nSollen sie gespeichert werden?" ) ,
+	SEPARATOR                ( "Separator", "Trennzeichen" ) ,
+	START                    ( "Start" ) ,
+	SUCCESSFULL              ( "Successful", "Erfolgreich" ) ,
+	TIME_BEFORE              ( "Lead time", "Vorlauf" ) ,
+	TIME_AFTER               ( "Lag time", "Nachlauf" ) ,
+	TRIGGER_ACTION           ( "Trigger action" ) ,
+	UNINSTALL                ( "Uninstall", "Deinstallieren" ) ,
+	UNLOCK                   ( "Unlock", "Freigeben" ) ,
+	UPDATE_CHANNELS          ( "Update channels from new version", "Aktualisiere Kanäle aus neuer Version" ) ,
+	UPDATE_LIST              ( "Update timer list", "Aktualisiere Timer-Liste" ) ,
+	URL                      ( "URL" ),
+	USER_NAME                ( "Username", "Kennung" ) ,
+	VERBOSE                  ( "Verbose", "Ausführlich" ) ,
+	VIEW                     ( "View", "Ansicht" ) ,
+	WAIT_TIME                ( "Wait time after WOL", "Warte-Zeit nach WOL" ) ,
+	WARNING                  ( "Warnings appears", "Warnungen vorhanden" ) ,
+	WEEKDAYS                 ( "Mo  Tu   We  Th   Fr   Sa   Su", 
+			                   "Mo   Di    Mi   Do   Fr   Sa   So" ) ,
+	WOL                      ( "WOL" ) ;
+	
+	String [] strings = null ;
+
+	private GUIStrings( String ... strings )
+	{
+		this.strings = strings ;
+	}
+	public String toString()
+	{
+		int ix =  GUIStrings.languageEnum.getAssigned().ordinal() ; 
+		if ( strings.length < ix )
+			return strings[ 0 ] ;
+		else
+			return strings[ ix - 1 ] ;
+	}
+
 	public enum ActionAfterItems
 	{
 		NONE     (  0, "Nothing", "Keine Aktion" ) ,
@@ -82,77 +177,4 @@ public class GUIStrings {
 		else
 			return strings[ ix - 1 ] ;
 	}
-	public static String actionAfter()            { return get( "Post record action", "Nach Aufnahme" ) ; } ;
-	public static String add()                    { return get( "Add", "Hinzufügen" ) ; } ;
-	public static String allTimers()              { return get( "All timers", "Alle Timer" ) ; } ;
-	public static String apply()                  { return get( "Apply", "Übernehmen" ) ; } ;
-	public static String assignedError()          { return get( "is assigned to be reassigned?", "ist zugeordnet, soll neu zugeordnet werden?" ) ; } ;
-	public static String broadCastAddress()       { return get( "Broadast address", "Broadcast-Adresse" ) ; } ;
-	public static String cancel()                 { return get( "Cancel", "Abbruch" ) ; } ;
-	public static String changeEffect()           { return get( "The change will take effect after restarting the program ",
-			                                                    "Die Änderung ist erst nach einem Neustart des Programms wirksam" ) ; } ;
-	public static String cannotDeleted()          { return get( "Cannot be deleted in case of assignment", "Ist zugeordnet, kann daher nicht gelöscht werden" ) ; } ;
-	public static String channel()                { return get( "Channel", "Kanal" ) ; } ;
-	public static String channelsImported()       { return get( " channels added", " Kanäle hinzugefügt" ) ; } ;
-
-	public static String check()                  { return get( "Check", "Teste" ) ; } ;
-	public static String copyDefaultControlFile() { return get( "Control file doesn't exist, file will be recreated?",
-                                                                "Steuerdatei existiert nicht, soll Datei neu erstellt werden?" ) ; } ;
-    public static String delete()                 { return get( "Delete", "Löschen" ) ; } ;
-	public static String dataPath()               { return get( "Data path", "Daten-Pfad" ) ; } ;
-	public static String dvbViewer()              { return get( "DVBViewer" ) ; } ;
-	public static String dvbViewerAssignment()    { return get( "DVBViewer assignment",
-		                                                        "DVBViewer-Zuordnung" ) ; } ;
-	public static String dvbViewerService()       { return get( "DVBViewerService" ) ; } ;
-	public static String enable()                 { return get( "Enable", "Aktivieren" ) ; } ;
-	public static String end()                    { return get( "End", "Ende" ) ; } ;
-	public static String execute()                { return get( "Execute", "Ausführen" ) ; } ;
-	public static String executing()              { return get( "Executing", "Ausführend" ) ; } ;
-	public static String failed()                 { return get( "Failed", "Fehler" ) ; } ;
-	public static String filter()                 { return get( "Filter", "Filter" ) ; } ;
-	public static String global()                 { return get( "Global" ) ; } ;
-	public static String globalOffsets()          { return get( "Global lead / lag times ...", "Globale Vor- / Nachlaufzeiten ..." ) ; } ;
-	public static String gui()                    { return get( "GUI" ) ; } ;
-	public static String importTV()               { return get( "Import ", "Importiere " ) ; } ;
-	public static String install()                { return get( "Install", "Installieren" ) ; } ;
-	public static String language()               { return get( "Language", "Sprache" ) ; } ;
-	public static String macAddress()             { return get( "MAC address", "MAC-Adresse" ) ; } ;
-	public static String merge()                  { return get( "Merge", "Verbinden" ) ; } ;
-	public static String message()                { return get( "Message", "Meldung" ) ; } ;
-	public static String miscellaneous()          { return get( "Miscellaneous", "Verschiedenes" ) ; } ;
-	public static String missingSince()           { return get( "Missing since", "Fehlend seit" ) ; } ;
-	public static String missingSinceSync()       { return get( "Missing since Sync.", "Fehlend seit Synchr." ) ; } ;
-	public static String modify()                 { return get( "Modify", "Modifiziere" ) ; } ;
-	public static String newEntry()               { return get( "New entry", "Neuer Eintrag" ) ; } ;
-	public static String no()                     { return get( "No", "Nein" ) ; } ;
-	public static String offsetDialog()           { return get( "Lead / Lag times", "Vor- / Nachlaufzeiten" ) ; } ;
-	public static String offsets()                { return get( "Lead / Lag times ...", "Vor- / Nachlaufzeiten ..." ) ; } ;
-	public static String ok()                     { return get( "OK" ) ; } ;
-	public static String pass()                   { return get( "Pass", "Bestanden" ) ; } ;
-	public static String password()               { return get( "Password", "Passwort" ) ; } ;
-	public static String provider()               { return get( "Provider", "Anbieter" ) ; } ;
-	public static String providerService()        { return get( "Provider / Service", "Anbieter / Service" ) ; } ;
-	public static String providerAssignment()     { return get( "Provider assignment", "Anbieter-Zuordnung" ) ; } ;
-	public static String select()                 { return get( "Select", "Auswählen" ) ; } ;
-	public static String selectChannelFile()      { return get( "Select the DVBViewer channel file", "Wähle das DVBViewer-Channel-File aus" ) ; } ;
-	public static String setupChanged()           { return get( "Setup is changed!\nTerminating without saving?",
-	                                                            "Einstellungen wurden verändert!\nBeenden ohne Speichern?" ) ; } ;
-	public static String setupSave()              { return get( "Setup is changed!\nShould the setup saved??",
-	                                                            "Einstellungen wurden verändert!\nSollen sie gespeichert werden?" ) ; } ;
-	public static String separator()              { return get( "Separator", "Trennzeichen" ) ; } ;
-	public static String start()                  { return get( "Start" ) ; } ;
-	public static String successful()             { return get( "Successful", "Erfolgreich" ) ; } ;
-	public static String timeBefore()             { return get( "Lead time", "Vorlauf" ) ; } ;
-	public static String timeAfter()              { return get( "Lag time", "Nachlauf" ) ; } ;
-	public static String triggerAction()          { return get( "Trigger action" ) ; } ;
-	public static String uninstall()              { return get( "Uninstall", "Deinstallieren" ) ; } ;
-	public static String unlock()                 { return get( "Unlock", "Freigeben" ) ; } ;
-	public static String updateList()             { return get( "update timer list", "aktualisiere Timer-Liste" ) ; } ;
-	public static String url()                    { return get( "URL" ) ; } ;
-	public static String userName()               { return get( "Username", "Kennung" ) ; } ;
-	public static String verbose()                { return get( "Verbose", "Ausführlich" ) ; } ;
-	public static String view()                   { return get( "View", "Ansicht" ) ; } ;
-	public static String waitTime()               { return get( "Wait time after WOL", "Warte-Zeit nach WOL" ) ; } ;
-	public static String weekDays()               { return get( "Mo  Tu   We  Th   Fr   Sa   Su", "Mo   Di    Mi   Do   Fr   Sa   So" ) ; } ;
-	public static String wol()                    { return get( "WOL" ) ; } ;
 }

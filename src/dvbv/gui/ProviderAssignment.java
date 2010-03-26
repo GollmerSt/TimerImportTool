@@ -102,7 +102,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 			boolean enable = unlockBox.isSelected() ;
 			providerCombo.setEnabled( enable ) ;
 			channelCombo.setEnabled( enable ) ;
@@ -118,7 +118,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 			
 			enableByProvider( true ) ;
 			
@@ -144,7 +144,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 			int ix = channelCombo.getSelectedIndex() ;			
 			
 			if ( ix >= 0 )
@@ -172,7 +172,7 @@ public class ProviderAssignment  extends MyTabPanel
 		public void actionPerformed(ActionEvent e)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 
 			Provider p = (Provider) providerCombo.getSelectedItem() ;
 			if ( p == null )
@@ -221,14 +221,12 @@ public class ProviderAssignment  extends MyTabPanel
 				int count = p.importChannels() ;
 				if ( count >= 0 )
 				{
-					updateMap( p ) ;
-					updateTable() ;
-					updateChannelComboBox() ;
-					importButton.setText( GUIStrings.successful() ) ;
-					messageLabel.setText( count + GUIStrings.channelsImported() ) ;
+					updateIfChannelSetsChanged( p ) ;
+					importButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
+					messageLabel.setText( Integer.toString( count ) + GUIStrings.CHANNELS_IMPORTED ) ;
 				}
 				else
-					importButton.setText( GUIStrings.failed() ) ;
+					importButton.setText( GUIStrings.FAILED.toString() ) ;
 			}
 		}
 	}
@@ -267,7 +265,7 @@ public class ProviderAssignment  extends MyTabPanel
 		super( gui, frame ) ;
 		
 		this.columnNames  = new String[ Provider.getProviders().size() + 1 ];
-		this. columnNames[ 0 ] = GUIStrings.dvbViewer() ;
+		this. columnNames[ 0 ] = GUIStrings.DVBVIEWER.toString() ;
 		
 		int ip = 0 ;
 		for ( Provider provider : Provider.getProviders() )
@@ -328,7 +326,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = new Insets( 5, 0, 5, 5 ) ;
 		
-		JLabel lockLabel = new JLabel( GUIStrings.unlock() ) ;
+		JLabel lockLabel = new JLabel( GUIStrings.UNLOCK.toString() ) ;
 		this.add( lockLabel, c ) ;
 
 		
@@ -371,7 +369,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.addChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.addChannelButton.setText( GUIStrings.add() ) ;
+		this.addChannelButton.setText( GUIStrings.ADD.toString() ) ;
 		this.add( this.addChannelButton, c ) ;
 
 		
@@ -384,7 +382,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.modifyChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.modifyChannelButton.setText( GUIStrings.modify() ) ;
+		this.modifyChannelButton.setText( GUIStrings.MODIFY.toString() ) ;
 		this.add( this.modifyChannelButton, c ) ;
 
 		
@@ -397,7 +395,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.importButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.importButton.setText( GUIStrings.importTV() ) ;
+		this.importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 		this.add( this.importButton, c ) ;
 
 		
@@ -544,21 +542,21 @@ public class ProviderAssignment  extends MyTabPanel
 		public void popupMenuCanceled(PopupMenuEvent arg0)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 		}
 		@Override
 		public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0)
 		{
 			cancelCellEditing() ;
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 		}
 
 		//@Override
 		public void popupMenuWillBecomeVisible(PopupMenuEvent e)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 		}
 	}
 
@@ -671,7 +669,7 @@ public class ProviderAssignment  extends MyTabPanel
 		public void setValueAt(Object value, int row, int col)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.importTV() ) ;
+			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
 			cancelCellEditing() ;
 			
 			String channel = (String) value ;
@@ -699,7 +697,7 @@ public class ProviderAssignment  extends MyTabPanel
                 	showTableLine( pcsid ) ;
     				int answer = JOptionPane.showConfirmDialog(
     						        frame, 
-    						        "\"" + channel + "\" " + GUIStrings.assignedError(), 
+    						        "\"" + channel + "\" " + GUIStrings.ASSIGNED_ERROR, 
     						        Constants.PROGRAM_NAME, 
     						        JOptionPane.OK_CANCEL_OPTION );
     				if ( answer == JOptionPane.CANCEL_OPTION )
@@ -757,6 +755,17 @@ public class ProviderAssignment  extends MyTabPanel
 			}
 		}
 		return true ;
+	}
+	public void updateIfChannelSetsChanged( Provider p )
+	{
+		if ( p == null )
+			for ( Provider pl : Provider.getProviders() )
+				this.updateMap( pl ) ;
+		else
+			this.updateMap( p ) ;
+		
+		this.updateTable() ;
+		this.updateChannelComboBox() ;
 	}
 	@Override
 	public void update( boolean active )

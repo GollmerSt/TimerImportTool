@@ -60,6 +60,8 @@ public class GUI {
     private final JButton cancelButton = new JButton() ;
     private final JButton applyButton = new JButton() ;
     
+    private ProviderAssignment providerAssignment = null ;
+    
 	private final TreeMap< String, LookAndFeelInfo > lookAndFeelAssignment  
     = new TreeMap< String, LookAndFeelInfo >() ;
 	private final ArrayList< String > lookAndFeelNames = new ArrayList< String >() ;
@@ -82,7 +84,7 @@ public class GUI {
 			// TODO Auto-generated method stub
 			MyTabPanel tabPanel = (MyTabPanel)tabbedPane.getSelectedComponent() ;
 			tabPanel.update( false ) ;
-			if ( messageIsChanged( GUIStrings.setupChanged()) )
+			if ( messageIsChanged( GUIStrings.SETUP_CHANGED.toString() ) )
 			{
 				status = GUIStatus.CANCEL ;
 				waitAPP() ;
@@ -139,7 +141,7 @@ public class GUI {
 				status = GUIStatus.OK ;
 				waitAPP() ;
 			}
-			else if ( button == cancelButton && messageIsChanged( GUIStrings.setupChanged()) )
+			else if ( button == cancelButton && messageIsChanged( GUIStrings.SETUP_CHANGED.toString() ) )
 			{
 				status = GUIStatus.CANCEL ;
 				waitAPP() ;
@@ -152,7 +154,7 @@ public class GUI {
 			}
 			if ( button == executeButton )
 			{
-				if ( messageIsChanged( GUIStrings.setupSave() ))
+				if ( messageIsChanged( GUIStrings.SETUP_SAVE.toString() ))
 					status = GUIStatus.SAVE_EXECUTE ;
 				else
 					status = GUIStatus.EXECUTE ;
@@ -227,12 +229,12 @@ public class GUI {
 	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
 	    ProviderService tab2 = new ProviderService( this, frame ) ;
 	    Miscellaneous tab3 = new Miscellaneous( this, frame ) ;
-	    ProviderAssignment tab4 = new ProviderAssignment( this, frame ) ;
+	    this.providerAssignment = new ProviderAssignment( this, frame ) ;
 	    	    
-	    this.tabbedPane.add( GUIStrings.dvbViewerAssignment(), tab1); 
-	    this.tabbedPane.add( GUIStrings.providerService(), tab2);
-	    this.tabbedPane.add( GUIStrings.miscellaneous(), tab3);
-	    this.tabbedPane.add( GUIStrings.providerAssignment(), tab4);
+	    this.tabbedPane.add( GUIStrings.DVBVIEWER_ASSIGNMENT.toString(), tab1); 
+	    this.tabbedPane.add( GUIStrings.PROVIDER_SERVICE.toString(), tab2);
+	    this.tabbedPane.add( GUIStrings.MISCELLANEOUS.toString(), tab3);
+	    this.tabbedPane.add( GUIStrings.PROVIDER_ASSIGNMENT.toString(), providerAssignment);
 	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
 	    this.tabbedPane.setSelectedComponent( tab1 ) ;
@@ -240,7 +242,7 @@ public class GUI {
 	    tab1.paint() ;
 	    tab2.paint() ;
 	    tab3.paint() ;
-	    tab4.paint() ;
+	    this.providerAssignment.paint() ;
 
 	 	    
 
@@ -251,7 +253,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.executeButton.setText( GUIStrings.execute() ) ;
+	    this.executeButton.setText( GUIStrings.EXECUTE.toString() ) ;
 	    this.executeButton.addActionListener( new ButtonPressed() ) ;
 	    this.frame.add( executeButton, c ) ;
 
@@ -262,7 +264,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.forceBox.setText( GUIStrings.allTimers() ) ;
+	    this.forceBox.setText( GUIStrings.ALL_TIMERS.toString() ) ;
 	    this.forceBox.addItemListener( new AllTimersChanged() ) ;
 	    this.frame.add( forceBox, c ) ;
 
@@ -273,7 +275,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.updateButton.setText( GUIStrings.updateList() ) ;
+	    this.updateButton.setText( GUIStrings.UPDATE_LIST.toString() ) ;
 	    this.updateButton.addActionListener( new ButtonPressed() ) ;
 	    this.frame.add( this.updateButton, c ) ;
 
@@ -285,7 +287,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-	    this.okButton.setText( GUIStrings.ok() ) ;
+	    this.okButton.setText( GUIStrings.OK.toString() ) ;
 	    this.okButton.addActionListener( new ButtonPressed() ) ;
 	    this.frame.add( this.okButton, c ) ;
 
@@ -297,7 +299,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-		this.cancelButton.setText( GUIStrings.cancel() ) ;
+		this.cancelButton.setText( GUIStrings.CANCEL.toString() ) ;
 		this.cancelButton.addActionListener( new ButtonPressed() ) ;
 		this.frame.add( cancelButton, c ) ;
 
@@ -308,7 +310,7 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-		this.applyButton.setText( GUIStrings.apply() ) ;
+		this.applyButton.setText( GUIStrings.APPLY.toString() ) ;
 		this.applyButton.addActionListener( new ButtonPressed() ) ;
 		this.frame.add( this.applyButton, c ) ;
 
@@ -401,5 +403,9 @@ public class GUI {
 		SwingUtilities.updateComponentTreeUI( this.frame );
 		this.frame.pack();
 		this.isChanged = true ;
+	}
+	public void updateIfChannelSetsChanged( Provider p )
+	{
+	 	this.providerAssignment.updateIfChannelSetsChanged( p ) ;
 	}
 }

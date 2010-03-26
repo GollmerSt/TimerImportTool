@@ -4,7 +4,6 @@
 
 package dvbv.provider;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
@@ -140,7 +139,7 @@ public abstract class Provider {
 	{
 		return Provider.names.indexOf( provider ) ;
 	}
-	public static void readXML( XMLEventReader reader, File f ) throws XMLStreamException
+	public static void readXML( XMLEventReader reader, String fileName ) throws XMLStreamException
 	{
 		Stack<String> stack = new Stack<String>() ;
 		stack.push( "Providers" ) ;
@@ -166,7 +165,7 @@ public abstract class Provider {
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e1) {
-				throw new ErrorClass( e1, "XML syntax error in file \"" + f.getName() + "\"" );
+				throw new ErrorClass( e1, "XML syntax error in file \"" + fileName + "\"" );
 			}
 
 			if ( ev.isStartElement() )
@@ -215,24 +214,24 @@ public abstract class Provider {
 		            		else if ( attributeName.equals( "triggeraction") )
 			            	{
 			            		if ( !value.matches("\\d+") )
-			            			throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + f.getName() + "\"" ) ;
+			            			throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + fileName + "\"" ) ;
 			            		triggerAction = Integer.valueOf( value ) ;
 			            	}
 		            		else if ( attributeName.equals( "merge") )
-		            			merge = Conversions.getBoolean( value, ev, f ) ;
+		            			merge = Conversions.getBoolean( value, ev, fileName ) ;
 		            		else if ( attributeName.equals( "verbose") )
-		            			verbose = Conversions.getBoolean( value, ev, f ) ;
+		            			verbose = Conversions.getBoolean( value, ev, fileName ) ;
 			            	else if ( attributeName.equals( "message") )
-		            			message = Conversions.getBoolean( value, ev, f ) ;
+		            			message = Conversions.getBoolean( value, ev, fileName ) ;
 			            	else if ( attributeName.equals( "filter") )
-		            			filter = Conversions.getBoolean( value, ev, f ) ;
+		            			filter = Conversions.getBoolean( value, ev, fileName ) ;
 		            		break ;
 		            	
 		            	case MISSING :
 		            		try {
 		            			info.readXML( attributeName, value ) ;
 		            		} catch ( ErrorClass e ) {
-		            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + f.getName() + "\"" ) ;
+		            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + fileName + "\"" ) ;
 		            		}
 		            		break ;
 					}
@@ -249,7 +248,7 @@ public abstract class Provider {
 				{
 					provider = Provider.getProvider( name ) ;
 					if ( provider == null )
-            			throw new ErrorClass ( ev, "Unknown provider name in file \"" + f.getName() + "\"" ) ;
+            			throw new ErrorClass ( ev, "Unknown provider name in file \"" + fileName + "\"" ) ;
 					provider.username = username ;
 					provider.password = password ;
 					provider.triggerAction = triggerAction ;
@@ -270,7 +269,7 @@ public abstract class Provider {
 					try {
 						provider.check() ;
 					} catch( ErrorClass e ) {
-						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + f.getName() + "\""  ) ;
+						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + fileName + "\""  ) ;
 					}
 					else if ( stack.size() == 0 )
 					break ;

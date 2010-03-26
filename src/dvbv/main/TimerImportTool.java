@@ -56,7 +56,7 @@ public final class TimerImportTool {
 			boolean getAll = false ;
 			
 			String paras = "" ;
-			String dataPath = null ;
+			String iniPath = null ;
 			
 			for ( int i = 0 ; i < args.length ; i++ )
 			{
@@ -73,12 +73,12 @@ public final class TimerImportTool {
 					type = ImportType.TVGENIAL ;
 				else if ( args[i].equalsIgnoreCase("-message") )
 					showMessageBox = true ;
-				else if ( args[i].equalsIgnoreCase("-path") )
+				else if ( args[i].equalsIgnoreCase("-iniPath") )
 				{
 					i++ ;
 					if ( i >= args.length )
 						throw new ErrorClass( "A directory path is necessary after the flag -path" ) ;
-					dataPath = args[ i ] ;
+					iniPath = args[ i ] ;
 				}
 				else if ( args[i].equalsIgnoreCase("-update") )
 					type = ImportType.UPDATE ;
@@ -86,7 +86,7 @@ public final class TimerImportTool {
 			
 			Log.setToDisplay(true);
 
-			dvbViewer = new DVBViewer( dataPath, TimerImportTool.exeName ) ;
+			dvbViewer = new DVBViewer( iniPath, TimerImportTool.exeName ) ;
 			
 			while ( ! dvbViewer.initDataPath() )
 			{
@@ -115,12 +115,12 @@ public final class TimerImportTool {
 					case APPLY :
 						Log.out( "Configuration saved" ) ;
 						control.write() ;
-						dvbViewer.writeDataPathFromIni() ;
+						dvbViewer.writeDataPathToIni() ;
 						break ;
 					case OK :
 						control.write() ;
 						Log.out( "Configuration saved and terminated" ) ;
-						dvbViewer.writeDataPathFromIni() ;
+						dvbViewer.writeDataPathToIni() ;
 						System.exit( 0 ) ;
 						break ;
 					case CANCEL :
@@ -133,7 +133,7 @@ public final class TimerImportTool {
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
-						dvbViewer.writeDataPathFromIni() ;
+						dvbViewer.writeDataPathToIni() ;
 						finished = true ;
 						break ;
 					case UPDATE :
