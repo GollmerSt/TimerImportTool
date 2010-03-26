@@ -18,9 +18,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +30,7 @@ import javax.xml.stream.events.XMLEvent;
 
 import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.misc.* ;
+import dvbv.xml.StackXML;
 
 public class DVBViewerService {
 	private boolean enable ;
@@ -43,11 +42,11 @@ public class DVBViewerService {
 	private String macAddress ;
 	private int waitTimeAfterWOL ;
 	private String lastURL ;
-	private final Stack<String> pathTimer ;
-	private final Stack<String> pathChannel ;
-	private final Stack<String> pathID ;
-	private final Stack<String> pathDescr ;
-	private final Stack<String> pathRecording ;
+	private final StackXML<String> pathTimer     = new StackXML<String>( "Timers", "Timer" );
+	private final StackXML<String> pathChannel   = new StackXML<String>( "Timers", "Timer", "Channel" );
+	private final StackXML<String> pathID        = new StackXML<String>( "Timers", "Timer", "ID" );
+	private final StackXML<String> pathDescr     = new StackXML<String>( "Timers", "Timer", "Descr" );
+	private final StackXML<String> pathRecording = new StackXML<String>( "Timers", "Timer", "Recording" );
 	private long version = -1 ;
 	
 	public DVBViewerService( boolean enable, String url, String name, String password)
@@ -58,26 +57,6 @@ public class DVBViewerService {
 		this.password = password ;
 		Authenticator.setDefault( new DVBViewerService.MyAuthenticator() ) ; 
 
-		Stack<String> p = new Stack<String>() ;
-		Collections.addAll( p, "Timers", "Timer" ) ;
-		this.pathTimer = p ;
-
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Timers", "Timer", "ID" ) ;
-		this.pathID = p ;
-
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Timers", "Timer", "Channel" ) ;
-		this.pathChannel = p ;
-
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Timers", "Timer", "Descr" ) ;
-		this.pathDescr = p ;
-		
-		p = new Stack<String>() ;
-		Collections.addAll( p, "Timers", "Timer", "Recording" ) ;
-		this.pathRecording = p ;
-		
 //		this.version = this.readVersion() ;
 	}
 	private class MyAuthenticator extends Authenticator
@@ -273,7 +252,7 @@ public class DVBViewerService {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( iS );
-			Stack<String>   stack = new Stack<String>() ;
+			StackXML<String>   stack = new StackXML<String>() ;
 			
 			boolean enable      = true ;
 			String channel     = null;

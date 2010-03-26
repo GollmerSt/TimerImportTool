@@ -31,9 +31,7 @@ public class UpdateImporter
 	{
 	    InputStream is = ResourceManager.createInputStream( XML_PATH ) ;
 	    
-	    Control controlReader = new Control( control ) ;
-	    
-	    controlReader.read( is, XML_PATH ) ;
+	    Control controlReader = new Control( is, XML_PATH ) ;
 	    
 	    ArrayList< HashMap< String, ChannelSet > > pMap = new ArrayList< HashMap< String, ChannelSet > >() ;
 	    

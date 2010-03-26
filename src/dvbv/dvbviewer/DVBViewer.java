@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -503,7 +502,7 @@ public class DVBViewer {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
-			Stack<String>   stack = new Stack<String>();
+			StackXML<String>   stack = new StackXML<String>();
 			
 			while( reader.hasNext() ) {
 				XMLEvent ev = reader.nextEvent();

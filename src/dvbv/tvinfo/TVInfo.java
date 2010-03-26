@@ -14,7 +14,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Iterator;
-import java.util.Stack;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -116,7 +115,7 @@ public final class TVInfo extends Provider {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( iS ) );
-			Stack<String>   stack = new Stack<String>() ;
+			StackXML<String>   stack = new StackXML<String>() ;
 			String channel = null;
 			long  start = 0;
 			long  end   = 0 ;

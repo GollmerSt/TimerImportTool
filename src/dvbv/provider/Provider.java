@@ -30,6 +30,23 @@ public abstract class Provider {
 	private enum XMLStatus { UKNOWN, MISSING, PROVIDER } ;
 	private static ArrayList< String > names = new ArrayList< String >() ;
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
+	
+	private static Stack< ArrayList< String > >  nameStack = new Stack< ArrayList< String > >() ;
+	private static Stack< ArrayList< Provider > > providerStack = new Stack< ArrayList< Provider > >() ;
+	
+	public static void push()
+	{
+		Provider.nameStack.push( Provider.names ) ;
+		Provider.providerStack.push( Provider.providers ) ;
+		Provider.names = new ArrayList< String >() ;
+		Provider.providers = new ArrayList< Provider >() ;
+	}
+	public static void pop()
+	{
+		Provider.names     = Provider.nameStack.pop() ;
+		Provider.providers = Provider.providerStack.pop() ;
+	}
+	
 	private final int id ;
 	protected final Control control ;
 	private final boolean hasAccount ;
@@ -141,7 +158,7 @@ public abstract class Provider {
 	}
 	public static void readXML( XMLEventReader reader, String fileName ) throws XMLStreamException
 	{
-		Stack<String> stack = new Stack<String>() ;
+		StackXML<String> stack = new StackXML<String>() ;
 		stack.push( "Providers" ) ;
 		XMLEvent ev = null ;
 

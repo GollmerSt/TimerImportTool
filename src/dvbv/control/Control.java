@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Stack;
 
 import dvbv.gui.GUIStrings;
 import dvbv.gui.GUIStrings.ActionAfterItems;
@@ -45,7 +44,7 @@ public class Control
 	private enum BlockType { INVALID , CHANNEL_PROVIDER, DVBSERVICE, DVBVIEWER, 
 		                     GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
-	private DVBViewer dvbViewer = null ;
+	private final DVBViewer dvbViewer ;
 	private final StackXML<String> pathProviders		= new StackXML<String>( "Importer", "Providers" ) ;
 	private final StackXML<String> pathService			= new StackXML<String>( "Importer", "DVBService" ) ;
 	private final StackXML<String> pathGlobalOffsets	= new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
@@ -72,15 +71,27 @@ public class Control
 	{
 		this.dvbViewer = dvbViewer ;
 		
-		new TVInfo( this ) ;
-		new TVGenial( this ) ;
-		new ClickFinder( this ) ;
-		dvbViewer.setProvider() ;
+		this.installProvider() ;
+		this.dvbViewer.setProvider() ;
 		
 		this.read() ;
 	}
-	public Control( Control control )   // only for preparing XML read
+	public Control( InputStream is, String name )   // only for preparing XML read
 	{
+		this.dvbViewer = null ;
+		Provider.push() ;
+		
+		this.installProvider() ;
+		
+		this.read( is, name ) ;
+		
+		Provider.pop();
+	}
+	private void installProvider()
+	{
+		new TVInfo( this ) ;
+		new TVGenial( this ) ;
+		new ClickFinder( this ) ;
 	}
 	public void read() { this.read( null, null ) ; } ;
 
@@ -116,7 +127,7 @@ public class Control
 		} catch (XMLStreamException e2) {
 			throw new ErrorClass( e2, "Unexpected error on opening the file \"" + name + "\"" );
 		}
-		Stack<String>   stack = new Stack<String>();
+		StackXML<String>   stack = new StackXML<String>();
 		
 		TimeOffsets offsets = null ;
 		TimeOffsets channelOffsets = null ; 
