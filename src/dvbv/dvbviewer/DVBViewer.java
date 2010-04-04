@@ -29,6 +29,7 @@ import dvbv.control.ChannelSet;
 import dvbv.control.TimeOffsets;
 import dvbv.dvbviewer.channels.Channels;
 import dvbv.gui.GUIStrings.ActionAfterItems;
+import dvbv.gui.GUIStrings.TimerActionItems;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
@@ -37,6 +38,7 @@ public class DVBViewer {
 	
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
+	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
 	private static final String NAME_IMPORT_INI_FILE          = "timerimporttool.ini" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
@@ -71,6 +73,7 @@ public class DVBViewer {
 	private final String exeName ;
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
+	private TimerActionItems timerAction = TimerActionItems.RECORD ;
 	public DVBViewer( final String iniPath, String exeName )
 	{
 		this.exeName = exeName + ".jar" ;
@@ -200,6 +203,8 @@ public class DVBViewer {
 							{
 								String temp = System.getenv( "APPDATA") ;
 								temp = temp.substring(temp.lastIndexOf(File.separator)) ;
+								if ( temp.equalsIgnoreCase( DVBViewer.NAME_PATH_REMOVE ))
+									temp = "" ;
 								path =   System.getenv( "ALLUSERSPROFILE")
 								       + temp + path ;
 							}
@@ -310,6 +315,8 @@ public class DVBViewer {
 											   startOrg,
 											   endOrg,
 											   title,
+											   this.timerAction ,
+											   this.afterRecordingAction ,
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
 
@@ -348,6 +355,8 @@ public class DVBViewer {
 											   start,
 											   end,
 											   title,
+											   this.timerAction,
+											   this.afterRecordingAction,
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
 
@@ -372,6 +381,8 @@ public class DVBViewer {
 	public void setWaitTimeAfterWOL( int w ) { this.service.setWaitTimeAfterWOL( w ) ; } ;
 	public void setAfterRecordingAction( ActionAfterItems dvbViewerActionAfter ) { this.afterRecordingAction = dvbViewerActionAfter ; } ;
 	public ActionAfterItems getAfterRecordingAction() { return this.afterRecordingAction ; } ;
+	public void setTimerAction( TimerActionItems timerAction ) { this.timerAction = timerAction ; } ;
+	public TimerActionItems getTimerAction() { return this.timerAction ; } ;
 	private void addChannel( HashMap< String, Channel> channels, 
 			                 String channelName, 
 			                 Channel channel,
@@ -461,7 +472,7 @@ public class DVBViewer {
 			{
 				deletedEntries++ ;
 				if ( this.service != null && this.service.isEnabled() )
-					this.service.setTimerEntry( d, this.afterRecordingAction ) ;
+					this.service.setTimerEntry( d  ) ;
 				else
 					this.setDVBViewerTimer( d  ) ;
 			}			
@@ -476,7 +487,7 @@ public class DVBViewer {
 				newEntries++ ;
 
 			if ( this.service != null && this.service.isEnabled() )
-				this.service.setTimerEntry( d, this.afterRecordingAction ) ;
+				this.service.setTimerEntry( d ) ;
 			else
 				this.setDVBViewerTimer( d  ) ;
 		}

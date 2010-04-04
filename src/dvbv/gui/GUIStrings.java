@@ -4,10 +4,11 @@
 
 package dvbv.gui;
 
-import dvbv.misc.Log;
+import java.util.ArrayList;
 
 public enum GUIStrings {
-	ACTION_AFTER             ( "Post record action", "Nach Aufnahme" ) ,
+	ACTION_AFTER             ( "After recording", "Nach Aufnahme" ) ,
+	ACTION_TIMER             ( "Timer action", "Timer Aktion" ) ,
 	ADD                      ( "Add", "Hinzufügen" ) ,
 	ALL_TIMERS               ( "All timers", "Alle Timer" ) ,
 	APPLY                    ( "Apply", "Übernehmen" ) ,
@@ -29,6 +30,7 @@ public enum GUIStrings {
 	DVBVIEWER_SERVICE        ( "DVBViewerService" ) ,
 	ENABLE                   ( "Enable", "Aktivieren" ) ,
 	END                      ( "End", "Ende" ) ,
+	ERROR_READING_FILE       ( "Error on reading file ", "Fehler beim Lesen der Datei " ) ,
 	EXECUTE                  ( "Execute", "Ausführen" ) ,
 	EXECUTING                ( "Executing", "Ausführend" ) ,
 	FAILED                   ( "Failed", "Fehler" ) ,
@@ -46,8 +48,8 @@ public enum GUIStrings {
 	MISSING_SINCE            ( "Missing since", "Fehlend seit" ) ,
 	MISSING_SINCE_SYNC       ( "Missing since Sync.", "Fehlend seit Synchr." ) ,
 	MODIFY                   ( "Modify", "Modifiziere" ) ,
-	MORE_NOFO_LOG            ( "More information in log file \"" + Log.getFile() + "\"",
-			                   "Mehr Information im Log-File \"" + Log.getFile() + "\"" ) ,
+	MORE_NOFO_LOG            ( "More information in log file ",
+			                   "Mehr Information im Log-File " ) ,
 	NEW_ENTRY                ( "New entry", "Neuer Eintrag" ) ,
 	NO                       ( "No", "Nein" ) ,
 	OFFSET_DIALOG            ( "Lead / Lag times", "Vor- / Nachlaufzeiten" ) ,
@@ -102,23 +104,122 @@ public enum GUIStrings {
 
 	public enum ActionAfterItems
 	{
-		NONE     (  0, "Nothing", "Keine Aktion" ) ,
-		POWER_OFF(  1, "Shutdown", "Herunterfahren" ) ,
-		STANDBY  (  2, "Standby" ) ,
-		HIBERNATE(  3, "Hibernate", "Ruhemodus" ),
-		DEFAULT  ( -1, "Default", "Voreinstellung" );
+		NONE       (  0,  0, true,  "Nothing", "Keine Aktion" ) ,
+		POWER_OFF  (  1,  1, true,  "Shutdown", "Herunterfahren" ) ,
+		STANDBY    (  2,  2, true,  "Standby" ) ,
+		HIBERNATE  (  3,  3, true,  "Hibernate", "Ruhemodus" ),
+		CLOSE      (  4,  0, false, "Close DVBViewer", "Schließe DVBViewer" ),
+		PLAYLIST   (  5,  0, false, "Playlist", "Starte Playlist" ),
+		SLUMBERMODE(  6,  2, false, "Sumbermode", "DVBViewer-Standby" ),
+		DEFAULT    ( -1, -1, true,  "Default", "Voreinstellung" );
 
 		private final int id ;
+		private final int serviceID ;
+		private final boolean hasService ;
 		private final String [] items ;
+		
+		private static ActionAfterItems [] serviceValues = null ;
 
-		private ActionAfterItems( int id, String... strings )
+		private ActionAfterItems( int id, int serviceID, boolean hasService, String... strings )
 		{
 			this.id = id ;
+			this.serviceID = serviceID ;
 			this.items = strings ;
+			this.hasService = hasService ;
 		}
 		@Override
 		public String toString() { return GUIStrings.get( this.items ) ; } ;
+		public ActionAfterItems get( boolean isService )
+		{
+			if ( ! isService || this.hasService )
+				return this ;
+			return ActionAfterItems.get( this.serviceID ) ;
+		}
 		public int getID() { return this.id ; } ;
+		public int getServiceID() { return this.serviceID ; } ;
+		public static ActionAfterItems get( final int id )
+		{
+			for ( ActionAfterItems i : ActionAfterItems.values() )
+			{
+				if ( id == i.id )
+					return i ;
+			}
+			return ActionAfterItems.NONE ;
+		}
+		public static ActionAfterItems [] values( boolean isService )
+		{
+			if ( ! isService )
+				return ActionAfterItems.values() ;
+			
+			if ( ActionAfterItems.serviceValues != null )
+				return ActionAfterItems.serviceValues ;
+			
+			ArrayList< ActionAfterItems > list = new ArrayList< ActionAfterItems >() ;
+			for ( ActionAfterItems i : ActionAfterItems.values() )
+				if ( !isService || i.hasService )
+					list.add( i ) ;
+			ActionAfterItems.serviceValues = new ActionAfterItems []{ ActionAfterItems.NONE } ;
+			ActionAfterItems.serviceValues = list.toArray( ActionAfterItems.serviceValues ) ;
+ 			return ActionAfterItems.serviceValues ;
+		}
+	}
+	public enum TimerActionItems
+	{
+		RECORD      (  0,  0, true,  "Record", "Aufnahme" ) ,
+		TUNE        (  1,  1, true,  "Tune channel", "Sender einstellen" ) ,
+		AUDIO_PLUGIN(  2,  0, false, "Audiorecorder plugin", "Audiorecorder Plugin" ) ,
+		VIDEO_PLUGIN(  3,  0, false, "Videorecorder plugin", "Videorecorder Plugin" ),
+		DEFAULT     ( -1, -1, true,  "Default", "Voreinstellung" );
+
+		private final int id ;
+		private final int serviceID ;
+		private final boolean hasService ;
+		private final String [] items ;
+		
+		private static TimerActionItems [] serviceValues = null ;
+
+		private TimerActionItems( int id, int serviceID, boolean hasService, String... strings )
+		{
+			this.id = id ;
+			this.serviceID = serviceID ;
+			this.items = strings ;
+			this.hasService = hasService ;
+		}
+		@Override
+		public String toString() { return GUIStrings.get( this.items ) ; } ;
+		public TimerActionItems get( boolean isService )
+		{
+			if ( ! isService || this.hasService )
+				return this ;
+			return TimerActionItems.get( this.serviceID ) ;
+		}
+		public int getID() { return this.id ; } ;
+		public int getServiceID() { return this.serviceID ; } ;
+		public static TimerActionItems get( final int id )
+		{
+			for ( TimerActionItems i : TimerActionItems.values() )
+			{
+				if ( id == i.id )
+					return i ;
+			}
+			return TimerActionItems.RECORD ;
+		}
+		public static TimerActionItems [] values( boolean isService )
+		{
+			if ( ! isService )
+				return TimerActionItems.values() ;
+			
+			if ( TimerActionItems.serviceValues != null )
+				return TimerActionItems.serviceValues ;
+			
+			ArrayList< TimerActionItems > list = new ArrayList< TimerActionItems >() ;
+			for ( TimerActionItems i : TimerActionItems.values() )
+				if ( !isService || i.hasService )
+					list.add( i ) ;
+			TimerActionItems.serviceValues = new TimerActionItems []{ TimerActionItems.RECORD } ;
+			TimerActionItems.serviceValues = list.toArray( TimerActionItems.serviceValues ) ;
+ 			return TimerActionItems.serviceValues ;
+		}
 	}
 	public enum Language
 	{

@@ -30,8 +30,11 @@ import dvbv.Resources.ResourceManager;
 import dvbv.dvbviewer.DVBViewer;
 import dvbv.gui.GUIStrings.ActionAfterItems;
 import dvbv.gui.GUIStrings.Language;
+import dvbv.gui.GUIStrings.TimerActionItems;
 import dvbv.importer.TVInfoDVBV;
 import dvbv.importer.UpdateImporter;
+import dvbv.misc.ErrorClass;
+import dvbv.misc.Log;
 
 public class Miscellaneous extends MyTabPanel
 {
@@ -47,11 +50,14 @@ public class Miscellaneous extends MyTabPanel
 	private final JComboBox languageBox = new JComboBox() ;
 	private final JComboBox lookAndFeelBox = new JComboBox() ;
 	private final JComboBox actionAfterBox = new JComboBox() ;
+	private final JComboBox actionTimerBox = new JComboBox() ;
 	private final JTextField separatorBox = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
+	
+	private final ComboSelected comboSelectedAction = new ComboSelected() ;
 	
 		
 	public Miscellaneous( GUI gui, JFrame frame)
@@ -80,9 +86,15 @@ public class Miscellaneous extends MyTabPanel
 					
 				}
 			}
+			
 			else if ( c == actionAfterBox )
 			{
 				control.getDVBViewer().setAfterRecordingAction( (ActionAfterItems)o ) ;
+				gui.setChanged() ;
+			}
+			else if ( c == actionTimerBox )
+			{
+				control.getDVBViewer().setTimerAction( (TimerActionItems)o ) ;
 				gui.setChanged() ;
 			}
 			else if ( c == lookAndFeelBox )
@@ -98,10 +110,16 @@ public class Miscellaneous extends MyTabPanel
 			JButton source = (JButton)e.getSource() ;
 			if ( source == tvinfoDVBVButton )
 			{
-				new TVInfoDVBV( control ) ;
-				tvinfoDVBVButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
-				gui.setChanged() ;
-				gui.updateIfChannelSetsChanged( null ) ;
+				try
+				{
+					new TVInfoDVBV( control ) ;
+					tvinfoDVBVButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
+					gui.setChanged() ;
+					gui.updateIfChannelSetsChanged( null ) ;
+				} catch ( ErrorClass er ) {
+					tvinfoDVBVButton.setText( GUIStrings.FAILED.toString() ) ;
+					setInfoText( GUIStrings.ERROR_READING_FILE + "\"" + er.getErrorString() + "\"." ) ;
+				}
 			}
 			if ( source == updateToNewVersionButton )
 			{
@@ -110,7 +128,7 @@ public class Miscellaneous extends MyTabPanel
 					updateToNewVersionButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
 				else
 				{
-					setInfoText( GUIStrings.MORE_NOFO_LOG.toString() ) ;
+					setInfoText( GUIStrings.MORE_NOFO_LOG.toString() + "\"" + Log.getFile() + "\"" ) ;
 					updateToNewVersionButton.setText( GUIStrings.WARNING.toString() ) ;
 				}
 				gui.updateIfChannelSetsChanged( null ) ;
@@ -344,17 +362,36 @@ public class Miscellaneous extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		for (ActionAfterItems a : ActionAfterItems.values())
-			this.actionAfterBox.addItem( a ) ;
-		this.actionAfterBox.setSelectedItem( this.control.getDVBViewer().getAfterRecordingAction() ) ;
-		this.actionAfterBox.addActionListener( new ComboSelected() ) ;
+		this.updateDVBViewerActions() ;
 		dvbViewerPanel.add( this.actionAfterBox, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 3 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel actionTimerLabel = new JLabel( GUIStrings.ACTION_TIMER.toString() ) ;
+		dvbViewerPanel.add( actionTimerLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 3 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.updateDVBViewerActions() ;
+		dvbViewerPanel.add( this.actionTimerBox, c ) ;
 
 		
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 3 ;
+		c.gridy      = 4 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -365,7 +402,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 3 ;
+		c.gridy      = 4 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -396,6 +433,24 @@ public class Miscellaneous extends MyTabPanel
 
 		this.add( textInfoLabel, c ) ;
 }
+	public void updateDVBViewerActions()
+	{
+		boolean isService = this.control.getDVBViewer().getService().isEnabled() ;
+		this.actionAfterBox.removeActionListener( comboSelectedAction ) ;
+		this.actionAfterBox.removeAllItems() ;
+		for (ActionAfterItems a : ActionAfterItems.values( isService ) )
+			this.actionAfterBox.addItem( a ) ;
+		this.actionAfterBox.addActionListener( comboSelectedAction ) ;
+		this.actionAfterBox.setSelectedItem( this.control.getDVBViewer().getAfterRecordingAction().get( isService ) ) ;
+
+		this.actionTimerBox.removeActionListener( comboSelectedAction ) ;
+		this.actionTimerBox.removeAllItems() ;
+		for (TimerActionItems a : TimerActionItems.values( isService ) )
+			this.actionTimerBox.addItem( a ) ;
+		this.actionTimerBox.addActionListener( comboSelectedAction ) ;
+		this.actionTimerBox.setSelectedItem( this.control.getDVBViewer().getTimerAction().get( isService ) ) ;
+
+	}
 	private void updateText()
 	{
 		this.tvinfoDVBVButton.setText(   GUIStrings.IMPORT_TV
@@ -414,6 +469,7 @@ public class Miscellaneous extends MyTabPanel
 				this.gui.setChanged() ;
 			}
 		}
+		this.updateDVBViewerActions() ;
 		this.updateText() ;
 	}
 }

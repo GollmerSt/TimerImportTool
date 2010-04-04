@@ -15,6 +15,7 @@ import java.util.Iterator;
 
 import dvbv.gui.GUIStrings;
 import dvbv.gui.GUIStrings.ActionAfterItems;
+import dvbv.gui.GUIStrings.TimerActionItems;
 import dvbv.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.swing.JOptionPane;
@@ -151,6 +152,7 @@ public class Control
 		String  dvbServiceMacAddress       = null ;
 		int     dvbServiceWaitTimeAfterWOL = 15 ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
+		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
 		
 
 		while( reader.hasNext() )
@@ -295,6 +297,16 @@ public class Control
 	            			}
 	            			
 	            		}
+	            		else if ( attributeName.equals( "timerAction" ) )
+	            		{
+	            			try {
+	            				dvbViewerTimerAction = TimerActionItems.valueOf( value ) ;
+	            			} catch ( IllegalArgumentException e ) {
+	            				throw new ErrorClass ( ev, "Wrong timerAction format in file \"" + name + "\"" ) ;
+	            			}
+	            			
+	            		}
+	            		
 	            		break ;
 	            	}
 	            }
@@ -357,7 +369,7 @@ public class Control
 			this.dvbViewer.setMacAddress(dvbServiceMacAddress);
 			this.dvbViewer.setWaitTimeAfterWOL(dvbServiceWaitTimeAfterWOL);
 			this.dvbViewer.setAfterRecordingAction(dvbViewerActionAfter);
-		}
+			this.dvbViewer.setTimerAction(dvbViewerTimerAction);		}
 		try {
 			reader.close() ;
 		} catch (XMLStreamException e) {
@@ -391,6 +403,7 @@ public class Control
 		      Provider.writeXML( sw ) ;
 		      sw.writeStartElement( "DVBViewer" ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
+			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			  sw.writeEndElement();
 			  sw.writeStartElement( "DVBService" ) ;
 			  	DVBViewerService dvbs = this.dvbViewer.getService() ;

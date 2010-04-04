@@ -5,6 +5,8 @@
 package dvbv.main ;
 
 
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -23,6 +25,10 @@ public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
+		
+		Date temp = new Date(0) ;
+		System.out.println( temp ) ;
+		System.exit( 0 ) ;
 		
 		GUIStrings.setLanguage( "" ) ;
 		

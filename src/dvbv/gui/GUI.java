@@ -61,6 +61,7 @@ public class GUI {
     private final JButton applyButton = new JButton() ;
     
     private ProviderAssignment providerAssignment = null ;
+    private Miscellaneous miscellaneous = null ;
     
 	private final TreeMap< String, LookAndFeelInfo > lookAndFeelAssignment  
     = new TreeMap< String, LookAndFeelInfo >() ;
@@ -228,12 +229,12 @@ public class GUI {
 	    
 	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
 	    ProviderService tab2 = new ProviderService( this, frame ) ;
-	    Miscellaneous tab3 = new Miscellaneous( this, frame ) ;
+	    this.miscellaneous = new Miscellaneous( this, frame ) ;
 	    this.providerAssignment = new ProviderAssignment( this, frame ) ;
 	    	    
 	    this.tabbedPane.add( GUIStrings.DVBVIEWER_ASSIGNMENT.toString(), tab1); 
 	    this.tabbedPane.add( GUIStrings.PROVIDER_SERVICE.toString(), tab2);
-	    this.tabbedPane.add( GUIStrings.MISCELLANEOUS.toString(), tab3);
+	    this.tabbedPane.add( GUIStrings.MISCELLANEOUS.toString(), this.miscellaneous);
 	    this.tabbedPane.add( GUIStrings.PROVIDER_ASSIGNMENT.toString(), providerAssignment);
 	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
@@ -241,7 +242,7 @@ public class GUI {
 	    this.previousTab = (MyTabPanel)tab1 ;
 	    tab1.paint() ;
 	    tab2.paint() ;
-	    tab3.paint() ;
+	    this.miscellaneous.paint() ;
 	    this.providerAssignment.paint() ;
 
 	 	    
@@ -407,5 +408,9 @@ public class GUI {
 	public void updateIfChannelSetsChanged( Provider p )
 	{
 	 	this.providerAssignment.updateIfChannelSetsChanged( p ) ;
+	}
+	public void updateIfServiceChanged()
+	{
+		this.miscellaneous.updateDVBViewerActions() ;
 	}
 }

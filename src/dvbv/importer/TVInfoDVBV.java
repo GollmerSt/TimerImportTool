@@ -44,12 +44,12 @@ public class TVInfoDVBV {
 		          + File.separator
 		          + NAME_IMPORTFILE ) ;
 		if ( ! f.canRead() )
-			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
+			throw new ErrorClass( f.getAbsolutePath() ) ;
 		FileReader fr;
 		try {
 			fr = new FileReader( f );
 		} catch (FileNotFoundException e) {
-			throw new ErrorClass( "Unexpected error on opening file \"" + f.getAbsolutePath() + "\"" ) ;
+			throw new ErrorClass( f.getAbsolutePath() ) ;
 		}
 		
 		BufferedReader br = new BufferedReader( fr ) ;
@@ -85,7 +85,7 @@ public class TVInfoDVBV {
 				}
 			}
 		} catch (IOException e) {
-			throw new ErrorClass( "Unexpected error on reading file \"" + f.getAbsolutePath() + "\"" ) ;
+			throw new ErrorClass( f.getAbsolutePath() ) ;
 		}
 	}
 }

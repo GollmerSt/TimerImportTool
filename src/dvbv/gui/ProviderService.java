@@ -287,6 +287,7 @@ public class ProviderService extends MyTabPanel {
 				{
 					dvbs.setEnabled( serviceEnabled ) ;
 					gui.setChanged() ;
+					gui.updateIfServiceChanged() ;
 				}
 			}
 			if ( source == wolEnableBox || source == serviceEnableBox )
