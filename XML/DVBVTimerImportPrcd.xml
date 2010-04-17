@@ -1,134 +1,93 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Processed xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportPrcd.xsd">
-    <Entry id="0" isFilterElement="true" statusService="REMOVED" channel="543583690|Das Erste (deu)" start="1268958900000" end="1268967000000" startOrg="1268959800000" endOrg="1268965200000" mergeStatus="DISABLED" provider="TVInfo" missingSince="1269042040382" missingSyncSince="2">
-        <Title>Die zwölf Geschworenen</Title>
-    </Entry>
-    <Entry id="1" isFilterElement="true" statusService="REMOVED" channel="545271540|RTL2" start="1268971500000" end="1268976600000" startOrg="1268972400000" endOrg="1268974800000" mergeStatus="ENABLED" provider="TVInfo" missingSince="1269042040382" missingSyncSince="2">
-        <Title>Hinterm Sofa an der Front - Gut abgegangen! (The Graduate)</Title>
-    </Entry>
-    <Entry id="2" isFilterElement="true" statusService="REMOVED" channel="553665628|SAT.1" start="1269030600000" end="1269035400000" startOrg="1269031500000" endOrg="1269033600000" mergeStatus="ENABLED" provider="TVInfo" missingSince="1269042040382" missingSyncSince="2">
-        <Title>Pastewka - Der Kochkurs</Title>
-    </Entry>
-    <Entry id="3" isFilterElement="true" statusService="REMOVED" channel="545271540|RTL2" start="1268971500000" end="1268976600000" startOrg="1268972400000" endOrg="1268974800000" mergeStatus="ENABLED" provider="TVInfo" missingSince="1269042040382" missingSyncSince="2">
-        <Title>Hinterm Sofa an der Front - Wer ohne Schuld ist... der wohne nicht bei den Golds (A Bitter Pill To Swallow)</Title>
-    </Entry>
-    <Entry id="5" isFilterElement="true" statusService="REMOVED" channel="553665628|SAT.1" start="1269041400000" end="1269045900000" startOrg="1269042300000" endOrg="1269044100000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>WAS GUCKST DU?!</Title>
-    </Entry>
-    <Entry id="6" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1269064500000" end="1269068700000" startOrg="1269065400000" endOrg="1269066900000" mergeStatus="DISABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Shaun, das Schaf - Die Nichte des Farmers / Schnarchalarm / Pizzaservice</Title>
-    </Entry>
-    <Entry id="7" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1269079500000" end="1269084300000" startOrg="1269080400000" endOrg="1269082500000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Bully &amp; Rick - Best of (2)</Title>
-    </Entry>
-    <Entry id="8" isFilterElement="true" statusService="ENABLED" channel="545271540|RTL2" start="1269150900000" end="1269159900000" startOrg="1269151800000" endOrg="1269158100000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Flug in die Vergangenheit</Title>
-    </Entry>
-    <Entry id="9" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1269152700000" end="1269158400000" startOrg="1269153600000" endOrg="1269156600000" mergeStatus="DISABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Meister Eder und sein Pumuckl - Das Spanferkelessen / Pumuckl und Puwackl</Title>
-    </Entry>
-    <Entry id="10" isFilterElement="true" statusService="ENABLED" channel="582905296|BR-alpha*" start="1269162000000" end="1269166500000" startOrg="1269162900000" endOrg="1269164700000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Bibliothek der Sachgeschichten - E (3) - wie E-Werk, Eidechsengeburt, Eisbär</Title>
-    </Entry>
-    <Entry id="11" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269168300000" end="1269174600000" startOrg="1269169200000" endOrg="1269172800000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>WAS GUCKST DU?!,,WAS GUCKST DU?!</Title>
-        <MergedWith>
-            <Id>35</Id>
-            <Id>12</Id>
-        </MergedWith>
-    </Entry>
-    <Entry id="12" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269170100000" end="1269174600000" startOrg="1269171000000" endOrg="1269172800000" mergeStatus="ENABLED" mergeID="11" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>WAS GUCKST DU?!</Title>
-    </Entry>
-    <Entry id="13" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269171900000" end="1269178200000" startOrg="1269172800000" endOrg="1269176400000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Mensch Markus,,Mensch Markus</Title>
-        <MergedWith>
-            <Id>38</Id>
-            <Id>14</Id>
-        </MergedWith>
-    </Entry>
-    <Entry id="14" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269173700000" end="1269178200000" startOrg="1269174600000" endOrg="1269176400000" mergeStatus="ENABLED" mergeID="13" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Mensch Markus</Title>
-    </Entry>
-    <Entry id="15" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269182700000" end="1269190500000" startOrg="1269183600000" endOrg="1269188700000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>DIE DREISTEN DREI - DIE COMEDY WG,,DIE DREISTEN DREI - DIE COMEDY WG,,DIE DREISTEN DREI - DIE COMEDY WG</Title>
-        <MergedWith>
-            <Id>36</Id>
-            <Id>16</Id>
-            <Id>17</Id>
-        </MergedWith>
-    </Entry>
-    <Entry id="16" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269184500000" end="1269189000000" startOrg="1269185400000" endOrg="1269187200000" mergeStatus="ENABLED" mergeID="15" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>DIE DREISTEN DREI - DIE COMEDY WG</Title>
-    </Entry>
-    <Entry id="17" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269186300000" end="1269190500000" startOrg="1269187200000" endOrg="1269188700000" mergeStatus="ENABLED" mergeID="15" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>DIE DREISTEN DREI - DIE COMEDY WG</Title>
-    </Entry>
-    <Entry id="18" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1269342600000" end="1269345600000" startOrg="1269343500000" endOrg="1269343800000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="32" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1271327760000" end="1271330700000" startOrg="1271328660000" endOrg="1271328900000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>Classic Cartoon - Der rosarote Panther: Der rosarote Hundeschreck</Title>
     </Entry>
-    <Entry id="19" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1269391200000" end="1269396000000" startOrg="1269392100000" endOrg="1269394200000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Bully &amp; Rick - Best of (2)</Title>
+    <Entry id="33" isFilterElement="true" statusService="ENABLED" channel="545795868|VOX" start="1271354400000" end="1271364300000" startOrg="1271355300000" endOrg="1271362500000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Der Flug des Phoenix</Title>
     </Entry>
-    <Entry id="20" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1269429000000" end="1269432000000" startOrg="1269429900000" endOrg="1269430200000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Classic Cartoon - Der rosarote Panther: Der rosarote Spätzünder</Title>
+    <Entry id="34" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1271414160000" end="1271417100000" startOrg="1271415060000" endOrg="1271415300000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Classic Cartoon - Der rosarote Panther: Der rosarote Fotoschreck</Title>
     </Entry>
-    <Entry id="21" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1269515400000" end="1269518400000" startOrg="1269516300000" endOrg="1269516600000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Classic Cartoon - Der rosarote Panther: Der rosarote Fischfreund</Title>
+    <Entry id="35" isFilterElement="true" statusService="ENABLED" channel="545795868|VOX" start="1271425500000" end="1271435400000" startOrg="1271426400000" endOrg="1271433600000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Der Flug des Phoenix</Title>
     </Entry>
-    <Entry id="22" isFilterElement="true" statusService="ENABLED" channel="545795868|VOX" start="1269543600000" end="1269555000000" startOrg="1269544500000" endOrg="1269553200000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Jurassic Park</Title>
-    </Entry>
-    <Entry id="23" isFilterElement="true" statusService="ENABLED" channel="545795868|VOX" start="1269560400000" end="1269570000000" startOrg="1269561300000" endOrg="1269568200000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Jurassic Park</Title>
-    </Entry>
-    <Entry id="24" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1269601800000" end="1269604800000" startOrg="1269602700000" endOrg="1269603000000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Classic Cartoon - Der rosarote Panther: Rosarot und gut gewogen</Title>
-    </Entry>
-    <Entry id="25" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1269635400000" end="1269640200000" startOrg="1269636300000" endOrg="1269638400000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Pastewka - Ein Tag mit Frau Bruck</Title>
-    </Entry>
-    <Entry id="26" isFilterElement="false" statusService="ENABLED" channel="553665628|SAT.1" start="1269644400000" end="1269650700000" startOrg="1269645300000" endOrg="1269648900000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>WAS GUCKST DU?!,,WAS GUCKST DU?!</Title>
-        <MergedWith>
-            <Id>37</Id>
-            <Id>27</Id>
-        </MergedWith>
-    </Entry>
-    <Entry id="27" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269646200000" end="1269650700000" startOrg="1269647100000" endOrg="1269648900000" mergeStatus="ENABLED" mergeID="26" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="36" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271454300000" end="1271458800000" startOrg="1271455200000" endOrg="1271457000000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>WAS GUCKST DU?!</Title>
     </Entry>
-    <Entry id="28" isFilterElement="true" statusService="ENABLED" channel="544763238|ZDF (deu)" start="1269681600000" end="1269685800000" startOrg="1269682500000" endOrg="1269684000000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Löwenzahn - Wildes Kraut - Der unschlagbare Löwenzahn</Title>
-    </Entry>
-    <Entry id="29" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1269684600000" end="1269689100000" startOrg="1269685500000" endOrg="1269687300000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Bully &amp; Rick - Eheberatung</Title>
-    </Entry>
-    <Entry id="30" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1269757500000" end="1269763200000" startOrg="1269758400000" endOrg="1269761400000" mergeStatus="DISABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Meister Eder und sein Pumuckl - Pumuckl und die Angst / Der verhängnisvolle Schlagrahm</Title>
-    </Entry>
-    <Entry id="31" isFilterElement="true" statusService="ENABLED" channel="544763238|ZDF (deu)" start="1269760800000" end="1269765000000" startOrg="1269761700000" endOrg="1269763200000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Löwenzahn - Entwicklung des Lebens - Das schlaue Wunder</Title>
-    </Entry>
-    <Entry id="32" isFilterElement="true" statusService="ENABLED" channel="582905296|BR-alpha*" start="1269766800000" end="1269771300000" startOrg="1269767700000" endOrg="1269769500000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Bibliothek der Sachgeschichten - F (3) - wie Fliegenstart, Fußball, Feuerwehrlied</Title>
-    </Entry>
-    <Entry id="33" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1269773400000" end="1269777900000" startOrg="1269774300000" endOrg="1269776100000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="37" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271456100000" end="1271460300000" startOrg="1271457000000" endOrg="1271458500000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>WAS GUCKST DU?!</Title>
     </Entry>
-    <Entry id="34" isFilterElement="true" statusService="REMOVED" channel="553665628|SAT.1" start="1269039600000" end="1269044100000" startOrg="1269040500000" endOrg="1269042300000" mergeStatus="ENABLED" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="38" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1271494500000" end="1271499000000" startOrg="1271495400000" endOrg="1271497200000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>TRAMITZ and friends</Title>
+    </Entry>
+    <Entry id="39" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1271496300000" end="1271500800000" startOrg="1271497200000" endOrg="1271499000000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Bully &amp; Rick - Call Center</Title>
+    </Entry>
+    <Entry id="40" isFilterElement="true" statusService="ENABLED" channel="671088743|DAS VIERTE" start="1271527200000" end="1271537400000" startOrg="1271528100000" endOrg="1271535600000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Der gezähmte Widerspenstige</Title>
+    </Entry>
+    <Entry id="41" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1271568300000" end="1271574000000" startOrg="1271569200000" endOrg="1271572200000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Meister Eder und sein Pumuckl - Das Spielzeugauto / Pumuckl und die Obstbäume</Title>
+    </Entry>
+    <Entry id="42" isFilterElement="true" statusService="ENABLED" channel="544763238|ZDF (deu)" start="1271571600000" end="1271575800000" startOrg="1271572500000" endOrg="1271574000000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Löwenzahn - Ratten - Der Fänger von Bärstadt</Title>
+    </Entry>
+    <Entry id="43" isFilterElement="true" statusService="ENABLED" channel="628780871|BR-alpha" start="1271577600000" end="1271582100000" startOrg="1271578500000" endOrg="1271580300000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Bibliothek der Sachgeschichten - P (3) - wie Pumpe, Putzer, Printen, Pudel trimmen und Pflasterstein</Title>
+    </Entry>
+    <Entry id="44" isFilterElement="true" statusService="ENABLED" channel="556690892|hr-fernsehen (deu)" start="1271581200000" end="1271586600000" startOrg="1271582100000" endOrg="1271584800000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Georg Ringsgwandl - Kasperl oder Genie? Kabarettist!</Title>
+    </Entry>
+    <Entry id="45" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271583900000" end="1271588100000" startOrg="1271584800000" endOrg="1271586300000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>WAS GUCKST DU?!</Title>
     </Entry>
-    <Entry id="35" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269168300000" end="1269172800000" startOrg="1269169200000" endOrg="1269171000000" mergeStatus="ENABLED" mergeID="11" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="46" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271585400000" end="1271589900000" startOrg="1271586300000" endOrg="1271588100000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>WAS GUCKST DU?!</Title>
     </Entry>
-    <Entry id="36" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269182700000" end="1269187200000" startOrg="1269183600000" endOrg="1269185400000" mergeStatus="ENABLED" mergeID="15" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="47" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271587200000" end="1271591700000" startOrg="1271588100000" endOrg="1271589900000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Mensch Markus</Title>
+    </Entry>
+    <Entry id="48" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271589000000" end="1271593500000" startOrg="1271589900000" endOrg="1271591700000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Mensch Markus</Title>
+    </Entry>
+    <Entry id="49" isFilterElement="true" statusService="ENABLED" channel="587220062|kabel eins" start="1271589300000" end="1271597700000" startOrg="1271590200000" endOrg="1271595900000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Ödipussi</Title>
+    </Entry>
+    <Entry id="50" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1271598000000" end="1271602500000" startOrg="1271598900000" endOrg="1271600700000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>DIE DREISTEN DREI - DIE COMEDY WG</Title>
     </Entry>
-    <Entry id="37" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269644400000" end="1269648900000" startOrg="1269645300000" endOrg="1269647100000" mergeStatus="ENABLED" mergeID="26" provider="TVInfo" missingSince="-1" missingSyncSince="0">
+    <Entry id="51" isFilterElement="true" statusService="ENABLED" channel="557870440|KiKa" start="1271598300000" end="1271602500000" startOrg="1271599200000" endOrg="1271600700000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Löwenzahn - Ratten - Der Fänger von Bärstadt</Title>
+    </Entry>
+    <Entry id="52" isFilterElement="true" statusService="ENABLED" channel="563245108|arte (ger)" start="1271988300000" end="1271992800000" startOrg="1271989200000" endOrg="1271991000000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Rien ne va plus</Title>
+    </Entry>
+    <Entry id="53" isFilterElement="true" statusService="ENABLED" channel="544747272|Super RTL" start="1272045600000" end="1272055500000" startOrg="1272046500000" endOrg="1272053700000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Wallace &amp; Gromit : Auf Leben und Brot</Title>
+    </Entry>
+    <Entry id="54" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1272045600000" end="1272056700000" startOrg="1272046500000" endOrg="1272054900000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Die Comedy-Falle</Title>
+    </Entry>
+    <Entry id="55" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1272059100000" end="1272063600000" startOrg="1272060000000" endOrg="1272061800000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
         <Title>WAS GUCKST DU?!</Title>
     </Entry>
-    <Entry id="38" isFilterElement="true" statusService="DISABLED" channel="553665628|SAT.1" start="1269171900000" end="1269176400000" startOrg="1269172800000" endOrg="1269174600000" mergeStatus="ENABLED" mergeID="13" provider="TVInfo" missingSince="-1" missingSyncSince="0">
-        <Title>Mensch Markus</Title>
+    <Entry id="56" isFilterElement="true" statusService="ENABLED" channel="553665628|SAT.1" start="1272060900000" end="1272065400000" startOrg="1272061800000" endOrg="1272063600000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>WAS GUCKST DU?!</Title>
+    </Entry>
+    <Entry id="57" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1272096900000" end="1272101400000" startOrg="1272097800000" endOrg="1272099600000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>TRAMITZ and friends</Title>
+    </Entry>
+    <Entry id="58" isFilterElement="true" statusService="ENABLED" channel="544763238|ZDF (deu)" start="1272097200000" end="1272101400000" startOrg="1272098100000" endOrg="1272099600000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Löwenzahn - Magnete - Im Zauber der magischen Kraft</Title>
+    </Entry>
+    <Entry id="59" isFilterElement="true" statusService="ENABLED" channel="570442845|ProSieben" start="1272098700000" end="1272103500000" startOrg="1272099600000" endOrg="1272101700000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Bully &amp; Rick - Elternsprechstunde</Title>
+    </Entry>
+    <Entry id="60" isFilterElement="true" statusService="ENABLED" channel="671088743|DAS VIERTE" start="1272132000000" end="1272141900000" startOrg="1272132900000" endOrg="1272140100000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Gib dem Affen Zucker</Title>
+    </Entry>
+    <Entry id="61" isFilterElement="true" statusService="ENABLED" channel="543583690|Das Erste (deu)" start="1272173100000" end="1272178800000" startOrg="1272174000000" endOrg="1272177000000" timerAction="RECORD" actionAfter="HIBERNATE" mergeStatus="DISABLED" provider="TVInfo" enable="false" missingSince="-1" missingSyncSince="0">
+        <Title>Meister Eder und sein Pumuckl - Pumuckl und die Maus / Das Segelboot</Title>
     </Entry>
 </Processed>

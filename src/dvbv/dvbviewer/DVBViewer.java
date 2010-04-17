@@ -255,7 +255,10 @@ public class DVBViewer {
 				this.mergeXMLWithServiceData() ;
 			}
 			else
+			{
 				this.recordEntries = this.readXML() ;
+				
+			}
 		}
 	}
 	private void addRecordingEntry( DVBViewerEntry entry )

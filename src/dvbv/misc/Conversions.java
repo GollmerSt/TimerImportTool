@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -19,6 +20,7 @@ public final class Conversions {
 	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
 	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
 	private final static SimpleDateFormat svcDayTimeFormat = new SimpleDateFormat("dd.MM.yyyyHH:mm"); ;
+	private final static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin");
 	
 	static long calcSvcTimeCorrection()
 	{
@@ -100,9 +102,9 @@ public final class Conversions {
 	{
 		GregorianCalendar c = new GregorianCalendar() ;
 		c.setTime(new Date(d) ) ;
-		long t = c.getTimeInMillis() + (long)c.get(java.util.Calendar.ZONE_OFFSET) ;
+		long t = c.getTimeInMillis() + (long) timeZone.getOffset( d ) ;
 		//System.out.println(t%(1000*60*60*24) ) ;
-		return Long.toString( t  / 1000 / 60 / 60 / 24 +  + 25569 ) ;
+		return Long.toString( t  / 1000 / 60 / 60 / 24 + 25569 ) ;
 	}
 	public static String longToSvcMinutesString( long d )
 	{

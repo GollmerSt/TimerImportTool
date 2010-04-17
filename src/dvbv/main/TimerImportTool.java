@@ -5,8 +5,6 @@
 package dvbv.main ;
 
 
-import java.util.Date;
-
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -26,9 +24,10 @@ public final class TimerImportTool {
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
 		
-		Date temp = new Date(0) ;
-		System.out.println( temp ) ;
-		System.exit( 0 ) ;
+		//DVBViewerCOM.connect() ;
+		//String multi = DVBViewerCOM.getSetupValue( "General", "Multimonitor", "0" ) ;
+		//System.out.println( "Multi = " + multi ) ;
+		//DVBViewerCOM.disconnect() ;
 		
 		GUIStrings.setLanguage( "" ) ;
 		

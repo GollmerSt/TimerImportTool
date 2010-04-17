@@ -440,16 +440,34 @@ public class Miscellaneous extends MyTabPanel
 		this.actionAfterBox.removeAllItems() ;
 		for (ActionAfterItems a : ActionAfterItems.values( isService ) )
 			this.actionAfterBox.addItem( a ) ;
-		this.actionAfterBox.addActionListener( comboSelectedAction ) ;
-		this.actionAfterBox.setSelectedItem( this.control.getDVBViewer().getAfterRecordingAction().get( isService ) ) ;
+		
+		ActionAfterItems after = this.control.getDVBViewer().getAfterRecordingAction() ;
+		if ( after != after.get( isService ) )
+		{
+			this.actionAfterBox.addActionListener( comboSelectedAction ) ;
+			this.actionAfterBox.setSelectedItem( after.get( isService ) ) ;
+		}
+		else
+		{
+			this.actionAfterBox.setSelectedItem( after.get( isService ) ) ;
+			this.actionAfterBox.addActionListener( comboSelectedAction ) ;
+		}
 
 		this.actionTimerBox.removeActionListener( comboSelectedAction ) ;
 		this.actionTimerBox.removeAllItems() ;
 		for (TimerActionItems a : TimerActionItems.values( isService ) )
 			this.actionTimerBox.addItem( a ) ;
-		this.actionTimerBox.addActionListener( comboSelectedAction ) ;
-		this.actionTimerBox.setSelectedItem( this.control.getDVBViewer().getTimerAction().get( isService ) ) ;
-
+		TimerActionItems timer = this.control.getDVBViewer().getTimerAction() ;
+		if ( timer != timer.get( isService ) )
+		{
+			this.actionTimerBox.addActionListener( comboSelectedAction ) ;
+			this.actionTimerBox.setSelectedItem( timer.get( isService ) ) ;
+		}
+		else
+		{
+			this.actionTimerBox.setSelectedItem( timer.get( isService ) ) ;
+			this.actionTimerBox.addActionListener( comboSelectedAction ) ;
+		}
 	}
 	private void updateText()
 	{

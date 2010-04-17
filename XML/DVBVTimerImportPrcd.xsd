@@ -54,6 +54,31 @@
     	<xsd:attribute name="end" type="long" use="required"></xsd:attribute>
     	<xsd:attribute name="startOrg" type="long" use="required"></xsd:attribute>
     	<xsd:attribute name="endOrg" type="long" use="required"></xsd:attribute>
+    	<xsd:attribute name="timerAction">
+    		<xsd:simpleType>
+    			<xsd:restriction base="xsd:string">
+    				<xsd:enumeration value="RECORD"></xsd:enumeration>
+    				<xsd:enumeration value="TUNE"></xsd:enumeration>
+    				<xsd:enumeration value="AUDIO_PLUGIN"></xsd:enumeration>
+    				<xsd:enumeration value="VIDEO_PLUGIN"></xsd:enumeration>
+    				<xsd:enumeration value="DEFAULT"></xsd:enumeration>
+    			</xsd:restriction>
+    		</xsd:simpleType>
+    	</xsd:attribute>
+    	<xsd:attribute name="actionAfter">
+    		<xsd:simpleType>
+    			<xsd:restriction base="xsd:string">
+    				<xsd:enumeration value="NONE"></xsd:enumeration>
+    				<xsd:enumeration value="POWER_OFF"></xsd:enumeration>
+    				<xsd:enumeration value="STANDBY"></xsd:enumeration>
+    				<xsd:enumeration value="HIBERNATE"></xsd:enumeration>
+    				<xsd:enumeration value="CLOSE"></xsd:enumeration>
+    				<xsd:enumeration value="PLAYLIST"></xsd:enumeration>
+    				<xsd:enumeration value="SLUMBERMODE"></xsd:enumeration>
+    				<xsd:enumeration value="DEFAULT"></xsd:enumeration>
+    			</xsd:restriction>
+    		</xsd:simpleType>
+    	</xsd:attribute>
     	<xsd:attribute name="mergeStatus" type="MergeStatus"
     		use="required">
     	</xsd:attribute>
@@ -66,8 +91,8 @@
     			</xsd:restriction>
     		</xsd:simpleType>
     	</xsd:attribute>
-    	<xsd:attribute name="missingSince" type="long"
-    		use="optional">
+    	<xsd:attribute name="enable" type="xsd:boolean"></xsd:attribute>
+    	<xsd:attribute name="missingSince" type="long" use="optional">
     	</xsd:attribute>
     	<xsd:attribute name="missingSyncSince" type="xsd:int"
     		use="optional">

@@ -127,15 +127,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.toDo = toDo ;
 	}
 
-/*	public DVBViewerEntry( boolean enable, String channel, long start, long end, String title )
-	{
-		this( -1, false, StatusService.ENABLED , -1, channel,
-			  start ,end , start, end, title, MergeStatus.UNKNOWN, -1, null, new OutDatedInfo(), ToDo.NEW ) ;
-
-		this.statusService = enable? StatusService.ENABLED : StatusService.DISABLED ;
-
-	}
-*/	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end,
+	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end,
                            String title, TimerActionItems timerAction, ActionAfterItems actionAfter )
 	{
 		this( -1, false, StatusService.ENABLED , serviceID, channel, start ,end ,
