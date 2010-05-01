@@ -32,6 +32,7 @@ import dvbv.Resources.ResourceManager;
 import dvbv.clickfinder.ClickFinder;
 import dvbv.dvbviewer.DVBViewer ;
 import dvbv.dvbviewer.DVBViewerService ;
+import dvbv.main.Versions;
 import dvbv.misc.* ;
 import dvbv.provider.Provider;
 import dvbv.tvgenial.TVGenial;
@@ -42,10 +43,11 @@ public class Control
 {
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
 	
-	private enum BlockType { INVALID , CHANNEL_PROVIDER, DVBSERVICE, DVBVIEWER, 
-		                     GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
+	private enum BlockType { INVALID , IMPORTER, CHANNEL_PROVIDER, DVBSERVICE,
+							 DVBVIEWER, GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
 	private final DVBViewer dvbViewer ;
+	private final StackXML<String> pathImporter   		= new StackXML<String>( "Importer" ) ;
 	private final StackXML<String> pathProviders		= new StackXML<String>( "Importer", "Providers" ) ;
 	private final StackXML<String> pathService			= new StackXML<String>( "Importer", "DVBService" ) ;
 	private final StackXML<String> pathGlobalOffsets	= new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
@@ -67,7 +69,7 @@ public class Control
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
-		
+	
 	public Control( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
@@ -98,6 +100,8 @@ public class Control
 
 	public void read( InputStream inputStream, String name )
 	{	
+		boolean versionChanged = true ;
+		
 		StreamSource source = null ;
 		if ( inputStream == null )
 		{
@@ -167,7 +171,9 @@ public class Control
 			{
 				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
 				BlockType type = BlockType.INVALID ;
-				if ( stack.equals( this.pathProviders ) )
+				if ( stack.equals( this.pathImporter ) )
+					type = BlockType.IMPORTER ;
+				else if ( stack.equals( this.pathProviders ) )
 					try {
 						Provider.readXML( reader, name ) ;
 						stack.pop() ;
@@ -175,7 +181,7 @@ public class Control
 					} catch (XMLStreamException e1) {
 						throw new ErrorClass( e1, "XML syntax error in file \"" + name + "\"" );
 					}
-				if ( stack.equals( this.pathChannelProvider ) )
+				else if ( stack.equals( this.pathChannelProvider ) )
 					type = BlockType.CHANNEL_PROVIDER ;
 				else if ( stack.equals( this.pathService ) )
 					type = BlockType.DVBSERVICE ;
@@ -221,6 +227,13 @@ public class Control
 	            	String value = a.getValue() ;
 	            	switch ( type )
 	            	{
+	            	case IMPORTER :
+	            		if      ( attributeName.equals( "programVersion" ) )
+	            		{
+	            			if ( Versions.getVersion().equals( value ) )
+	            				versionChanged = false ;
+	            		}
+	            		break ;
 	            	case CHANNEL_PROVIDER :
 	            		if      ( attributeName.equals( "name" ) )
 	            		{
@@ -295,7 +308,6 @@ public class Control
 	            			} catch ( IllegalArgumentException e ) {
 	            				throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + name + "\"" ) ;
 	            			}
-	            			
 	            		}
 	            		else if ( attributeName.equals( "timerAction" ) )
 	            		{
@@ -306,8 +318,6 @@ public class Control
 	            			}
 	            			
 	            		}
-	            		
-	            		break ;
 	            	}
 	            }
 	            if (    type == BlockType.CHANNEL_OFFSETS
@@ -375,6 +385,11 @@ public class Control
 		} catch (XMLStreamException e) {
 			throw new ErrorClass( e, "Unexpected error on closing the file \"" + name + "\"" );
 		}
+		if ( versionChanged )
+		{
+			DVBViewer.getDVBViewerCOMDllAndCheckVersion() ;
+			this.write() ;
+		}
 	}
 	public void write()
 	{
@@ -400,6 +415,7 @@ public class Control
 			sw.writeStartElement( "Importer" ) ;
 		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
+		    sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
 		      Provider.writeXML( sw ) ;
 		      sw.writeStartElement( "DVBViewer" ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;

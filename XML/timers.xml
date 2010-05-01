@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<settings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="timers.xsd">
+    <section name="VCR">
+      <entry name="0">WAS GUCKST DU?!;553665628|SAT.1;01.05.2010;00:30:00;01:40:00;0;-------;0;true;false</entry>
+      <entry name="1">Harry und Sally;740191815|SWR Fernsehen RP (ger);01.05.2010;01:30:00;03:45:00;0;-------;0;true;false</entry>
+      <entry name="2">Cosmic Quantum Ray - Robo-Robbie;557870440|KiKa;01.05.2010;12:25:00;13:30:00;0;-------;0;true;false</entry>
+      <entry name="3">Wer hat dem Affen den Zucker geklaut?;671088743|DAS VIERTE - CV;01.05.2010;20:00:00;23:00:00;0;-------;0;true;false</entry>
+      <entry name="4">Louis taut auf;740191815|SWR Fernsehen RP (ger);02.05.2010;00:50:00;02:55:00;0;-------;0;true;false</entry>
+      <entry name="5">Meister Eder und sein Pumuckl - Die Bergtour / Die Blechb&#xFC;chsen;543583690|Das Erste (deu);02.05.2010;07:25:00;09:00:00;0;-------;0;true;false</entry>
+      <entry name="6">Bibliothek der Sachgeschichten - S (3) - wie Steinzeithaus;582905296|BR-alpha*;02.05.2010;10:00:00;11:15:00;0;-------;0;true;false</entry>
+      <entry name="7">Switch - Die Frau im Manne;543698659|RTL Television;02.05.2010;10:05:00;12:50:00;0;-------;0;true;false</entry>
+      <entry name="8">WAS GUCKST DU?!,,WAS GUCKST DU?!;553665628|SAT.1;02.05.2010;11:45:00;13:30:00;0;-------;0;true;false</entry>
+      <entry name="9">WAS GUCKST DU?!;553665628|SAT.1;02.05.2010;12:15:00;13:30:00;0;-------;0;false;false</entry>
+      <entry name="10">Mensch Markus,,Mensch Markus;553665628|SAT.1;02.05.2010;12:45:00;14:25:00;0;-------;0;true;false</entry>
+      <entry name="11">Mensch Markus;553665628|SAT.1;02.05.2010;13:10:00;14:25:00;0;-------;0;false;false</entry>
+      <entry name="12">DIE DREISTEN DREI - DIE COMEDY WG,,DIE DREISTEN DREI - DIE COMEDY WG;553665628|SAT.1;02.05.2010;15:40:00;17:20:00;0;-------;0;true;false</entry>
+      <entry name="13">DIE DREISTEN DREI - DIE COMEDY WG;553665628|SAT.1;02.05.2010;16:10:00;17:20:00;0;-------;0;false;false</entry>
+      <entry name="14">DIE DREISTEN DREI - DIE COMEDY WG;553665628|SAT.1;02.05.2010;16:35:00;17:50:00;0;-------;0;true;false</entry>
+      <entry name="15">Immer &#xC4;rger mit Harry;543583690|Das Erste (deu);04.05.2010;00:35:00;02:55:00;0;-------;0;true;false</entry>
+      <entry name="16">Adel verpflichtet;556690892|hr-fernsehen (deu);04.05.2010;00:40:00;03:05:00;0;-------;0;true;false</entry>
+      <entry name="17">Classic Cartoon - Der rosarote Panther: Der rosarote Sp&#xE4;tz&#xFC;nder;557870440|KiKa;04.05.2010;12:35:00;13:25:00;0;-------;0;true;false</entry>
+      <entry name="18">Classic Cartoon - Der rosarote Panther: Der rosarote Regenzauber;557870440|KiKa;05.05.2010;12:35:00;13:25:00;0;-------;0;true;false</entry>
+      <entry name="19">Fantomas;671088743|DAS VIERTE - CV;05.05.2010;20:00:00;22:50:00;0;-------;0;true;false</entry>
+      <entry name="20">Fantomas;671088743|DAS VIERTE - CV;06.05.2010;03:05:00;05:30:00;0;-------;0;true;false</entry>
+      <entry name="21">Classic Cartoon - Der rosarote Panther: Supermann in rosarot;557870440|KiKa;06.05.2010;12:35:00;13:25:00;0;-------;0;true;false</entry>
+      <entry name="22">Classic Cartoon - Der rosarote Panther: Der rosarote Ladenschreck;557870440|KiKa;07.05.2010;12:35:00;13:25:00;0;-------;0;true;false</entry>
+      <entry name="23">WAS GUCKST DU?!,,WAS GUCKST DU?!;553665628|SAT.1;08.05.2010;00:00:00;01:40:00;0;-------;0;true;false</entry>
+      <entry name="24">WAS GUCKST DU?!;553665628|SAT.1;08.05.2010;00:30:00;01:40:00;0;-------;0;false;false</entry>
+      <entry name="25">Rien ne va plus;563245108|arte (ger);08.05.2010;02:05:00;03:20:00;0;-------;0;true;false</entry>
+      <entry name="26">TRAMITZ and friends,,Bully &amp; Rick - Am Pool;570442845|ProSieben;08.05.2010;10:45:00;12:35:00;0;-------;0;true;false</entry>
+      <entry name="27">Bully &amp; Rick - Am Pool;570442845|ProSieben;08.05.2010;11:15:00;12:35:00;0;-------;0;false;false</entry>
+      <entry name="28">WAS GUCKST DU?!;553665628|SAT.1;01.05.2010;00:00:00;01:15:00;0;-------;0;true;false</entry>
+      <entry name="29">WAS GUCKST DU?!;553665628|SAT.1;02.05.2010;11:45:00;13:00:00;0;-------;0;false;false</entry>
+      <entry name="30">DIE DREISTEN DREI - DIE COMEDY WG;553665628|SAT.1;02.05.2010;15:40:00;16:55:00;0;-------;0;false;false</entry>
+      <entry name="31">WAS GUCKST DU?!;553665628|SAT.1;08.05.2010;00:00:00;01:15:00;0;-------;0;false;false</entry>
+      <entry name="32">TRAMITZ and friends;570442845|ProSieben;08.05.2010;10:45:00;12:00:00;0;-------;0;false;false</entry>
+      <entry name="33">Mensch Markus;553665628|SAT.1;02.05.2010;12:45:00;13:55:00;0;-------;0;false;false</entry>
+    </section>
+  </settings>

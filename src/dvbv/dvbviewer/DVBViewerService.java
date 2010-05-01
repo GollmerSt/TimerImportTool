@@ -194,6 +194,8 @@ public class DVBViewerService {
 			query += "&encoding=255" ;
 			query += "&start=" + Conversions.longToSvcMinutesString( e.getStart() ) ;
 			query += "&stop=" + Conversions.longToSvcMinutesString( e.getEnd() ) ;
+			if ( !e.getDays().equals("-------"))
+				query += "&days=" + e.getDays() ;
 			String title = e.getTitle() ;
 			if ( e.getActionAfter() != ActionAfterItems.DEFAULT )
 				query += "&endact=" + e.getActionAfter().getServiceID() ;
@@ -246,6 +248,16 @@ public class DVBViewerService {
 			throw new ErrorClass( e1, "Unexpected error on acces to the DVBViewerService" );
 		}
 	} ;
+	public void setTimers( ArrayList<DVBViewerEntry> entries )
+	{
+		for ( DVBViewerEntry d : entries )
+			if ( d.mustDeleted() )
+				this.setTimerEntry( d  ) ;
+		
+		for ( DVBViewerEntry d : entries )
+			if ( ! d.mustIgnored() && ! d.mustDeleted() )
+				this.setTimerEntry( d ) ;
+	}
 	public ArrayList<DVBViewerEntry> readTimers()
 	{
 		this.getVersion() ;
@@ -262,6 +274,7 @@ public class DVBViewerService {
 			String dateString  = null ;
 			String startString = null ;
 			String endString   = null ;
+			String days        = "-------" ;
 			String title       = null ;
 			ActionAfterItems actionAfter = ActionAfterItems.NONE ;
 			TimerActionItems timerAction = TimerActionItems.RECORD ;
@@ -281,6 +294,7 @@ public class DVBViewerService {
 						dateString  = null ;
 						startString = null ;
 						endString   = null ;
+						days        = "-------" ;
 						actionAfter = ActionAfterItems.NONE ;
 						title       = "" ;
 						id          = -1 ;
@@ -314,6 +328,8 @@ public class DVBViewerService {
 									startString = value ;
 								else if ( attributeName.equals( "End") )
 									endString   = value ;
+								else if ( attributeName.equals( "Days") )
+									days   = value ;
 								else if ( attributeName.equals( "ShutDown" ) )
 									actionAfter = ActionAfterItems.get( Integer.valueOf( value ) ) ;
 								else if ( attributeName.equals( "Action" ) )
@@ -370,7 +386,7 @@ public class DVBViewerService {
 						}
 						if ( start > end )
 							end += Constants.DAYMILLSEC ;
-						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, title, timerAction, actionAfter ) ;
+						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, days, title, timerAction, actionAfter ) ;
 						result.add(entry) ;
 					}
 					stack.pop() ;

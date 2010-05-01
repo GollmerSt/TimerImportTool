@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+
+
+    <element name="settings">
+    	<complexType>
+    		<sequence>
+    			<element name="section">
+    				<complexType>
+    					<sequence minOccurs="0" maxOccurs="unbounded">
+    						<element name="entry">
+    							<complexType>
+                                    <annotation>
+                                    	<documentation>Filed limiter:	 ';'
+Elternsprechstunde;570442845|ProSieben;28.04.2010;01:45:00;03:00:00;0;-------;0;true;false
+
+1.	Description
+2.	ChannelID
+3.	Start date			DD.MM.YYYY
+4.	Start time			hh:mm:ss
+5.	End time			hh:mm::ss
+6.	Shutdown			0 ... 6
+7.	Days				"-------"     mo ... so
+8.	TimerAction		0 ... 3
+9.	Enabled			true/false
+10.	DisableAV			true/false		not used anymore</documentation>
+                                    </annotation>
+                                    <simpleContent>
+                                        <extension base="string">
+    										<attribute name="name">
+    											<simpleType>
+    												<restriction base="int">
+    													<minInclusive value="0">
+    													</minInclusive>
+    												</restriction>
+    											</simpleType>
+    										</attribute>
+    									</extension>
+    								</simpleContent>
+    							</complexType>
+    						</element>
+    					</sequence>
+    					<attribute name="name">
+    						<simpleType>
+    							<restriction base="string">
+    								<enumeration value="VCR"></enumeration>
+    							</restriction>
+    						</simpleType>
+    					</attribute>
+    				</complexType>
+    			</element>
+    		</sequence>
+    	</complexType>
+    </element>
+</schema>

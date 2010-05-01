@@ -76,6 +76,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	private long end ;
 	private long startOrg ;
 	private long endOrg ;
+	private String days ;
 	private String title ;
 	private TimerActionItems timerAction ;
 	private ActionAfterItems actionAfter ;
@@ -99,6 +100,7 @@ public final class DVBViewerEntry  implements Cloneable{
 							long end ,
 							long startOrg ,
 							long endOrg ,
+							String days ,
 							String title ,
 							TimerActionItems timerAction, 
 							ActionAfterItems actionAfter, 
@@ -117,6 +119,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.end = end ;
 		this.startOrg = startOrg ;
 		this.endOrg = endOrg ;
+		this.days = days ;
 		this.title =  title ;
 		this.timerAction = timerAction ;
 		this.actionAfter = actionAfter ;
@@ -127,12 +130,15 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.toDo = toDo ;
 	}
 
-	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end,
+	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end, String days,
                            String title, TimerActionItems timerAction, ActionAfterItems actionAfter )
 	{
 		this( -1, false, StatusService.ENABLED , serviceID, channel, start ,end ,
-				         start, end, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
+				         start, end, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				         -1, null, new OutDatedInfo(), ToDo.NONE ) ;
+
+		if ( this.days.equals( "-------" ) )
+			this.mergeStatus = MergeStatus.DISABLED ;
 
 		this.statusService = enable? StatusService.ENABLED : StatusService.DISABLED ;
 		
@@ -142,6 +148,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			               long end,
 			               long startOrg,
 			               long endOrg,
+			               String days,
 			               String title,
 			               TimerActionItems timerAction,
 			               ActionAfterItems actionAfter,
@@ -149,7 +156,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			               Provider provider  )
 	{
 		this( -1, false, StatusService.ENABLED , -1, channel, start ,end ,
-				  startOrg, endOrg, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
+				  startOrg, endOrg, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				  -1, provider, new OutDatedInfo(), ToDo.NEW ) ;
 		
 		boolean isFilterElement = false ;
@@ -159,7 +166,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		}
 		this.isFilterElement = isFilterElement ;
 		
-		this.mergeStatus = merge ? MergeStatus.ENABLED : MergeStatus.DISABLED ;
+		this.mergeStatus = ( merge && this.days.equals( "-------" ) )? MergeStatus.ENABLED : MergeStatus.DISABLED ;
 	}
 	@Override
 	public DVBViewerEntry clone()
@@ -167,7 +174,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		DVBViewerEntry entry = new DVBViewerEntry( 	-1, this.isFilterElement,
 													this.statusService, this.serviceID, this.channel ,
 													this.start, this.end, this.startOrg,
-													this.endOrg, this.title, 
+													this.endOrg, this.days, this.title, 
 													this.timerAction, this.actionAfter,
 													this.mergeStatus, this.mergeID,
 													this.provider, this.outDatedInfo.clone(), this.toDo ) ;
@@ -181,6 +188,13 @@ public final class DVBViewerEntry  implements Cloneable{
 		entry.mergedEntries = this.mergedEntries ;
 		
 		return entry ;
+	}
+	private void setMergeStatus( MergeStatus m )
+	{
+		if ( this.days.equals( "-------" ) )
+			this.mergeStatus = MergeStatus.DISABLED ;
+		else
+			this.mergeStatus = m ;
 	}
 	private String createTitle( String separator )
 	{
@@ -201,6 +215,9 @@ public final class DVBViewerEntry  implements Cloneable{
 	private CompStatus compareWithService( final DVBViewerEntry service )
 	{
 		if ( ! this.channel.split("\\|")[0].equals( service.channel.split("\\|")[0] ) )
+			return CompStatus.DIFFER ;
+		
+		if ( ! this.days.equals( service.days ) )
 			return CompStatus.DIFFER ;
 		
 		if ( this.start == service.start && this.end == service.end )
@@ -513,7 +530,7 @@ public final class DVBViewerEntry  implements Cloneable{
 
 		for ( DVBViewerEntry e : service )
 		{
-			e.mergeStatus = MergeStatus.MERGE ;
+			e.setMergeStatus( MergeStatus.MERGE ) ;
 			e.id = maxID.increment() ;
 			xml.add( e ) ;
 		}
@@ -545,7 +562,7 @@ public final class DVBViewerEntry  implements Cloneable{
 				continue ;
 			}
 			e.mergeStatus = e.mergeStatus.post() ;
-			e.serviceID = -1 ;
+//			e.serviceID = -1 ;
 			e.toDo = ToDo.NONE ;
 		}
 	}
@@ -615,6 +632,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	public long getID() { return this.id ; } ;
 	public void setID( long id ) { this.id = id ; } ;
 	public long getServiceID() { return this.serviceID ; } ;
+	public void setServiceID( long id ) { this.serviceID = id ; } ;
 	public void clearServiceID() { this.serviceID = -1 ; } ;
 	public String getChannel() { return this.channel ; } ;
 	public String getTitle() {return this.title ; } ;
@@ -623,6 +641,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	public String toString() {return this.title ; } ;
 	public long getStart() { return this.start ; } ;
 	public long getEnd()   { return this.end ; } ;
+	public String getDays() { return this.days ; } ;
 	public 	boolean isInRange( long start, long end )
 	{
 		if ( this.start <= start && this.end >= start )
@@ -711,6 +730,14 @@ public final class DVBViewerEntry  implements Cloneable{
 	} ;
 	public boolean mustUpdated() { return this.toDo == ToDo.UPDATE ; } ;
 	public boolean mustDeleted() { return this.toDo == ToDo.DELETE ; } ;
+	public boolean mustWrite()
+	{
+		if ( this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER )
+			return false ;
+		else if ( this.statusService == StatusService.REMOVED )
+			return false ;
+		return true ;
+	}
 	public void setToDelete()
 	{
 		this.toDo = ToDo.DELETE ;
@@ -773,6 +800,7 @@ public final class DVBViewerEntry  implements Cloneable{
 					long end = -1 ;
 					long startOrg = -1 ;
 					long endOrg = -1 ;
+					String days = "-------" ;
 					MergeStatus mergeStatus = MergeStatus.UNKNOWN ;
 					long mergeID = -1 ;
 					Provider provider = null ;
@@ -803,6 +831,8 @@ public final class DVBViewerEntry  implements Cloneable{
 				        	startOrg = Long.valueOf( value ) ;
 				        else if ( attributeName.equals( "endOrg" ) )
 				        	endOrg = Long.valueOf( value ) ;
+				        else if ( attributeName.equals( "days" ) )
+				        	days = value ;
 				        else if ( attributeName.equals( "timerAction" ) )
 				        	timerAction = TimerActionItems.valueOf( value ) ;
 				        else if ( attributeName.equals( "actionAfter" ) )
@@ -819,7 +849,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			        entry = new DVBViewerEntry( id , isFilterElement,
 												statusService , -1, channel,
 												start, end, startOrg, endOrg,
-												"", timerAction, actionAfter, 
+												days, "", timerAction, actionAfter, 
 												mergeStatus, mergeID, provider,
 												outDatedInfo,
 												ToDo.NONE ) ;
@@ -861,6 +891,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			sw.writeStartElement( "Entry" ) ;
 			
 			  sw.writeAttribute( "id",               Long.toString( this.id ) ) ;
+			  if ( this.serviceID >= 0 )
+				  sw.writeAttribute( "dvbID",         Long.toString( this.serviceID ) ) ;
 			  sw.writeAttribute( "isFilterElement",  this.isFilterElement ) ;
 			  sw.writeAttribute( "statusService",    this.statusService.toString() ) ;
 
@@ -869,6 +901,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			  sw.writeAttribute( "end",              Long.toString( this.end ) ) ;
 			  sw.writeAttribute( "startOrg",         Long.toString( this.startOrg ) ) ;
 			  sw.writeAttribute( "endOrg",           Long.toString( this.endOrg ) ) ;
+			  sw.writeAttribute( "days",             this.days ) ;
 			  sw.writeAttribute( "timerAction",      this.timerAction.name() ) ;
 			  sw.writeAttribute( "actionAfter",      this.actionAfter.name() ) ;
 			  sw.writeAttribute( "mergeStatus",      this.mergeStatus.name() ) ;

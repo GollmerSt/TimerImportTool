@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public enum GUIStrings {
 	ACTION_AFTER             ( "After recording", "Nach Aufnahme" ) ,
 	ACTION_TIMER             ( "Timer action", "Timer Aktion" ) ,
+	ADMINISTRATOR            ( "Tool updated, execution of the tool on administartor account is necessary","Tool wurde aktualisiert, Start im Admin-Mode ist notwendig" ) ,
 	ADD                      ( "Add", "Hinzufügen" ) ,
 	ALL_TIMERS               ( "All timers", "Alle Timer" ) ,
 	APPLY                    ( "Apply", "Übernehmen" ) ,
@@ -55,6 +56,7 @@ public enum GUIStrings {
 	OFFSET_DIALOG            ( "Lead / Lag times", "Vor- / Nachlaufzeiten" ) ,
 	OFFSETS                  ( "Lead / Lag times ...", "Vor- / Nachlaufzeiten ..." ) ,
 	OK                       ( "OK" ) ,
+	PACKAGE                  ( "Build package error", "Programmzusammenstellung fehlerhaft" ) ,
 	PASS                     ( "Pass", "Bestanden" ) ,
 	PASSWORD                 ( "Password", "Passwort" ) ,
 	PROVIDER                 ( "Provider", "Anbieter" ) ,

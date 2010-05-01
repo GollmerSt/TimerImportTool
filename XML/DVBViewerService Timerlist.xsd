@@ -6,51 +6,52 @@
     		<xsd:sequence>
     			<xsd:element name="Timer" maxOccurs="unbounded" minOccurs="0">
     				<xsd:complexType>
-                        <xsd:all>
-                        	<xsd:element name="Descr"
-                        		type="xsd:string">
-                        	</xsd:element>
-                        	<xsd:element name="Options "
-                        		type="Options">
-                        	</xsd:element>
-                        	<xsd:element name="Format" type="xsd:int">
-                        	</xsd:element>
-                        	<xsd:element name="Folder"
-                        		type="xsd:string">
-                        	</xsd:element>
-                        	<xsd:element name="NameScheme"
-                        		type="xsd:string">
-                        	</xsd:element>
-                        	<xsd:element name="Log">
-                        		<xsd:complexType>
-                        			<xsd:attribute name="Enabled"
-                        				type="DVB_Boolean">
-                        			</xsd:attribute>
-                        			<xsd:attribute name="Extended"
-                        				type="DVB_Boolean">
-                        			</xsd:attribute>
-                        		</xsd:complexType>
-                        	</xsd:element>
-                        	<xsd:element name="Channel ">
-                        		<xsd:complexType>
-                        			<xsd:attribute name="ID"
-                        				type="xsd:string">
-                        			</xsd:attribute>
-                        		</xsd:complexType>
-                        	</xsd:element>
-                        	<xsd:element name="Executeable"
-                        		type="DVB_Boolean">
-                        	</xsd:element>
-                        	<xsd:element name="Recording"
-                        		type="DVB_Boolean">
-                        	</xsd:element>
-                        	<xsd:element name="ID" type="xsd:int">
-                        	</xsd:element>
-                        </xsd:all>
-                        
+    					<xsd:all>
+    						<xsd:element name="Descr"
+    							type="xsd:string">
+    						</xsd:element>
+    						<xsd:element name="Options "
+    							type="Options">
+    						</xsd:element>
+    						<xsd:element name="Format" type="xsd:int">
+    						</xsd:element>
+    						<xsd:element name="Folder"
+    							type="xsd:string">
+    						</xsd:element>
+    						<xsd:element name="NameScheme"
+    							type="xsd:string">
+    						</xsd:element>
+    						<xsd:element name="Log">
+    							<xsd:complexType>
+    								<xsd:attribute name="Enabled"
+    									type="DVB_Boolean">
+    								</xsd:attribute>
+    								<xsd:attribute name="Extended"
+    									type="DVB_Boolean">
+    								</xsd:attribute>
+    							</xsd:complexType>
+    						</xsd:element>
+    						<xsd:element name="Channel ">
+    							<xsd:complexType>
+    								<xsd:attribute name="ID"
+    									type="xsd:string">
+    								</xsd:attribute>
+    							</xsd:complexType>
+    						</xsd:element>
+    						<xsd:element name="Executeable"
+    							type="DVB_Boolean">
+    						</xsd:element>
+    						<xsd:element name="Recording"
+    							type="DVB_Boolean">
+    						</xsd:element>
+    						<xsd:element name="ID" type="xsd:int">
+    						</xsd:element>
+    					</xsd:all>
+
     					<xsd:attribute name="Type" type="xsd:int">
     					</xsd:attribute>
-    					<xsd:attribute name="Enabled" type="DVB_Boolean">
+    					<xsd:attribute name="Enabled"
+    						type="DVB_Boolean">
     					</xsd:attribute>
     					<xsd:attribute name="Priority" type="xsd:int">
     					</xsd:attribute>
@@ -73,6 +74,13 @@
     					<xsd:attribute name="Start" type="Time">
     					</xsd:attribute>
     					<xsd:attribute name="End" type="Time">
+    					</xsd:attribute>
+    					<xsd:attribute name="Days" use="optional">
+    						<xsd:simpleType>
+    							<xsd:restriction base="xsd:string">
+    								<xsd:pattern value="[-T]{7}"></xsd:pattern>
+    							</xsd:restriction>
+    						</xsd:simpleType>
     					</xsd:attribute>
     					<xsd:attribute name="Action">
     						<xsd:simpleType>

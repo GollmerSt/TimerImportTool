@@ -24,11 +24,6 @@ public final class TimerImportTool {
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
 		
-		//DVBViewerCOM.connect() ;
-		//String multi = DVBViewerCOM.getSetupValue( "General", "Multimonitor", "0" ) ;
-		//System.out.println( "Multi = " + multi ) ;
-		//DVBViewerCOM.disconnect() ;
-		
 		GUIStrings.setLanguage( "" ) ;
 		
 		DVBViewer dvbViewer = null ;
@@ -100,10 +95,13 @@ public final class TimerImportTool {
 					System.exit( 0 ) ;
 				dvbViewer.setPathFileIsUsed( true ) ;
 			}			
+			
 			Channels channels = new Channels( dvbViewer ) ;
 			channels.read() ;
 
 			Control control = new Control(dvbViewer);
+
+			Log.setVerbose( true ) ;
 
 			if ( type == ImportType.GUI )
 			{
@@ -178,11 +176,8 @@ public final class TimerImportTool {
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;
 			
-			control.getDVBViewer().prepare() ;
-			provider.process(getAll); ;
-			provider.processEntry( args ) ;
-			dvbViewer.setDVBViewerTimers();
-			
+			dvbViewer.process( provider, getAll, args ) ;
+					
 		} catch (ErrorClass e) {
 			Log.error(e.getLocalizedMessage());
 			Log.out("Import terminated with errors" ) ;

@@ -30,6 +30,7 @@
     	</xsd:sequence>
 
     	<xsd:attribute name="id" type="long" use="required"></xsd:attribute>
+    	<xsd:attribute name="dvbID" type="xsd:long" use="optional"></xsd:attribute>
     	<xsd:attribute name="isFilterElement" type="xsd:boolean"
     		use="required">
     		<xsd:annotation>

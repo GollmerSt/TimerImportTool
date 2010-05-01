@@ -122,6 +122,23 @@ public final class Conversions {
 	{
 		return svcDayTimeFormat.parse( date + time ).getTime() ;
 	}
+	public static long javaToDVBViewerDate( long d )
+	{
+		long t = d + (long) timeZone.getOffset( d ) ;
+		//System.out.println(t%(1000*60*60*24) ) ;
+		return t ;
+	}
+	public static long dvbViewerToJavaDate( long d )
+	{
+		long t = d - (long) timeZone.getOffset( d ) ;
+		if ( javaToDVBViewerDate( t ) == d )
+			return t ;
+		t += 1000*60*10 ;
+		if ( javaToDVBViewerDate( t ) == d )
+			return t ;
+		t -= 1000*60*10*2 ;
+		return t ;
+	}
 	public static String replaceDiacritical( final String s )
 	{
 		if ( ! s.matches(".*[‰ˆ¸ƒ÷‹ﬂ].*") ) //\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]") )
