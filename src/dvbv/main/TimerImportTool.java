@@ -23,11 +23,11 @@ public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
-		
+
 		GUIStrings.setLanguage( "" ) ;
-		
+
 		DVBViewer dvbViewer = null ;
-		
+
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         	//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -46,7 +46,7 @@ public final class TimerImportTool {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
+
 		ImportType type    = ImportType.GUI ;
 		boolean showMessageBox = false ;
 
@@ -54,10 +54,10 @@ public final class TimerImportTool {
 
 		try {
 			boolean getAll = false ;
-			
+
 			String paras = "" ;
 			String iniPath = null ;
-			
+
 			for ( int i = 0 ; i < args.length ; i++ )
 			{
 				paras += args[i] + " " ;
@@ -83,25 +83,25 @@ public final class TimerImportTool {
 				else if ( args[i].equalsIgnoreCase("-update") )
 					type = ImportType.UPDATE ;
 			}
-			
+
 			Log.setToDisplay(true);
 
 			dvbViewer = new DVBViewer( iniPath, TimerImportTool.exeName ) ;
-			
+
 			while ( ! dvbViewer.initDataPath() )
 			{
 				boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
 				if ( aborted )
 					System.exit( 0 ) ;
 				dvbViewer.setPathFileIsUsed( true ) ;
-			}			
-			
+			}
+
 			Channels channels = new Channels( dvbViewer ) ;
 			channels.read() ;
 
 			Control control = new Control(dvbViewer);
 
-			Log.setVerbose( true ) ;
+			//Log.setVerbose( true ) ;
 
 			if ( type == ImportType.GUI )
 			{
@@ -112,7 +112,7 @@ public final class TimerImportTool {
 				while ( ! finished )
 				{
 					GUIStatus status = gui.waitGUI() ;
-					
+
 					switch (status)
 					{
 					case APPLY :
@@ -145,10 +145,10 @@ public final class TimerImportTool {
 					}
 				}
 			}
-			
+
 			switch ( type )
 			{
-				case TVINFO : 
+				case TVINFO :
 					provider = Provider.getProvider( "TVInfo" ) ;
 					provider.setFilter( ! getAll ) ;
 					break ;
@@ -161,23 +161,23 @@ public final class TimerImportTool {
 				case UPDATE :
 					dvbViewer.updateDVBViewer() ;
 			}
-			
+
 			control.setDVBViewerEntries() ;
-			
+
 			if ( provider != null )
 			{
 				showMessageBox |= provider.getMessage() ;
 				if ( provider.getVerbose() )
 					Log.setVerbose( true ) ;
 			}
-			
+
 			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
-			
+
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;
-			
+
 			dvbViewer.process( provider, getAll, args ) ;
-					
+
 		} catch (ErrorClass e) {
 			Log.error(e.getLocalizedMessage());
 			Log.out("Import terminated with errors" ) ;

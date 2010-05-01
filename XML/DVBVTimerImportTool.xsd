@@ -28,6 +28,17 @@
     						</xsd:restriction>
     					</xsd:simpleType>
     				</xsd:attribute>
+    				<xsd:attribute name="timerAction">
+    					<xsd:simpleType>
+    						<xsd:restriction base="xsd:string">
+    							<xsd:enumeration value="RECORD"></xsd:enumeration>
+    							<xsd:enumeration value="TUNE"></xsd:enumeration>
+    							<xsd:enumeration value="AUDIO_PLUGIN"></xsd:enumeration>
+    							<xsd:enumeration value="VIDEO_PLUGIN"></xsd:enumeration>
+    							<xsd:enumeration value="DEFAULT"></xsd:enumeration>
+    						</xsd:restriction>
+    					</xsd:simpleType>
+    				</xsd:attribute>
     			</xsd:complexType>
     		</xsd:element>
     		<xsd:element name="DVBService" minOccurs="0">
@@ -129,7 +140,7 @@
     	<xsd:attribute name="programVersion" use="required">
     		<xsd:simpleType>
     			<xsd:restriction base="xsd:string">
-    				<xsd:pattern value="\d\.\d\.\d"></xsd:pattern>
+    				<xsd:pattern value="\d+\.\d+\.\d+"></xsd:pattern>
     			</xsd:restriction>
     		</xsd:simpleType>
     	</xsd:attribute>
