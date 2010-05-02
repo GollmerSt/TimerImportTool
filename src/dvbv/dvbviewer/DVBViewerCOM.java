@@ -12,13 +12,16 @@ public class DVBViewerCOM
 {
 
 	public static native String getVersion() ;
-	public static native boolean connect() ;
+	public static native boolean connect( boolean force) ;
 	public static native void disconnect() ;
 	public static native DVBViewerEntryCOM[] getItems() ;
 	public static native void setItems( DVBViewerEntryCOM[] entries ) ;
 	public static native String getSetupValue( String section, String name, String deflt ) ;
+	public static native void setCurrentChannel( String channelID ) ;
 	public static native void initLog() ;
 
+	
+	
 	static
 	{
 		File f = new File( DVBViewer.determineExePath() + File.separator
@@ -29,6 +32,14 @@ public class DVBViewerCOM
 
 		DVBViewerCOM.initLog() ;
 	}
+	
+	public static boolean connect()
+	{
+		return DVBViewerCOM.connect( false ) ;
+		
+	}
+
+	
 	public static  ArrayList<DVBViewerEntry> readTimers()
 	{
 		if ( ! DVBViewerCOM.connect() )

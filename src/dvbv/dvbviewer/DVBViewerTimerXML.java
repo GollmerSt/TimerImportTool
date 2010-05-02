@@ -86,6 +86,10 @@ public class DVBViewerTimerXML {
 	}
 	private static String createString( DVBViewerEntry e )
 	{
+		return createString( e, null, null ) ;
+	}
+	private static String createString( DVBViewerEntry e, String defRecAction, String defAfterRecord )
+	{
 		StringBuilder out = new StringBuilder( e.getTitle().replace( ";", "") ) ;
 		out.append( ';' ) ;
 		out.append( e.getChannel() ) ;
@@ -96,11 +100,17 @@ public class DVBViewerTimerXML {
 		out.append( ';' ) ;
 		out.append( Conversions.longToSvcTimeString( e.getEnd() ) ) ;
 		out.append( ';' ) ;
-		out.append( Integer.toString( e.getActionAfter().getID() ) ) ;
+		if ( e.getActionAfter() == ActionAfterItems.DEFAULT && defAfterRecord != null)
+			out.append( defAfterRecord ) ;
+		else
+			out.append( Integer.toString( e.getActionAfter().getID() ) ) ;
 		out.append( ';' ) ;
 		out.append( e.getDays() ) ;
 		out.append( ';' ) ;
-		out.append( Integer.toString( e.getTimerAction().getID() ) ) ;
+		if ( e.getTimerAction() == TimerActionItems.DEFAULT && defRecAction != null )
+			out.append( defRecAction ) ;
+		else
+			out.append( Integer.toString( e.getTimerAction().getID() ) ) ;
 		out.append( ';' ) ;
 		out.append( e.isEnabled() ) ;
 		
@@ -173,6 +183,11 @@ public class DVBViewerTimerXML {
 	}
 	private void writeXML()
 	{
+		DVBViewerSetupXML setup = new DVBViewerSetupXML( dvbViewer ) ;
+		
+		String defRecAction   = setup.getSetupValue( "General", "DefRecAction",   "0" ) ; 
+		String defAfterRecord = setup.getSetupValue( "General", "DefAfterRecord", "0" ) ;
+
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();
 		 
 		XMLStreamWriter writer = null ;
@@ -200,7 +215,7 @@ public class DVBViewerTimerXML {
 			    		continue ;
 			    	sw.writeStartElement("entry");
 			    	  sw.writeAttribute( "name", Integer.toString( count++ ) ) ;
-			    	  sw.writeCharacters( DVBViewerTimerXML.createString( e ) ) ;
+			    	  sw.writeCharacters( DVBViewerTimerXML.createString( e, defRecAction, defAfterRecord ) ) ;
 					sw.writeEndElement();
 			    }
 				sw.writeEndElement();
