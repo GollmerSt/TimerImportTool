@@ -1,0 +1,486 @@
+////  ____________________________________________________________________________________________
+////
+////   A C H T U N G   Diese Datei nicht modifizieren !!!!!
+////
+////      Modifizierungen nur im Setup des TimerImportTool vornehmen!!!
+////
+////  TVgenial  TV-Recorder Interface  Script File
+////  TVgenial  TV-Recorder Schnittstellen Script
+////
+//// Modified for DVBViewer-TimerImportTool 
+////
+//// $LastChangedDate$
+//// $LastChangedRevision$
+//// $LastChangedBy$
+////  ____________________________________________________________________________________________
+//
+//  TVgenial  TV-Recorder Interface  Script File
+//  TVgenial  TV-Recorder Schnittstellen Script
+//
+//  Version: 10.Sep.2009
+//  ____________________________________________________________________________________________
+//
+//  zur individuellen Steuerung der Aufrufparameter für TV-Karten bzw. TV-Geräte
+//  über bereitgestellte Treibersoftware
+//  
+//  Achtung: Verwenden Sie bitte einer Kopie dieser Beispieldatei, da diese bei der 
+//           Installation einer neuen Version sonst überschrieben wird.
+//
+//  Note: Please use a copy of this example-file, otherwise your changes will
+//        be overwritten during the next installation of a newer version
+// _____________________________________________________________________________________________
+//
+//  NEU ab Version 4.10 :
+//  _____________________
+//
+//  - Parameter v zugefügt.
+//
+//
+//  NEU ab Version 4.02 :
+//  _____________________
+//
+//  - Parameter ss zugefügt.
+//
+//
+//  
+//  _______________________________________________________________________________________________________
+//
+//  Kommandos
+//  *********
+//
+//  Folgende Parameter können vom Programm umgesetzt werden
+//
+//
+//	d	Tag als Zahl (Startzeit) ohne führende Null (1-31).
+//	dd	Tag als Zahl (Startzeit) mit führender Null (01-31).
+//
+//	m	Monat als Zahl (Startzeit) ohne führende Null (1-12).
+//		Sie sollten besser immer zwei m verwenden, da sonst ein missverständliches Format wie z.B. 16.3 konvertiert wird.
+//	mm	Monat als Zahl (Startzeit) mit führender Null (01-12).
+//
+//	yy	Jahr als Zahl (Startzeit) als zweistellige Zahl (00-99).
+//	yyyy	Jahr als Zahl (Startzeit) als vierstellige Zahl (0000-9999).
+//
+//
+//	h	Stunde (Startzeit) ohne führende Null (0-23).
+//	hh	Stunde (Startzeit) mit führender Null (00-23).
+//
+//	n	Minute (Startzeit) ohne führende Null (0-59).
+//	nn	Minute (Startzeit) mit führender Null (00-59).
+//
+//	q	Tag als Zahl (Endzeit) ohne führende Null (1-31).
+//	qq	Tag als Zahl (Endzeit) mit führender Null (01-31).
+//
+//	w	Monat als Zahl (Endzeit) ohne führende Null (1-12).
+//	ww	Monat als Zahl (Endzeit) mit führender Null (01-12).
+//
+//	ee	Jahr als Zahl (Endzeit) als zweistellige Zahl (00-99).
+//	eeee	Jahr als Zahl (Endzeit) als vierstellige Zahl (0000-9999).
+//
+//	r	Stunde (Endzeit) ohne führende Null (0-23).
+//	rr	Stunde (Endzeit) mit führender Null (00-23).
+//
+//	f	Minute (Endzeit) ohne führende Null (0-59).
+//	ff	Minute (Endzeit) mit führender Null (00-59).
+//
+//	'' ""	In halbe oder ganze Anführungszeichen eingeschlossene Zeichen wirken sich nicht auf die Formatierung aus und werden wie eingegeben angezeigt.
+//		Um z.B. wörter wie do record direkt weiterzuleiten, verwenden Sie 'do record' oder "do record"
+//              Um das Zeichen " darzustellen, nutzen Sie '"'
+//              Um das Zeichen ' darzustellen, nutzen Sie "'"
+//              Bsp.:  a'b"c"d'e"f'g'"  =>  ab"c"def'g'
+//
+//	#	Titel der Sendung in voller Länge.
+//	####	Titel der Sendung, eingepasst in die Anzahl der # Zeichen. Längere Titel werden abgeschnitten.
+//		Kürzere werden mit Leerzeichen bis zum letzten # Zeichen aufgefüllt.
+//              Seit der Version 2.30 werden die Sonderzeichen '()!/?&$§"*: und ; vor der Verwendung
+//              herausgefiltert und durch Leerzeichen ersetzt. Bei der Verwendung von **** (s.u.) werden die
+//              Leerzeichen gelöscht.
+//
+//	*	Titel der Sendung ohne Leerzeichen in voller Länge.
+//	****	Titel der Sendung ohne Leerzeichen, eingepasst in die Anzahl der * Zeichen. Längere Titel werden abgeschnitten.
+//		Kürzere werden mit Leerzeichen bis zum letzten * Zeichen aufgefüllt.
+//
+//	%	Titel der Sendung Sonderzeichen und Leerzeichen durch _ ersetzt, volle Länge.
+//	%%%%	Titel der Sendung Sonderzeichen und Leerzeichen durch _ ersetzt, eingepasst in die Anzahl der % Zeichen.
+//		Kürzere Namen werden mit _ bis zum letzten % Zeichen aufgefüllt.
+//
+//	i	TVgenial Sendernummer, umgewandelt nach Sendertabelle, siehe unten.
+//
+//      v       Von TVgenial umgewandelte Sendernummer nach der Mappingtabelle für diese Schnittstelle.
+//              Die Mappingtabelle ist in TVgenial unter Optionen / Schnittstellen / Einrichten / Schnittstelle auswählen + [Kanäle]
+//              zu erreichen. Dort können neue Sendernummern für jeden TVgenial-Sender vergeben werden. 
+//              Damit entfällt die unten befindliche Sendernummernliste, es muss aber anstatt i der Parameter v verwendet werden.
+//              Die parallele Verwendung von i und v ist aber ebenfalls möglich, soweit sinnvoll.
+//              Beispiel: Zu ARD wurde in der Schnittstelle der Sender mit der Nummer 10 zugeorndet, damit ist v = 10
+//                   Oder zu ZDF wurde in der Schnittstelle der Sender mit der Nummer 100.2 zugeorndet, damit ist v = 100.2
+//                   Oder bei ARD wurde Ac0024 definiert, dann ist v = Ac0024.
+//
+//      u       TVUID: Television Universal Identification 
+//              Sendernummer nach einheitlicher Senderkodierung, 7 stellige Nummer
+//              Kodierung ist zu finden unter: www.ARAKON-Systems.de
+//              Anstelle des u wird die Nummer eingesetzt. Diese Kodierung muss vom Aufnahmeprogramm
+//              unterstützt werden, der Vorteil liegt in einer absolut eindeutigen Zuordnung der Sender, das
+//              Ausfüllen der Senderzuordnungstabelle ist dann nicht mehr nötig.
+//
+//      s       Senderkurzname - wie in TVgenial verwendet (nicht die in dieser Datei eingetragene Verknüpfung)
+//      ss      Senderkurzname - wie in TVgenial verwendet, die Leerzeichen werden durch einen Unterstrich ersetzt.
+//                               Beispiel: RTL II  --> RTL_II  
+//
+//	j	Sendungsdauer, als Zahl in Minuten ohne führende Null (0-9999).
+//      k       Sendungsdauer, als Zahl in Sekunden ohne führende Null (0-999999).
+//
+//      g       Genre ID (integer)
+//
+//	Die Formatbezeichner können beliebig in Groß- oder Kleinbuchstaben angegeben werden,
+//	da sich die Schreibweise nicht auf das Ergebnis der Formatierung auswirkt.
+//
+//      Hinweis: Alle Zeitangaben zur Start und Endzeit werden nach den allgemeinen Richtlinien des Standardzeitformates berechnet.
+//               Eine Verschiebung der Zeiten zu Gunsten der "Sehgewohnheiten" findet nicht statt !
+//               Der Tag beginnt mit 00:00:00 Uhr und endet bei 23.59:59.
+//               Eine Sendung nach Mitternacht an einem Mittwoch um 0:10 Uhr beginnt demnach am Donnerstag um 0:10 Uhr.
+//
+//               Der Parameter | ist entfallen. Deklarieren Sie stattdessen einfach mehrere Dorecord nacheinander. 
+//   ________________________________________________________________________________________________
+//
+//   Kalibrierung der Aufnahmezeiten :
+//
+//   Startzeit um x Sekunden verschieben :  StartOffset = x
+//   Endzeit um x Sekunden verschieben :  EndOffset = x
+//   - Groß-/Kleinschreibung ohne Bedeutung
+//   - Angaben in Sekunden
+//   - Zurückverschieben (Früher) = negative Werte
+//   - Weiterverschieben (Später) = positive Werte
+//   - Standardeinstellung = 0
+//   - Die Sendedauer (min oder sec) wird angepasst
+//   - Die Werte StartOffset und EndOffset werden jeweils mit den in TVgenial (ab V3.40) eingestellten Zeiten
+//       (Optionen/Aufnahme/Allgemeine Einstellungen) verrechnet. Die hier eingestellten Werte sollten an 
+//       die Hardware angepasst werden. Die im Programm definierten Werte an die persönlichen Interessen.
+//       
+//   - Beispiel : StartOffset = -180   der Aufnahmestart findet 3 Minuten früher statt
+//   - Beispiel : StartOffset = - 180  Fehler !! keine Leerzeichen nach dem Minus, StartOffset wird bleibt null
+////
+StartOffset = 0
+EndOffset   = 0
+
+//   ________________________________________________________________________________________________
+//
+//   Debug Informationen
+//
+//   setzen Sie einfach den Befehl show_parameters, um sich die von TVgenial übergebenen parameter
+//   nach der Scriptverarbeitung zu prüfen. Die Zeile darf keine weiteren Angaben enthalten.
+//   Hinweis: alle Aufrufe werden immer in der Datei startlog.txt im TVgenial Verzeichnis protokolliert.
+////
+//// show_parameters
+////
+//   ________________________________________________________________________________________________
+//
+//   RemindCall
+//
+//   Dieses Kommando kann zum starten eines externen Programmes verwendet werden, wenn eine Erinnerung 
+//   in TVgenial gestartet wird. 
+//   Dazu müssen zwei Bedingungen erfüllt sein: 
+//    1. es muss der Parameter RemindCall hier im Script definiert sein, und....
+//    2. es muss die Scriptschnittstellendatei angegeben sein (in den Optionen/Vormerker/"Script für unbekanntes Gerät)
+//       Die Schnittstelle kann dann sogar wieder verändert werden, z.B. auf Pinnacle, das Script wird dann dennoch 
+//       ausgewertet.
+//   
+//   Es werden die kompletten Routinen zur Umsetzung der Parameter durchlaufen, d.h. Sendezeiten oder Sendeplatz , etc. werden 
+//   umgesetzt.
+//   Hinweis: Wenn Sie das Programm manuell starten möchten, dann aktivieren Sie den Schalter "manuell aus der Erinnerung starten"
+//            Es erscheint dann ein extra Schalter im Erinnerungsfenster.
+//   Hinweis: Eine Definition des Parameters RemindCall überschreibt die Angabe in den Optionen 
+//
+//   ________________________________________________________________________________________________
+//
+//   Sendertabelle
+//   Ergänzen Sie die Nummern der Sender Ihrer TV-Karte oder Schreiben Sie den
+//   Sendername hinter den Vergleich nach Belieben.
+//   Der Sendername der entsprechenden TVgenial-Nummer steht hinter den // Zeichen
+//
+//   z.B.   4  =  Sat1
+//          4  =  SAT1-Fernsehen
+//          4  =  Sat 1
+//          4  =  32
+
+//StartID                       //  bitte nicht löschen / do not remove
+//                              // 0 (unbelegt)
+//1   =  ARD                    // ARD		Erstes Deutsches Fernsehen
+//2   =  ZDF                    // ZDF		Zweites Deutsches Fernsehen
+//3   =  RTL                    // RTL		Radio Television Luxemburg
+//4   =  Sat1                   // Sat1		Satelitenfernsehen 1
+//5   =  Pro 7                  // Pro7		Pro 7
+//6   =  6                      // MDR		Mittel Deutscher Rundfunk
+//7   =  7                      // WDR		West Deutscher Rundfunk
+//8   =  8                      // VOX		VOX
+//9   =  Channel24              // 3sat		Drittes Satelitenfernsehen
+//10  =  Channel25              // BR		Bayrischer Rundfunk, Bayern 3
+//11  =  Channel26              // Kabel 1	Kabelfernsehen 1
+//12  =  Channel15              // RTL 2		Radio Television Luxemburg 2
+//14  =  ...                    // ORB		Ostdeutscher Rundfunk Brandenburg   (Sendebetrieb eingestellt, jetzt RBB) 
+//15  =  ...                    // NBC		NBC Giga / NBC Europe
+//16  =                         // arte		Arte Deutschland TV
+//17  =                         // N3		Norddeutsches Fernsehen (=NDR)
+//19  =                         // HR		Hessen Fernsehen = HR3 = Hess. Rundfunk
+//22  =                         // FAB		Fernsehen Aus Berlin
+//23  =                         // TVM		TV München
+//24  =                         // TVB		TV Berlin
+//25  =                         // FF		Franken Fernsehen
+//26  =                         // SWR 		Südwest Deutscher Rundfunk
+//27  =                         // Spreekanal	Spreekanal
+//28  =                         // SR		Saarländischer Rundfunk
+//29  =                         // alpha		BR alpha
+//33  =                         // DSF		Deutsches SportFernsehen
+//34  =                         // Eurosport	Eurosport
+//35  =                         // Super RTL	Super RTL
+//36  =                         // KIKA		Der Kinderkanal
+//37  =                         // Cartoon        Premiere KToon                      (Sendebetrieb eingestellt)
+//39  =                         // Hamburg 1	Hamburg 1 (ehemals HH 1)
+//41  =                         // Euronews	Euronews
+//42  =                         // MTV		Music Television
+//44  =                         // VIVA		VIVA
+//46  =                         // Phoenix	Phoenix
+//49  =                         // QVC		QVC Deutschland
+//50  =                         // n-tv		n-TV
+//51  =                         // N24		Der Nachrichten Sender
+//52  =                         // CNN            CNN
+//53  =                         // BBC World	BBC World
+//54  =                         // BloombergTV	Bloomberg TV Germany
+//55  =                         // comedy		Comedy central (Germany)
+//56  =                         // Start          Premiere Start 
+//57  =                         // rheinTV	RheinMain TV
+//58  =                         // Kinowelt	Kinowelt TV
+//59  =                         // HSE 24		Home Shopping Europe (ehemals H.O.T.)
+//60  =                         // 9 live		9 LIVE
+//64  =                         // Silver		Silverline Movie Channel
+//65  =                         // DW		Deutsche Welle TV
+//66  =                         // Animal		Animal Channel Europe
+//70  =                         // terranova	Terra Nova
+//71  =                         // Hit24		Hit 24
+//72  =                         // TSR1		Television Suisse Romande 1
+//73  =                         // TSR2		Television Suisse Romande 1
+//74  =                         // TSI1		Radio Televisione Svizzera Italia 1
+//75  =                         // TSI2		Radio Televisione Svizzera Italia 1
+//76  =                         // Tele 5         Tele 5
+//77  =                         // RBB            Rundfunk Berlin Brandenburg 
+//78  =                         // OTV            Oberpfalz TV
+//79  =                         // Bibel          Bibel TV
+//80  =                         // Canale 5	Canale 5
+//81  =                         // Italy 1	Italy 1
+//83  =                         // TW1		TW1 Tourismus Fernsehen
+//84  =                         // Fr2		France 2
+//85  =                         // Fr3		France 3
+//86  =                         // ngc Eu		National Geographic Europe
+//87  =                         // DC Ges		Discovery Channel Geschichte
+//88  =                         // TZüri		Tele Züri
+//90  =                         // extreme	Extreme Sports Channel
+//91  =                         // Austria	Premiere Austria
+//97  =			      // FoGes		Focus Geschichte
+//98  =		              // Kanal D	Kanal D
+//99  = 			      // TRT int	Turkiye Radyo Televizyon International
+//100 =                         // Eins Plus	Eins Plus
+//101 =                         // Theater	ZDF Theater
+//102 =                         // doku 		ZDF Dokumentation
+//103 =                         // 1festival	Eins Festival
+//104 =                         // nick		Nickelodeon Deutschland
+//105 =                         // Vierte		Das Vierte
+//106 =                         // TV2		Television 2 Denmark
+//107 =                         // Dis.HD		Premiere Discovery HD
+//108 =                         // Classica	Premiere Classica
+//111 =                         // Classic	Premiere Filmclassics
+//112 =                         // Serie	 	Premiere Serie
+//113 =                         // Discovery	Premiere Discovery Channel
+//114 =                         // Disney 	Premiere Disney Channel
+//115 =                         // FiFest		Premiere Filmfest
+//116 =                         // Goldstar	Goldstar TV
+//117 =                         // Heimat		Premiere Heimatkanal
+//118 =                         // Junior		Premiere Junior
+//119 =                         // Krimi		Premiere Krimi & Co
+//120 =                         // DMAX		DMAX
+//122 =                         // Portal		Premiere Sport Portal
+//124 =                         // Direkt1	Premiere Direkt 1
+//128 =                         // 13th Street  	Premiere 13th Street
+//129 =                         // HD 		Premiere HD
+//133 =                         // Beate Uhse	Premiere Beate Uhse TV
+//134 =                         // 1extra	        Eins Extra
+//135 =                         // info		ZDF Infokanal
+//136 =                         // Planet	        Premiere Planet
+//137 =                         // Film 1		Premiere Film 1
+//138 =                         // Film 2		Premiere Film 2
+//139 =                         // Film 3		Premiere Film 3
+//142 =                         // Film 4		Premiere Film 4
+//146 =                         // SciFi          Premiere Science Fiction
+//164 =			      // Fashion	Fashion TV
+//165 =                         // E! E.		E! Entertainment TV
+//166 =                         // History	History Channel Dt.
+//167 =			      // Nat.Geo	National Geographic Germany
+//168 =			      // Nat.Geo	National Geographic Italy
+//169 = 			      // WeinTV 	Wein TV
+//170 = 			      // Gusto		TV Gusto
+//171 = 			      // VH1Class	VH1 Classic Europe
+//172 =			      // Toon		Toon Disney Deutschland
+//173 =			      // Toon2		Toon Disney Deutschland 2 (GMT+1)
+//174 = 			      // Wetter 	Wetter TV
+//175 =                         // Sailing	Sailing Channel
+//176 =			      // Play		Playhouse Disney Deutschland
+//177 =			      // Motors		Motors TV
+//178 = 			      // NASN		NASN Europe (North American Sports Network)
+//179 =                         // Trace		Trace TV
+//180 =                         // Dance		MTV Dance UK
+//181 = 			      // HitsUK		Hits UK
+//182 = 			      // Playboy	Playboy TV Europe
+//183 =			      // AXN 		AXN Deutschland
+//184 = 			      // G-TV		G-TV Games Television
+//185 =                         // ESPN		ESPN Classic Europe
+//186 =                         // K-TV		K-TV Fernsehen
+//187 = 	                      // Spiegel	Spiegel TV
+//188 =                         // Gute Lau	Gute Laune TV
+//189 =                         // Sonnenk	Sonnenklar TV   
+//190 =			      // Arena          Arena
+//191 =                         // Sat1 Com	Sat 1 Comedy
+//192 = 			      // K1 Class	Kabel 1 Classics
+//193 =                         // Boom		Boomerang TV
+//194 =			      // BlueH		Blue Hustler
+//195 = 			      // Crime		RTL Crime
+//196 =                         // Living		RTL Living
+//197 =                         // Passion        Passion tV Germany
+//198 =                         // MEZZO		MEZZO
+//199 =                         // Deluxe		Deluxe Music TV Europe
+//200 =                         // ORF 1		Östereich Fernsehen 1
+//201 =                         // ORF 2		Östereich Fernsehen 2
+//202 =                         // SF2		Schweizer Fernsehen 2
+//203 =                         // Niederlande 1	Niederlande 1
+//204 =                         // Niederlande 2	Niederlande 2
+//205 =                         // Niederlande 3	Niederlande 3
+//206 =                         // Dänemark 1	Dänemark Fernsehen 1
+//207 =                         // Dänemark 2	Dänemark Fernsehen 2
+//208 =                         // Eurosp2	Eurosport 2
+//209 =                         // Help		Help TV
+//210 =                         // tv5		TV5 Frankreich
+//211 =                         // TCM		TCM
+//213 =                         // SF1		Schweizer Fernsehen 1
+//217 =                         // RAI1		RAI Uno (Italien)
+//218 =                         // SF Info	Schweizer Fernsehen Info
+//232 =                         // CNBC		CNBC (MSNBC)
+//239 =                         // Jetix		Premiere Jetix
+//242 =                         // Nostalgie      Premiere Norstalgie
+//243 =                         // MGM            Premiere Metro Goldwyn Mayer
+//244 =                         // ATV            Austria TV
+//245 =                         // RAI2           RAI Due (Italien)
+//246 =                         // RAI3           RAI Tre (Italien)
+//300 =                         // OKBer		Offener Kanal Berlin 
+//
+//
+//EndID   // bitte nicht löschen / do not remove
+
+
+// Kommandozeilen:
+//
+//     DoRecord         [programmpfadname] [parameter]
+//     DoRecordWaitFor  [programmpfadname] [parameter]
+//     DoDelete         [programmpfadname] [parameter]
+//     DoDeleteWaitFor  [programmpfadname] [parameter]
+//     RemindCall       [programmpfadname] [parameter]
+//
+//  Sollten im [programmpfadname] Verzeichnisnamen mit Leerzeichen (Space) enthalten sein und TVgenial 
+//  diese nicht korrekt erkennen, dann stellen Sie die Angaben in Anführungszeichen " oder '
+//  Die Verwendung ist jedoch nicht zwingend notwendig.
+//
+// führende und endständige Leerzeichen werden abgeschnitten, alle übrigen werden wie angegeben verwendet.
+// Sie finden hier einige Beispiele, entfernen Sie die führenden Schrägstriche, um die Zeile zu aktivieren.
+//
+// Es wird die Auswertung des Rückgabewertes der aufgerufenen Datei unterstützt. Dazu muss das Kommando
+//   DoRecordWaitfor oder DoDeleteWaitfor
+// verwendet werden. TVgenial wartet dann solange, bis das aufgerufene Programm fertig ist und wertet den
+// Rückgabewert (Error-Code) aus, jeder Wert <> 0 bedeutet einen Fehler und die Aufnahme wird als nicht 
+// programmiert angesehen. Der Rückgabewert 0 bedeutet eine erfolgreiche Verarbeitung.
+//
+// Hinweis: Sollte sich das externe Programm nicht reagieren, dann kehrt TVgenial nach 30 Sekunden automatisch 
+//  mit einem Fehler zurück.
+//
+//  PROGRAMMIEREN
+//
+// Sender Tag.Monat.Jahr Stunde.Minute Dauer Titel
+//   (z.B.  004 24.02.2002 20.15 45 Tierwelten am Amazonas)
+//DoRecord C:\Programme\Recorder.exe  i dd.mm.yyyy hh.nn j #
+//
+// Tag.Monat.Jahr Sender Stunde.Minute Dauer Titel
+//   (z.B.  24.02.2002 20.15 4 45 Tierwelten am Amazonas)
+//DoRecord C:\Programme\Recorder.exe dd.mm.yyyy hh.nn i j #
+//
+// Tag.Monat.Jahr Sender Stunde.Minute Dauer Titel
+//   (z.B.  24.2.02 20.15 4 45 Tierwelten am Amazonas)
+//DoRecord C:\Programme\Recorder.exe d.m.yy h.n i j #
+//
+// Tag:Monat:Jahr Stunde:Minute Sender Dauer >Titel<
+//   (z.B.  24:02:2002 20:15 4 45 >Tierwelten am Amazonas<)
+//DoRecord C:\Programme\Recorder.exe dd:mm:yyyy hh:nn i j >#<
+//
+// Tag:Monat:Jahr Stunde:Minute Sender Dauer >Titel<
+//   (z.B.  24:02:2002 20:15 (Sat 1) 45 Tierwelten am Amazonas)
+//DoRecord C:\Programme\Recorder.exe dd:mm:yyyy hh:nn (i) j >#<
+//
+// Tag:Monat:Jahr-Stunde:Minute Tag:Monat:Jahr-Stunde:Minute Sender >Titel<
+//   (z.B.  24:02:2002-20:15 24:02:2002-21:00 (0010001) >Tierwelten am Amazonas<)
+//DoRecord C:\Programme\Recorder.exe dd:mm:yyyy-hh:nn qq:ww:eeee-rr:ff (u) >#<
+//
+// Tag:Monat:Jahr Stunde:Minute (SenderName) Dauer >Titel<
+//   (z.B.  24:02:2002 20:15 (Sat 1) 45 >Tierwelten am Amazonas<)
+//DoRecord C:\Programme\Recorder.exe dd:mm:yyyy hh:nn (i) j >#<
+//
+// Tag Monat Stunde:Minute SenderID %Titel%
+//   (z.B.  24 02 02 20:15 4 45 %Tierwelten am A%)
+//DoRecord "C:\my programms\Recorder.exe" dd mm yy hh:nn i j >###############<
+//
+// Tag:Monat:Jahr-Stunde:Minute Tag:Monat:Jahr-Stunde:Minute Sender >Titel<
+//   (z.B.  24:02:2002-20:15 24:02:2002-21:00 (Sat 1) >Tierwelten am Amazonas   <)
+//DoRecord C:\Programme\Recorder.exe dd:mm:yyyy-hh:nn qq:ww:eeee-rr:ff (i) >#########################<
+//
+// Tag:Monat:Jahr-Stunde:Minute Tag:Monat:Jahr-Stunde:Minute Sender >Titel<
+//   (z.B.  -rec 24:02:2002-20:15 24:02:2002-21:00  "TierweltenamAmazonas")
+//DoRecord C:\Programme\Recorder.exe '-rec' dd:mm:yyyy-hh:nn qq:ww:eeee-rr:ff  '"'*'"'
+//
+// 'nimm mal folgendes auf:' Tag:Monat:Jahr-Stunde:Minute Tag:Monat:Jahr-Stunde:Minute Sender >Titel<
+//  (z.B.  nimm mal folgendes auf: 24:02:2002-20:15 24:02:2002-21:00 (Sat 1) >Tierwelten am Amazonas <)
+////
+// Für DVBViewer-TimerImport-Tool:
+DoRecord javaw ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+
+
+
+//  LÖSCHEN
+// 
+//  Um Sendungsprogrammierungen zu löschen, verwenden Sie Kommandos mit der Bezeichnung DoDelete oder DoDeleteWaitFor
+//  Ihr TV-Gerät muss das Löschen von Programmierungen unterstützen.
+//  Werden mehrere Löschanweisungen angegeben, dann werden auch mehrere abgearbeitet! Also immer die
+//  nicht benötigten Zeilen deaktivieren
+//
+//  dieses Beispiel:  DoDelete C:\Programme\Recorder.exe '-Delete' dd.mm.yyyy;hh:nn;qq.ww.eeee;rr:ff;i;#
+//          erzeugt:  DoDelete C:\Programme\Recorder.exe -Delete 24.06.2003;20:15;24.06.2003;22:10;ZDF;Wetten dass...?
+//
+//  dieses Beispiel:  DoDeleteWaitFor C:\Programme\Recorder.exe '"-del"' dd.mm.yyyy;hh:nn;i;"'"#"'"
+//          erzeugt:  DoDeleteWaitFor C:\Programme\Recorder.exe "-del" 24.06.2003;20:15;ZDF;'Wetten dass...?'
+//
+
+//  Beispiel für VirtualDVR
+//  dieses Beispiel:  DoRecord c:\dein\pfad\zu\VirtualDVR.exe '-add' dd.mm.yyyy;hh:nn;qq.ww.eeee;rr:ff;i;#
+//          erzeugt:  DoRecord c:\dein\pfad\zu\VirtualDVR.exe -add 24.06.2003;20:15;24.06.2003;22:10;ZDF;Wetten dass...?
+
+//   Beispiel für Haupauge WIN-TV-PVR
+//  1  =  c10           // ARD
+//  .....
+//   Für den Windows Taskplaner: in der zeile "DoRecord" den parameter USERNAME in ihren USERNAMEN ändern und PASSWORT in ihr dazugehöriges PASSWORT ändern
+//   Haben Sie die Sender in der TV-Applikation nach Preset sortiert, dann gilt die 1. Zeile:
+//   Haben Sie die Sender in der TV-Applikation nach Kanälen sortiert (z.B. 1 = c10 //ARD), dann gilt die 2. Zeile Zeile:
+// DoRecord c:\windows\system32\schtasks.exe '/create /tn "' #ddmmhhnn '" /tr "c:\programme\wintv\wintv2k -p'i' -ntod -startr:'*ddmmyyyyhhnn'.mpg -limit:'k'" /sc einmal /st 'hh:nn':00 /sd 'dd'/'mm'/'yyyy' /ru BENUTZERNAME /rp PASSWORT' 
+// DoRecord c:\windows\system32\schtasks.exe '/create /tn "' #ddmmhhnn '" /tr "c:\programme\wintv\wintv2k -c'i' -ntod -startr:'*ddmmyyyyhhnn'.mpg -limit:'k'" /sc einmal /st 'hh:nn':00 /sd 'dd'/'mm'/'yyyy' /ru BENUTZERNAME /rp PASSWORT' 
+//   Zum löschen folgenden Befehl aktivieren:
+////
+// Für DVBViewer-TimerImport-Tool:
+DoDelete javaw ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+
+
+
+//  RemindCall: dieses Beispiel startet zu einer Erinnerung ihre TV-Applikation und schaltet auf einen Sender um
+//  diese Funktion überschreib die in den Optionen angegebene Datei
+//  
+// RemindCall 'C:\Eigene_Dateien\ShowTV.exe' 'channel='i
