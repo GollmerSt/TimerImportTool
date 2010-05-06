@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="**/.svn/**" kind="src" path="src"/>
+	<classpathentry excluding="**/.svn/**|dvbviewertimerimport/DVBViewerTimerImport.java" kind="src" path="src"/>
 	<classpathentry excluding="**/.svn/**" kind="src" path="rsc"/>
+	<classpathentry excluding="dvbviewertimerimport/DVBViewerTimerImport.java" kind="src" path="plugin"/>
+	<classpathentry kind="src" path="main"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
