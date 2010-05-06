@@ -17,7 +17,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
@@ -29,6 +28,7 @@ import javax.swing.border.TitledBorder;
 
 import dvbviewertimerimport.dvbviewer.DVBViewerService;
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.OutDatedInfo;
 import dvbviewertimerimport.provider.Provider;
 
@@ -134,7 +134,7 @@ public class ProviderService extends MyTabPanel {
 	        passwordBox.setEnabled( hasAccount ) ;
 	        triggerBox.setValue( p.getTriggerAction() ) ;
 	        providerButton.setEnabled( p.canTest() ) ;
-	        providerButton.setText( GUIStrings.CHECK.toString() ) ;
+	        providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
 	        if ( hasURL )
 	        	urlBox.setText( p.getURL() ) ;
 	        else
@@ -155,8 +155,8 @@ public class ProviderService extends MyTabPanel {
 	        messageBox.setSelected( p.getMessage() ) ;
 	        mergeBox.setSelected( p.getMerge() ) ;
 	        filterBox.setSelected( p.isFiltered() ) ;
-    		installButton.setText( GUIStrings.INSTALL.toString() ) ;
-    		uninstallButton.setText( GUIStrings.UNINSTALL.toString() ) ;
+    		installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
+    		uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
 	        installButton.setEnabled( p.mustInstall() ) ;
 	        uninstallButton.setEnabled( p.mustInstall() ) ;
 	        setListenerProviderCheckBoxes( true ) ;
@@ -217,7 +217,7 @@ public class ProviderService extends MyTabPanel {
 				p.getOutDatedLimits().setEnabled( source.isSelected() ) ;
 				setOutDated( p.getOutDatedLimits() ) ;
 			}
-			gui.setChanged() ;
+			guiPanel.setChanged() ;
 		}
 	}
 	
@@ -231,9 +231,9 @@ public class ProviderService extends MyTabPanel {
 	        Provider p = (Provider)providerCombo.getSelectedItem() ;
 	        if ( p.canTest() )
 	        {
-				String buttonText = GUIStrings.FAILED.toString() ;
+				String buttonText = ResourceManager.msg( "FAILED" ) ;
 	        	if ( p.test() ) 
-	        		buttonText = GUIStrings.PASS.toString() ;
+	        		buttonText = ResourceManager.msg( "PASS" ) ;
 	        	providerButton.setText( buttonText ) ;
 	        }
 		}
@@ -250,18 +250,18 @@ public class ProviderService extends MyTabPanel {
 	        	if ( button == installButton )
 	        	{
 	        		if ( p.install() )
-	        			installButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
+	        			installButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 	        		else
-	        			installButton.setText( GUIStrings.FAILED.toString() ) ;
-	        		uninstallButton.setText( GUIStrings.UNINSTALL.toString() ) ;
+	        			installButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+	        		uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
 	        	}
 	        	else if ( button == uninstallButton )
 	        	{
 	        		if ( p.uninstall() )
-	        			uninstallButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
+	        			uninstallButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 	        		else
-	        			uninstallButton.setText( GUIStrings.FAILED.toString() ) ;
-	        		installButton.setText( GUIStrings.INSTALL.toString() ) ;
+	        			uninstallButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+	        		installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
 	        	}
 	        }
 		}
@@ -286,8 +286,8 @@ public class ProviderService extends MyTabPanel {
 				if ( serviceEnabled != dvbs.isEnabled() )
 				{
 					dvbs.setEnabled( serviceEnabled ) ;
-					gui.setChanged() ;
-					gui.updateIfServiceChanged() ;
+					guiPanel.setChanged() ;
+					guiPanel.updateIfServiceChanged() ;
 				}
 			}
 			if ( source == wolEnableBox || source == serviceEnableBox )
@@ -296,7 +296,7 @@ public class ProviderService extends MyTabPanel {
 				if ( enabled != dvbs.getEnableWOL() )
 				{
 					dvbs.setEnableWOL( enabled ) ;
-					gui.setChanged() ;
+					guiPanel.setChanged() ;
 				}
 				enabled = enabled && serviceEnabled ;
 				waitTimeLabel.setEnabled( enabled ) ;
@@ -323,7 +323,7 @@ public class ProviderService extends MyTabPanel {
 			}
 			String buttonText = null ;
 			if ( version < 0 )
-				buttonText = GUIStrings.FAILED.toString() ;
+				buttonText = ResourceManager.msg( "FAILED" ) ;
 			else
 			{
 				long high = version / 10000000 ;
@@ -341,9 +341,9 @@ public class ProviderService extends MyTabPanel {
 		}
 		
 	}
-	public ProviderService( GUI gui, JFrame frame )
+	public ProviderService( GUIPanel guiPanel )
 	{
-		super( gui, frame ) ;
+		super( guiPanel ) ;
 	}
 	public void paint()
 	{
@@ -354,7 +354,7 @@ public class ProviderService extends MyTabPanel {
 		
 		JPanel providerBox = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.PROVIDER.toString() ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "PROVIDER" ) ) ;
 		providerBox.setBorder( tB ) ;
 
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -382,7 +382,7 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		this.lockBox.setText( GUIStrings.URL.toString() ) ;
+		this.lockBox.setText( ResourceManager.msg( "URL" ) ) ;
 		this.lockBox.setHorizontalAlignment( SwingConstants.RIGHT ) ;
 		this.lockBox.addItemListener( new LockBoxChanged() ) ;
 		providerBox.add( this.lockBox, c ) ;
@@ -408,7 +408,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.userNameLabel.setText( GUIStrings.USER_NAME.toString() ) ;
+		this.userNameLabel.setText( ResourceManager.msg( "USER_NAME" ) ) ;
 		providerBox.add( this.userNameLabel, c ) ;
 		
 		
@@ -430,7 +430,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.passwordLabel.setText( GUIStrings.PASSWORD.toString() ) ;
+		this.passwordLabel.setText( ResourceManager.msg( "PASSWORD" ) ) ;
 		providerBox.add( this.passwordLabel, c ) ;
 		
 				
@@ -452,7 +452,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		JLabel triggerLabel = new JLabel( GUIStrings.TRIGGER_ACTION.toString() ) ;
+		JLabel triggerLabel = new JLabel( ResourceManager.msg( "TRIGGER_ACTION" ) ) ;
 		providerBox.add( triggerLabel, c ) ;
 
 
@@ -493,7 +493,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.sinceLabel.setText( GUIStrings.MISSING_SINCE.toString() ) ;
+		this.sinceLabel.setText( ResourceManager.msg( "MISSING_SINCE" ) ) ;
 		checkBoxPanel.add( this.sinceLabel, c ) ;
 
 
@@ -519,7 +519,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.sinceSyncLabel.setText( GUIStrings.MISSING_SINCE_SYNC.toString() ) ;
+		this.sinceSyncLabel.setText( ResourceManager.msg( "MISSING_SINCE_SYNC" ) ) ;
 		checkBoxPanel.add( this.sinceSyncLabel, c ) ;
 
 
@@ -546,7 +546,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridwidth  = 2 ;
 		c.insets     = i ;
 		
-		this.verboseBox.setText( GUIStrings.VERBOSE.toString() ) ;
+		this.verboseBox.setText( ResourceManager.msg( "VERBOSE" ) ) ;
 		checkBoxPanel.add( this.verboseBox, c ) ;
 		
 
@@ -559,7 +559,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.messageBox.setText( GUIStrings.MESSAGE.toString() ) ;
+		this.messageBox.setText( ResourceManager.msg( "MESSAGE" ) ) ;
 		checkBoxPanel.add( this.messageBox, c ) ;
 		
 
@@ -572,7 +572,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.mergeBox.setText( GUIStrings.MERGE.toString() ) ;
+		this.mergeBox.setText( ResourceManager.msg( "MERGE" ) ) ;
 		checkBoxPanel.add( this.mergeBox, c ) ;
 		
 
@@ -585,7 +585,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.filterBox.setText( GUIStrings.FILTER.toString() ) ;
+		this.filterBox.setText( ResourceManager.msg( "FILTER" ) ) ;
 		checkBoxPanel.add( this.filterBox, c ) ;
 		
 
@@ -609,7 +609,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.providerButton.setText( GUIStrings.CHECK.toString() ) ;
+		this.providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
 		providerButton.addActionListener( new ProviderTestButton() ) ;
 		providerBox.add( providerButton, c ) ;
 		
@@ -623,7 +623,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridy      = 0 ;
 		c.insets     = new Insets( 0, 0, 0, 0 ); ;
 
-		this.installButton.setText( GUIStrings.INSTALL.toString() ) ;
+		this.installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
 		installButton.addActionListener( new ProviderInstallButtons() ) ;
 		installPanel.add( installButton, c ) ;
 
@@ -635,7 +635,7 @@ public class ProviderService extends MyTabPanel {
 		c.weightx    = 1.0 ;
 		c.insets     = new Insets( 0, 0, 0, 0 ); ;
 
-		this.uninstallButton.setText( GUIStrings.UNINSTALL.toString() ) ;
+		this.uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
 		uninstallButton.addActionListener( new ProviderInstallButtons() ) ;
 		installPanel.add( uninstallButton, c ) ;
 
@@ -673,7 +673,7 @@ public class ProviderService extends MyTabPanel {
 
 		JPanel serviceBox = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.DVBVIEWER_SERVICE.toString() ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER_SERVICE" ) ) ;
 		serviceBox.setBorder( tB ) ;
 
 		
@@ -685,7 +685,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 		
-		this.serviceEnableBox.setText( GUIStrings.ENABLE.toString() ) ;
+		this.serviceEnableBox.setText( ResourceManager.msg( "ENABLE" ) ) ;
 		this.serviceEnableBox.setSelected( ! dvbs.isEnabled() ) ;
 		this.serviceEnableBox.addItemListener( new ServiceCheckBoxesChanged() ) ;
 		this.serviceEnableBox.setSelected( dvbs.isEnabled() ) ;
@@ -700,7 +700,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.urlServiceLabel.setText( GUIStrings.URL.toString() ) ;
+		this.urlServiceLabel.setText( ResourceManager.msg( "URL" ) ) ;
 		serviceBox.add( this.urlServiceLabel, c ) ;
 
 
@@ -724,7 +724,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.userServiceLabel.setText( GUIStrings.USER_NAME.toString() ) ;
+		this.userServiceLabel.setText( ResourceManager.msg( "USER_NAME" ) ) ;
 		serviceBox.add( this.userServiceLabel, c ) ;
 		
 		
@@ -747,7 +747,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.passwordServiceLabel.setText( GUIStrings.PASSWORD.toString() ) ;
+		this.passwordServiceLabel.setText( ResourceManager.msg( "PASSWORD" ) ) ;
 		serviceBox.add( this.passwordServiceLabel, c ) ;
 
 
@@ -770,7 +770,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 		
-		this.wolEnableBox.setText( GUIStrings.WOL.toString() ) ;
+		this.wolEnableBox.setText( ResourceManager.msg( "WOL" ) ) ;
 		this.wolEnableBox.setSelected( ! dvbs.getEnableWOL() ) ;
 		this.wolEnableBox.addItemListener( new ServiceCheckBoxesChanged() ) ;
 		this.wolEnableBox.setSelected( dvbs.getEnableWOL() ) ;
@@ -785,7 +785,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.waitTimeLabel.setText( GUIStrings.WAIT_TIME.toString() ) ;
+		this.waitTimeLabel.setText( ResourceManager.msg( "WAIT_TIME" ) ) ;
 		serviceBox.add( this.waitTimeLabel, c ) ;
 
 		
@@ -812,7 +812,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.broadCastLabel.setText( GUIStrings.BROAD_CAST_ADDRESS.toString() ) ;
+		this.broadCastLabel.setText( ResourceManager.msg( "BROAD_CAST_ADDRESS" ) ) ;
 		serviceBox.add( this.broadCastLabel, c ) ;
 
 
@@ -836,7 +836,7 @@ public class ProviderService extends MyTabPanel {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 		
-		this.macLabel.setText( GUIStrings.MAC_ADDRESS.toString() ) ;
+		this.macLabel.setText( ResourceManager.msg( "MAC_ADDRESS" ) ) ;
 		serviceBox.add( this.macLabel, c ) ;
 
 
@@ -861,7 +861,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.serviceButton.setText( GUIStrings.CHECK.toString() ) ;
+		this.serviceButton.setText( ResourceManager.msg( "CHECK" ) ) ;
 		serviceButton.addActionListener( new ServiceTestButton() ) ;
 		serviceBox.add( serviceButton, c ) ;
 
@@ -892,25 +892,25 @@ public class ProviderService extends MyTabPanel {
 			if ( ! this.lastProvider.getURL().equals( this.urlBox.getText() ) )
 			{
 				this.lastProvider.setURL( this.urlBox.getText() ) ;
-				this.gui.setChanged() ;
+				this.guiPanel.setChanged() ;
 			}
 			if (    this.lastProvider.getUserName() != null
 				 && ! this.lastProvider.getUserName().equals( this.userNameBox.getText() ) )
 			{
 				this.lastProvider.setUserName( this.userNameBox.getText() ) ;
-				this.gui.setChanged() ;
+				this.guiPanel.setChanged() ;
 			}
 			if (    this.lastProvider.getPassword() != null
 				 && ! this.lastProvider.getPassword().equals( this.passwordBox.getText() ) )
 			{
 				this.lastProvider.setPassword( this.passwordBox.getText() ) ;
-				this.gui.setChanged() ;
+				this.guiPanel.setChanged() ;
 			}
 			int trigger = ((Integer)this.triggerBox.getValue()).intValue() ;
 			if ( this.lastProvider.getTriggerAction() != trigger )
 			{
 				this.lastProvider.setTriggerAction( trigger ) ;
-				this.gui.setChanged() ;
+				this.guiPanel.setChanged() ;
 			}
 			if ( this.lastProvider.getOutDatedLimits() != null )
 			{
@@ -919,13 +919,13 @@ public class ProviderService extends MyTabPanel {
 				if ( missingSince != i.getMissingSince() )
 				{
 					i.setMissingSince( missingSince ) ;
-					this.gui.setChanged() ;
+					this.guiPanel.setChanged() ;
 				}
 				int missingSyncSince = ((Integer)this.sinceSyncBox.getValue()).intValue() ;
 				if ( missingSyncSince != i.getMissingSyncSince() )
 				{
 					i.setMissingSyncSince( missingSyncSince ) ;
-					this.gui.setChanged() ;
+					this.guiPanel.setChanged() ;
 				}
 			}
 		}
@@ -936,33 +936,33 @@ public class ProviderService extends MyTabPanel {
 		if ( ! dvbs.getURL().equals( this.urlServiceBox.getText() ) )
 		{
 			dvbs.setURL( this.urlServiceBox.getText() ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 		if ( ! dvbs.getUserName().equals( this.userServiceBox.getText() ) )
 		{
 			dvbs.setUserName( this.userServiceBox.getText() ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 		if ( ! dvbs.getPassword().equals( this.passwordServiceBox.getText() ) )
 		{
 			dvbs.setPassword( this.passwordServiceBox.getText() ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 		int waitTime = (Integer)this.waitTimeBox.getValue() ;
 		if ( dvbs.getWaitTimeAfterWOL() != waitTime )
 		{
 			dvbs.setWaitTimeAfterWOL( waitTime ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 		if ( ! dvbs.getBroadCastAddress().equals( this.broadCastBox.getText() ) )
 		{
 			dvbs.setBroadCastAddress( this.broadCastBox.getText() ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 		if ( ! dvbs.getMacAddress().equals( this.macBox.getText() ) )
 		{
 			dvbs.setMacAddress( this.macBox.getText() ) ;
-			this.gui.setChanged() ;
+			this.guiPanel.setChanged() ;
 		}
 	}
 	@Override

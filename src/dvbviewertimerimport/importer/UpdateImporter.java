@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
 public class UpdateImporter

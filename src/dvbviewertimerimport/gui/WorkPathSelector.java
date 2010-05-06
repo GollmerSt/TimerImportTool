@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.misc.ResourceManager;
 
 //import JFileChooser;
 
@@ -40,8 +41,8 @@ public class WorkPathSelector
             }
 		}
 		);
-		chooser.setDialogTitle( GUIStrings.SELECT_CHANNEL_FILE.toString() ) ;
-		int returnVal = chooser.showDialog( frame, GUIStrings.SELECT.toString() ) ;
+		chooser.setDialogTitle( ResourceManager.msg( "SELECT_CHANNEL_FILE" ) ) ;
+		int returnVal = chooser.showDialog( frame, ResourceManager.msg( "SELECT" ) ) ;
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             File file = chooser.getSelectedFile() ;

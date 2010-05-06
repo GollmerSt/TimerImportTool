@@ -16,6 +16,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.TreeMap;
 import java.util.concurrent.Semaphore;
 
@@ -24,23 +25,23 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.misc.Constants;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
-public class GUI {
+public class GUI extends JFrame{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1912798357166099713L;
 	public enum GUIStatus { INVALID, OK, CANCEL, APPLY, EXECUTE, SAVE_EXECUTE, UPDATE } ;
 	private final Control control ;
-	private final dvbviewertimerimport.dvbviewer.channels.Channels dChannels ;
 
 	private ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
 
@@ -49,16 +50,15 @@ public class GUI {
 	
 	private GUIStatus status = GUIStatus.INVALID ;
 	private boolean isChanged = false ;
-	private MyTabPanel previousTab = null ;
+	
+	private final GUIPanel guiPanel ;
 
-	private final JFrame frame = new JFrame() ;
-	private final JTabbedPane tabbedPane = new JTabbedPane() ;
-	private final JCheckBox forceBox = new JCheckBox() ;
-    private final JButton executeButton = new JButton() ;
-    private final JButton updateButton = new JButton() ;
-    private final JButton okButton = new JButton() ;
-    private final JButton cancelButton = new JButton() ;
-    private final JButton applyButton = new JButton() ;
+	private final JCheckBox forceBox ;
+    private final JButton executeButton ;
+    private final JButton updateButton ;
+    private final JButton okButton ;
+    private final JButton cancelButton ;
+    private final JButton applyButton ;
     
     private ProviderAssignment providerAssignment = null ;
     private Miscellaneous miscellaneous = null ;
@@ -67,7 +67,34 @@ public class GUI {
     = new TreeMap< String, LookAndFeelInfo >() ;
 	private final ArrayList< String > lookAndFeelNames = new ArrayList< String >() ;
 	
-    private class MyWindowListener implements WindowListener
+	public GUI( Control control, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
+	{
+		this.control = control ;
+		Locale.setDefault( control.getLanguage() ) ;
+		String className = UIManager.getSystemLookAndFeelClassName() ;
+		LookAndFeelInfo systemLookAndFeelInfo = new LookAndFeelInfo( Constants.SYSTEM_LOOK_AND_FEEL_NAME, className ) ;
+		this.lookAndFeelAssignment.put( Constants.SYSTEM_LOOK_AND_FEEL_NAME, systemLookAndFeelInfo ) ;
+		this.lookAndFeelNames.add( Constants.SYSTEM_LOOK_AND_FEEL_NAME ) ;
+		for ( LookAndFeelInfo lf : UIManager.getInstalledLookAndFeels() )
+		{
+			this.lookAndFeelAssignment.put( lf.getName(), lf ) ;
+			this.lookAndFeelNames.add( lf.getName() ) ;
+		}
+		
+		this.setLookAndFeel( control.getLookAndFeelName() ) ;
+		this.isChanged = false ;
+		
+		this.guiPanel = new GUIPanel( this, control, dChannels ) ;
+		this.forceBox = new JCheckBox() ;
+		this.executeButton = new JButton() ;
+		this.updateButton = new JButton() ;
+		this.okButton = new JButton() ;
+		this.cancelButton = new JButton() ;
+		this.applyButton = new JButton() ;
+	
+	}
+
+	private class MyWindowListener implements WindowListener
     {
 
 		@Override
@@ -83,9 +110,9 @@ public class GUI {
 		@Override
 		public void windowClosing(WindowEvent arg0) {
 			// TODO Auto-generated method stub
-			MyTabPanel tabPanel = (MyTabPanel)tabbedPane.getSelectedComponent() ;
+			MyTabPanel tabPanel = guiPanel.getSelectedComponent() ;
 			tabPanel.update( false ) ;
-			if ( messageIsChanged( GUIStrings.SETUP_CHANGED.toString() ) )
+			if ( messageIsChanged( ResourceManager.msg( "SETUP_CHANGED" ) ) )
 			{
 				status = GUIStatus.CANCEL ;
 				waitAPP() ;
@@ -114,25 +141,11 @@ public class GUI {
     	
     }
     
-    private class TabChanged implements ChangeListener
-    {
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			updateExecuteButton() ;
-			MyTabPanel source = (MyTabPanel)((JTabbedPane)e.getSource()).getSelectedComponent() ;
-			if ( source == null )
-				return ;
-			previousTab.update( false );
-			source.update( true ) ;
-			previousTab = source ;
-		}
-    	
-    }
 	public class ButtonPressed implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			MyTabPanel tabPanel = (MyTabPanel)tabbedPane.getSelectedComponent() ;
+			MyTabPanel tabPanel = guiPanel.getSelectedComponent() ;
 			tabPanel.update( false ) ;
 
 			JButton button = (JButton) e.getSource() ;
@@ -142,7 +155,7 @@ public class GUI {
 				status = GUIStatus.OK ;
 				waitAPP() ;
 			}
-			else if ( button == cancelButton && messageIsChanged( GUIStrings.SETUP_CHANGED.toString() ) )
+			else if ( button == cancelButton && messageIsChanged( ResourceManager.msg( "SETUP_CHANGED" ) ) )
 			{
 				status = GUIStatus.CANCEL ;
 				waitAPP() ;
@@ -155,7 +168,7 @@ public class GUI {
 			}
 			if ( button == executeButton )
 			{
-				if ( messageIsChanged( GUIStrings.SETUP_SAVE.toString() ))
+				if ( messageIsChanged( ResourceManager.msg( "SETUP_SAVE" ) ))
 					status = GUIStatus.SAVE_EXECUTE ;
 				else
 					status = GUIStatus.EXECUTE ;
@@ -176,26 +189,8 @@ public class GUI {
 			p.setFilterEnabled( ! forceBox.isSelected() ) ;
 		}
 }
-	public GUI( Control control, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
-	{
-		this.control = control ;
-		this.dChannels = dChannels ;
-		
-		String className = UIManager.getSystemLookAndFeelClassName() ;
-		LookAndFeelInfo systemLookAndFeelInfo = new LookAndFeelInfo( Constants.SYSTEM_LOOK_AND_FEEL_NAME, className ) ;
-		this.lookAndFeelAssignment.put( Constants.SYSTEM_LOOK_AND_FEEL_NAME, systemLookAndFeelInfo ) ;
-		this.lookAndFeelNames.add( Constants.SYSTEM_LOOK_AND_FEEL_NAME ) ;
-		for ( LookAndFeelInfo lf : UIManager.getInstalledLookAndFeels() )
-		{
-			this.lookAndFeelAssignment.put( lf.getName(), lf ) ;
-			this.lookAndFeelNames.add( lf.getName() ) ;
-		}
-		
-		this.setLookAndFeel( control.getLookAndFeelName() ) ;
-		this.isChanged = false ;
-	}
 	public Control getControl() { return this.control ; } ;
-	public JFrame getFrame() { return frame ; } ;
+	public JFrame getFrame() { return this ; } ;
 	public void setChanged() { this.isChanged = true ; } ;
 	public void execute()
 	{ 
@@ -205,10 +200,10 @@ public class GUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    this.frame.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
-	    this.frame.setIconImage( this.programIcon.getImage() ) ;
-	    this.frame.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME ) ;
-	    this.frame.setLayout(  new GridBagLayout() ) ;
+	    this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+	    this.setIconImage( this.programIcon.getImage() ) ;
+	    this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME ) ;
+	    this.setLayout(  new GridBagLayout() ) ;
         
 		GridBagConstraints c = null ;
 		Insets i = new Insets( 0, 0, 0, 0 );
@@ -224,26 +219,12 @@ public class GUI {
 		c.fill       = GridBagConstraints.BOTH ;
 		//c.insets     = i ;
 	    
-		this.frame.add( this.tabbedPane, c ) ;
+		this.add( this.guiPanel, c ) ;
+		
+		this.guiPanel.paint() ;
+		
 
 	    
-	    DVBViewerAssignment tab1 = new DVBViewerAssignment( this, dChannels ) ;
-	    ProviderService tab2 = new ProviderService( this, frame ) ;
-	    this.miscellaneous = new Miscellaneous( this, frame ) ;
-	    this.providerAssignment = new ProviderAssignment( this, frame ) ;
-	    	    
-	    this.tabbedPane.add( GUIStrings.DVBVIEWER_ASSIGNMENT.toString(), tab1); 
-	    this.tabbedPane.add( GUIStrings.PROVIDER_SERVICE.toString(), tab2);
-	    this.tabbedPane.add( GUIStrings.MISCELLANEOUS.toString(), this.miscellaneous);
-	    this.tabbedPane.add( GUIStrings.PROVIDER_ASSIGNMENT.toString(), providerAssignment);
-	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
-	    
-	    this.tabbedPane.setSelectedComponent( tab1 ) ;
-	    this.previousTab = (MyTabPanel)tab1 ;
-	    tab1.paint() ;
-	    tab2.paint() ;
-	    this.miscellaneous.paint() ;
-	    this.providerAssignment.paint() ;
 
 	 	    
 
@@ -254,9 +235,9 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.executeButton.setText( GUIStrings.EXECUTE.toString() ) ;
+	    this.executeButton.setText( ResourceManager.msg( "EXECUTE" ) ) ;
 	    this.executeButton.addActionListener( new ButtonPressed() ) ;
-	    this.frame.add( executeButton, c ) ;
+	    this.add( executeButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -265,9 +246,9 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.forceBox.setText( GUIStrings.ALL_TIMERS.toString() ) ;
+	    this.forceBox.setText( ResourceManager.msg( "ALL_TIMERS" ) ) ;
 	    this.forceBox.addItemListener( new AllTimersChanged() ) ;
-	    this.frame.add( forceBox, c ) ;
+	    this.add( forceBox, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -276,9 +257,9 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
 	    
-	    this.updateButton.setText( GUIStrings.UPDATE_LIST.toString() ) ;
+	    this.updateButton.setText( ResourceManager.msg( "UPDATE_LIST" ) ) ;
 	    this.updateButton.addActionListener( new ButtonPressed() ) ;
-	    this.frame.add( this.updateButton, c ) ;
+	    this.add( this.updateButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -288,9 +269,9 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-	    this.okButton.setText( GUIStrings.OK.toString() ) ;
+	    this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
 	    this.okButton.addActionListener( new ButtonPressed() ) ;
-	    this.frame.add( this.okButton, c ) ;
+	    this.add( this.okButton, c ) ;
 
 		
 
@@ -300,9 +281,9 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-		this.cancelButton.setText( GUIStrings.CANCEL.toString() ) ;
+		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
 		this.cancelButton.addActionListener( new ButtonPressed() ) ;
-		this.frame.add( cancelButton, c ) ;
+		this.add( cancelButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -311,25 +292,24 @@ public class GUI {
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
 	    
-		this.applyButton.setText( GUIStrings.APPLY.toString() ) ;
+		this.applyButton.setText( ResourceManager.msg( "APPLY" ) ) ;
 		this.applyButton.addActionListener( new ButtonPressed() ) ;
-		this.frame.add( this.applyButton, c ) ;
+		this.add( this.applyButton, c ) ;
 
-		this.frame.pack(); 
+		this.pack(); 
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        this.frame.setLocation( (d.width  - this.frame.getSize().width  ) / 2, 
-        		                (d.height - this.frame.getSize().height ) / 2 ) ;
+        this.setLocation( (d.width  - this.getSize().width  ) / 2, 
+        		                (d.height - this.getSize().height ) / 2 ) ;
         
-        this.frame.addWindowListener( new MyWindowListener() ) ;
+        this.addWindowListener( new MyWindowListener() ) ;
         
-        this.updateExecuteButton() ;
+        this.guiPanel.updateExecuteButton() ;
         
-		this.frame.setVisible( true );         
+		this.setVisible( true );         
 	}
-	public void updateExecuteButton()
+	public void updateExecuteButton( boolean enableExecute )
 	{
-		Object o = this.tabbedPane.getSelectedComponent() ;
-		if ( o != null && o.getClass() == DVBViewerAssignment.class )
+		if ( enableExecute )
 		{
 			Provider p = Provider.getProvider( control.getDefaultProvider() ) ;
 			this.executeButton.setEnabled( p.canExecute() ) ;
@@ -347,7 +327,7 @@ public class GUI {
 	public GUIStatus waitGUI()
 	{
 		this.appBusy.release() ;
-		this.frame.setEnabled( true ) ;
+		this.setEnabled( true ) ;
 		try {
 			this.guiBusy.acquire() ;
 		} catch (InterruptedException e) {
@@ -364,7 +344,7 @@ public class GUI {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.frame.setEnabled( false ) ;
+		this.setEnabled( false ) ;
 		this.guiBusy.release() ;
 	}
 	private boolean messageIsChanged( String message )
@@ -373,7 +353,7 @@ public class GUI {
 			return true ;
 		
 		int answer = JOptionPane.showConfirmDialog(
-		        frame, message, 
+		        this, message, 
 		        Constants.PROGRAM_NAME, 
 		        JOptionPane.YES_NO_OPTION );
 		return( answer == JOptionPane.YES_OPTION ) ;
@@ -401,8 +381,8 @@ public class GUI {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		SwingUtilities.updateComponentTreeUI( this.frame );
-		this.frame.pack();
+		SwingUtilities.updateComponentTreeUI( this );
+		this.pack();
 		this.isChanged = true ;
 	}
 	public void updateIfChannelSetsChanged( Provider p )

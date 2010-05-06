@@ -13,7 +13,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
@@ -21,6 +20,7 @@ import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
 public class TVGenial extends Provider {

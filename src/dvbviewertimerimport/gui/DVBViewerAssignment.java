@@ -34,19 +34,18 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.TimeOffsets;
 import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.Enums;
 import dvbviewertimerimport.misc.Function;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
 
 public class DVBViewerAssignment extends MyTabPanel{
 	private static final long serialVersionUID = 124706451716532907L;
-	private final GUI parent ;
 	private final dvbviewertimerimport.dvbviewer.channels.Channels dvbViewerChannels ;
 	private final JComboBox providerCombo = new JComboBox() ;
 	private final JList providerChannelList = new JList( new DefaultListModel() ) ;
@@ -131,8 +130,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        if ( ! p.getName().equals( control.getDefaultProvider() ) )
 	        {
 	        	control.setDefaultProvider( p.getName() ) ;
-	        	parent.updateExecuteButton() ;
-	        	gui.setChanged() ;
+	        	getGUIPanel().setChanged() ;
 	        }
 	    }
 	}
@@ -149,7 +147,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        int ix = providerChannelList.getSelectedIndex() ;
 	        if ( ix >= 0 )
 	        {
-	        	gui.setChanged() ;
+	        	getGUIPanel().setChanged() ;
 	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	        	csa.channelSet.setDVBViewerChannel( null ) ;
 	        	DefaultListModel model = (DefaultListModel) providerChannelList.getModel() ;
@@ -216,7 +214,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        int ix = providerChannelList.getSelectedIndex() ;
 	        if ( ix >= 0 )
 	        {
-	        	gui.setChanged() ;
+	        	getGUIPanel().setChanged() ;
 	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	        	csa.channelSet.setDVBViewerChannel( c.getChannelID() ) ;
 	        	providerChannelList.setSelectedValue(csa, false) ;
@@ -236,7 +234,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        if ( res != csa.channelSet.getMerge() )
 	        {
 	        	csa.channelSet.setMerge( res ) ;
-	        	gui.setChanged() ;
+	        	getGUIPanel().setChanged() ;
 	        }
 	    }
 	}
@@ -260,17 +258,16 @@ public class DVBViewerAssignment extends MyTabPanel{
 			}
 			else if ( source == globalOffsetButton )
 				offsets = TimeOffsets.getGeneralTimeOffsets() ;
-			new OffsetsDialog( gui, offsets ) ;
+			new OffsetsDialog( getGUIPanel(), offsets ) ;
 			if ( csa != null )
 				model.setElementAt( csa, line ) ;
 		}
 		
 	}
-	public DVBViewerAssignment( GUI parent, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
+	public DVBViewerAssignment( GUIPanel parent, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
 	{
-		super( parent, parent.getFrame() ) ;
+		super( parent ) ;
 		
-		this.parent = parent ;
 		this.dvbViewerChannels = dChannels ;
 	}
 	public void paint()
@@ -280,7 +277,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel provider = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.PROVIDER.toString() ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "PROVIDER" ) ) ;
 		provider.setBorder( tB ) ;
 
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -339,7 +336,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel dvbViewer = new JPanel() ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.DVBVIEWER.toString() ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER" ) ) ;
 		dvbViewer.setBorder( tB ) ;
 		
 		dvbviewertimerimport.dvbviewer.channels.Channel emptyChannel = new dvbviewertimerimport.dvbviewer.channels.Channel() ;
@@ -371,7 +368,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		JPanel channelPane = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( GUIStrings.CHANNEL.toString() ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "CHANNEL" ) ) ;
 		channelPane.setBorder( tB ) ;
 		
 		c = new GridBagConstraints();
@@ -383,7 +380,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.channelOffsetButton.setText( GUIStrings.OFFSETS.toString() ) ;
+		this.channelOffsetButton.setText( ResourceManager.msg( "OFFSETS" ) ) ;
 		this.channelOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
 		channelPane.add( this.channelOffsetButton, c ) ;
 		
@@ -397,7 +394,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		c.fill       = GridBagConstraints.BOTH ;
 
-		JLabel mergeTxt = new JLabel( GUIStrings.MERGE.toString() ) ;
+		JLabel mergeTxt = new JLabel( ResourceManager.msg( "MERGE" ) ) ;
 		channelPane.add( mergeTxt, c ) ;
 
 		
@@ -410,9 +407,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
-		this.mergeCombo.addItem( GUIStrings.GLOBAL.toString() ) ;
-		this.mergeCombo.addItem( GUIStrings.EXECUTE.toString() ) ;
-		this.mergeCombo.addItem( GUIStrings.NO.toString() ) ;
+		this.mergeCombo.addItem( ResourceManager.msg( "GLOBAL" ) ) ;
+		this.mergeCombo.addItem( ResourceManager.msg( "EXECUTE" ) ) ;
+		this.mergeCombo.addItem( ResourceManager.msg( "NO" ) ) ;
 		this.mergeCombo.addActionListener( new MergeChanged() ) ;
 		channelPane.add( this.mergeCombo, c ) ;
 		
@@ -442,7 +439,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.insets     = i ;
 //		c.insets     = new Insets( 40, 5, 5, 5 ); ;
 
-		this.globalOffsetButton.setText( GUIStrings.GLOBAL_OFFSETS.toString() ) ;
+		this.globalOffsetButton.setText( ResourceManager.msg( "GLOBAL_OFFSETS" ) ) ;
 		this.globalOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
 		this.add( this.globalOffsetButton, c ) ;
 		

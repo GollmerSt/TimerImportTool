@@ -17,8 +17,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import dvbviewertimerimport.gui.GUIStrings.ActionAfterItems;
-import dvbviewertimerimport.gui.GUIStrings.TimerActionItems;
+import dvbviewertimerimport.misc.Enums.ActionAfterItems;
+import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.Conversions;

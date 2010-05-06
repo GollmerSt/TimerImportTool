@@ -15,8 +15,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
-import dvbviewertimerimport.gui.GUIStrings.ActionAfterItems;
-import dvbviewertimerimport.gui.GUIStrings.TimerActionItems;
+import dvbviewertimerimport.misc.Enums.ActionAfterItems;
+import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.OutDatedInfo;

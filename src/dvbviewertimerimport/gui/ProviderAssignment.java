@@ -20,7 +20,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -38,6 +37,7 @@ import javax.swing.table.TableRowSorter;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.misc.Constants;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
 public class ProviderAssignment  extends MyTabPanel
@@ -102,7 +102,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			boolean enable = unlockBox.isSelected() ;
 			providerCombo.setEnabled( enable ) ;
 			channelCombo.setEnabled( enable ) ;
@@ -118,7 +118,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			
 			enableByProvider( true ) ;
 			
@@ -144,7 +144,7 @@ public class ProviderAssignment  extends MyTabPanel
 	    public void actionPerformed(ActionEvent e)
 	    {
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			int ix = channelCombo.getSelectedIndex() ;			
 			
 			if ( ix >= 0 )
@@ -172,7 +172,7 @@ public class ProviderAssignment  extends MyTabPanel
 		public void actionPerformed(ActionEvent e)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 
 			Provider p = (Provider) providerCombo.getSelectedItem() ;
 			if ( p == null )
@@ -222,11 +222,11 @@ public class ProviderAssignment  extends MyTabPanel
 				if ( count >= 0 )
 				{
 					updateIfChannelSetsChanged( p ) ;
-					importButton.setText( GUIStrings.SUCCESSFULL.toString() ) ;
-					messageLabel.setText( Integer.toString( count ) + GUIStrings.CHANNELS_IMPORTED ) ;
+					importButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					messageLabel.setText( Integer.toString( count ) + ResourceManager.msg( "CHANNELS_IMPORTED" ) ) ;
 				}
 				else
-					importButton.setText( GUIStrings.FAILED.toString() ) ;
+					importButton.setText( ResourceManager.msg( "FAILED" ) ) ;
 			}
 		}
 	}
@@ -260,12 +260,12 @@ public class ProviderAssignment  extends MyTabPanel
 			return o1.compareToIgnoreCase(o2) ;
 		}
 	}
-	public ProviderAssignment( GUI gui, JFrame frame )
+	public ProviderAssignment( GUIPanel guiPanel )
 	{
-		super( gui, frame ) ;
+		super( guiPanel ) ;
 		
 		this.columnNames  = new String[ Provider.getProviders().size() + 1 ];
-		this. columnNames[ 0 ] = GUIStrings.DVBVIEWER.toString() ;
+		this. columnNames[ 0 ] = ResourceManager.msg( "DVBVIEWER" ) ;
 		
 		int ip = 0 ;
 		for ( Provider provider : Provider.getProviders() )
@@ -326,7 +326,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = new Insets( 5, 0, 5, 5 ) ;
 		
-		JLabel lockLabel = new JLabel( GUIStrings.UNLOCK.toString() ) ;
+		JLabel lockLabel = new JLabel( ResourceManager.msg( "UNLOCK" ) ) ;
 		this.add( lockLabel, c ) ;
 
 		
@@ -369,7 +369,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.addChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.addChannelButton.setText( GUIStrings.ADD.toString() ) ;
+		this.addChannelButton.setText( ResourceManager.msg( "ADD" ) ) ;
 		this.add( this.addChannelButton, c ) ;
 
 		
@@ -382,7 +382,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.modifyChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.modifyChannelButton.setText( GUIStrings.MODIFY.toString() ) ;
+		this.modifyChannelButton.setText( ResourceManager.msg( "MODIFY" ) ) ;
 		this.add( this.modifyChannelButton, c ) ;
 
 		
@@ -395,7 +395,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		this.importButton.addActionListener( new ChannelButtonsPressed() ) ;
-		this.importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+		this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		this.add( this.importButton, c ) ;
 
 		
@@ -542,21 +542,21 @@ public class ProviderAssignment  extends MyTabPanel
 		public void popupMenuCanceled(PopupMenuEvent arg0)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 		@Override
 		public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0)
 		{
 			cancelCellEditing() ;
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 
 		//@Override
 		public void popupMenuWillBecomeVisible(PopupMenuEvent e)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 	}
 
@@ -669,7 +669,7 @@ public class ProviderAssignment  extends MyTabPanel
 		public void setValueAt(Object value, int row, int col)
 		{
 			messageLabel.setText( "") ;
-			importButton.setText( GUIStrings.IMPORT_TV.toString() ) ;
+			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			cancelCellEditing() ;
 			
 			String channel = (String) value ;
@@ -696,8 +696,8 @@ public class ProviderAssignment  extends MyTabPanel
                 {
                 	showTableLine( pcsid ) ;
     				int answer = JOptionPane.showConfirmDialog(
-    						        frame, 
-    						        "\"" + channel + "\" " + GUIStrings.ASSIGNED_ERROR, 
+    						guiPanel.getFrame(), 
+    						        "\"" + channel + "\" " + ResourceManager.msg( "ASSIGNED_ERROR" ), 
     						        Constants.PROGRAM_NAME, 
     						        JOptionPane.OK_CANCEL_OPTION );
     				if ( answer == JOptionPane.CANCEL_OPTION )
@@ -735,7 +735,7 @@ public class ProviderAssignment  extends MyTabPanel
             updateTable() ;
         	showTableLine( csid ) ;
         	
-			gui.setChanged() ;
+        	guiPanel.setChanged() ;
 		}
 	}
 	private boolean removeChannelSetIfEmpty( int csid )

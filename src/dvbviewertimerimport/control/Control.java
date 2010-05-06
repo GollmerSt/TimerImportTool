@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Locale;
 
 import javax.swing.JOptionPane;
 import javax.xml.stream.XMLEventReader;
@@ -23,16 +24,15 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import dvbviewertimerimport.gui.GUIStrings;
-import dvbviewertimerimport.gui.GUIStrings.ActionAfterItems;
-import dvbviewertimerimport.gui.GUIStrings.TimerActionItems;
+
+import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.clickfinder.ClickFinder;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.dvbviewer.DVBViewerService ;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.* ;
+import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.tvgenial.TVGenial;
 import dvbviewertimerimport.tvinfo.TVInfo;
@@ -65,7 +65,7 @@ public class Control
 	private final StackXML<String> pathDVBViewer		= new StackXML<String>( "Importer",  "DVBViewer" ) ;
 	
 	private String defaultProvider = null ;
-	private String language = "" ;
+	private Locale language = Locale.getDefault() ;
 	private String lookAndFeelName = Constants.SYSTEM_LOOK_AND_FEEL_NAME ;
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
@@ -111,7 +111,7 @@ public class Control
 			if ( ! f.exists() )
 			{
 				int answer = JOptionPane.showConfirmDialog( null,
-						GUIStrings.COPY_DEFAULT_CONTROL_FILE.toString(), 
+						ResourceManager.msg( "COPY_DEFAULT_CONTROL_FILE" ), 
 				        Constants.PROGRAM_NAME, 
 				        JOptionPane.OK_CANCEL_OPTION );
 				if ( answer == JOptionPane.CANCEL_OPTION )
@@ -348,8 +348,11 @@ public class Control
 						this.defaultProvider = data ;
 					else if ( stack.equals( this.pathLanguage ) )
 					{
-						this.language = data ;
-						GUIStrings.setLanguage( data ) ;
+						String [] parts = data.split( "_", -1 ) ;
+						if ( parts.length == 3 )
+							this.language = new Locale( parts[0], parts[1], parts[2] ) ;
+						else
+							this.language = Locale.getDefault() ;
 					}
 					else if ( stack.equals( this.pathLookAndFeel) )
 						this.lookAndFeelName = data ;
@@ -444,13 +447,14 @@ public class Control
 				  sw.writeCharacters( this.defaultProvider ) ;
 				  sw.writeEndElement() ;
 			  }
-			  if ( ! this.language.equals( "" ) )
-			  {
-				  sw.writeStartElement( "Language" ) ;
-				  sw.writeCharacters( this.language ) ;
-				  sw.writeEndElement() ;
-			  }
-			    sw.writeStartElement( "LookAndFeel" ) ;
+			  sw.writeStartElement( "Language" ) ;
+			  sw.writeCharacters(
+					  this.language.getLanguage()
+					  + "_" + this.language.getCountry()
+					  + "_" + this.language.getVariant() ) ;
+			  sw.writeEndElement() ;
+
+			  sw.writeStartElement( "LookAndFeel" ) ;
 			    sw.writeCharacters( this.lookAndFeelName ) ;
 			    sw.writeEndElement() ;
 			  sw.writeEndElement() ;
@@ -490,8 +494,8 @@ public class Control
 	}
 	public String getDefaultProvider() { return this.defaultProvider ; } ;
 	public void setDefaultProvider( String defaultProvider ) { this.defaultProvider = defaultProvider ; } ;
-	public String getLanguage() { return this.language ; } ;
-	public void setLanguage( String language ) { this.language = language ; } ;
+	public Locale getLanguage() { return this.language ; } ;
+	public void setLanguage( Locale language ) { this.language = language ; } ;
 	public String getLookAndFeelName() { return this.lookAndFeelName ; } ;
 	public void setLookAndFeelName( String name ) { this.lookAndFeelName = name ; } ;
 	public String getSeparator() { return this.separator ; } ;

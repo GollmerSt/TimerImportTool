@@ -15,7 +15,6 @@ import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.control.Control ;
 import dvbviewertimerimport.dvbviewer.channels.Channels ;
 import dvbviewertimerimport.gui.GUI;
-import dvbviewertimerimport.gui.GUIStrings;
 import dvbviewertimerimport.gui.WorkPathSelector;
 import dvbviewertimerimport.gui.GUI.GUIStatus;
 
@@ -23,8 +22,6 @@ public final class TimerImportTool {
 	static private final String exeName = "TimerImportTool" ;
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
-
-		GUIStrings.setLanguage( "" ) ;
 
 		DVBViewer dvbViewer = null ;
 

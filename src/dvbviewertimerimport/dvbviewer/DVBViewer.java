@@ -25,13 +25,11 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.xml.StackXML;
-import dvbviewertimerimport.Resources.ResourceManager;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.TimeOffsets;
 import dvbviewertimerimport.dvbviewer.channels.Channels;
-import dvbviewertimerimport.gui.GUIStrings;
-import dvbviewertimerimport.gui.GUIStrings.ActionAfterItems;
-import dvbviewertimerimport.gui.GUIStrings.TimerActionItems;
+import dvbviewertimerimport.misc.Enums.ActionAfterItems;
+import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.* ;
@@ -46,7 +44,8 @@ public class DVBViewer {
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL         = "TimerImportToolCOM" ;
-
+	
+	private static boolean isDLLloaded = false ;
 
 	private static final StackXML<String> xmlPath = new StackXML< String >( "Processed", "Entry" ) ;
 
@@ -726,11 +725,13 @@ public class DVBViewer {
 	}
 	public static void getDVBViewerCOMDll()
 	{
+		if ( isDLLloaded )
+			return ;
 		String exePath = DVBViewer.determineExePath() ;
 		File f = new File ( exePath ) ;
 		if ( ! f.canWrite() )
 		{
-			Log.error( GUIStrings.ADMINISTRATOR.toString() ) ;
+			Log.error( ResourceManager.msg( "ADMINISTRATOR" ) ) ;
 			System.exit( 1 ) ;
 		}
 		ResourceManager.copyBinaryFile( exePath, "datafiles/"
@@ -741,9 +742,13 @@ public class DVBViewer {
 		getDVBViewerCOMDll() ;
 		if ( ! DVBViewerCOM.getVersion().equals( Versions.getDVBViewerCOMVersion() ) )
 		{
-			Log.error( GUIStrings.PACKAGE.toString() ) ;
+			Log.error( ResourceManager.msg( "PACKAGE" ) ) ;
 			System.exit( 1 ) ;
 		}
-
+	}
+	
+	public static void setDLLisLoaded()
+	{
+		isDLLloaded = true ;
 	}
 }

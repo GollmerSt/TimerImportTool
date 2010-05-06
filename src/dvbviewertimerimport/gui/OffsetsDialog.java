@@ -43,6 +43,7 @@ import dvbviewertimerimport.control.OffsetEntry;
 import dvbviewertimerimport.control.TimeOffsets;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.Conversions;
+import dvbviewertimerimport.misc.ResourceManager;
 
 public class OffsetsDialog extends JDialog {
 	/**
@@ -60,7 +61,7 @@ public class OffsetsDialog extends JDialog {
 	private final JButton newButton = new JButton() ; 
 	private final JButton deleteButton = new JButton() ; 
 	
-	private final GUI gui ;
+	private final GUIPanel guiPanel ;
 
 	private class ButtonsPressed implements ActionListener
 	{
@@ -70,7 +71,7 @@ public class OffsetsDialog extends JDialog {
 			JButton source = (JButton)e.getSource() ;
 			if ( source == okButton )
 			{
-				gui.setChanged() ;
+				guiPanel.setChanged() ;
 				table.editingStopped( null ) ;
 				originalOffsets.assign( offsets ) ;
 				dispose() ;
@@ -96,26 +97,26 @@ public class OffsetsDialog extends JDialog {
 		
 	}
 	
-	public OffsetsDialog( final GUI gui, final TimeOffsets offsets )
+	public OffsetsDialog( final GUIPanel guiPanel, final TimeOffsets offsets )
 	{
-		super( gui.getFrame(), true ) ;
-		
+		super( guiPanel.getFrame() , true ) ;
+
 		this.originalOffsets = offsets ;
 		this.offsets = offsets.clone() ;
-		this.gui = gui ;
+		this.guiPanel = guiPanel ;
 		
 		
-		this.columnNames[0] = GUIStrings.TIME_BEFORE.toString() ;
-		this.columnNames[1] = GUIStrings.TIME_AFTER.toString() ;
-		this.columnNames[2] = GUIStrings.WEEKDAYS.toString() ;
-		this.columnNames[3] = GUIStrings.START.toString() ;
-		this.columnNames[4] = GUIStrings.END.toString() ;
+		this.columnNames[0] = ResourceManager.msg( "TIME_BEFORE" ) ;
+		this.columnNames[1] = ResourceManager.msg( "TIME_AFTER" ) ;
+		this.columnNames[2] = ResourceManager.msg( "WEEKDAYS" ) ;
+		this.columnNames[3] = ResourceManager.msg( "START" ) ;
+		this.columnNames[4] = ResourceManager.msg( "END" ) ;
 		
 		paint() ;
 	}
 	public void paint()
 	{
-	    this.setTitle( GUIStrings.OFFSET_DIALOG.toString() ) ;
+	    this.setTitle( ResourceManager.msg( "OFFSET_DIALOG" ) ) ;
 	    this.setLayout(  new GridBagLayout() ) ;
 		
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -144,7 +145,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.newButton.addActionListener( new ButtonsPressed() ) ;
-		this.newButton.setText( GUIStrings.NEW_ENTRY.toString() ) ;
+		this.newButton.setText( ResourceManager.msg( "NEW_ENTRY" ) ) ;
 		this.add( this.newButton, c ) ;
 
 		
@@ -155,7 +156,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.deleteButton.addActionListener( new ButtonsPressed() ) ;
-		this.deleteButton.setText( GUIStrings.DELETE.toString() ) ;
+		this.deleteButton.setText( ResourceManager.msg( "DELETE" ) ) ;
 		this.add( this.deleteButton, c ) ;
 
 		
@@ -169,7 +170,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.okButton.addActionListener( new ButtonsPressed() ) ;
-		this.okButton.setText( GUIStrings.OK.toString() ) ;
+		this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
 		this.add( this.okButton, c ) ;
 
 		
@@ -181,7 +182,7 @@ public class OffsetsDialog extends JDialog {
 		c.insets     = i ;
 		
 		this.cancelButton.addActionListener( new ButtonsPressed() ) ;
-		this.cancelButton.setText( GUIStrings.CANCEL.toString() ) ;
+		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
 		this.add( this.cancelButton, c ) ;
 
 		

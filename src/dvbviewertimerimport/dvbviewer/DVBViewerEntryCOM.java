@@ -4,8 +4,8 @@
 
 package dvbviewertimerimport.dvbviewer;
 
-import dvbviewertimerimport.gui.GUIStrings.ActionAfterItems;
-import dvbviewertimerimport.gui.GUIStrings.TimerActionItems;
+import dvbviewertimerimport.misc.Enums.ActionAfterItems;
+import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.misc.Conversions;
 
 public class DVBViewerEntryCOM {
