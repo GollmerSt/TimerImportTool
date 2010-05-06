@@ -4,10 +4,12 @@
 
 package dvbviewertimerimport.gui;
 
+import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JWindow;
 import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
@@ -22,12 +24,12 @@ public class WorkPathSelector
 	JFileChooser chooser = new JFileChooser() ;
 	
 	private final DVBViewer dvbViewer ;
-	private final JFrame frame ;
+	private final Window window ;
 	
-	public WorkPathSelector( final DVBViewer dvbViewer, final JFrame frame )
+	public WorkPathSelector( final DVBViewer dvbViewer, final Window window )
 	{
 		this.dvbViewer = dvbViewer ;
-		this.frame = frame ;
+		this.window = window ;
 	}
 	public boolean show()
 	{
@@ -42,7 +44,7 @@ public class WorkPathSelector
 		}
 		);
 		chooser.setDialogTitle( ResourceManager.msg( "SELECT_CHANNEL_FILE" ) ) ;
-		int returnVal = chooser.showDialog( frame, ResourceManager.msg( "SELECT" ) ) ;
+		int returnVal = chooser.showDialog( window, ResourceManager.msg( "SELECT" ) ) ;
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             File file = chooser.getSelectedFile() ;

@@ -54,6 +54,7 @@ public abstract class Provider {
 	private final boolean canExecute ;
 	private final boolean canTest ;
 	private final boolean mustInstall ;
+	private final boolean canImport ;
 	private final String name ;
 	protected String url = "" ;
 	protected String username = null ;
@@ -84,6 +85,7 @@ public abstract class Provider {
 		this.id = Provider.providers.size() ;
 		this.canExecute = canExecute ;
 		this.canTest = canTest ;
+		this.canImport = canImport ;
 		this.filter = filter ;
 		this.mustInstall = mustInstall ;
 		this.isPrepared = ! isOutDatedLimitsEnabled ;
@@ -119,7 +121,7 @@ public abstract class Provider {
 	public boolean hasAccount() { return this.hasAccount ; } ;
 	public boolean canExecute() { return this.canExecute ; } ;
 	public boolean canTest()   { return this.canTest ; } ;
-	public boolean canImport() { return this.importChannels( true ) >= 0 ; } ;
+	public boolean canImport() { return this.canImport ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
 	public void setPrepared( boolean prepared ) { this.isPrepared = prepared ; } ;

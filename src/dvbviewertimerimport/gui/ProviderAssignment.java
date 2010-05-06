@@ -696,7 +696,7 @@ public class ProviderAssignment  extends MyTabPanel
                 {
                 	showTableLine( pcsid ) ;
     				int answer = JOptionPane.showConfirmDialog(
-    						guiPanel.getFrame(), 
+    						guiPanel.getWindow(), 
     						        "\"" + channel + "\" " + ResourceManager.msg( "ASSIGNED_ERROR" ), 
     						        Constants.PROGRAM_NAME, 
     						        JOptionPane.OK_CANCEL_OPTION );
@@ -765,6 +765,7 @@ public class ProviderAssignment  extends MyTabPanel
 			this.updateMap( p ) ;
 		
 		this.updateTable() ;
+		this.updateTableComboBoxes() ;
 		this.updateChannelComboBox() ;
 	}
 	@Override

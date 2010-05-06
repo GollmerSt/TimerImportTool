@@ -135,7 +135,7 @@ public class Miscellaneous extends MyTabPanel
 			}
 			else if ( source == fileSelectorButton )
 			{
-				boolean aborted = ! ( new WorkPathSelector( control.getDVBViewer() , guiPanel.getFrame())).show() ;
+				boolean aborted = ! ( new WorkPathSelector( control.getDVBViewer() , guiPanel.getWindow())).show() ;
 				if ( aborted )
 					return ;
 				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;

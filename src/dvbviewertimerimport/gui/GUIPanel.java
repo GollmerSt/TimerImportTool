@@ -1,10 +1,12 @@
 package dvbviewertimerimport.gui;
 
+import java.awt.Window;
 import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JWindow;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -61,17 +63,17 @@ public class GUIPanel extends JPanel
     }
 
 	public Control getControl() { return this.control ; } ;
-	public JFrame getFrame()
+	public Window getWindow()
 	{
-		JFrame f = null ;
+	  Window w = null ;
 		try
 		{
-			f = (JFrame) this.getRootPane().getParent() ;
+			w = (Window) this.getRootPane().getParent() ;
 		} catch ( Exception e ) {
 			Log.error( "Illegal GUI class hierarchy " ) ;
 			System.exit( 1 ) ;
 		}
-		return f ;
+		return w ;
 	}
 	public void setChanged() { this.isChanged = true ; } ;
 	public boolean getChanged() { return this.isChanged ; } ;

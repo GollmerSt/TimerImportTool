@@ -1,5 +1,7 @@
 package dvbviewertimerimport;
 
+import java.util.ArrayList;
+
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -24,6 +26,7 @@ import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.tvbrowser.TVBrowser;
 
 /**
  * @author Stefan Gollmer
@@ -41,10 +44,20 @@ public class DVBViewerTimerImport extends Plugin
   private Channels channels = null ;
   private GUIPanel settingsPanel = null ;
   
+  public static String[] getTVBChannelNames()
+  {
+    ArrayList< String > res = new ArrayList< String >() ;
+    devplugin.Channel[] channels = devplugin.Plugin.getPluginManager().getSubscribedChannels();
+    for ( devplugin.Channel c : channels )
+      res.add( c.getName() ) ;
+    return res.toArray( new String[0] ) ;
+  }
+  
   private void init()
   {
     if ( isInitialized )
       return ;
+    
     isInitialized = true ;
     boolean showMessageBox = false ;
 
@@ -76,7 +89,7 @@ public class DVBViewerTimerImport extends Plugin
       e.printStackTrace();
       System.exit(2);
     }
-  }
+   }
     /*
       //Log.setVerbose( true ) ;
 
@@ -234,10 +247,8 @@ System.exit(0);
       Log.out( "Configuration saved" ) ;
       control.write() ;
       dvbViewer.writeDataPathToIni() ;
-    }
-    
+    }    
   }
-  
   public SettingsTab getSettingsTab()
   {
     return new DVBVSettingsTab() ;

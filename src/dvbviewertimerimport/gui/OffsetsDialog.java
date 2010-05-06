@@ -99,7 +99,7 @@ public class OffsetsDialog extends JDialog {
 	
 	public OffsetsDialog( final GUIPanel guiPanel, final TimeOffsets offsets )
 	{
-		super( guiPanel.getFrame() , true ) ;
+		super( guiPanel.getWindow() , java.awt.Dialog.ModalityType.APPLICATION_MODAL  ) ;
 
 		this.originalOffsets = offsets ;
 		this.offsets = offsets.clone() ;

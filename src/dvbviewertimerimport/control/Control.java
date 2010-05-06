@@ -34,6 +34,7 @@ import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.tvbrowser.TVBrowser;
 import dvbviewertimerimport.tvgenial.TVGenial;
 import dvbviewertimerimport.tvinfo.TVInfo;
 import dvbviewertimerimport.xml.StackXML;
@@ -96,6 +97,7 @@ public class Control
 		new TVInfo( this ) ;
 		new TVGenial( this ) ;
 		new ClickFinder( this ) ;
+		new TVBrowser( this ) ;
 	}
 	public void read() { this.read( null, null ) ; } ;
 
