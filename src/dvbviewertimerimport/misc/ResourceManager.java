@@ -24,21 +24,23 @@ import javax.swing.ImageIcon;
 
 
 public class ResourceManager {
-	
-	private static final String RESOURCE_BASE_PATH = "../resources/" ;
-	private static final String DATA_PATH = "datafiles/" ;
-	
-	private static ResourceBundle resourceBundleLang = null ;
-	
-	private static ResourceManager rsc = new ResourceManager() ;
-	
 
-	
+	private static final String RESOURCE_BASE_PATH = "/dvbviewertimerimport/resources/" ;
+	private static final String DATA_PATH = "datafiles/" ;
+
+	private static ResourceBundle resourceBundleLang = null ;
+
+	private static ResourceManager rsc = new ResourceManager() ;
+
+
+
 	public static java.net.URL getURL( String path )
 	{
-		return rsc.getClass().getResource( RESOURCE_BASE_PATH + path ) ;
+		java.net.URL u = rsc.getClass().getResource( RESOURCE_BASE_PATH + path ) ;
+		//System.out.println( "path = " + RESOURCE_BASE_PATH + path + "   URL = " + u ) ;
+		return u ;
 	}
-	
+
     public static ImageIcon createImageIcon(String path,
             String description)
     {
@@ -61,7 +63,7 @@ public class ResourceManager {
     	} catch (Exception e) {
     	      e.printStackTrace();
         }
-    	
+
     	if ( inputStream == null && errorMessage )
     		throw new ErrorClass( "Package error: File \"" + path + "\" not found" ) ;
 
@@ -75,24 +77,24 @@ public class ResourceManager {
     public static void copyFile( String destinationPath, String source, ArrayList< String[] > keywords, boolean removeComment )
     {
 		InputStream is = ResourceManager.createInputStream( source ) ;
-		
+
 		String[] parts = source.split( "\\/" ) ;
-		
+
 		String destination = destinationPath + File.separator + parts[ parts.length-1 ] ;
-		
+
 		File file = new File( destination ) ;
-		
+
 		BufferedReader bufR = new BufferedReader( new InputStreamReader( is ) ) ;
-		
+
 		FileWriter fstream = null ;
 		try {
 			fstream = new FileWriter( destination, false );
 			BufferedWriter bufW = new BufferedWriter( fstream ) ;
-		
+
 			String line = null ;
-			
+
 			String lineSeparator = System.getProperty("line.separator") ;
-		
+
 			while ( ( line = bufR.readLine() ) != null )
 			{
 				if ( keywords != null )
@@ -123,7 +125,7 @@ public class ResourceManager {
 			bufR.close() ;
 			bufW.close() ;
 		} catch (IOException e) {
-			throw new ErrorClass(   "Unexpected error on writing file \"" 
+			throw new ErrorClass(   "Unexpected error on writing file \""
 					              + file.getAbsolutePath()
 					              + "\"." ) ;
 		}
@@ -131,41 +133,41 @@ public class ResourceManager {
     public static void copyBinaryFile( String destinationPath, String source )
     {
 		InputStream istream = ResourceManager.createInputStream( source ) ;
-		
+
 		String[] parts = source.split( "\\/" ) ;
-		
+
 		String destination = destinationPath + File.separator + parts[ parts.length-1 ] ;
-		
+
 		File file = new File( destination ) ;
-		
-		
+
+
 		FileOutputStream ostream = null ;
 		try {
 			ostream = new FileOutputStream( file );
 		} catch (FileNotFoundException e1) {
-			throw new ErrorClass(   "Unexpected error on writing file \"" 
+			throw new ErrorClass(   "Unexpected error on writing file \""
 		              + file.getAbsolutePath()
 		              + "\"." ) ;
 		}
 		try {
 			byte [] buffer = new byte[1024] ;
-			
+
 			int length = 0 ;
-			
+
 			while ( ( length = istream.read( buffer ) ) > 0 )
 				ostream.write( buffer, 0, length ) ;
-			
+
 			istream.close() ;
 			ostream.close() ;
 		} catch (IOException e) {
-			throw new ErrorClass(   "Unexpected error on writing file \"" 
+			throw new ErrorClass(   "Unexpected error on writing file \""
 					              + file.getAbsolutePath()
 					              + "\"." ) ;
 		}
 
     }
-    
-    
+
+
 	public class LanguageClassLoader extends ClassLoader
 	{
 		@Override
@@ -181,46 +183,46 @@ public class ResourceManager {
 			return ResourceManager.getURL( path ) ;
 		}
 	}
-	
-	
+
+
 	public static Locale[] getAvailableLocales( String baseName )
 	{
 		ArrayList< Locale > res = new ArrayList< Locale >() ;
-		
+
 		for ( Locale l : Locale.getAvailableLocales() )
 		{
 			StringBuilder filename = new StringBuilder( DATA_PATH ) ;
-			
+
 			filename.append( baseName ) ;
 			filename.append( "_" ) ;
 			filename.append( l.getLanguage() ) ;
-			
+
 			if ( l.getCountry().length() != 0 || l.getVariant().length() != 0 )
 			{
 				filename.append( "_" ) ;
 				filename.append( l.getCountry() ) ;
 			}
-			
+
 			if ( l.getVariant().length() != 0 )
 			{
 				filename.append( "_" ) ;
 				filename.append( l.getVariant() ) ;
 			}
-			
+
 			filename.append( ".properties" ) ;
-			
+
 			if ( getURL( filename.toString() ) != null )
 				res.add( l ) ;
 		}
 		res.add( new Locale( "en", "", "" )) ;
 		return res.toArray( new Locale[ 0 ] ) ;
 	}
-	
+
 	public static ResourceBundle getResourceBundle( String baseName )
 	{
 		return ResourceBundle.getBundle( baseName, Locale.getDefault(), rsc.new LanguageClassLoader() ) ;
 	}
-	
+
 	public static String msg( String key, String ... strings )
 	{
 		if ( resourceBundleLang == null )
