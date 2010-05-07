@@ -8,8 +8,6 @@ import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JWindow;
 import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
