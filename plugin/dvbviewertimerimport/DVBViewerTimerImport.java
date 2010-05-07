@@ -1,7 +1,11 @@
 package dvbviewertimerimport;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
@@ -9,10 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import devplugin.ActionMenu;
 import devplugin.Plugin;
 import devplugin.PluginInfo;
+import devplugin.Program;
 import devplugin.SettingsTab;
+import devplugin.ThemeIcon;
 import devplugin.Version;
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.channels.Channels;
@@ -43,6 +51,8 @@ public class DVBViewerTimerImport extends Plugin
   private DVBViewer dvbViewer = null ;
   private Channels channels = null ;
   private GUIPanel settingsPanel = null ;
+  
+  private HashMap< String, String > channelAssignmentDvbVToTvB = null ;
   
   public static String[] getTVBChannelNames()
   {
@@ -89,8 +99,8 @@ public class DVBViewerTimerImport extends Plugin
     }
     Provider provider = Provider.getProvider( "TV-Browser" ) ;
     ((TVBrowser)provider).setIsTVBrowserPlugin() ;
- ;
 
+    getTvBChannelName( "abc" ) ;
    }
     /*
       //Log.setVerbose( true ) ;
@@ -213,6 +223,58 @@ System.exit(0);
           "Gollmer, Stefan" );
     return pluginInfo ;
   }
+  @Override
+  public Icon[] getMarkIconsForProgram(Program p)
+  {
+    Icon i = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
+    return new Icon[] {i} ;
+  }
+  public String getTvBChannelName( String dvbVChannelName )
+  {
+    int providerID = Provider.getProviderID( "TV-Browser" ) ;
+    if ( channelAssignmentDvbVToTvB == null )
+    {
+      channelAssignmentDvbVToTvB = new HashMap< String, String >() ;
+      for ( ChannelSet cs : this.control.getChannelSets() )
+      {
+        dvbviewertimerimport.control.Channel providerChannel = cs.getChannel( providerID ) ;
+        String dvbViewerChannel = cs.getDVBViewerChannel() ;
+        if ( providerChannel != null && dvbViewerChannel != null )
+          channelAssignmentDvbVToTvB.put( cs.getDVBViewerChannel().split("[|]")[0], providerChannel.getName() ) ;
+      }
+    }
+    if ( ! channelAssignmentDvbVToTvB.containsKey( dvbVChannelName.split("[|]") ) )
+      return null ;
+    return channelAssignmentDvbVToTvB.get( dvbVChannelName ) ;
+  }
+  @Override
+  public ActionMenu getContextMenuActions( final Program program)
+  {
+    // Eine Aktion erzeugen, die die Methode sendMail(Program) aufruft, sobald sie aktiviert wird.
+    AbstractAction action = new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent evt)
+      {
+        markProgram( program ) ;
+        program.validateMarking() ;
+      }
+    };
+
+    // Der Aktion einen Namen geben. Dieser Name wird dann im Kontextmenü gezeigt
+    action.putValue(Action.NAME, "Mit DVBViewer aufnehmen");
+
+    // Der Aktion ein Icon geben. Dieses Icon wird mit dem Namen im Kontextmenü gezeigt
+    // Das Icon sollte 16x16 Pixel groß sein
+    action.putValue(Action.SMALL_ICON, ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) );
+
+    // Das Aktions-Menü erzeugen und zurückgeben
+    return new ActionMenu(action); 
+  }
+  
+  private void markProgram( final Program program )
+  {
+    program.mark( this ) ;
+  }
   
   class DVBVSettingsTab implements SettingsTab
   {
@@ -249,7 +311,9 @@ System.exit(0);
       Log.out( "Configuration saved" ) ;
       control.write() ;
       dvbViewer.writeDataPathToIni() ;
-    }    
+      channelAssignmentDvbVToTvB = null ;
+    }
+
   }
   public SettingsTab getSettingsTab()
   {
