@@ -11,9 +11,12 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -46,13 +49,17 @@ public class Miscellaneous extends MyTabPanel
 	private final JTextField directoryPathText = new JTextField() ;
 	private final JButton fileSelectorButton = new JButton() ;
 	
-	private final JComboBox languageBox = new JComboBox() ;
+	private final JComboBox languageBox    = new JComboBox() ;
 	private final JComboBox lookAndFeelBox = new JComboBox() ;
 	private final JComboBox actionAfterBox = new JComboBox() ;
 	private final JComboBox actionTimerBox = new JComboBox() ;
-	private final JTextField separatorBox = new JTextField() ;
+	private final JComboBox timeZoneBox    = new JComboBox() ;
+	private final JTextField separatorBox  = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
+	private final JButton updateChannelsFromDVBViewer = new JButton() ;
+	
+	private boolean wasSelected = false ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
 	
@@ -62,6 +69,56 @@ public class Miscellaneous extends MyTabPanel
 	public Miscellaneous( GUIPanel guiPanel )
 	{
 		super( guiPanel );
+	}
+	class ComboCompChanged implements ComponentListener
+	{
+		@Override
+		public void componentHidden(ComponentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void componentMoved(ComponentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void componentResized(ComponentEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void componentShown(ComponentEvent e)
+		{
+			if ( ! wasSelected )
+			{
+				MyComboBoxItem deflt = null ;
+				for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
+				{
+					MyComboBoxItem mc  = new MyComboBoxItem( l ) ;
+					languageBox.addItem( mc ) ;
+					if ( l.equals( control.getLanguage() ) )
+						deflt = mc;
+				}
+				languageBox.setSelectedItem( deflt ) ;
+
+				wasSelected = true ;
+				Object oDefault = null ;
+				TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
+				String defaultTimeZoneString = timeZoneDefault.getID() ;
+				for ( final String tzS : TimeZone.getAvailableIDs() )
+				{
+					MyTimeZoneObject o = new MyTimeZoneObject( TimeZone.getTimeZone( tzS ) ) ;
+					if ( tzS.equals( defaultTimeZoneString ) )
+						oDefault = o ;
+					timeZoneBox.addItem( o ) ;
+				}
+				timeZoneBox.setSelectedItem( oDefault ) ;
+			}
+		}
 	}
 	class ComboSelected implements ActionListener
 	{
@@ -98,6 +155,8 @@ public class Miscellaneous extends MyTabPanel
 			}
 			else if ( c == lookAndFeelBox )
 				guiPanel.setLookAndFeel( (String)o ) ;
+			else if ( c == timeZoneBox )
+				DVBViewer.setTimeZone( TimeZone.getTimeZone( ((MyTimeZoneObject) timeZoneBox.getSelectedItem()).getTimeZoneString() )) ;
 		}
 	}
 	class ButtonsPressed implements ActionListener
@@ -106,6 +165,8 @@ public class Miscellaneous extends MyTabPanel
 		@Override
 		public void actionPerformed(ActionEvent e )
 		{
+			updateText() ;
+
 			JButton source = (JButton)e.getSource() ;
 			if ( source == tvinfoDVBVButton )
 			{
@@ -120,7 +181,7 @@ public class Miscellaneous extends MyTabPanel
 					setInfoText( ResourceManager.msg( "ERROR_READING_FILE" ) + "\"" + er.getErrorString() + "\"." ) ;
 				}
 			}
-			if ( source == updateToNewVersionButton )
+			else if ( source == updateToNewVersionButton )
 			{
 				UpdateImporter importer = new UpdateImporter( control ) ;
 				if ( ! importer.importXML() )
@@ -140,6 +201,19 @@ public class Miscellaneous extends MyTabPanel
 					return ;
 				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
 				directoryPathText.setText( control.getDVBViewer().getDataPath() ) ;
+			}
+			else if ( source == updateChannelsFromDVBViewer )
+			{
+				try
+				{
+					control.getDVBViewer().getChannels().read() ;
+					guiPanel.updateDVBViewerChannels() ;
+					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+				} catch ( ErrorClass er )
+				{
+					setInfoText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channel.dat" ) ) ;
+					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
+				}
 			}
 		}
 		
@@ -187,6 +261,21 @@ public class Miscellaneous extends MyTabPanel
 		
 		public Locale getLocale() { return locale ; } ;
 	}
+	class MyTimeZoneObject
+	{
+		MyTimeZoneObject( final TimeZone timeZone )
+		{
+			this.timeZone = timeZone ;
+		}
+		private final TimeZone timeZone ;
+		@Override
+		public String toString()
+		{
+			return String.format( "(GMT%+03d:00) %s", timeZone.getRawOffset()/1000/60/60,timeZone.getID()) ;
+		}
+		public String getTimeZoneString() { return timeZone.getID() ; } ;
+	} ;
+
 	public void paint()
 	{		
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -282,15 +371,6 @@ public class Miscellaneous extends MyTabPanel
 			c.fill       = GridBagConstraints.HORIZONTAL ;
 			c.insets     = i ;
 
-			MyComboBoxItem deflt = null ;
-			for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
-			{
-				MyComboBoxItem mc  = new MyComboBoxItem( l ) ;
-				this.languageBox.addItem( mc ) ;
-				if ( l.equals( this.control.getLanguage() ) )
-					deflt = mc;
-			}
-			this.languageBox.setSelectedItem( deflt ) ;
 			this.languageBox.addActionListener( new ComboSelected() ) ;
 			guiPanel.add( this.languageBox, c ) ;
 
@@ -341,10 +421,12 @@ public class Miscellaneous extends MyTabPanel
 		dvbViewerPanel.setBorder( tB ) ;
 
 		
+		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.weightx    = 0.5 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -357,6 +439,19 @@ public class Miscellaneous extends MyTabPanel
 		c.gridx      = 0 ;
 		c.gridy      = 1 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.updateChannelsFromDVBViewer.addActionListener( new ButtonsPressed() ) ;
+		dvbViewerPanel.add( updateChannelsFromDVBViewer, c ) ;
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 2 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -365,10 +460,34 @@ public class Miscellaneous extends MyTabPanel
 		dvbViewerPanel.add( updateToNewVersionButton, c ) ;
 
 
-				c = new GridBagConstraints();
+		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 2 ;
+		c.gridy      = 3 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.EAST ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel timeZoneLabel = new JLabel( ResourceManager.msg( "TIMEZONE" ) ) ;
+		dvbViewerPanel.add( timeZoneLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 3 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		dvbViewerPanel.add( this.timeZoneBox, c ) ;
+		this.timeZoneBox.addActionListener( this.comboSelectedAction ) ;
+		this.addComponentListener( new ComboCompChanged() ) ;
+
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 4 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
@@ -378,19 +497,20 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 2 ;
+		c.gridy      = 4 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		this.updateDVBViewerActions() ;
+//		this.updateDVBViewerActions() ;
 		dvbViewerPanel.add( this.actionAfterBox, c ) ;
 
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 3 ;
+		c.gridy      = 5 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
@@ -400,7 +520,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 3 ;
+		c.gridy      = 5 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -412,8 +532,9 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 4 ;
+		c.gridy      = 6 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
@@ -423,7 +544,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 4 ;
+		c.gridy      = 6 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -494,6 +615,7 @@ public class Miscellaneous extends MyTabPanel
 	{
 		this.tvinfoDVBVButton.setText(   ResourceManager.msg( "IMPORT_TV" )
                 + "\"" + TVInfoDVBV.NAME_IMPORTFILE + "\"" ) ;
+		this.updateChannelsFromDVBViewer.setText( ResourceManager.msg( "UPDATE_DVBV_CHANNELS" ) ) ;
 		this.updateToNewVersionButton.setText(   ResourceManager.msg( "UPDATE_CHANNELS" ) ) ;
 		this.setInfoText( "" ) ;
 	}

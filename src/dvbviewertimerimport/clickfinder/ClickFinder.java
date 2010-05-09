@@ -6,6 +6,9 @@ package dvbviewertimerimport.clickfinder ;
 
 import java.io.File;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
@@ -14,11 +17,17 @@ import dvbviewertimerimport.provider.Provider;
 
 
 public class ClickFinder extends Provider {
+
 	private DVBViewer dvbViewer = null ;
+	private final SimpleDateFormat dateFormat ;
+
 	public ClickFinder( Control control )
 	{
 		super( control, false, false, "ClickFinder", false, false, false, true, false, false ) ;
 		this.dvbViewer = control.getDVBViewer() ;
+		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
+		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
+		this.dateFormat.setTimeZone( timeZone ) ;
 	}
 	private String getParaInfo()
 	{
@@ -29,6 +38,7 @@ public class ClickFinder extends Provider {
 	public void processEntry( String[] args )
 	{		
 		String channel = null ;
+		String providerID = null ;
 		String startTime = null ;
 		long milliSeconds = -1 ;
 		String title = null ;
@@ -44,6 +54,8 @@ public class ClickFinder extends Provider {
 			
 			if      ( key.equalsIgnoreCase("Sender"))
 				channel = value ;
+			else if ( key.equalsIgnoreCase("Pos"))
+				providerID = value ;
 			else if ( key.equalsIgnoreCase("Beginn"))
 				startTime = value ;
 			else if ( key.equalsIgnoreCase("Dauer"))
@@ -62,13 +74,13 @@ public class ClickFinder extends Provider {
 		}
 		long start = 0 ;
 		try {
-			start = Conversions.clickFinderTimeToLong( startTime ) ;
+			start = timeToLong( startTime ) ;
 		} catch (ParseException e) {
 			String errorString = this.getParaInfo() ;
 			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
 		}
 		long end = start + milliSeconds ;
-		this.dvbViewer.addNewEntry( this, channel, start, end, title ) ;
+		this.dvbViewer.addNewEntry( this, providerID, channel, start, end, title ) ;
 	}
 	
 	public boolean install() // boolean setDataDir )
@@ -118,4 +130,10 @@ public class ClickFinder extends Provider {
 		}
 		return true ;
 	}
+	private long timeToLong( String time ) throws ParseException
+	{
+		Date d = new Date( dateFormat.parse(time).getTime()) ;
+		//System.out.println(d.toString()) ;
+		return d.getTime() ;
+	}	
 }

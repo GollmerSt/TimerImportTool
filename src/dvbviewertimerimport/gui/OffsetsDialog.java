@@ -15,9 +15,11 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.TimeZone;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
@@ -50,7 +52,10 @@ public class OffsetsDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = 5037000535757796243L;
-	
+
+	public static final long   DAY_TIME_ORIGIN ; 
+	private static final SimpleDateFormat dayTimeFormat ;
+
 	private final TimeOffsets offsets ;
 	private final TimeOffsets originalOffsets ;
 	
@@ -62,6 +67,21 @@ public class OffsetsDialog extends JDialog {
 	private final JButton deleteButton = new JButton() ; 
 	
 	private final GUIPanel guiPanel ;
+	
+	static
+	{
+		long origin = 0 ;
+		
+		try {
+			origin = new SimpleDateFormat("HH:mm").parse("00:00").getTime() ;
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DAY_TIME_ORIGIN = origin ;
+		dayTimeFormat =  new SimpleDateFormat("HH:mm");
+		dayTimeFormat.setTimeZone( TimeZone.getTimeZone("GMT0") ) ;
+	}
 
 	private class ButtonsPressed implements ActionListener
 	{
@@ -340,12 +360,7 @@ public class OffsetsDialog extends JDialog {
 				long dayTime = ((Integer)value).longValue() ;
 				if ( dayTime == Constants.LASTMINUTE )
 					dayTime = Constants.DAYMILLSEC ;
-				try {
-					entry.getDayTimes()[ col - 3 ] = Conversions.longToDayTime( dayTime ) ;
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				entry.getDayTimes()[ col - 3 ] = longToDayTime( dayTime ) ;
 				break ;
 			}
 		}
@@ -492,13 +507,7 @@ public class OffsetsDialog extends JDialog {
         }
 		public void setValue(Object value) {
 			long time = ((Integer)value).longValue() ;
-			String d = null ;
-			try {
-				d = Conversions.longToDayTime( time );
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String d = longToDayTime( time );
             this.setText(d);
         }
     }
@@ -512,8 +521,8 @@ public class OffsetsDialog extends JDialog {
 		
 		public DayTimeEditor()
 		{
-			Date start = new Date( Constants.DAY_TIME_ORIGIN ) ;
-			Date end = new Date( Constants.DAY_TIME_ORIGIN + Constants.DAYMILLSEC - 60000 ) ;
+			Date start = new Date( DAY_TIME_ORIGIN ) ;
+			Date end = new Date( DAY_TIME_ORIGIN + Constants.DAYMILLSEC - 60000 ) ;
 			SpinnerDateModel model = new SpinnerDateModel(start, start, end, Calendar.HOUR ) ;
 			spinner = new JSpinner( model ) ;
 			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm"));   	}
@@ -528,13 +537,13 @@ public class OffsetsDialog extends JDialog {
 			long dayTime = ((Integer)object).longValue() ;
 			if ( dayTime == Constants.DAYMILLSEC )
 				dayTime = Constants.DAYMILLSEC - 60000 ;
-    		Date value = new Date( dayTime + Constants.DAY_TIME_ORIGIN )  ;
+    		Date value = new Date( dayTime + DAY_TIME_ORIGIN )  ;
     		spinner.setValue( value ) ;
     		return spinner ;
     	}
 		@Override
 		public Object getCellEditorValue() {
-			long result = ((Date)spinner.getValue()).getTime() - Constants.DAY_TIME_ORIGIN ;
+			long result = ((Date)spinner.getValue()).getTime() - DAY_TIME_ORIGIN ;
 			return new Integer( (int) result ) ;
 		}
 		@Override
@@ -542,4 +551,9 @@ public class OffsetsDialog extends JDialog {
 			return true;
 		}
     }
+	public static String longToDayTime( long d )
+	{
+		return dayTimeFormat.format( new Date( d ) ) ;
+	}
+
 }

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -27,7 +28,7 @@ import javax.xml.transform.stream.StreamSource;
 import dvbviewertimerimport.xml.StackXML;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.TimeOffsets;
-import dvbviewertimerimport.dvbviewer.channels.Channels;
+//import dvbviewertimerimport.dvbviewer.channels.Channels;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
@@ -36,6 +37,8 @@ import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.Provider;
 
 public class DVBViewer {
+	
+	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 	
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
@@ -62,10 +65,14 @@ public class DVBViewer {
 		private void reset() { maxID = -1 ; } ;
 	}
 
+	public static TimeZone getTimeZone() { return timeZone ; } ;
+	public static void setTimeZone( TimeZone timeZone ) { DVBViewer.timeZone = timeZone ; } ;
 	private DVBViewerService service = null ;
 	private final DVBViewerTimerXML timersXML ;
 	
 	private boolean isDVBViewerConnected = false ;
+	
+	private dvbviewertimerimport.dvbviewer.channels.Channels channels = new dvbviewertimerimport.dvbviewer.channels.Channels( this ) ;
 
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
@@ -73,6 +80,7 @@ public class DVBViewer {
 	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	private final String exePath ;
 	private final String iniPath ;
+	@SuppressWarnings("unused")
 	private final String dvbViewerPath ;
 	private boolean usePathFile = false ;
 	private boolean createPathFile = false ;
@@ -324,6 +332,7 @@ public class DVBViewer {
 	}
 	
 	public void addNewEntry( Provider provider,
+							 String providerID,
 							 String channel, 
 							 long start, 
 							 long end,
@@ -343,6 +352,7 @@ public class DVBViewer {
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+											   providerID,
 											   start,
 											   end,
 											   startOrg,
@@ -384,6 +394,7 @@ public class DVBViewer {
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+											   null,
 											   start,
 											   end,
 											   start,
@@ -408,6 +419,10 @@ public class DVBViewer {
 	public String getExeName()        { return this.exeName ; } ;
 	public String getDataPath()       { return this.dataPath ; } ;
 	public String getPluginConfPath() { return this.pluginConfPath ; } ;
+	public dvbviewertimerimport.dvbviewer.channels.Channels getChannels()
+	{
+		return channels ;
+	}
 	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
 	public void setEnableWOL( boolean e ) { this.service.setEnableWOL( e ) ; } ;
@@ -464,27 +479,6 @@ public class DVBViewer {
 						break ;
 					}
 				}
-			}
-		}
-	}
-	public void setDVBViewerTimer( DVBViewerEntry d  ) throws InterruptedException
-	{
-		if (    d.getToDo() == DVBViewerEntry.ToDo.NEW )
-		{
-			String rs = this.dvbViewerPath + File.separator + "dvbv_tvg.exe " ;
-			rs += "-a0 -t0 " ;
-			rs += "-d \"" + d.getTitle() + "\" " ;
-			rs += "-c \"" + d.getChannel() + "\" " ;
-			rs += "-e " + Conversions.longToSvcDayString(  d.getStart() ) + " ";
-			rs += "-s " + Conversions.longToSvcTimeString( d.getStart() ) + " ";
-			rs += "-p " + Conversions.longToSvcTimeString( d.getEnd() ) + " ";
-			if ( this.afterRecordingAction != ActionAfterItems.DEFAULT )
-			rs += "-a " + this.afterRecordingAction.getID() ;
-			Log.out(true, rs) ;
-			try {
-				Runtime.getRuntime().exec( rs ).waitFor() ;
-			} catch (IOException e) {
-			throw new ErrorClass( e, "Error on executing the file \"dvbv_tvg.exe\". File missing?" );
 			}
 		}
 	}
@@ -667,7 +661,7 @@ public class DVBViewer {
 		if ( !directory.isDirectory() )
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
 		
-		File channelFile = new File( path + File.separator + Channels.CHANNEL_FILE_NAME ) ;
+		File channelFile = new File( path + File.separator + dvbviewertimerimport.dvbviewer.channels.Channels.CHANNEL_FILE_NAME ) ;
 
 		if ( ! channelFile.isFile() )
 		{

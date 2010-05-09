@@ -17,8 +17,12 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +38,12 @@ import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.xml.StackXML;
 
 public class DVBViewerService {
+	
+	private static GregorianCalendar calendar = null ;
+	private static TimeZone timeZone = null ;
+	private static SimpleDateFormat dayTimeFormat = null ;
+
+	
 	private boolean enable ;
 	private String url ;
 	private String userName ;
@@ -49,6 +59,15 @@ public class DVBViewerService {
 	private final StackXML<String> pathDescr     = new StackXML<String>( "Timers", "Timer", "Descr" );
 	private final StackXML<String> pathRecording = new StackXML<String>( "Timers", "Timer", "Recording" );
 	private long version = -1 ;
+	
+	static
+	{
+		timeZone = DVBViewer.getTimeZone() ;
+		calendar = new GregorianCalendar() ;
+		calendar.setTimeZone( timeZone ) ;
+		dayTimeFormat =  new SimpleDateFormat("dd.MM.yyyyHH:mm");
+		dayTimeFormat.setTimeZone( timeZone ) ;
+	}
 	
 	public DVBViewerService( boolean enable, String url, String name, String password)
 	{
@@ -190,10 +209,10 @@ public class DVBViewerService {
 		String query = "" ;
 		try {
 			query = "ch=" + URLEncoder.encode( e.getChannel(), "UTF-8" );
-			query += "&dor=" + Conversions.longToSvcDateString( e.getStart() ) ;
+			query += "&dor=" + longToDate( e.getStart() ) ;
 			query += "&encoding=255" ;
-			query += "&start=" + Conversions.longToSvcMinutesString( e.getStart() ) ;
-			query += "&stop=" + Conversions.longToSvcMinutesString( e.getEnd() ) ;
+			query += "&start=" + longToMinutes( e.getStart() ) ;
+			query += "&stop="  + longToMinutes( e.getEnd() ) ;
 			if ( !e.getDays().equals("-------"))
 				query += "&days=" + e.getDays() ;
 			String title = e.getTitle() ;
@@ -379,8 +398,8 @@ public class DVBViewerService {
 						long start ;
 						long end ;
 						try {
-							start = Conversions.svcTimeToLong( startString, dateString ) ;
-							end   = Conversions.svcTimeToLong( endString,   dateString ) ;
+							start = timeToLong( startString, dateString ) ;
+							end   = timeToLong( endString,   dateString ) ;
 						} catch ( ParseException e ) {
 							throw new ErrorClass( ev, "Format error: Unexpected time format from service" ) ;
 						}
@@ -439,4 +458,34 @@ public class DVBViewerService {
 	public void setURL( String url )           { this.url = url ; } ;
 	public void setUserName( String userName ) { this.userName = userName ; } ;
 	public void setPassword( String password ) { this.password = password ; } ;
+	
+	private static void checkAndUpdateTimeZone()
+	{
+		if ( timeZone != DVBViewer.getTimeZone() )
+		{
+			timeZone = DVBViewer.getTimeZone() ;
+			calendar.setTimeZone( timeZone ) ;
+			dayTimeFormat.setTimeZone( timeZone ) ;
+		}
+	}
+	public static String longToDate( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		long t = d + (long) timeZone.getOffset( d ) ;
+		//System.out.println(t%(1000*60*60*24) ) ;
+		return Long.toString( t  / 1000 / 60 / 60 / 24 + 25569 ) ;
+	}
+	public static String longToMinutes( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		calendar.setTime(new Date(d) ) ;
+		int  minutes =   60 * calendar.get( java.util.Calendar.HOUR_OF_DAY )
+		               +      calendar.get( java.util.Calendar.MINUTE ) ;
+		return Integer.toString( minutes ) ;
+	}
+	public static long timeToLong( String time, String date ) throws ParseException
+	{
+		checkAndUpdateTimeZone() ;
+		return dayTimeFormat.parse( date + time ).getTime() ;
+	}
 }

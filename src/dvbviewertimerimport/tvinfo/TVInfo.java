@@ -13,7 +13,10 @@ import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -34,11 +37,15 @@ public final class TVInfo extends Provider {
 	private final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>( "epg_schedule", "epg_schedule_entry", "title" ) ;
 
 	private final DVBViewer dvbViewer ;
+	private final SimpleDateFormat dateFormat ;
 
 	public TVInfo( Control control )
 	{
 		super( control, true, true, "TVInfo", true, true, true, false, false, true ) ;
 		this.dvbViewer = this.control.getDVBViewer() ;
+		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
+		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
+		this.dateFormat.setTimeZone( timeZone ) ;
 	}
 	private String getMD5()
 	{
@@ -117,6 +124,7 @@ public final class TVInfo extends Provider {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( iS ) );
 			StackXML<String>   stack = new StackXML<String>() ;
 			String channel = null;
+			String providerID = null ;
 			long  start = 0;
 			long  end   = 0 ;
 			String title = null ;
@@ -127,6 +135,7 @@ public final class TVInfo extends Provider {
 					stack.push( ev.asStartElement().getName().getLocalPart() );
 					if ( ! stack.equals( this.xmlPathTVinfoEntry ) ) continue ;
 					channel = null;
+					providerID = null ;
 					start = 0 ;
 					end   = 0 ;
 					title = null ;
@@ -141,10 +150,12 @@ public final class TVInfo extends Provider {
 						{
 							if      ( attributeName.equals( "channel" ) )
 								channel = value ;
+							else if ( attributeName.equals( "uid" ) )
+								providerID = value ;
 							else if ( attributeName.equals( "starttime" ) )
-								start = Conversions.tvInfoTimeToLong( value ) ;
+								start = timeToLong( value ) ;
 							else if ( attributeName.equals( "endtime" ) )
-								end  = Conversions.tvInfoTimeToLong( value ) ;
+								end  = timeToLong( value ) ;
 							else if ( attributeName.equals( "title" ) )
 								title = value ;
 						} catch (ParseException e)
@@ -162,7 +173,7 @@ public final class TVInfo extends Provider {
 					if ( stack.equals( this.xmlPathTVinfoTitle ) )
 					{
 						title = ev.asCharacters().getData() ;
-						this.dvbViewer.addNewEntry( this, channel, start, end, title) ;
+						this.dvbViewer.addNewEntry( this, providerID, channel, start, end, title) ;
 					}
 				}					
 				if( ev.isEndElement() ) stack.pop();
@@ -178,4 +189,14 @@ public final class TVInfo extends Provider {
 			
 		}
 	}
+	public long timeToLong( String time ) throws ParseException
+	{
+		//Workaround in case of a wrong time zone of the TVInfo output
+		// must be checked on summer time
+		Date d = new Date( dateFormat.parse(time).getTime() ) ; //  + 60 *60 * 1000) ;
+		//System.out.println(d.toString()) ;
+		return d.getTime() ;
+	}
+	
+
 }

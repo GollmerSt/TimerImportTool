@@ -4,9 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -21,12 +25,16 @@ import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.Constants;
-import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.xml.StackXML;
 
 public class DVBViewerTimerXML {
+	
+	private static TimeZone timeZone = null ;
+	private static SimpleDateFormat dayFormat = null ;
+	private static SimpleDateFormat timeFormat = null ;
+	private static SimpleDateFormat dayTimeFormat = null ;
 	
 	private static final String NAME_XML_DVBVIEWER_TIMERS = "timers.xml" ;
 	private static final String FIELD_SEPARATOR	= ";" ;
@@ -49,6 +57,17 @@ public class DVBViewerTimerXML {
 	private HashMap< Long, DVBViewerEntry > entries ;
 	private long maxRecordingNo = 0 ;
 	
+	static
+	{
+		timeZone = DVBViewer.getTimeZone() ;
+		dayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
+		dayFormat.setTimeZone( timeZone ) ;
+		timeFormat = new SimpleDateFormat("HH:mm:ss"); ;
+		timeFormat.setTimeZone( timeZone ) ;
+		dayTimeFormat = new SimpleDateFormat("dd.MM.yyyyHH:mm:ss");
+		dayTimeFormat.setTimeZone( timeZone ) ;
+	}
+	
 	public DVBViewerTimerXML( DVBViewer dvbViewer )
 	{
 		this.dvbViewer = dvbViewer ;
@@ -59,8 +78,8 @@ public class DVBViewerTimerXML {
 		long start = 0 ;
 		long end   = 0 ;
 		try {
-			start = Conversions.svcTimeToLong(field[FIELD_START_TIME], field[FIELD_START_DATE]);
-			end   = Conversions.svcTimeToLong(field[FIELD_END_TIME],   field[FIELD_START_DATE]);
+			start = timeToLong(field[FIELD_START_TIME], field[FIELD_START_DATE]);
+			end   = timeToLong(field[FIELD_END_TIME],   field[FIELD_START_DATE]);
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -94,11 +113,11 @@ public class DVBViewerTimerXML {
 		out.append( ';' ) ;
 		out.append( e.getChannel() ) ;
 		out.append( ';' ) ;
-		out.append( Conversions.longToSvcDayString( e.getStart() ) ) ;
+		out.append( longToDayString( e.getStart() ) ) ;
 		out.append( ';' ) ;
-		out.append( Conversions.longToSvcTimeString( e.getStart() ) ) ;
+		out.append( longToTimeString( e.getStart() ) ) ;
 		out.append( ';' ) ;
-		out.append( Conversions.longToSvcTimeString( e.getEnd() ) ) ;
+		out.append( longToTimeString( e.getEnd() ) ) ;
 		out.append( ';' ) ;
 		if ( e.getActionAfter() == ActionAfterItems.DEFAULT && defAfterRecord != null)
 			out.append( defAfterRecord ) ;
@@ -113,6 +132,7 @@ public class DVBViewerTimerXML {
 			out.append( Integer.toString( e.getTimerAction().getID() ) ) ;
 		out.append( ';' ) ;
 		out.append( e.isEnabled() ) ;
+		out.append( ";false" ) ;
 		
 		return out.toString() ;
 	}
@@ -255,5 +275,33 @@ public class DVBViewerTimerXML {
 			}
 		}
 		this.writeXML() ;
+	}
+	private static void checkAndUpdateTimeZone()
+	{
+		if ( timeZone != DVBViewer.getTimeZone() )
+		{
+			timeZone = DVBViewer.getTimeZone() ;
+			dayFormat.setTimeZone( timeZone ) ;
+			timeFormat.setTimeZone( timeZone ) ;
+			dayTimeFormat.setTimeZone( timeZone ) ;
+		}
+	}
+	
+	public static String longToDayString( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		Date dt = new Date( d ) ;
+		return dayFormat.format( dt ) ;
+	}
+	public static String longToTimeString( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		Date dt = new Date( d ) ;
+		return timeFormat.format( dt ) ;
+	}
+	public static long timeToLong( String time, String date ) throws ParseException
+	{
+		checkAndUpdateTimeZone() ;
+		return dayTimeFormat.parse( date + time ).getTime() ;
 	}
 }

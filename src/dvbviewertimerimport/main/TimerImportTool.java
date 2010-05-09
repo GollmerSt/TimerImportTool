@@ -13,7 +13,6 @@ import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.control.Control ;
-import dvbviewertimerimport.dvbviewer.channels.Channels ;
 import dvbviewertimerimport.gui.GUI;
 import dvbviewertimerimport.gui.WorkPathSelector;
 import dvbviewertimerimport.gui.GUI.GUIStatus;
@@ -43,7 +42,7 @@ public final class TimerImportTool {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		
 		ImportType type    = ImportType.GUI ;
 		boolean showMessageBox = false ;
 
@@ -93,9 +92,6 @@ public final class TimerImportTool {
 				dvbViewer.setPathFileIsUsed( true ) ;
 			}
 
-			Channels channels = new Channels( dvbViewer ) ;
-			channels.read() ;
-
 			Control control = new Control(dvbViewer);
 
 			//Log.setVerbose( true ) ;
@@ -103,7 +99,7 @@ public final class TimerImportTool {
 			if ( type == ImportType.GUI )
 			{
 				Log.out( "Open configuration" ) ;
-				GUI gui = new GUI( control, channels ) ;
+				GUI gui = new GUI( control ) ;
 				gui.execute() ;
 				boolean finished = false ;
 				while ( ! finished )

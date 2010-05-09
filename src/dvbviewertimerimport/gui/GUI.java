@@ -67,7 +67,7 @@ public class GUI extends JFrame{
     = new TreeMap< String, LookAndFeelInfo >() ;
 	private final ArrayList< String > lookAndFeelNames = new ArrayList< String >() ;
 	
-	public GUI( Control control, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
+	public GUI( Control control )
 	{
 		this.control = control ;
 		Locale.setDefault( control.getLanguage() ) ;
@@ -84,7 +84,7 @@ public class GUI extends JFrame{
 		this.setLookAndFeel( control.getLookAndFeelName() ) ;
 		this.isChanged = false ;
 		
-		this.guiPanel = new GUIPanel( this, control, dChannels ) ;
+		this.guiPanel = new GUIPanel( this, control ) ;
 		this.forceBox = new JCheckBox() ;
 		this.executeButton = new JButton() ;
 		this.updateButton = new JButton() ;

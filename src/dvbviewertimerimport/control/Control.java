@@ -13,6 +13,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import javax.swing.JOptionPane;
 import javax.xml.stream.XMLEventReader;
@@ -49,21 +50,22 @@ public class Control
 							 DVBVIEWER, GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
 
 	private final DVBViewer dvbViewer ;
-	private final StackXML<String> pathImporter   		= new StackXML<String>( "Importer" ) ;
-	private final StackXML<String> pathProviders		= new StackXML<String>( "Importer", "Providers" ) ;
-	private final StackXML<String> pathService			= new StackXML<String>( "Importer", "DVBService" ) ;
-	private final StackXML<String> pathGlobalOffsets	= new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
-	private final StackXML<String> pathChannel			= new StackXML<String>( "Importer", "Channels", "Channel" ) ;
-	private final StackXML<String> pathChannelOffsets	= new StackXML<String>( "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
-	private final StackXML<String> pathChannelProvider	= new StackXML<String>( "Importer", "Channels", "Channel", "Provider" ) ;
-	private final StackXML<String> pathChannelDVBViewer	= new StackXML<String>( "Importer", "Channels", "Channel", "DVBViewer" ) ;
-	private final StackXML<String> pathChannelMerge		= new StackXML<String>( "Importer", "Channels", "Channel", "Merge" ) ;
-	private final StackXML<String> pathSeparator		= new StackXML<String>( "Importer",  "Separator" ) ;
-	private final StackXML<String> pathWOL				= new StackXML<String>( "Importer",  "DVBService", "WakeOnLAN") ;
-	private final StackXML<String> pathDefaultProvider	= new StackXML<String>( "Importer",  "GUI", "DefaultProvider" ) ;
-	private final StackXML<String> pathLanguage			= new StackXML<String>( "Importer",  "GUI", "Language" ) ;
-	private final StackXML<String> pathLookAndFeel	    = new StackXML<String>( "Importer",  "GUI", "LookAndFeel" ) ;
-	private final StackXML<String> pathDVBViewer		= new StackXML<String>( "Importer",  "DVBViewer" ) ;
+	private final StackXML<String> pathImporter   		 = new StackXML<String>( "Importer" ) ;
+	private final StackXML<String> pathProviders		 = new StackXML<String>( "Importer", "Providers" ) ;
+	private final StackXML<String> pathService			 = new StackXML<String>( "Importer", "DVBService" ) ;
+	private final StackXML<String> pathGlobalOffsets	 = new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
+	private final StackXML<String> pathChannel			 = new StackXML<String>( "Importer", "Channels", "Channel" ) ;
+	private final StackXML<String> pathChannelOffsets	 = new StackXML<String>( "Importer", "Channels", "Channel", "Offsets", "Offset" ) ;
+	private final StackXML<String> pathChannelProvider	 = new StackXML<String>( "Importer", "Channels", "Channel", "Provider" ) ;
+	private final StackXML<String> pathChannelDVBViewer	 = new StackXML<String>( "Importer", "Channels", "Channel", "DVBViewer" ) ;
+	private final StackXML<String> pathChannelMerge		 = new StackXML<String>( "Importer", "Channels", "Channel", "Merge" ) ;
+	private final StackXML<String> pathSeparator		 = new StackXML<String>( "Importer",  "Separator" ) ;
+	private final StackXML<String> pathWOL				 = new StackXML<String>( "Importer",  "DVBService", "WakeOnLAN") ;
+	private final StackXML<String> pathDefaultProvider	 = new StackXML<String>( "Importer",  "GUI", "DefaultProvider" ) ;
+	private final StackXML<String> pathLanguage			 = new StackXML<String>( "Importer",  "GUI", "Language" ) ;
+	private final StackXML<String> pathLookAndFeel	     = new StackXML<String>( "Importer",  "GUI", "LookAndFeel" ) ;
+	private final StackXML<String> pathDVBViewer		 = new StackXML<String>( "Importer",  "DVBViewer" ) ;
+	private final StackXML<String> pathDVBViewerChannels = new StackXML<String>( "Importer",  "DVBViewer", "Channels" ) ;
 	
 	private String defaultProvider = null ;
 	private Locale language = Locale.getDefault() ;
@@ -176,6 +178,12 @@ public class Control
 				BlockType type = BlockType.INVALID ;
 				if ( stack.equals( this.pathImporter ) )
 					type = BlockType.IMPORTER ;
+				else if ( stack.equals( this.pathDVBViewerChannels ) )
+				{
+					this.dvbViewer.getChannels().readXML( reader, ev, name ) ;
+					stack.pop() ;
+					continue ;
+				}
 				else if ( stack.equals( this.pathProviders ) )
 					try {
 						Provider.readXML( reader, name ) ;
@@ -321,6 +329,10 @@ public class Control
 	            			}
 	            			
 	            		}
+	            		else if ( attributeName.equals( "timeZone" ) )
+	            		{
+	            			DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
+	            		}
 	            	}
 	            }
 	            if (    type == BlockType.CHANNEL_OFFSETS
@@ -426,6 +438,10 @@ public class Control
 		      sw.writeStartElement( "DVBViewer" ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
+			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;
+			    sw.writeStartElement( "Channels" ) ;
+			      this.dvbViewer.getChannels().writeXML( sw, file ) ;
+				sw.writeEndElement();
 			  sw.writeEndElement();
 			  sw.writeStartElement( "DVBService" ) ;
 			  	DVBViewerService dvbs = this.dvbViewer.getService() ;

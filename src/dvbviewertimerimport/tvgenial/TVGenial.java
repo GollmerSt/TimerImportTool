@@ -10,13 +10,15 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
-import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
@@ -31,9 +33,14 @@ public class TVGenial extends Provider {
 	private static final String PATH_LOGO_FILE     = "TVGenial/Logo.png" ;
 	private static final String PATH_RECORDER_FILE = "TVGenial/recorder.ini" ;
 	private static final String PATH_SETUP_FILE    = "TVGenial/Setup.ini" ;
+
+	private final SimpleDateFormat dateFormat ;
 	
 	public TVGenial( Control control ) {
 		super( control, false, false, "TVGenial", false, false, false, true, true, false);
+		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
+		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
+		this.dateFormat.setTimeZone( timeZone ) ;
 	}
 	@Override
 	public boolean install()
@@ -222,7 +229,7 @@ public class TVGenial extends Provider {
 		}
 		long start = 0 ;
 		try {
-			start = Conversions.clickFinderTimeToLong( startTime ) ;
+			start = timeToLong( startTime ) ;
 		} catch (ParseException e) {
 			String errorString = this.getParaInfo() ;
 			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
@@ -245,6 +252,12 @@ public class TVGenial extends Provider {
 		if ( mustDelete )
 			this.control.getDVBViewer().deleteEntry( this, channel, start, end, title) ;
 		else
-			this.control.getDVBViewer().addNewEntry( this, channel, start, end, title ) ;
+			this.control.getDVBViewer().addNewEntry( this, null, channel, start, end, title ) ;
 	}
+	private long timeToLong( String time ) throws ParseException
+	{
+		Date d = new Date( dateFormat.parse(time).getTime()) ;
+		//System.out.println(d.toString()) ;
+		return d.getTime() ;
+	}	
 }

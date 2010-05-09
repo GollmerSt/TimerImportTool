@@ -18,6 +18,22 @@
     		<xsd:element name="DVBViewer">
 
     			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="Channels">
+    						<xsd:complexType>
+    							<xsd:sequence maxOccurs="unbounded" minOccurs="0">
+
+    								<xsd:element name="Entry">
+    									<xsd:complexType>
+    										<xsd:attribute
+    											name="id" type="myDVBViewerChannelType">
+    										</xsd:attribute>
+    									</xsd:complexType>
+    								</xsd:element>
+    							</xsd:sequence>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
     				<xsd:attribute name="afterRecordingAction">
     					<xsd:simpleType>
     						<xsd:restriction base="xsd:string">
@@ -25,6 +41,7 @@
     							<xsd:enumeration value="POWER_OFF"></xsd:enumeration>
     							<xsd:enumeration value="STANDBY"></xsd:enumeration>
     							<xsd:enumeration value="HIBERNATE"></xsd:enumeration>
+    							<xsd:enumeration value="DEFAULT"></xsd:enumeration>
     						</xsd:restriction>
     					</xsd:simpleType>
     				</xsd:attribute>
@@ -38,6 +55,8 @@
     							<xsd:enumeration value="DEFAULT"></xsd:enumeration>
     						</xsd:restriction>
     					</xsd:simpleType>
+    				</xsd:attribute>
+    				<xsd:attribute name="timeZone" type="xsd:string">
     				</xsd:attribute>
     			</xsd:complexType>
     		</xsd:element>
@@ -79,10 +98,8 @@
     					</xsd:element>
     					<xsd:element name="Language" minOccurs="0">
     						<xsd:simpleType>
-    							<xsd:restriction base="xsd:string">
-    								<xsd:enumeration value="de"></xsd:enumeration>
-    								<xsd:enumeration value="en"></xsd:enumeration>
-    								<xsd:enumeration value=""></xsd:enumeration>
+    							<xsd:restriction base="xsd:string">
+    								<xsd:pattern value="[^_]+_[^_]*_[^_]*"></xsd:pattern>
     							</xsd:restriction>
     						</xsd:simpleType>
     					</xsd:element>
@@ -189,6 +206,7 @@
   		<xsd:enumeration value="TVInfo"></xsd:enumeration>
   		<xsd:enumeration value="ClickFinder"></xsd:enumeration>
   		<xsd:enumeration value="TVGenial"></xsd:enumeration>
+  		<xsd:enumeration value="TV-Browser"></xsd:enumeration>
   	</xsd:restriction>
   </xsd:simpleType>
 

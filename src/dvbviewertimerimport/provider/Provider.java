@@ -7,6 +7,7 @@ package dvbviewertimerimport.provider;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
@@ -67,6 +68,7 @@ public abstract class Provider {
 	private boolean isFilterEnabled = true ;
 	private boolean isPrepared = false ;
 	private OutDatedInfo outDatedLimits = null ;
+	protected TimeZone timeZone = TimeZone.getDefault() ;
 	public Provider( Control control,
 					 boolean hasAccount,
 			         boolean hasURL,

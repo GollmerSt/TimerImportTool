@@ -4,11 +4,19 @@
 
 package dvbviewertimerimport.dvbviewer;
 
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
+import java.util.Calendar;
+
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
-import dvbviewertimerimport.misc.Conversions;
 
 public class DVBViewerEntryCOM {
+
+	private static TimeZone timeZone = null ;
+	private static GregorianCalendar calendar0 = new GregorianCalendar( TimeZone.getTimeZone("GMT0") ) ;
+	private static GregorianCalendar calendar  = null ;
+	
 	final int id ;
 	final String channelID ;
 	final long startTime ;
@@ -20,11 +28,17 @@ public class DVBViewerEntryCOM {
 	final int afterRec ;
 	final boolean mustDelete ;
 	
+	static
+	{
+		timeZone = DVBViewer.getTimeZone() ;
+		calendar = new GregorianCalendar( timeZone ) ;
+	}
+	
 	DVBViewerEntryCOM( DVBViewerEntry e )
 	{
 		this.channelID   = e.getChannel() ;
-		this.startTime   = Conversions.javaToDVBViewerDate( e.getStart() ) ;
-		this.endTime     = Conversions.javaToDVBViewerDate( e.getEnd() ) ;
+		this.startTime   = fromJavaDate( e.getStart() ) ;
+		this.endTime     = fromJavaDate( e.getEnd() ) ;
 		this.days        = e.getDays() ;
 		this.description = e.getTitle() ;
 		this.enabled     = e.isEnabled() ;
@@ -85,11 +99,41 @@ public class DVBViewerEntryCOM {
 				this.enabled,
 				this.id,
 				this.channelID,
-				Conversions.dvbViewerToJavaDate( this.startTime ),
-				Conversions.dvbViewerToJavaDate( this.endTime ),
+				toJavaDate( this.startTime ),
+				toJavaDate( this.endTime ),
 				this.days,
 				this.description,
 				TimerActionItems.get( this.recAction ),
 				ActionAfterItems.get(this.afterRec ) ) ;
 	}
+
+	private static void checkAndUpdateTimeZone()
+	{
+		if ( timeZone != DVBViewer.getTimeZone() )
+		{
+			timeZone = DVBViewer.getTimeZone() ;
+			calendar.setTimeZone( timeZone ) ;
+		}
+	}
+	public static long fromJavaDate( long d )
+	{
+		long t = d + (long) timeZone.getOffset( d ) ;
+		return t ;
+	}
+	public static long toJavaDate( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		calendar0.clear() ;
+		calendar.clear() ;
+		calendar0.setTimeInMillis( d ) ;
+		calendar.set(
+				calendar0.get( Calendar.YEAR ),
+				calendar0.get( Calendar.MONTH ),
+				calendar0.get( Calendar.DATE ),
+				calendar0.get( Calendar.HOUR_OF_DAY  ),
+				calendar0.get( Calendar.MINUTE  ),
+				calendar0.get( Calendar.SECOND  ) ) ;
+		return calendar.getTimeInMillis() ;
+	}
+
 }

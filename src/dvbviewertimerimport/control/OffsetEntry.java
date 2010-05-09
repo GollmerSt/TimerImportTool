@@ -5,20 +5,39 @@
 package dvbviewertimerimport.control ;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.xml.stream.XMLStreamException;
 
+import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 
 import dvbviewertimerimport.misc.* ;
 
 
 public class OffsetEntry implements Cloneable {
+
+	private static TimeZone timeZone ;
+	private static final SimpleDateFormat dayFormat ;
+	private static final SimpleDateFormat dayTimeFormat ;
+
+	
 	private static final String[] ATTRIBUTES = { "before", "after" } ;
 	private final int[] minutes ;
 	private final boolean[] weekdays ;
 	private final String[] times  = new String[ 2 ] ;
+	
+	static
+	{
+		timeZone = DVBViewer.getTimeZone() ;
+		dayFormat = new SimpleDateFormat("dd.MM.yyyy");
+		dayFormat.setTimeZone( timeZone ) ;
+		dayTimeFormat = new SimpleDateFormat("dd.MM.yyyyHH:mm");
+		dayTimeFormat.setTimeZone( timeZone ) ;
+	}
 	
 	public OffsetEntry()
 	{
@@ -96,12 +115,12 @@ public class OffsetEntry implements Cloneable {
 		d = d % 7 ;
 		if ( ! this.weekdays[ d ] )
 			return false ;
-		String day = Conversions.longToDateString( time ) ;
+		String day = longToDayString( time ) ;
 		long lowerTime = 0L;
 		long upperTime = 0L;
 		try {
-			lowerTime = Conversions.timeToLong( this.times[0], day );
-			upperTime = Conversions.timeToLong( this.times[1], day );
+			lowerTime = timeToLong( this.times[0], day );
+			upperTime = timeToLong( this.times[1], day );
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -134,5 +153,25 @@ public class OffsetEntry implements Cloneable {
 	}
 	public boolean[] getWeekDays() { return this.weekdays ; } ;
 	public String[] getDayTimes() { return this.times ; } ;
+	
+	private static void checkAndUpdateTimeZone()
+	{
+		if ( timeZone != DVBViewer.getTimeZone() )
+		{
+			timeZone = DVBViewer.getTimeZone() ;
+			dayFormat.setTimeZone( timeZone ) ;
+			dayTimeFormat.setTimeZone( timeZone ) ;
+		}
+	}
+	public static String longToDayString( long d )
+	{
+		checkAndUpdateTimeZone() ;
+		Date dt = new Date( d ) ;
+		return dayFormat.format( dt ) ;
+	}
+	public static long timeToLong( String time, String date ) throws ParseException
+	{
+		return dayTimeFormat.parse( date + time ).getTime() ;
+	}
 }
 	

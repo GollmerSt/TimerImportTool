@@ -1,7 +1,6 @@
 To do 16.03.2010:
 
-1.	Disable of cleaning by checkbox   ??????????
-2.	Change the time origin to the DVBVIewer/Service time zone
+1.	Disable cleaning by checkbox   ??????????
 
 
 Feature:

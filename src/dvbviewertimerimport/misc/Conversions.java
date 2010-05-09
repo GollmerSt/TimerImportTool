@@ -6,33 +6,11 @@ package dvbviewertimerimport.misc ;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Iterator;
-import java.util.TimeZone;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 
  
 public final class Conversions {
-	private final static SimpleDateFormat tvInfoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
-	private final static SimpleDateFormat clickFinderoFormat = new SimpleDateFormat("yyyyMMddHHmm"); ;
-	private final static SimpleDateFormat svcDayFormat = new SimpleDateFormat("dd.MM.yyyy"); ;
-	private final static SimpleDateFormat svcTimeFormat = new SimpleDateFormat("HH:mm"); ;
-	private final static SimpleDateFormat svcDayTimeFormat = new SimpleDateFormat("dd.MM.yyyyHH:mm"); ;
-	private final static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin");
-	
-	static long calcSvcTimeCorrection()
-	{
-		long result = 0 ;
-		try {
-			result = svcTimeFormat.parse("00:00").getTime() ;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return result ;
-	}
 	
 	static byte[] intToBytes( int n )
 	{
@@ -68,77 +46,6 @@ public final class Conversions {
 		return hex ;
 	}
 	
-	public static long tvInfoTimeToLong( String time ) throws ParseException
-	{
-		//Workaround in case of a wrong time zone of the TVInfo output
-		// must be checked on summer time
-		Date d = new Date( tvInfoFormat.parse(time).getTime() ) ; //  + 60 *60 * 1000) ;
-		//System.out.println(d.toString()) ;
-		return d.getTime() ;
-	}
-	
-	static public long clickFinderTimeToLong( String time ) throws ParseException
-	{
-		Date d = new Date( clickFinderoFormat.parse(time).getTime()) ;
-		//System.out.println(d.toString()) ;
-		return d.getTime() ;
-	}
-	
-	public static String longToDateString( long d )
-	{
-		return longToSvcDayString( d ) ;
-	}
-	public static String longToSvcDayString( long d )
-	{
-		Date dt = new Date( d ) ;
-		return Conversions.svcDayFormat.format( dt ) ;
-	}
-	public static String longToSvcTimeString( long d )
-	{
-		Date dt = new Date( d ) ;
-		return Conversions.svcTimeFormat.format( dt ) ;
-	}
-	public static String longToSvcDateString( long d )
-	{
-		GregorianCalendar c = new GregorianCalendar() ;
-		c.setTime(new Date(d) ) ;
-		long t = c.getTimeInMillis() + (long) timeZone.getOffset( d ) ;
-		//System.out.println(t%(1000*60*60*24) ) ;
-		return Long.toString( t  / 1000 / 60 / 60 / 24 + 25569 ) ;
-	}
-	public static String longToSvcMinutesString( long d )
-	{
-		GregorianCalendar c = new GregorianCalendar() ;
-		c.setTime(new Date(d) ) ;
-		int  minutes = c.get( java.util.Calendar.HOUR_OF_DAY ) * 60
-		               + c.get( java.util.Calendar.MINUTE ) ;
-		return Integer.toString( minutes ) ;
-	}
-	public static long timeToLong( String time, String date ) throws ParseException
-	{
-		return svcTimeToLong( time, date ) ;
-	}
-	public static long svcTimeToLong( String time, String date ) throws ParseException
-	{
-		return svcDayTimeFormat.parse( date + time ).getTime() ;
-	}
-	public static long javaToDVBViewerDate( long d )
-	{
-		long t = d + (long) timeZone.getOffset( d ) ;
-		//System.out.println(t%(1000*60*60*24) ) ;
-		return t ;
-	}
-	public static long dvbViewerToJavaDate( long d )
-	{
-		long t = d - (long) timeZone.getOffset( d ) ;
-		if ( javaToDVBViewerDate( t ) == d )
-			return t ;
-		t += 1000*60*10 ;
-		if ( javaToDVBViewerDate( t ) == d )
-			return t ;
-		t -= 1000*60*10*2 ;
-		return t ;
-	}
 	public static String replaceDiacritical( final String s )
 	{
 		if ( ! s.matches(".*[‰ˆ¸ƒ÷‹ﬂ].*") ) //\u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df]") )
@@ -283,13 +190,5 @@ public final class Conversions {
 		}
 		long t = ( Long.valueOf( parts[0] ) * 60L + Long.valueOf( parts[1] ) ) * 60L * 1000L ;
 		return t ;
-	}
-	//Only for offset!!!
-	public static String longToDayTime( long d ) throws ParseException
-	{
-		long t = d / 1000L / 60L ;
-		int h = (int) (t / 60L) ;
-		int m = (int) (t % 60L) ;
-		return String.format( "%02d:%02d", h, m ) ;
 	}
 }

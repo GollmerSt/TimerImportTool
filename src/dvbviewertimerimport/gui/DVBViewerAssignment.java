@@ -46,7 +46,6 @@ import dvbviewertimerimport.provider.Provider;
 
 public class DVBViewerAssignment extends MyTabPanel{
 	private static final long serialVersionUID = 124706451716532907L;
-	private final dvbviewertimerimport.dvbviewer.channels.Channels dvbViewerChannels ;
 	private final JComboBox providerCombo = new JComboBox() ;
 	private final JList providerChannelList = new JList( new DefaultListModel() ) ;
 	private final JComboBox dvbViewerCombo = new JComboBox() ;
@@ -56,6 +55,11 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private TreeMap< String, Integer > dvbViewerLongChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
 	private HashMap< String, Integer > dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
 	private boolean ignoreNextDVBViewerChannelChange = false ;
+
+	public DVBViewerAssignment( GUIPanel parent )
+	{
+		super( parent ) ;
+	}
 
 	public class MyComparator implements Comparator< String>
 	{
@@ -172,7 +176,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
 	    	    @SuppressWarnings("unchecked")
-				Object o = Conversions.getTheBestChoice( name, (Collection) dvbViewerChannels.getChannels().values(),
+				Object o = Conversions.getTheBestChoice( name, (Collection) control.getDVBViewer().getChannels().getChannels().values(),
 						3, 2, new Function()
 						{
 							public String stringToString( String in )
@@ -193,7 +197,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 							}
 						}
 				) ;
-	    		ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
+	    	    if ( o == null )
+	    	    	ix = 0 ;
+	    	    else
+	    	    	ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
 	    	}
 	    	ignoreNextDVBViewerChannelChange = true ;
     		dvbViewerCombo.setSelectedIndex( ix ) ;
@@ -264,12 +271,6 @@ public class DVBViewerAssignment extends MyTabPanel{
 		}
 		
 	}
-	public DVBViewerAssignment( GUIPanel parent, dvbviewertimerimport.dvbviewer.channels.Channels dChannels )
-	{
-		super( parent ) ;
-		
-		this.dvbViewerChannels = dChannels ;
-	}
 	public void paint()
 	{		
 		TitledBorder  tB = null ;
@@ -339,21 +340,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER" ) ) ;
 		dvbViewer.setBorder( tB ) ;
 		
-		dvbviewertimerimport.dvbviewer.channels.Channel emptyChannel = new dvbviewertimerimport.dvbviewer.channels.Channel() ;
-		
-
-		this.dvbViewerCombo.addItem( emptyChannel ) ;
 		this.dvbViewerCombo.addActionListener( new DVBViewerChannelSelected() ) ;
 		
-		int channelCount = 0 ;
-
-		for ( dvbviewertimerimport.dvbviewer.channels.Channel channel : dvbViewerChannels.getChannels().values() )
-		{
-			channelCount++ ;
-			this.dvbViewerLongChannelAssignment.put( channel.getChannelID(), channelCount) ;
-			this.dvbViewerShortChannelAssignment.put( channel.getChannelName(), channelCount) ;
-			this.dvbViewerCombo.addItem( channel ) ;
-		}
+		this.updateDVBViewerChannels() ;
+		
 		dvbViewer.add( this.dvbViewerCombo ) ;
 		
 		c = new GridBagConstraints();
@@ -475,5 +465,28 @@ public class DVBViewerAssignment extends MyTabPanel{
 			Provider p = (Provider)providerCombo.getSelectedItem() ;
 			this.fillProviderChannelList( p.getName() ) ;
 		}
+	}
+	public void updateDVBViewerChannels()
+	{
+		int channelCount = 0 ;
+		
+		this.dvbViewerLongChannelAssignment  = new TreeMap< String, Integer >( new MyComparator() );
+		this.dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
+		this.dvbViewerCombo.removeAllItems() ;
+		
+		dvbviewertimerimport.dvbviewer.channels.Channel emptyChannel = new dvbviewertimerimport.dvbviewer.channels.Channel() ;
+		this.dvbViewerCombo.addItem( emptyChannel ) ;
+		
+		if ( control.getDVBViewer().getChannels().getChannels() != null )
+		{
+			for ( dvbviewertimerimport.dvbviewer.channels.Channel channel : control.getDVBViewer().getChannels().getChannels().values() )
+			{
+				channelCount++ ;
+				this.dvbViewerLongChannelAssignment.put( channel.getChannelID(), channelCount) ;
+				this.dvbViewerShortChannelAssignment.put( channel.getChannelName(), channelCount) ;
+				this.dvbViewerCombo.addItem( channel ) ;
+			}
+		}
+		this.dvbViewerCombo.updateUI() ;
 	}
 }

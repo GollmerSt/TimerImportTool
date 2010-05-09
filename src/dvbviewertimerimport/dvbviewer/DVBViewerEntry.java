@@ -68,6 +68,7 @@ public final class DVBViewerEntry  implements Cloneable{
 
 	
 	private long id ;
+	private String providerID ;
 	private boolean isFilterElement ;
 	private StatusService statusService ;
 	private long serviceID ;
@@ -95,6 +96,7 @@ public final class DVBViewerEntry  implements Cloneable{
 							boolean isFilterElement ,
 							StatusService statusService ,
 							long serviceID , 
+							String providerID,
 							String channel ,
 							long start ,
 							long end ,
@@ -114,6 +116,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.isFilterElement = isFilterElement ;
 		this.statusService = statusService ;
 		this.serviceID = serviceID ; 
+		this.providerID = providerID ;
 		this.channel = channel ;
 		this.start = start ;
 		this.end = end ;
@@ -133,7 +136,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end, String days,
                            String title, TimerActionItems timerAction, ActionAfterItems actionAfter )
 	{
-		this( -1, false, StatusService.ENABLED , serviceID, channel, start ,end ,
+		this( -1, false, StatusService.ENABLED , serviceID, null, channel, start ,end ,
 				         start, end, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				         -1, null, new OutDatedInfo(), ToDo.NONE ) ;
 
@@ -144,6 +147,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		
 	}
 	public DVBViewerEntry( String channel,
+                           String providerID,
 			               long start,
 			               long end,
 			               long startOrg,
@@ -155,7 +159,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			               boolean merge,
 			               Provider provider  )
 	{
-		this( -1, false, StatusService.ENABLED , -1, channel, start ,end ,
+		this( -1, false, StatusService.ENABLED , -1, providerID, channel, start ,end ,
 				  startOrg, endOrg, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				  -1, provider, new OutDatedInfo(), ToDo.NEW ) ;
 		
@@ -171,8 +175,8 @@ public final class DVBViewerEntry  implements Cloneable{
 	@Override
 	public DVBViewerEntry clone()
 	{
-		DVBViewerEntry entry = new DVBViewerEntry( 	-1, this.isFilterElement,
-													this.statusService, this.serviceID, this.channel ,
+		DVBViewerEntry entry = new DVBViewerEntry( 	-1, this.isFilterElement, this.statusService,
+													this.serviceID, this.providerID, this.channel ,
 													this.start, this.end, this.startOrg,
 													this.endOrg, this.days, this.title, 
 													this.timerAction, this.actionAfter,
@@ -598,6 +602,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			result.mergeStatus = MergeStatus.ENABLED ;
 			this.addMergedEntry( result ) ;
 			this.isFilterElement = false ;
+			this.providerID = null ;
 			this.toDo = ToDo.NEW ;
 		}
 		this.addMergedEntry( dE ) ;
@@ -793,6 +798,7 @@ public final class DVBViewerEntry  implements Cloneable{
 				if ( stack.equals( DVBViewerEntry.entryXML ) )
 				{
 					int id = -1 ;
+					String providerID = null ;
 					boolean isFilterElement = false ;
 					StatusService statusService = null ;
 					String channel = null ;
@@ -817,6 +823,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			        	String value = a.getValue() ;
 			        	if (      attributeName.equals( "id" ) )
 			        		id = Integer.valueOf( value ) ;
+			        	else if ( attributeName.equals( "providerID" ) )
+			        		providerID = value ;
 			        	else if ( attributeName.equals( "isFilterElement" ) )
 			        		isFilterElement = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
 			        	else if ( attributeName.equals( "statusService" ) )
@@ -846,8 +854,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			        	else
 			        		outDatedInfo.readXML( attributeName, value) ;
 			        }
-			        entry = new DVBViewerEntry( id , isFilterElement,
-												statusService , -1, channel,
+			        entry = new DVBViewerEntry( id, isFilterElement, statusService,
+												-1, providerID, channel,
 												start, end, startOrg, endOrg,
 												days, "", timerAction, actionAfter, 
 												mergeStatus, mergeID, provider,
@@ -891,6 +899,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			sw.writeStartElement( "Entry" ) ;
 			
 			  sw.writeAttribute( "id",               Long.toString( this.id ) ) ;
+			  if ( this.providerID != null )
+				  sw.writeAttribute( "providerID",   this.providerID ) ;
 			  if ( this.serviceID >= 0 )
 				  sw.writeAttribute( "dvbID",         Long.toString( this.serviceID ) ) ;
 			  sw.writeAttribute( "isFilterElement",  this.isFilterElement ) ;

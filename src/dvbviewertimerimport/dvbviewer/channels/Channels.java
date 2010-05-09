@@ -14,10 +14,19 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.Iterator;
+import java.util.Stack;
 import java.util.TreeMap;
 
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.XMLEvent;
+
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.xml.StackXML;
 
 
 public class Channels {
@@ -29,6 +38,8 @@ public class Channels {
 	public  static final String CHANNEL_FILE_NAME           = "channels.dat" ;
 	private static final int SUPPORTED_CHANNEL_ENTRY_LENGTH = Channel.ENTRY_LENGTH ;
 	private static final FileChannel.MapMode READ_ONLY      = FileChannel.MapMode.READ_ONLY ;
+
+	private  static final StackXML< String > entryPath = new StackXML< String >( "Channels", "Entry" ) ;
 
 	private final DVBViewer dvbViewer ;
 	private File file ;
@@ -46,7 +57,7 @@ public class Channels {
 			return o1.compareToIgnoreCase(o2) ;
 		}
 	}
-	private TreeMap< String, Channel > channelMap = new TreeMap< String, Channel >( new MyComparator() ) ;
+	private TreeMap< String, Channel > channelMap = null ; //new TreeMap< String, Channel >( new MyComparator() ) ;
 	
 	public Channels( DVBViewer dvbViewer )
 	{
@@ -120,6 +131,8 @@ public class Channels {
 	{
 		this.openFileAndCheckHeader() ;
 		
+		this.channelMap = new TreeMap< String, Channel >( new MyComparator() ) ;
+		
 		try {
 			long size = this.fileChannel.size() ;
 			
@@ -161,5 +174,65 @@ public class Channels {
 	}
 	public MappedByteBuffer getMappedByteBuffer() { return this.buffer ; } ;
 	public TreeMap< String, Channel > getChannels() { return this.channelMap ; } ;
+
+	public void readXML( final XMLEventReader  reader, XMLEvent ev, String name )
+	{
+		channelMap = new TreeMap< String, Channel >( new MyComparator() ) ;
+		
+		Stack< String > stack = new Stack< String >() ;
+		Channel entry = null ;
+		while ( true )
+		{
+			if( ev.isStartElement() )
+			{
+				stack.push( ev.asStartElement().getName().getLocalPart() );
+				if ( stack.equals( Channels.entryPath ) )
+				{
+					String channelID = null ;
+
+					@SuppressWarnings("unchecked")
+					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
+			        while( iter.hasNext() )
+			        {
+			        	Attribute a = iter.next();
+			        	String attributeName = a.getName().getLocalPart() ;
+			        	String value = a.getValue() ;
+			        	if ( attributeName.equals( "id" ) )
+			        		channelID = value ;
+			        }
+			        entry = Channel.createByChannelID( channelID ) ;
+					channelMap.put( entry.getChannelName(), entry) ;
+		        }
+			}
+			else if ( ev.isEndElement() )
+		    {
+		    	stack.pop();
+			    if ( stack.size() == 0 )
+			    	break ;
+		    }
+		    if ( ! reader.hasNext() )
+		    	break ;
+			try {
+				ev = reader.nextEvent();
+			} catch (XMLStreamException e) {
+				throw new ErrorClass( e, "Unexpected error on reading the file \"" + name + "\"" );
+			}
+		}
+	}
+	public void writeXML( IndentingXMLStreamWriter sw, File f )
+	{
+		if ( this.channelMap == null )
+			return ;
+		try {
+			for ( Channel c : this.channelMap.values() )
+			{
+				sw.writeStartElement( "Entry" ) ;
+				  sw.writeAttribute( "id", c.getChannelID() ) ;
+				sw.writeEndElement() ;
+			}
+		} catch (XMLStreamException e) {
+			throw new ErrorClass( e, "Unexpected error on writing the file \"" + f.getName() + "\"" );
+		}
+	}
 }
 	
