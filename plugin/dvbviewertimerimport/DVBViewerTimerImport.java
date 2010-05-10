@@ -2,8 +2,10 @@ package dvbviewertimerimport;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Properties;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -26,7 +28,9 @@ import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
+import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
 import dvbviewertimerimport.dvbviewer.channels.Channels;
 import dvbviewertimerimport.gui.GUI;
 import dvbviewertimerimport.gui.GUIPanel;
@@ -57,21 +61,48 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private Channels channels = null ;
   private GUIPanel settingsPanel = null ;
   
-  private DVBViewerProvider dvbViewerProvider = this ;
-  private final int providerID ;
-  private final Provider provider ;
+  private Icon menuIcon = null ;
+  private String deleteTimer = null ;
+  private String addTimer = null ;
   
-  private final GregorianCalendar calendar ;
+  private DVBViewerProvider dvbViewerProvider = this ;
+  private int providerID ;
+  private Provider provider ;
+  
+  private GregorianCalendar calendar ;
   
   private HashMap< String, String > channelAssignmentDvbVToTvB = null ;
   
   public DVBViewerTimerImport()
   {
-    init() ;
-    this.provider = Provider.getProvider( "TV-Browser" ) ;
-    this.providerID = provider.getID() ;
-    calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
+//    init() ;
   }
+  
+  /**
+   * Called by the host-application during start-up.
+   * <p>
+   * Override this method to load your plugins settings from the file system.
+   *
+   * @param settings The settings for this plugin (May be empty).
+   */
+  @Override
+  public void loadSettings(Properties settings) {
+    init() ;
+    handleTvDataUpdateFinished() ;
+  }
+  
+  @Override
+  public void handleTvDataUpdateFinished()
+  {
+    try {
+      this.control.getDVBViewer().process( this.dvbViewerProvider, false, null, Command.UPDATE ) ;
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+  }
+
+
   
   public static String[] getTVBChannelNames()
   {
@@ -88,7 +119,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   {
     if ( isInitialized )
       return ;
-    
+
     isInitialized = true ;
     boolean showMessageBox = false ;
 
@@ -115,8 +146,15 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       e.printStackTrace();
       System.exit(2);
     }
-    Provider provider = Provider.getProvider( "TV-Browser" ) ;
-    ((TVBrowser)provider).setIsTVBrowserPlugin() ;
+    this.provider = Provider.getProvider( "TV-Browser" ) ;
+    this.providerID = provider.getID() ;
+    this.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
+
+    this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
+    this.deleteTimer = ResourceManager.msg( "DELETE_TIMER" ) ;
+    this.addTimer = ResourceManager.msg( "ADD_TIMER" ) ;
+
+    ((TVBrowser)this.provider).setIsTVBrowserPlugin() ;
    }
     /*
       //Log.setVerbose( true ) ;
@@ -259,42 +297,64 @@ System.exit(0);
       return null ;
     return channelAssignmentDvbVToTvB.get( dvbVChannelName ) ;
   }
+  
+  
+  
   @Override
   public ActionMenu getContextMenuActions( final Program program)
   {
+    init() ;
     // Eine Aktion erzeugen, die die Methode sendMail(Program) aufruft, sobald sie aktiviert wird.
+    Command temp = Command.SET ;
+    try {
+      if ( control.getDVBViewer().process( dvbViewerProvider, false, program, Command.FIND ) )
+        temp = Command.DELETE ;
+    } catch (Exception e1) {
+      // TODO Auto-generated catch block
+      e1.printStackTrace();
+    }
+    final Command command = temp ;
     AbstractAction action = new AbstractAction() {
       @Override
       public void actionPerformed(ActionEvent evt)
       {
         control.setDVBViewerEntries() ;
         try {
-          control.getDVBViewer().process( dvbViewerProvider, false, program ) ;
-        } catch (InterruptedException e) {
+          control.getDVBViewer().process( dvbViewerProvider, false, program, command ) ;
+        } catch (Exception e) {
           // TODO Auto-generated catch block
           e.printStackTrace();
         }
         if ( dvbViewer != null )
           dvbViewer.writeXML() ;
-        markProgram( program ) ;
+        if ( command == Command.SET )
+          markProgram( program, true ) ;
+        else
+          markProgram( program, false ) ;
         program.validateMarking() ;
       }
     };
-
+    
     // Der Aktion einen Namen geben. Dieser Name wird dann im Kontextmenü gezeigt
-    action.putValue(Action.NAME, "Mit DVBViewer aufnehmen");
+    if ( command == Command.SET )
+        action.putValue(Action.NAME, addTimer );
+      else
+        action.putValue(Action.NAME, deleteTimer );
 
     // Der Aktion ein Icon geben. Dieses Icon wird mit dem Namen im Kontextmenü gezeigt
     // Das Icon sollte 16x16 Pixel groß sein
-    action.putValue(Action.SMALL_ICON, ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) );
+    action.putValue(Action.SMALL_ICON, menuIcon );
 
     // Das Aktions-Menü erzeugen und zurückgeben
     return new ActionMenu(action); 
   }
   
-  private void markProgram( final Program program )
+  private void markProgram( final Program program, boolean mark )
   {
-    program.mark( this ) ;
+    if ( mark )
+      program.mark( this ) ;
+    else
+      program.unmark( this ) ;
   }
   
   class DVBVSettingsTab implements SettingsTab
@@ -342,44 +402,100 @@ System.exit(0);
   }
 
   @Override
-  public void process(boolean getAll)
+  public boolean processEntry(Object arg, DVBViewer.Command command)
   {
-  }
-
-  @Override
-  public void processEntry(Object arg)
-  {
+    boolean result = true ;
+    
+    if ( command == Command.UPDATE )
+    {
+      this.updateMarks() ;
+      return true ;
+    }
+    
     Program program = (Program)arg ;
+    
+    switch ( command )
+    {
+    case SET :
+    {
+      long [] times = calcRecordTimes( program ) ;
+      String channel = program.getChannel().getName() ;
+      control.getDVBViewer().addNewEntry( provider, program.getUniqueID(), channel, times[0], times[1], program.getTitle() ) ;
+      break ;
+    }
+    case FIND:
+      result = findProgram( program ) != null ;
+      break ;
+    case DELETE :
+     {
+       long [] times = calcRecordTimes( program ) ;
+       DVBViewerEntry entry = findProgram( program ) ;
+       if ( entry == null )
+         return false ;
+       control.getDVBViewer().deleteEntry( entry ) ;
+       break ;
+     }
+    }
+
+    return result ;
+  }
+  public DVBViewerEntry findProgram( final Program program )
+  {
+    DVBViewerEntry entry = null ;
+
+    for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
+    {
+      if (    co.getProvider() == provider && co.getProviderCID() != null
+           && co.getProviderCID().equals( program.getUniqueID() )
+           && co.isProgramEntry() )
+      {
+        entry = co ;
+        break ;
+      }
+    }
+    return entry ;
+  }
+  public void updateMarks()
+  {
+    Program [] programs = this.getPluginManager().getMarkedPrograms() ;
+    for ( Program program : programs )
+    {
+      program.unmark( this ) ;
+    }
+    for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
+    {
+      if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
+      {
+        Program program = this.getPluginManager().getProgram( co.getProviderCID() ) ;
+        program.mark( this ) ;
+      }
+    }
+  }
+  private long [] calcRecordTimes( final Program program )
+  {
+    long [] result = new long[ 2 ] ;
     calendar.clear() ;
     Date d = program.getDate() ;
     calendar.set(
         d.getYear(),
-        d.getMonth(),
+        d.getMonth()-1,
         d.getDayOfMonth(),
         program.getHours(),
-        program.getMinutes(),
-        0 ) ;
-    long start = calendar.getTimeInMillis() ;
+        program.getMinutes() ) ;
+    result[0]= calendar.getTimeInMillis() ;
     long length = program.getLength() * 1000 * 60 ;
-    long end = start ;
+    System.out.println( "Date: " + new java.util.Date( result[0] ) + calendar ) ;
+    result[1] = result[0] ;
     if ( length >= 0 )
-      end += length ;
+      result[1] += length ;
     else
-      end += Constants.DAYMILLSEC ;
-    
-    String channel = null ;
-    for ( ChannelSet cs : control.getChannelSets() )
-    {
-      Channel c = cs.getChannel( providerID ) ;
-      if ( c == null )
-        continue ;
-      if ( program.getChannel().getName().equals( c.getName() ) )
-      {
-        channel = c.getName() ;
-        break ;
-      }
-    }
+      result[1] += Constants.DAYMILLSEC ;
+    return result ;
+  }
 
-    control.getDVBViewer().addNewEntry( provider, program.getID(), channel, start, end, program.getTitle() ) ;
+  @Override
+  public boolean process(boolean getAll, Command command)
+  {
+    return true ;
   }
 }
