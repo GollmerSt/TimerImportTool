@@ -289,7 +289,7 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		this.writeXML() ;
 	}
-	public void process( Provider provider, boolean getAll, String [] args ) throws InterruptedException
+	public void process( DVBViewerProvider provider, boolean getAll, Object args ) throws InterruptedException
 	{
 		this.connectDVBViewerIfNecessary();
 		this.readDVBViewerTimers() ;
@@ -433,6 +433,12 @@ public class DVBViewer {
 	public ActionAfterItems getAfterRecordingAction() { return this.afterRecordingAction ; } ;
 	public void setTimerAction( TimerActionItems timerAction ) { this.timerAction = timerAction ; } ;
 	public TimerActionItems getTimerAction() { return this.timerAction ; } ;
+	public void clearChannelLists()
+	{
+	  this.channelsLists 
+    = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+	  this.setProvider() ;
+	}
 	private void addChannel( HashMap< String, Channel> channels, 
 			                 String channelName, 
 			                 Channel channel,

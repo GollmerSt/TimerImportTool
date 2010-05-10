@@ -179,7 +179,7 @@ public class TVGenial extends Provider {
 		", necessary parameters:\n   -TVGenial TVUID=ccc Beginn=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	@Override
-	public void processEntry( String[] args )
+	public void processEntry( Object args )
 	{		
 		long tvuid = -1 ;
 		String startTime = null ;
@@ -188,10 +188,10 @@ public class TVGenial extends Provider {
 		
 		boolean mustDelete = false ;
 		
-		for ( int i = 0 ; i < args.length ; i++ )
-		{
-			String p = args[i] ;
-			
+		
+		
+		for ( String p : (String [])args )
+		{			
 			int pos = p.indexOf('=') ;
 			if ( pos < 0 )
 			{

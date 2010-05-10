@@ -216,13 +216,13 @@ public class DVBViewerTimerXML {
 		try {
 			try {
 				writer = output.createXMLStreamWriter(
-						(os = new FileOutputStream( file) ), "ISO-8859-1");
+						(os = new FileOutputStream( file) ), "Windows-1252");
 			} catch (FileNotFoundException e) {
 				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
 			}
 			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
 	        sw.setIndent( "  " );
-			sw.writeStartDocument("ISO-8859-1","1.0");
+			sw.writeStartDocument("Windows-1252","1.0");
 			sw.writeStartElement("settings");
 		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","timers.xsd");

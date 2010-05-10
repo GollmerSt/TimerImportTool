@@ -35,7 +35,7 @@ public class ClickFinder extends Provider {
 		", necessary parameters:\n   -ClickFinder [-path dataPath] Sender=ccc Begin=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	@Override
-	public void processEntry( String[] args )
+	public void processEntry( Object args )
 	{		
 		String channel = null ;
 		String providerID = null ;
@@ -43,9 +43,8 @@ public class ClickFinder extends Provider {
 		long milliSeconds = -1 ;
 		String title = null ;
 		
-		for ( int i = 0 ; i < args.length ; i++ )
+		for ( String p : (String[])args )
 		{
-			String p = args[i] ;
 			int pos = p.indexOf('=') ;
 			if ( pos < 0 )
 				continue ;

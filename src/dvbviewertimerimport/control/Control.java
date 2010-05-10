@@ -502,6 +502,7 @@ public class Control
 	}
 	public void setDVBViewerEntries()
 	{
+	  this.dvbViewer.clearChannelLists() ;
 		if ( this.dvbViewer == null)
 			return ;
 		this.dvbViewer.setSeparator( this.separator ) ;

@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Control;
+import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 
 import javax.xml.stream.XMLEventReader;
@@ -22,7 +23,7 @@ import dvbviewertimerimport.xml.StackXML;
 
 import dvbviewertimerimport.misc.ErrorClass;
 
-public abstract class Provider {
+public abstract class Provider implements DVBViewerProvider {
 
 	private static final StackXML<String> pathProvider = new StackXML<String>( "Providers", "Provider" ) ;
 	private static final StackXML<String> pathURL = new StackXML<String>( "Providers", "Provider", "Url" ) ;
@@ -133,7 +134,7 @@ public abstract class Provider {
 	public int importChannels( boolean check ) { return -1 ; } ;
 	public int importChannels() { return this.importChannels( false ) ; } ;
 	public void process( boolean getAll ) {} ;
-	public void processEntry( String[] args ) {} ;
+	public void processEntry( Object args ) {} ;
 	public void check()
 	{
 		if ( this.hasAccount && ( this.username == null || this.password == null ) )
@@ -332,4 +333,6 @@ public abstract class Provider {
 		  }
 		sw.writeEndElement() ;
 	}
+	 public TimeZone getTimeZone() { return this.timeZone ; } ;
+   public void setTimeZone( TimeZone timeZone) { this.timeZone = timeZone; } ;
 }
