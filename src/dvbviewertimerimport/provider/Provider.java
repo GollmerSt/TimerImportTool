@@ -10,6 +10,7 @@ import java.util.Stack;
 import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Control;
+import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 
@@ -133,8 +134,8 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean uninstall() { return true ; } ;
 	public int importChannels( boolean check ) { return -1 ; } ;
 	public int importChannels() { return this.importChannels( false ) ; } ;
-	public void process( boolean getAll ) {} ;
-	public void processEntry( Object args ) {} ;
+	public boolean process( boolean getAll, DVBViewer.Command command )   { return true ; } ;
+	public boolean processEntry( Object args, DVBViewer.Command command ) { return true ; } ;
 	public void check()
 	{
 		if ( this.hasAccount && ( this.username == null || this.password == null ) )

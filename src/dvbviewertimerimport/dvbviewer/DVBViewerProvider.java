@@ -1,6 +1,6 @@
 package dvbviewertimerimport.dvbviewer;
 
 public interface DVBViewerProvider {
-  public void process( boolean getAll ) ;
-  public void processEntry( Object args ) ;
+  public boolean process( boolean getAll, DVBViewer.Command command ) ;
+  public boolean processEntry( Object args, DVBViewer.Command command ) ;
 }

@@ -40,6 +40,8 @@ public class DVBViewer {
 	
 	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 	
+	public static enum Command { SET, DELETE, FIND, UPDATE } ;
+	
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
 	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
@@ -289,15 +291,35 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		this.writeXML() ;
 	}
-	public void process( DVBViewerProvider provider, boolean getAll, Object args ) throws InterruptedException
+  public boolean  process( DVBViewerProvider provider, boolean getAll, Object args ) throws Exception
+  {
+    return process( provider, getAll, args, Command.SET ) ;
+  }
+
+  public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
 	{
+    boolean result = true ;
+    if ( command == Command.FIND && this.recordEntries != null )
+    {
+      result  = provider.process(getAll, command ); ;
+      result &= provider.processEntry( args, command ) ;
+      return result ;
+    }
 		this.connectDVBViewerIfNecessary();
-		this.readDVBViewerTimers() ;
-		this.mergeXMLWithServiceData() ;
-		provider.process(getAll); ;
-		provider.processEntry( args ) ;
-		this.setDVBViewerTimers();
+		try
+		{
+	    this.readDVBViewerTimers() ;
+	    this.mergeXMLWithServiceData() ;
+	    result  = provider.process(getAll, command ); ;
+	    result &= provider.processEntry( args, command ) ;
+	    if ( command != Command.FIND )
+	      this.setDVBViewerTimers();
+		} catch ( Exception e ) {
+	    this.disconnectDVBViewer();
+		  throw e ;
+		}
 		this.disconnectDVBViewer();
+		return result ;
 	}
 	private void addRecordingEntry( DVBViewerEntry entry )
 	{
@@ -415,6 +437,11 @@ public class DVBViewer {
 			}
 		}
 	}
+  public void deleteEntry( DVBViewerEntry entry )
+ {
+   entry.setToDelete() ;
+ }
+	public ArrayList<DVBViewerEntry> getRecordEntries() { return this.recordEntries ; } ;
 	public String getExePath()        { return this.exePath ; } ;
 	public String getExeName()        { return this.exeName ; } ;
 	public String getDataPath()       { return this.dataPath ; } ;

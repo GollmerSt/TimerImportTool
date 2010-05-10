@@ -638,6 +638,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	public void setID( long id ) { this.id = id ; } ;
 	public long getServiceID() { return this.serviceID ; } ;
 	public void setServiceID( long id ) { this.serviceID = id ; } ;
+	public String getProviderCID() { return this.providerID ; } ;
 	public void clearServiceID() { this.serviceID = -1 ; } ;
 	public String getChannel() { return this.channel ; } ;
 	public String getTitle() {return this.title ; } ;
@@ -646,6 +647,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	public String toString() {return this.title ; } ;
 	public long getStart() { return this.start ; } ;
 	public long getEnd()   { return this.end ; } ;
+	public long getStartOrg() { return this.startOrg ; } ;
 	public String getDays() { return this.days ; } ;
 	public 	boolean isInRange( long start, long end )
 	{
@@ -702,6 +704,16 @@ public final class DVBViewerEntry  implements Cloneable{
 	public boolean isFilterElement()
 	{ 
 		return this.isFilterElement && this.toDo != ToDo.DELETE ;
+	}
+	public boolean isProgramEntry()
+	{
+	  if ( this.isMergeElement() )
+	    return false ;
+	  if ( this.mergeElement != null )
+	    return true ;
+	  if ( this.isEnabled() && ( this.toDo == ToDo.NONE || this.toDo == ToDo.NEW ) )
+	    return true ;
+	  return false ;
 	}
 	public static void assignMergedElements( HashMap< Long, DVBViewerEntry> map )
 	{

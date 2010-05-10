@@ -19,6 +19,7 @@ import java.util.TimeZone;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
+import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
@@ -179,7 +180,7 @@ public class TVGenial extends Provider {
 		", necessary parameters:\n   -TVGenial TVUID=ccc Beginn=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	@Override
-	public void processEntry( Object args )
+	public boolean processEntry( Object args, DVBViewer.Command command )
 	{		
 		long tvuid = -1 ;
 		String startTime = null ;
@@ -253,6 +254,7 @@ public class TVGenial extends Provider {
 			this.control.getDVBViewer().deleteEntry( this, channel, start, end, title) ;
 		else
 			this.control.getDVBViewer().addNewEntry( this, null, channel, start, end, title ) ;
+		return true ;
 	}
 	private long timeToLong( String time ) throws ParseException
 	{

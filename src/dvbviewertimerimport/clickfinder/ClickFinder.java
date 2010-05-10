@@ -35,7 +35,7 @@ public class ClickFinder extends Provider {
 		", necessary parameters:\n   -ClickFinder [-path dataPath] Sender=ccc Begin=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
 	}
 	@Override
-	public void processEntry( Object args )
+	public boolean processEntry( Object args, DVBViewer.Command command )
 	{		
 		String channel = null ;
 		String providerID = null ;
@@ -80,6 +80,8 @@ public class ClickFinder extends Provider {
 		}
 		long end = start + milliSeconds ;
 		this.dvbViewer.addNewEntry( this, providerID, channel, start, end, title ) ;
+		
+		return true ;
 	}
 	
 	public boolean install() // boolean setDataDir )

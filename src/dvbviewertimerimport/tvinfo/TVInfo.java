@@ -108,7 +108,7 @@ public final class TVInfo extends Provider {
 		return true ;
 	}
 	@Override
-	public void process( boolean all )
+	public boolean process( boolean all, DVBViewer.Command command )
 	{
 		InputStream iS = null ;
 		try {
@@ -188,6 +188,7 @@ public final class TVInfo extends Provider {
 	                 +        ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
 			
 		}
+		return true ;
 	}
 	public long timeToLong( String time ) throws ParseException
 	{
