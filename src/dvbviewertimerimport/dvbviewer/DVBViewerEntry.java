@@ -707,13 +707,13 @@ public final class DVBViewerEntry  implements Cloneable{
 	}
 	public boolean isProgramEntry()
 	{
-	  if ( this.isMergeElement() )
-	    return false ;
-	  if ( this.mergeElement != null )
-	    return true ;
-	  if ( this.isEnabled() && ( this.toDo == ToDo.NONE || this.toDo == ToDo.NEW ) )
-	    return true ;
-	  return false ;
+		if ( this.isMergeElement() )
+			return false ;
+		if ( this.mergeElement != null )
+			return true ;
+		if ( this.isEnabled() && ( this.toDo == ToDo.NONE || this.toDo == ToDo.NEW ) )
+			return true ;
+		return false ;
 	}
 	public static void assignMergedElements( HashMap< Long, DVBViewerEntry> map )
 	{

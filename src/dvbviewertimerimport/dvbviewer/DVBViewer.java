@@ -437,10 +437,10 @@ public class DVBViewer {
 			}
 		}
 	}
-  public void deleteEntry( DVBViewerEntry entry )
- {
-   entry.setToDelete() ;
- }
+	public void deleteEntry( DVBViewerEntry entry )
+	{
+		entry.setToDelete() ;
+	}
 	public ArrayList<DVBViewerEntry> getRecordEntries() { return this.recordEntries ; } ;
 	public String getExePath()        { return this.exePath ; } ;
 	public String getExeName()        { return this.exeName ; } ;
@@ -462,9 +462,9 @@ public class DVBViewer {
 	public TimerActionItems getTimerAction() { return this.timerAction ; } ;
 	public void clearChannelLists()
 	{
-	  this.channelsLists 
-    = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
-	  this.setProvider() ;
+		this.channelsLists 
+		  	= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+		this.setProvider() ;
 	}
 	private void addChannel( HashMap< String, Channel> channels, 
 			                 String channelName, 
