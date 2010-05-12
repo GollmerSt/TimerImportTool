@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Properties;
 
 import javax.swing.AbstractAction;
@@ -155,7 +156,14 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     this.addTimer = ResourceManager.msg( "ADD_TIMER" ) ;
 
     ((TVBrowser)this.provider).setIsTVBrowserPlugin() ;
-   }
+
+    showMessageBox |= provider.getMessage() ;
+    if ( provider.getVerbose() )
+      Log.setVerbose( true ) ;
+
+    Log.setToDisplay(showMessageBox );
+  
+  }
     /*
       //Log.setVerbose( true ) ;
 
@@ -217,14 +225,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   }
 
 
-  if ( provider != null )
-  {
-    showMessageBox |= provider.getMessage() ;
-    if ( provider.getVerbose() )
-      Log.setVerbose( true ) ;
-  }
-
-  Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
 
   if ( paras.length() != 0)
     Log.out( "Parameters: " + paras ) ;
@@ -332,6 +332,7 @@ System.exit(0);
         else
           markProgram( program, false ) ;
         program.validateMarking() ;
+        getRootNode().update() ;
       }
     };
     
@@ -348,13 +349,19 @@ System.exit(0);
     // Das Aktions-Menü erzeugen und zurückgeben
     return new ActionMenu(action); 
   }
-  
+
   private void markProgram( final Program program, boolean mark )
   {
     if ( mark )
+    {
       program.mark( this ) ;
+      this.getRootNode().addProgram( program ) ;
+    }
     else
+    {
       program.unmark( this ) ;
+      this.getRootNode().removeProgram( program ) ;
+    }
   }
   
   class DVBVSettingsTab implements SettingsTab
@@ -473,7 +480,6 @@ System.exit(0);
   }
   private long [] calcRecordTimes( final Program program )
   {
-    long [] result = new long[ 2 ] ;
     calendar.clear() ;
     Date d = program.getDate() ;
     calendar.set(
@@ -482,14 +488,49 @@ System.exit(0);
         d.getDayOfMonth(),
         program.getHours(),
         program.getMinutes() ) ;
-    result[0]= calendar.getTimeInMillis() ;
+    long startTime = calendar.getTimeInMillis() ;
     long length = program.getLength() * 1000 * 60 ;
-    System.out.println( "Date: " + new java.util.Date( result[0] ) + calendar ) ;
-    result[1] = result[0] ;
+    System.out.println( "Date: " + new java.util.Date( startTime ) + calendar ) ;
+    long endTime = startTime ;
     if ( length >= 0 )
-      result[1] += length ;
+      endTime += length ;
     else
-      result[1] += Constants.DAYMILLSEC ;
+    {
+      endTime += Constants.DAYMILLSEC ;
+      //Workaround if length not defined!!!
+      boolean finished = false ;
+      for ( int t = 0 ; t < 2  && ! finished ; t++ )
+      {
+        calendar.clear();
+        calendar.set( d.getYear(), d.getMonth() - 1, d.getDayOfMonth() + t ) ;
+        Date nd = new Date( calendar ) ;
+        
+        nd.addDays( t ) ;
+        Iterator<Program> pIt = this.getPluginManager().getChannelDayProgram( nd,program.getChannel() ) ;
+        while ( pIt.hasNext() )
+        {
+          Program p = pIt.next() ;
+          Date dd = p.getDate() ;
+          calendar.clear() ;
+          calendar.set(
+              dd.getYear(),
+              dd.getMonth()-1,
+              dd.getDayOfMonth(),
+              p.getHours(),
+              p.getMinutes() ) ;
+          long tmp = calendar.getTimeInMillis() ;
+          if ( tmp > startTime && tmp < endTime )
+          {
+            endTime = tmp ;
+            if ( t == 0 )
+              finished = true ;
+          }
+        }
+      }
+    }
+    long[] result = new long[2] ;
+    result[ 0 ] = startTime ;
+    result[ 1 ] = endTime ;
     return result ;
   }
 
