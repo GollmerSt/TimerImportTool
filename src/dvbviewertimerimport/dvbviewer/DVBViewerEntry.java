@@ -64,7 +64,7 @@ public final class DVBViewerEntry  implements Cloneable{
 
 	private static final StackXML< String > entryXML  = new StackXML< String >( "Entry" ) ;
 	private static final StackXML< String > titleXML  = new StackXML< String >( "Entry", "Title") ;
-	private static final StackXML< String > mergedXML = new StackXML< String >( "Entry", "MergedWith", "Id" ) ;
+	private static final StackXML< String > mergedXML = new StackXML< String >( "Entry", "MergedEntries", "Id" ) ;
 
 	
 	private long id ;
@@ -426,15 +426,18 @@ public final class DVBViewerEntry  implements Cloneable{
 				}
 				if ( isChanged )
 					continue ;
-				if ( ! isIn )
+				if ( ! isIn && nMergedEntries.size() > 1 )
 				{
 					DVBViewerEntry n = x.clone() ;
+					n.id = x.id ;
 					n.toDo = ToDo.UPDATE ;
 					n.start = nStart ;
 					n.end   = nEnd ;
 					n.startOrg = nStartOrg ;
 					n.endOrg = nEndOrg ;
 					n.mergedEntries = nMergedEntries ;
+          for ( DVBViewerEntry nE : n.mergedEntries )
+            nE.mergeElement = n ;
 					n.title = n.createTitle( separator ) ;
 					if ( n.mergeElement != null )
 						n.mergeElement.mergedEntries.add( n ) ;
@@ -447,7 +450,18 @@ public final class DVBViewerEntry  implements Cloneable{
 					x.toDo = ToDo.NEW ;
 					nStart = -1 ;
 				}
-				else
+				else if ( ! isIn )
+				{
+				  if ( nMergedEntries.size() == 1 )
+          {
+            DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
+            modify.statusService = StatusService.ENABLED ;
+            modify.mergeElement = null ;
+            modify.toDo = ToDo.UPDATE ; // evtl. anders wenn modify = merge elemenet, aber kommt das vor?
+          }
+          nStart = -1 ;
+				}
+				else 
 				{
 					if ( nStart < 0 || nMergedEntries.size() <= 1)
 					{
@@ -571,22 +585,34 @@ public final class DVBViewerEntry  implements Cloneable{
 		}
 	}
 	
-	private void addMergedEntry( DVBViewerEntry entry )
+	private boolean addMergedEntry( DVBViewerEntry entry )
 	{
+	  boolean isMergeElement = entry.isMergeElement() ;
 		if ( this.mergedEntries == null )
 			this.mergedEntries = new ArrayList< DVBViewerEntry >() ;
 		boolean isIncluded = false ;
-		for ( int ix = 0 ; ix < this.mergedEntries.size() ; ix++ )
+		if ( ! isMergeElement )
 		{
-			if ( this.mergedEntries.get( ix ).start > entry.start )
-			{
-				this.mergedEntries.add( ix, entry ) ;
-				isIncluded = true ;
-				break ;
-			}	
+		  entry.mergedEntries = new ArrayList< DVBViewerEntry >() ;
+		  entry.mergedEntries.add( entry ) ;
 		}
-		if ( isIncluded == false )
-			this.mergedEntries.add( entry ) ;
+		for ( DVBViewerEntry dE : entry.mergedEntries )
+		{
+		  dE.mergeElement = this ;
+	    for ( int ix = 0 ; ix < this.mergedEntries.size() ; ix++ )
+	    {
+	      if ( this.mergedEntries.get( ix ).start > dE.start )
+	      {
+	        this.mergedEntries.add( ix, dE ) ;
+	        isIncluded = true ;
+	        break ;
+	      } 
+	    }
+		  if ( isIncluded == false )
+		    this.mergedEntries.add( dE ) ;
+		}
+		entry.mergedEntries = null ;
+		return isMergeElement ;
 	}
 	public DVBViewerEntry update( DVBViewerEntry dE, String separator )
 	{
@@ -605,7 +631,15 @@ public final class DVBViewerEntry  implements Cloneable{
 			this.providerID = null ;
 			this.toDo = ToDo.NEW ;
 		}
-		this.addMergedEntry( dE ) ;
+		if ( this.addMergedEntry( dE ) )
+	    dE.toDo = ToDo.DELETE ;
+		else
+		{
+	    dE.disable() ;
+	    dE.mergeElement = this ;
+	    dE.mergeStatus = MergeStatus.ENABLED ;
+		}
+		  
 		this.mergeStatus = MergeStatus.ENABLED ;
 		this.start    = Math.min(this.start,    dE.start ) ;
 		this.startOrg = Math.min(this.startOrg, dE.startOrg ) ;
@@ -617,10 +651,6 @@ public final class DVBViewerEntry  implements Cloneable{
 			this.toDo = ToDo.UPDATE ;
 		else if ( this.toDo == ToDo.DELETE )
 			throw new ErrorClass( "Unexpected error in DVBViewerEntry.update" ) ;
-
-		dE.disable() ;
-		dE.mergeElement = this ;
-		dE.mergeStatus = MergeStatus.ENABLED ;
 		
 		return result ;
 	}
@@ -942,7 +972,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			  
 			  if (mergedEntries != null )
 			  {
-				  sw.writeStartElement( "MergedWith" ) ;
+				  sw.writeStartElement( "MergedEntries" ) ;
 				  for ( DVBViewerEntry e : this.mergedEntries )
 				  {
 					  sw.writeStartElement( "Id" ) ;
