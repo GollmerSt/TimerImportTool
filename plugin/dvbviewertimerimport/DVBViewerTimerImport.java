@@ -17,11 +17,16 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import util.ui.UiUtilities;
+import captureplugin.drivers.DeviceIf;
+
 import devplugin.ActionMenu;
 import devplugin.Date;
 import devplugin.Plugin;
 import devplugin.PluginInfo;
+import devplugin.PluginTreeNode;
 import devplugin.Program;
+import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
 import devplugin.ThemeIcon;
 import devplugin.Version;
@@ -63,6 +68,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private GUIPanel settingsPanel = null ;
   
   private Icon menuIcon = null ;
+  private Icon[] markIcons = null ;
   private String deleteTimer = null ;
   private String addTimer = null ;
   
@@ -73,6 +79,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private GregorianCalendar calendar ;
   
   private HashMap< String, String > channelAssignmentDvbVToTvB = null ;
+  
+  private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
+
   
   public DVBViewerTimerImport()
   {
@@ -88,7 +97,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
    */
   @Override
   public void loadSettings(Properties settings) {
-    init() ;
+    if ( ! init() )
+      return ;
     handleTvDataUpdateFinished() ;
   }
   
@@ -97,6 +107,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   {
     try {
       this.control.getDVBViewer().process( this.dvbViewerProvider, false, null, Command.UPDATE ) ;
+    } catch ( ErrorClass e ) {
+      this.errorMessage(  e ) ;
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -116,12 +128,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   
   
   
-  private void init()
+  private boolean init()
   {
     if ( isInitialized )
-      return ;
+      return true ;
 
-    isInitialized = true ;
     boolean showMessageBox = false ;
 
     try {
@@ -139,13 +150,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
      control = new Control(dvbViewer) ;
     } catch (ErrorClass e) {
-      Log.error(e.getLocalizedMessage());
-      Log.out("Import terminated with errors" ) ;
-      System.exit(1);
+        this.errorMessage(  e ) ;
+        return false ;
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
-      System.exit(2);
+      return false ;
     }
     this.provider = Provider.getProvider( "TV-Browser" ) ;
     this.providerID = provider.getID() ;
@@ -162,7 +172,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       Log.setVerbose( true ) ;
 
     Log.setToDisplay(showMessageBox );
-  
+
+    isInitialized = true ;
+    return true ;
   }
     /*
       //Log.setVerbose( true ) ;
@@ -255,6 +267,16 @@ else
 System.exit(0);
   }
   */
+  
+  public void errorMessage( Throwable e )
+  {
+    if  ( e.getClass().equals(  ErrorClass.class ) )
+    {
+      Log.error(e.getLocalizedMessage());
+      Log.out("Import terminated with errors" ) ;
+    }
+    return ;      
+  }
   public static Version getVersion()
   {
     if ( version == null )
@@ -274,12 +296,17 @@ System.exit(0);
           "Gollmer, Stefan" );
     return pluginInfo ;
   }
+  
   @Override
   public Icon[] getMarkIconsForProgram(Program p)
   {
+    if ( this.markIcons != null )
+      return this.markIcons ;
     Icon i = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
-    return new Icon[] {i} ;
+    this.markIcons = new Icon[] {i} ;
+    return this.markIcons ;
   }
+  
   public String getTvBChannelName( String dvbVChannelName )
   {
     if ( channelAssignmentDvbVToTvB == null )
@@ -303,15 +330,21 @@ System.exit(0);
   @Override
   public ActionMenu getContextMenuActions( final Program program)
   {
-    init() ;
+    if ( ! init() )
+      return null ;
     // Eine Aktion erzeugen, die die Methode sendMail(Program) aufruft, sobald sie aktiviert wird.
     Command temp = Command.SET ;
     try {
       if ( control.getDVBViewer().process( dvbViewerProvider, false, program, Command.FIND ) )
         temp = Command.DELETE ;
-    } catch (Exception e1) {
-      // TODO Auto-generated catch block
-      e1.printStackTrace();
+    } catch ( ErrorClass e ) {
+      this.errorMessage( e ) ;
+      return null ;
+    }
+    catch (Exception e ) {
+      this.errorMessage( e ) ;
+      e.printStackTrace();
+      return null ;
     }
     final Command command = temp ;
     AbstractAction action = new AbstractAction() {
@@ -321,9 +354,14 @@ System.exit(0);
         control.setDVBViewerEntries() ;
         try {
           control.getDVBViewer().process( dvbViewerProvider, false, program, command ) ;
-        } catch (Exception e) {
-          // TODO Auto-generated catch block
+        } catch ( ErrorClass e ) {
+          errorMessage( e ) ;
+          return;
+        }
+        catch (Exception e ) {
+          errorMessage( e ) ;
           e.printStackTrace();
+          return ;
         }
         if ( dvbViewer != null )
           dvbViewer.writeXML() ;
@@ -331,8 +369,8 @@ System.exit(0);
           markProgram( program, true ) ;
         else
           markProgram( program, false ) ;
-        program.validateMarking() ;
-        getRootNode().update() ;
+       program.validateMarking() ;
+       updateTreeNode();
       }
     };
     
@@ -354,15 +392,34 @@ System.exit(0);
   {
     if ( mark )
     {
-      program.mark( this ) ;
-      this.getRootNode().addProgram( program ) ;
+      this.mRootNode.addProgram( program ) ;
+      //program.mark( this ) ;
     }
     else
     {
-      program.unmark( this ) ;
-      this.getRootNode().removeProgram( program ) ;
+      this.mRootNode.removeProgram( program ) ;
+      //program.unmark( this ) ;
     }
   }
+  /**
+   * Get the Root-Node.
+   * The CapturePlugin handles all Programs for itself. Some
+   * Devices can remove Programs externaly
+   */
+  public PluginTreeNode getRootNode() {
+      return mRootNode;
+  }
+
+  public boolean canUseProgramTree() {
+    return true;
+}
+
+  private void updateTreeNode() {
+    mRootNode.update();
+}
+  
+
+
   
   class DVBVSettingsTab implements SettingsTab
   {
@@ -370,7 +427,8 @@ System.exit(0);
     @Override
     public JPanel createSettingsPanel()
     {
-      init() ;
+      if ( ! init() )
+        return null ;
       if ( settingsPanel == null)
       {
         settingsPanel = new GUIPanel( control ) ;
@@ -395,7 +453,8 @@ System.exit(0);
     @Override
     public void saveSettings()
     {
-      init() ;
+      if ( ! init() )
+        return ;
       Log.out( "Configuration saved" ) ;
       control.write() ;
       dvbViewer.writeDataPathToIni() ;
@@ -435,7 +494,6 @@ System.exit(0);
       break ;
     case DELETE :
      {
-       long [] times = calcRecordTimes( program ) ;
        DVBViewerEntry entry = findProgram( program ) ;
        if ( entry == null )
          return false ;
@@ -464,7 +522,7 @@ System.exit(0);
   }
   public void updateMarks()
   {
-    Program [] programs = this.getPluginManager().getMarkedPrograms() ;
+    Program [] programs = Plugin.getPluginManager().getMarkedPrograms() ;
     for ( Program program : programs )
     {
       program.unmark( this ) ;
@@ -473,10 +531,11 @@ System.exit(0);
     {
       if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
       {
-        Program program = this.getPluginManager().getProgram( co.getProviderCID() ) ;
-        program.mark( this ) ;
+        Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
+        this.mRootNode.addProgram( program ) ;
       }
     }
+    this.updateTreeNode() ;
   }
   private long [] calcRecordTimes( final Program program )
   {
@@ -506,7 +565,7 @@ System.exit(0);
         Date nd = new Date( calendar ) ;
         
         nd.addDays( t ) ;
-        Iterator<Program> pIt = this.getPluginManager().getChannelDayProgram( nd,program.getChannel() ) ;
+        Iterator<Program> pIt = Plugin.getPluginManager().getChannelDayProgram( nd,program.getChannel() ) ;
         while ( pIt.hasNext() )
         {
           Program p = pIt.next() ;
@@ -528,10 +587,7 @@ System.exit(0);
         }
       }
     }
-    long[] result = new long[2] ;
-    result[ 0 ] = startTime ;
-    result[ 1 ] = endTime ;
-    return result ;
+    return new long[] { startTime, endTime };
   }
 
   @Override
