@@ -291,32 +291,32 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		this.writeXML() ;
 	}
-  public boolean  process( DVBViewerProvider provider, boolean getAll, Object args ) throws Exception
-  {
-    return process( provider, getAll, args, Command.SET ) ;
-  }
-
-  public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
+	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args ) throws Exception
 	{
-    boolean result = true ;
-    if ( command == Command.FIND && this.recordEntries != null )
-    {
-      result  = provider.process(getAll, command ); ;
-      result &= provider.processEntry( args, command ) ;
-      return result ;
-    }
+		return process( provider, getAll, args, Command.SET ) ;
+	}
+
+	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
+	{
+		boolean result = true ;
+		if ( command == Command.FIND && this.recordEntries != null )
+		{
+			result  = provider.process(getAll, command ); ;
+			result &= provider.processEntry( args, command ) ;
+			return result ;
+		}
 		this.connectDVBViewerIfNecessary();
 		try
 		{
-	    this.readDVBViewerTimers() ;
-	    this.mergeXMLWithServiceData() ;
-	    result  = provider.process(getAll, command ); ;
-	    result &= provider.processEntry( args, command ) ;
-	    if ( command != Command.FIND )
-	      this.setDVBViewerTimers();
+			this.readDVBViewerTimers() ;
+			this.mergeXMLWithServiceData() ;
+			result  = provider.process(getAll, command ); ;
+			result &= provider.processEntry( args, command ) ;
+		if ( command != Command.FIND )
+		this.setDVBViewerTimers();
 		} catch ( Exception e ) {
-	    this.disconnectDVBViewer();
-		  throw e ;
+			this.disconnectDVBViewer();
+			throw e ;
 		}
 		this.disconnectDVBViewer();
 		return result ;
