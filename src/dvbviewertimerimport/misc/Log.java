@@ -53,7 +53,7 @@ public class Log {
 			return out ;
 		if ( file == null )
 		{
-			Log.ErrorBox( out ) ;
+			Log.ErrorBox( out, error ) ;
 			System.err.println( out ) ;
 			return out ;
 		}
@@ -61,27 +61,28 @@ public class Log {
 		try {
 			long now = System.currentTimeMillis() ;
 			String dateString = Log.dateFormat.format( now ) + "  ";
-			fstream = new FileWriter( Log.file, true );
-			BufferedWriter bf = new BufferedWriter( fstream ) ;
-			String[] strings = out.split( "\n" ) ;
-			for ( int i = 0 ; i< strings.length ; i++ )
-			{
-				if ( i != 0 )
-					bf.write( "                     " ) ;
-				else
-					bf.write( dateString ) ;
-				bf.write( strings[i] + '\n' );
-			}
-			bf.close();
-			if ( error )
+			synchronized ( Log.file ) {
+        fstream = new FileWriter(Log.file, true);
+        BufferedWriter bf = new BufferedWriter(fstream);
+        String[] strings = out.split("\n");
+        for (int i = 0; i < strings.length; i++) {
+          if (i != 0)
+            bf.write("                     ");
+          else
+            bf.write(dateString);
+          bf.write(strings[i] + '\n');
+        }
+        bf.close();
+      }
+      if ( error )
 				System.err.println( out ) ;
 		} catch (IOException e) {
 			System.err.println( out ) ;
-			Log.ErrorBox( out ) ;
+			Log.ErrorBox( out, error ) ;
 			return out ;
 		}
 		if ( ( error && Log.toDisplay ) || toDisplay )
-			Log.ErrorBox( out ) ;
+			Log.ErrorBox( out, error ) ;
 		return out ;
 	}
 	public static String out( String out )
@@ -104,7 +105,7 @@ public class Log {
 	public static boolean isVerbose() { return Log.verbose ; } ; 
 	public static void setToDisplay( boolean d ) { Log.toDisplay = d ; } ;
 	public static boolean toDisplay() { return Log.toDisplay ; } ;
-	public static void ErrorBox( String errorText )
+	public static void ErrorBox( String errorText, boolean isError )
 	{
 	    String lines = "" ;
 	    int pos0 = 0 ;
@@ -131,6 +132,13 @@ public class Log {
 	    	lines += "\n" ;
 	    lines += errorText.substring(pos0) + "\n" ;
 	    
-		JOptionPane.showMessageDialog(null, lines, "Error occured", JOptionPane.OK_OPTION);
+	    String title = null ;
+	    
+	    if ( isError )
+	      title = ResourceManager.msg( "ERROR_OCCURED" ) ;
+	    else
+	      title = ResourceManager.msg( "INFO_BOX" ) ;
+	    
+		JOptionPane.showMessageDialog(null, lines, title, JOptionPane.OK_OPTION);
 	}
 }

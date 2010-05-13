@@ -31,6 +31,8 @@ public class ResourceManager {
 	private static ResourceBundle resourceBundleLang = null ;
 
 	private static ResourceManager rsc = new ResourceManager() ;
+	
+	private static boolean isMsgInProcess = false ;
 
 
 
@@ -225,7 +227,10 @@ public class ResourceManager {
 
 	public static String msg( String key, String ... strings )
 	{
-		if ( resourceBundleLang == null )
+	  if ( isMsgInProcess  )
+	    return "Error in ResourceManager.msg, message can't be generated" ;
+	  isMsgInProcess = true ;
+	  if ( resourceBundleLang == null )
 			resourceBundleLang = getResourceBundle( "lang" ) ;
 		String msg = null ;
 		try
@@ -236,6 +241,8 @@ public class ResourceManager {
 			System.exit( 1 ) ;
 		}
 		msg = msg.replace( "'", "''") ;
-		return MessageFormat.format( msg, (Object[]) strings ) ;
+		String ret = MessageFormat.format( msg, (Object[]) strings ) ;
+    isMsgInProcess = false ;
+		return ret ;
 	}
 }
