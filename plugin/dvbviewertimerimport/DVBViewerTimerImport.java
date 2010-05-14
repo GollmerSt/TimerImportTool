@@ -48,6 +48,7 @@ import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.tvbrowser.TVBrowser;
 
@@ -158,7 +159,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       e.printStackTrace();
       return false ;
     } catch (TerminateClass e) {
-      return false
+      return false ;
     }
 	this.provider = Provider.getProvider( "TV-Browser" ) ;
 	this.provider.setIsFunctional( true ) ;
@@ -471,6 +472,8 @@ System.exit(0);
       {
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
         this.mRootNode.addProgram( program ) ;
+        program.validateMarking() ;
+
       }
     }
     this.updateTreeNode() ;
