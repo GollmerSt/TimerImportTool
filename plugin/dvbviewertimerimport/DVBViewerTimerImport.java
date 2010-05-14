@@ -84,12 +84,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
 
 
-  public DVBViewerTimerImport()
-  {
-//    init() ;
-  }
-
-  /**
+ /**
    * Called by the host-application during start-up.
    * <p>
    * Override this method to load your plugins settings from the file system.
@@ -119,6 +114,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
 
 
+  /**
+   * @return Array containing the channel names of the TV-Browser
+   */
   public static String[] getTVBChannelNames()
   {
     ArrayList< String > res = new ArrayList< String >() ;
@@ -179,8 +177,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     isInitialized = true ;
     return true ;
   }
-    /*
-        dvbViewer.writeDataPathToIni() ;
+/*        dvbViewer.writeDataPathToIni() ;
 
   if ( paras.length() != 0)
     Log.out( "Parameters: " + paras ) ;
@@ -201,8 +198,11 @@ else
 }
 System.exit(0);
   }
-  */
+*/
 
+  /**
+   * @param e Throwable of the last exception/error ....
+   */
   public void errorMessage( Throwable e )
   {
     if  ( e.getClass().equals(  ErrorClass.class ) )
@@ -242,6 +242,10 @@ System.exit(0);
     return this.markIcons ;
   }
 
+  /**
+   * @param dvbVChannelName   DVBViewer channel name
+   * @return  assigned TV-Browser name, null if not assigned
+   */
   public String getTvBChannelName( String dvbVChannelName )
   {
     if ( channelAssignmentDvbVToTvB == null )
@@ -443,6 +447,10 @@ System.exit(0);
 
     return result ;
   }
+  /**
+   * @param program program which will seach in the DVBViewer recording list
+   * @return null if not found otherwise the DVBViewer entry oft the recording
+   */
   public DVBViewerEntry findProgram( final Program program )
   {
     DVBViewerEntry entry = null ;
@@ -459,6 +467,9 @@ System.exit(0);
     }
     return entry ;
   }
+  /**
+   * 
+   */
   public void updateMarks()
   {
     Program [] programs = Plugin.getPluginManager().getMarkedPrograms() ;
@@ -473,7 +484,6 @@ System.exit(0);
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
         this.mRootNode.addProgram( program ) ;
         program.validateMarking() ;
-
       }
     }
     this.updateTreeNode() ;
