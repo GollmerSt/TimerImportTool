@@ -7,6 +7,7 @@ package dvbviewertimerimport.dvbviewer.channels;
 import java.nio.MappedByteBuffer;
 
 import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
 
 public class Channel {
@@ -55,7 +56,7 @@ public class Channel {
 		String [] parts = channelID.split( "[|]" ) ;
 		if ( parts.length != 2 )
 		{
-			Log.error( "Illegal format of the channelID: " + channelID ) ;
+			Log.error( ResourceManager.msg( "ILLEGAL_FORMAT_DVBVIEWER_CHANNELID", channelID ) ) ;
 			throw new TerminateClass( 1 ) ;
 		}
 		Channel c = new Channel() ;
