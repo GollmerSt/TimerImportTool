@@ -66,28 +66,28 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private DVBViewer dvbViewer = null ;
   private Channels channels = null ;
   private GUIPanel settingsPanel = null ;
-  
+
   private Icon menuIcon = null ;
   private Icon[] markIcons = null ;
   private String deleteTimer = null ;
   private String addTimer = null ;
-  
+
   private DVBViewerProvider dvbViewerProvider = this ;
   private int providerID ;
   private Provider provider ;
-  
+
   private GregorianCalendar calendar ;
-  
+
   private HashMap< String, String > channelAssignmentDvbVToTvB = null ;
-  
+
   private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
 
-  
+
   public DVBViewerTimerImport()
   {
 //    init() ;
   }
-  
+
   /**
    * Called by the host-application during start-up.
    * <p>
@@ -101,7 +101,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       return ;
     handleTvDataUpdateFinished() ;
   }
-  
+
   @Override
   public void handleTvDataUpdateFinished()
   {
@@ -112,11 +112,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     } catch (Exception e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
+    } catch (TerminateClass e) {
     }
-  }
+ }
 
 
-  
+
   public static String[] getTVBChannelNames()
   {
     ArrayList< String > res = new ArrayList< String >() ;
@@ -125,15 +126,15 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       res.add( c.getName() ) ;
     return res.toArray( new String[0] ) ;
   }
-  
-  
-  
+
+
+
   private boolean init()
   {
     if ( isInitialized )
       return true ;
 
-    boolean showMessageBox = false ;
+	Provider.setIsPlugin() ;
 
     try {
       Log.setToDisplay(true);
@@ -156,102 +157,35 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       // TODO Auto-generated catch block
       e.printStackTrace();
       return false ;
+    } catch (TerminateClass e) {
+      return false
     }
-    this.provider = Provider.getProvider( "TV-Browser" ) ;
-    this.providerID = provider.getID() ;
+	this.provider = Provider.getProvider( "TV-Browser" ) ;
+	this.provider.setIsFunctional( true ) ;
+	this.providerID = provider.getID() ;
+
     this.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
 
     this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
     this.deleteTimer = ResourceManager.msg( "DELETE_TIMER" ) ;
     this.addTimer = ResourceManager.msg( "ADD_TIMER" ) ;
 
-    ((TVBrowser)this.provider).setIsTVBrowserPlugin() ;
-
-    showMessageBox |= provider.getMessage() ;
     if ( provider.getVerbose() )
       Log.setVerbose( true ) ;
 
-    Log.setToDisplay(showMessageBox );
+    Log.setToDisplay(provider.getMessage() );
 
     isInitialized = true ;
     return true ;
   }
     /*
-      //Log.setVerbose( true ) ;
-
-      Log.out( "Open configuration" ) ;
-      GUI gui = new GUI( control, channels ) ;
-      gui.execute() ;
-      boolean finished = false ;
-      while ( ! finished )
-    {
-      GUIStatus status = gui.waitGUI() ;
-
-      switch (status)
-      {
-      case APPLY :
-        Log.out( "Configuration saved" ) ;
-        control.write() ;
         dvbViewer.writeDataPathToIni() ;
-        break ;
-      case OK :
-        control.write() ;
-        Log.out( "Configuration saved and terminated" ) ;
-        dvbViewer.writeDataPathToIni() ;
-        System.exit( 0 ) ;
-        break ;
-      case CANCEL :
-        Log.out( "Configuration aborted" ) ;
-        System.exit( 0 ) ;
-        break ;
-      case SAVE_EXECUTE :
-        Log.out( "Configuration saved" ) ;
-        control.write() ;
-      case EXECUTE :
-        Log.out( "Execute import started" ) ;
-        provider = Provider.getProvider( control.getDefaultProvider() ) ;
-        dvbViewer.writeDataPathToIni() ;
-        finished = true ;
-        break ;
-      case UPDATE :
-        Log.out( "Timer update started" ) ;
-        dvbViewer.updateDVBViewer() ;
-      }
-    }
-  }
-
-  switch ( type )
-  {
-    case TVINFO :
-      provider = Provider.getProvider( "TVInfo" ) ;
-      provider.setFilter( ! getAll ) ;
-      break ;
-    case CLICKFINDER :
-      provider = Provider.getProvider( "ClickFinder" ) ;
-      break ;
-    case TVGENIAL :
-      provider = Provider.getProvider( "TVGenial" ) ;
-      break ;
-    case UPDATE :
-      dvbViewer.updateDVBViewer() ;
-  }
-
-
 
   if ( paras.length() != 0)
     Log.out( "Parameters: " + paras ) ;
 
   dvbViewer.process( provider, getAll, args ) ;
 
-} catch (ErrorClass e) {
-  Log.error(e.getLocalizedMessage());
-  Log.out("Import terminated with errors" ) ;
-  System.exit(1);
-} catch (Exception e) {
-  // TODO Auto-generated catch block
-  e.printStackTrace();
-  System.exit(2);
-}
 if ( ErrorClass.isWarning() )
 {
   Log.out( "Import finished, but warnings occurs. The messages should be checked"  ) ;
@@ -267,7 +201,7 @@ else
 System.exit(0);
   }
   */
-  
+
   public void errorMessage( Throwable e )
   {
     if  ( e.getClass().equals(  ErrorClass.class ) )
@@ -275,7 +209,7 @@ System.exit(0);
       Log.error(e.getLocalizedMessage());
       Log.out("Import terminated with errors" ) ;
     }
-    return ;      
+    return ;
   }
   public static Version getVersion()
   {
@@ -296,7 +230,7 @@ System.exit(0);
           "Gollmer, Stefan" );
     return pluginInfo ;
   }
-  
+
   @Override
   public Icon[] getMarkIconsForProgram(Program p)
   {
@@ -306,7 +240,7 @@ System.exit(0);
     this.markIcons = new Icon[] {i} ;
     return this.markIcons ;
   }
-  
+
   public String getTvBChannelName( String dvbVChannelName )
   {
     if ( channelAssignmentDvbVToTvB == null )
@@ -324,9 +258,9 @@ System.exit(0);
       return null ;
     return channelAssignmentDvbVToTvB.get( dvbVChannelName ) ;
   }
-  
-  
-  
+
+
+
   @Override
   public ActionMenu getContextMenuActions( final Program program)
   {
@@ -345,6 +279,8 @@ System.exit(0);
       this.errorMessage( e ) ;
       e.printStackTrace();
       return null ;
+    } catch (TerminateClass e) {
+    	return null ;
     }
     final Command command = temp ;
     AbstractAction action = new AbstractAction() {
@@ -362,6 +298,8 @@ System.exit(0);
           errorMessage( e ) ;
           e.printStackTrace();
           return ;
+        } catch (TerminateClass e) {
+        	return ;
         }
         if ( dvbViewer != null )
           dvbViewer.writeXML() ;
@@ -373,7 +311,7 @@ System.exit(0);
        updateTreeNode();
       }
     };
-    
+
     // Der Aktion einen Namen geben. Dieser Name wird dann im Kontextmenü gezeigt
     if ( command == Command.SET )
         action.putValue(Action.NAME, addTimer );
@@ -385,7 +323,7 @@ System.exit(0);
     action.putValue(Action.SMALL_ICON, menuIcon );
 
     // Das Aktions-Menü erzeugen und zurückgeben
-    return new ActionMenu(action); 
+    return new ActionMenu(action);
   }
 
   private void markProgram( final Program program, boolean mark )
@@ -417,10 +355,10 @@ System.exit(0);
   private void updateTreeNode() {
     mRootNode.update();
 }
-  
 
 
-  
+
+
   class DVBVSettingsTab implements SettingsTab
   {
 
@@ -471,15 +409,15 @@ System.exit(0);
   public boolean processEntry(Object arg, DVBViewer.Command command)
   {
     boolean result = true ;
-    
+
     if ( command == Command.UPDATE )
     {
       this.updateMarks() ;
       return true ;
     }
-    
+
     Program program = (Program)arg ;
-    
+
     switch ( command )
     {
     case SET :
@@ -563,7 +501,7 @@ System.exit(0);
         calendar.clear();
         calendar.set( d.getYear(), d.getMonth() - 1, d.getDayOfMonth() + t ) ;
         Date nd = new Date( calendar ) ;
-        
+
         nd.addDays( t ) ;
         Iterator<Program> pIt = Plugin.getPluginManager().getChannelDayProgram( nd,program.getChannel() ) ;
         while ( pIt.hasNext() )
