@@ -11,6 +11,7 @@ import javax.swing.event.ChangeListener;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
 
 public class GUIPanel extends JPanel
@@ -68,7 +69,7 @@ public class GUIPanel extends JPanel
 			w = (Window) this.getRootPane().getParent() ;
 		} catch ( Exception e ) {
 			Log.error( "Illegal GUI class hierarchy " ) ;
-			System.exit( 1 ) ;
+			throw new TerminateClass( 1 ) ;
 		}
 		return w ;
 	}

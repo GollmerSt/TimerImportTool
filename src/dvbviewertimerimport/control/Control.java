@@ -101,9 +101,9 @@ public class Control
 		new ClickFinder( this ) ;
 		new TVBrowser( this ) ;
 	}
-	public void read() { this.read( null, null ) ; } ;
+	public void read() throws TerminateClass { this.read( null, null ) ; } ;
 
-	public void read( InputStream inputStream, String name )
+	public void read( InputStream inputStream, String name ) throws TerminateClass
 	{	
 		boolean versionChanged = true ;
 		
@@ -119,7 +119,7 @@ public class Control
 				        Constants.PROGRAM_NAME, 
 				        JOptionPane.OK_CANCEL_OPTION );
 				if ( answer == JOptionPane.CANCEL_OPTION )
-					System.exit( 1 ) ;
+					throw new TerminateClass() ;
 				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xml" ) ;
 				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xsd" ) ;
 			}

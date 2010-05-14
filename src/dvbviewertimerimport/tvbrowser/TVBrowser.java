@@ -10,22 +10,21 @@ import dvbviewertimerimport.provider.Provider;
 
 public class TVBrowser extends Provider
 {
-	boolean isTVBrowserPlugin = false ;
-
-	public void setIsTVBrowserPlugin() { isTVBrowserPlugin = true ; } ;
-
 	public TVBrowser(Control control )
 	{
-		super(control, false, false, "TV-Browser", false, false, false, false, true, false);
+		super(control, false, false, "TV-Browser", false, false, false, false, false);
+		canImport = true ;
+		isFunctional = false ;
+		
 	}
-	  
+	
 	@Override
 	public int importChannels( boolean check )
 	{
 		if ( check )
 			return 0 ;
 		
-		if ( ! isTVBrowserPlugin )
+		if ( ! isFunctional() )
 			return -1 ;
     
 		String [] channels = DVBViewerTimerImport.getTVBChannelNames() ;

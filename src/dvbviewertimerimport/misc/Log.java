@@ -62,19 +62,20 @@ public class Log {
 			long now = System.currentTimeMillis() ;
 			String dateString = Log.dateFormat.format( now ) + "  ";
 			synchronized ( Log.file ) {
-        fstream = new FileWriter(Log.file, true);
-        BufferedWriter bf = new BufferedWriter(fstream);
-        String[] strings = out.split("\n");
-        for (int i = 0; i < strings.length; i++) {
-          if (i != 0)
-            bf.write("                     ");
-          else
-            bf.write(dateString);
-          bf.write(strings[i] + '\n');
-        }
-        bf.close();
-      }
-      if ( error )
+				fstream = new FileWriter(Log.file, true);
+				BufferedWriter bf = new BufferedWriter(fstream);
+				String[] strings = out.split("\n");
+				for (int i = 0; i < strings.length; i++)
+				{
+					if (i != 0)
+						bf.write("                     ");
+					else
+						bf.write(dateString);
+					bf.write(strings[i] + '\n');
+				}
+				bf.close();
+			}
+			if ( error )
 				System.err.println( out ) ;
 		} catch (IOException e) {
 			System.err.println( out ) ;
@@ -107,38 +108,38 @@ public class Log {
 	public static boolean toDisplay() { return Log.toDisplay ; } ;
 	public static void ErrorBox( String errorText, boolean isError )
 	{
-	    String lines = "" ;
-	    int pos0 = 0 ;
-	    int i = 0 ;
-	    for ( i = 0 ; i < errorText.length(); i++)
-	    {
-	    	if ( errorText.charAt(i) == '\n' )
-	    	{
-	    		lines += errorText.substring(pos0, i) + "\n" ;
-	    		pos0 = i+1 ;
-	    	}
-	    	if ( ( i - pos0 ) > 40 )
-	    	{
-	    		if ( errorText.charAt(i) == ' ' )
-	    		{
-	    			if ( pos0 != 0 )
-	    				lines += "\n" ;
-	    			lines += errorText.substring(pos0, i) ;
-	    			pos0 = i+1 ;
-	    		}
-	    	}
-	    }
-	    if ( pos0 != 0 )
-	    	lines += "\n" ;
-	    lines += errorText.substring(pos0) + "\n" ;
-	    
-	    String title = null ;
-	    
-	    if ( isError )
-	      title = ResourceManager.msg( "ERROR_OCCURED" ) ;
-	    else
-	      title = ResourceManager.msg( "INFO_BOX" ) ;
-	    
+		String lines = "" ;
+		int pos0 = 0 ;
+		int i = 0 ;
+		for ( i = 0 ; i < errorText.length(); i++)
+		{
+			if ( errorText.charAt(i) == '\n' )
+			{
+				lines += errorText.substring(pos0, i) + "\n" ;
+				pos0 = i+1 ;
+			}
+			if ( ( i - pos0 ) > 40 )
+			{
+				if ( errorText.charAt(i) == ' ' )
+				{
+					if ( pos0 != 0 )
+						lines += "\n" ;
+					lines += errorText.substring(pos0, i) ;
+					pos0 = i+1 ;
+				}
+			}
+		}
+		if ( pos0 != 0 )
+			lines += "\n" ;
+		lines += errorText.substring(pos0) + "\n" ;
+		
+		String title = null ;
+		
+		if ( isError )
+			title = ResourceManager.msg( "ERROR_OCCURED" ) ;
+		else
+			title = ResourceManager.msg( "INFO_BOX" ) ;
+		
 		JOptionPane.showMessageDialog(null, lines, title, JOptionPane.OK_OPTION);
 	}
 }

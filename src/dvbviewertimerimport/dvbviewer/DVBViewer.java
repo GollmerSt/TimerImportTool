@@ -759,7 +759,7 @@ public class DVBViewer {
 		if ( ! f.canWrite() )
 		{
 			Log.error( ResourceManager.msg( "ADMINISTRATOR" ) ) ;
-			System.exit( 1 ) ;
+			throw new TerminateClass( 1 ) ;
 		}
 		ResourceManager.copyBinaryFile( exePath, "datafiles/"
 			                                    + NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
@@ -770,7 +770,7 @@ public class DVBViewer {
 		if ( ! DVBViewerCOM.getVersion().equals( Versions.getDVBViewerCOMVersion() ) )
 		{
 			Log.error( ResourceManager.msg( "PACKAGE" ) ) ;
-			System.exit( 1 ) ;
+			throw new TerminateClass( 1 ) ;
 		}
 	}
 	

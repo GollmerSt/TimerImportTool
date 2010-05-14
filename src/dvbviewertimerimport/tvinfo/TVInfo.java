@@ -41,7 +41,7 @@ public final class TVInfo extends Provider {
 
 	public TVInfo( Control control )
 	{
-		super( control, true, true, "TVInfo", true, true, true, false, false, true ) ;
+		super( control, true, true, "TVInfo", true, true, true, false, true ) ;
 		this.dvbViewer = this.control.getDVBViewer() ;
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;

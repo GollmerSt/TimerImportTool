@@ -33,6 +33,7 @@ public abstract class Provider implements DVBViewerProvider {
 	private enum XMLStatus { UKNOWN, MISSING, PROVIDER } ;
 	private static ArrayList< String > names = new ArrayList< String >() ;
 	private static ArrayList< Provider > providers = new ArrayList< Provider >() ;
+	private static boolean isPlugin = false ;
 	
 	private static Stack< ArrayList< String > >  nameStack = new Stack< ArrayList< String > >() ;
 	private static Stack< ArrayList< Provider > > providerStack = new Stack< ArrayList< Provider > >() ;
@@ -50,6 +51,9 @@ public abstract class Provider implements DVBViewerProvider {
 		Provider.providers = Provider.providerStack.pop() ;
 	}
 	
+	public static void setIsPlugin() { isPlugin = true ; } ;
+	public static boolean isPlugin() { return isPlugin ; } ;
+	
 	private final int id ;
 	protected final Control control ;
 	private final boolean hasAccount ;
@@ -57,7 +61,7 @@ public abstract class Provider implements DVBViewerProvider {
 	private final boolean canExecute ;
 	private final boolean canTest ;
 	private final boolean mustInstall ;
-	private final boolean canImport ;
+	protected boolean canImport = false ;
 	private final String name ;
 	protected String url = "" ;
 	protected String username = null ;
@@ -69,6 +73,7 @@ public abstract class Provider implements DVBViewerProvider {
 	private boolean filter = false ;
 	private boolean isFilterEnabled = true ;
 	private boolean isPrepared = false ;
+	protected boolean isFunctional = true ;
 	private OutDatedInfo outDatedLimits = null ;
 	protected TimeZone timeZone = TimeZone.getDefault() ;
 	public Provider( Control control,
@@ -79,7 +84,6 @@ public abstract class Provider implements DVBViewerProvider {
 			         boolean canTest,
 			         boolean filter,
 			         boolean mustInstall,
-			         boolean canImport,
 			         boolean isOutDatedLimitsEnabled )
 	{
 		this.control      = control ;
@@ -89,7 +93,6 @@ public abstract class Provider implements DVBViewerProvider {
 		this.id = Provider.providers.size() ;
 		this.canExecute = canExecute ;
 		this.canTest = canTest ;
-		this.canImport = canImport ;
 		this.filter = filter ;
 		this.mustInstall = mustInstall ;
 		this.isPrepared = ! isOutDatedLimitsEnabled ;
@@ -125,9 +128,13 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean hasAccount() { return this.hasAccount ; } ;
 	public boolean canExecute() { return this.canExecute ; } ;
 	public boolean canTest()   { return this.canTest ; } ;
-	public boolean canImport() { return this.canImport ; } ;
+	public boolean canImport() { return this.canImport && this.isFunctional ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
+	
+	public boolean isFunctional() { return isFunctional ; } ;
+	public void setIsFunctional( final boolean status ) { isFunctional = status ; } ;
+	
 	public void setPrepared( boolean prepared ) { this.isPrepared = prepared ; } ;
 	public OutDatedInfo getOutDatedLimits() { return this.outDatedLimits ; } ;
 	public boolean install()   { return true ; } ;

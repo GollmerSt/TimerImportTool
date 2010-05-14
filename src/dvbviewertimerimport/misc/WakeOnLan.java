@@ -36,7 +36,7 @@ public class WakeOnLan {
         }
         catch (Exception e) {
             System.out.println("Failed to send Wake-on-LAN packet: + e");
-            System.exit(1);
+			throw new TerminateClass( 1 ) ;
         }
         
     }

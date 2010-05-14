@@ -7,6 +7,7 @@ package dvbviewertimerimport.dvbviewer.channels;
 import java.nio.MappedByteBuffer;
 
 import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.TerminateClass;
 
 public class Channel {
 	public static final int ENTRY_LENGTH = Tuner.ENTRY_LENGTH + 26 * 3 + 2 ;
@@ -55,7 +56,7 @@ public class Channel {
 		if ( parts.length != 2 )
 		{
 			Log.error( "Illegal format of the channelID: " + channelID ) ;
-			System.exit( 1 ) ;
+			throw new TerminateClass( 1 ) ;
 		}
 		Channel c = new Channel() ;
 		c.channelName = parts[1] ;

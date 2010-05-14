@@ -23,7 +23,7 @@ public class ClickFinder extends Provider {
 
 	public ClickFinder( Control control )
 	{
-		super( control, false, false, "ClickFinder", false, false, false, true, false, false ) ;
+		super( control, false, false, "ClickFinder", false, false, false, true, false ) ;
 		this.dvbViewer = control.getDVBViewer() ;
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;

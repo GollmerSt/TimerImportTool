@@ -37,6 +37,7 @@ import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.misc.TerminateClass;
 
 public class Miscellaneous extends MyTabPanel
 {
@@ -184,7 +185,12 @@ public class Miscellaneous extends MyTabPanel
 			else if ( source == updateToNewVersionButton )
 			{
 				UpdateImporter importer = new UpdateImporter( control ) ;
-				if ( ! importer.importXML() )
+				boolean isImported = false ;
+				try {
+					isImported = importer.importXML() ;
+				} catch (TerminateClass e1) {
+				}
+				if ( ! isImported )
 					updateToNewVersionButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 				else
 				{

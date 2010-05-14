@@ -14,6 +14,7 @@ import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
 
 public class UpdateImporter
@@ -27,7 +28,7 @@ public class UpdateImporter
 	{
 		this.control = control ;
 	}
-	public boolean importXML()
+	public boolean importXML() throws TerminateClass
 	{
 	    InputStream is = ResourceManager.createInputStream( XML_PATH ) ;
 	    

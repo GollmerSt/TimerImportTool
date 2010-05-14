@@ -9,7 +9,9 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import dvbviewertimerimport.misc.* ;
+import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.control.Control ;
@@ -175,10 +177,13 @@ public final class TimerImportTool {
 			Log.error(e.getLocalizedMessage());
 			Log.out("Import terminated with errors" ) ;
 			System.exit(1);
+		} catch ( TerminateClass e ) {
+			System.exit( e.getExitCode() );
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			System.exit(2);
+			
 		}
 		if ( dvbViewer != null )
 			dvbViewer.writeXML() ;

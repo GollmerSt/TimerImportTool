@@ -43,41 +43,40 @@ public class ResourceManager {
 		return u ;
 	}
 
-    public static ImageIcon createImageIcon(String path,
-            String description)
-    {
-    	java.net.URL imgURL = getURL( path );
-    	if ( imgURL != null )
-    		return new ImageIcon(imgURL, description);
-    	else
-    		throw new ErrorClass( "Package error: Icon file \"" + path + "\" not found" ) ;
-    }
-    public static InputStream createInputStream( String path )
-    {
-    	return createInputStream( path, true ) ;
-    }
-    public static InputStream createInputStream( String path, boolean errorMessage )
-    {
-    	InputStream inputStream = null;
-    	try
-    	{
-    		inputStream = rsc.getClass().getResourceAsStream( RESOURCE_BASE_PATH + path ) ;
-    	} catch (Exception e) {
-    	      e.printStackTrace();
-        }
+	public static ImageIcon createImageIcon(String path, String description)
+	{
+		java.net.URL imgURL = getURL( path );
+		if ( imgURL != null )
+			return new ImageIcon(imgURL, description);
+		else
+			throw new ErrorClass( "Package error: Icon file \"" + path + "\" not found" ) ;
+	}
+	public static InputStream createInputStream( String path )
+	{
+		return createInputStream( path, true ) ;
+	}
+	public static InputStream createInputStream( String path, boolean errorMessage )
+	{
+		InputStream inputStream = null;
+		try
+		{
+			inputStream = rsc.getClass().getResourceAsStream( RESOURCE_BASE_PATH + path ) ;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
-    	if ( inputStream == null && errorMessage )
-    		throw new ErrorClass( "Package error: File \"" + path + "\" not found" ) ;
+		if ( inputStream == null && errorMessage )
+			throw new ErrorClass( "Package error: File \"" + path + "\" not found" ) ;
 
-    	return inputStream ;
-    }
-    public static void copyFile( String destinationPath, String source )
-    {
-    	ResourceManager.copyFile( destinationPath, source, null, false ) ;
-    }
+		return inputStream ;
+	}
+	public static void copyFile( String destinationPath, String source )
+	{
+		ResourceManager.copyFile( destinationPath, source, null, false ) ;
+	}
 
-    public static void copyFile( String destinationPath, String source, ArrayList< String[] > keywords, boolean removeComment )
-    {
+	public static void copyFile( String destinationPath, String source, ArrayList< String[] > keywords, boolean removeComment )
+	{
 		InputStream is = ResourceManager.createInputStream( source ) ;
 
 		String[] parts = source.split( "\\/" ) ;
@@ -131,9 +130,9 @@ public class ResourceManager {
 					              + file.getAbsolutePath()
 					              + "\"." ) ;
 		}
-    }
-    public static void copyBinaryFile( String destinationPath, String source )
-    {
+	}
+	public static void copyBinaryFile( String destinationPath, String source )
+	{
 		InputStream istream = ResourceManager.createInputStream( source ) ;
 
 		String[] parts = source.split( "\\/" ) ;
@@ -227,10 +226,10 @@ public class ResourceManager {
 
 	public static String msg( String key, String ... strings )
 	{
-	  if ( isMsgInProcess  )
-	    return "Error in ResourceManager.msg, message can't be generated" ;
-	  isMsgInProcess = true ;
-	  if ( resourceBundleLang == null )
+		if ( isMsgInProcess  )
+			return "Error in ResourceManager.msg, message can't be generated" ;
+		isMsgInProcess = true ;
+		if ( resourceBundleLang == null )
 			resourceBundleLang = getResourceBundle( "lang" ) ;
 		String msg = null ;
 		try
@@ -238,11 +237,11 @@ public class ResourceManager {
 			msg = resourceBundleLang.getString( key ) ;
 		} catch ( MissingResourceException e ) {
 			Log.error( "Keyword \"" + key + "\" is not assigned to any message string in the language files" ) ;
-			System.exit( 1 ) ;
+			throw new TerminateClass( 1 ) ;
 		}
 		msg = msg.replace( "'", "''") ;
 		String ret = MessageFormat.format( msg, (Object[]) strings ) ;
-    isMsgInProcess = false ;
+	isMsgInProcess = false ;
 		return ret ;
 	}
 }
