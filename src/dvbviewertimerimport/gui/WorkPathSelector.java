@@ -8,7 +8,6 @@ import java.awt.Window;
 import java.io.File;
 
 import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.ResourceManager;
@@ -17,8 +16,6 @@ import dvbviewertimerimport.misc.ResourceManager;
 
 public class WorkPathSelector
 {
-	private final static String CHANNEL_FILE = "channels.dat" ;
-	
 	JFileChooser chooser = new JFileChooser() ;
 	
 	private final DVBViewer dvbViewer ;
@@ -32,7 +29,7 @@ public class WorkPathSelector
 	public boolean show()
 	{
 		chooser.setCurrentDirectory( null ) ;
-		chooser.setFileFilter(new FileFilter() {
+/*		chooser.setFileFilter(new FileFilter() {
             public boolean accept(File f) {
                 return f.getName().equalsIgnoreCase( CHANNEL_FILE ) || f.isDirectory();
             }
@@ -41,13 +38,14 @@ public class WorkPathSelector
             }
 		}
 		);
-		chooser.setDialogTitle( ResourceManager.msg( "SELECT_CHANNEL_FILE" ) ) ;
+*/		chooser.setDialogTitle( ResourceManager.msg( "SELECT_DVBVIEWER_DIRECTORY" ) ) ;
+		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY ) ;
 		int returnVal = chooser.showDialog( window, ResourceManager.msg( "SELECT" ) ) ;
         if (returnVal == JFileChooser.APPROVE_OPTION)
         {
             File file = chooser.getSelectedFile() ;
             
-            dvbViewer.setDataPath( file.getParent() ) ;
+            dvbViewer.setDVBViewerPath( file.getAbsolutePath() ) ;
             return true ;
         }
         else

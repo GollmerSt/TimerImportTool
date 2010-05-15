@@ -84,15 +84,7 @@ public final class TimerImportTool {
 
 			Log.setToDisplay(true);
 
-			dvbViewer = new DVBViewer( iniPath, TimerImportTool.exeName ) ;
-
-			while ( ! dvbViewer.initDataPath() )
-			{
-				boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
-				if ( aborted )
-					System.exit( 0 ) ;
-				dvbViewer.setPathFileIsUsed( true ) ;
-			}
+			dvbViewer = new DVBViewer( TimerImportTool.exeName ) ;
 
 			Control control = new Control(dvbViewer);
 
@@ -113,12 +105,10 @@ public final class TimerImportTool {
 					case APPLY :
 						Log.out( "Configuration saved" ) ;
 						control.write() ;
-						dvbViewer.writeDataPathToProperties() ;
 						break ;
 					case OK :
 						control.write() ;
 						Log.out( "Configuration saved and terminated" ) ;
-						dvbViewer.writeDataPathToProperties() ;
 						System.exit( 0 ) ;
 						break ;
 					case CANCEL :
@@ -131,7 +121,6 @@ public final class TimerImportTool {
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
-						dvbViewer.writeDataPathToProperties() ;
 						finished = true ;
 						break ;
 					case UPDATE :

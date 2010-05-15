@@ -101,6 +101,7 @@ public class Control
 		new ClickFinder( this ) ;
 		new TVBrowser( this ) ;
 	}
+	
 	public void read() throws TerminateClass { this.read( null, null ) ; } ;
 
 	public void read( InputStream inputStream, String name ) throws TerminateClass
@@ -110,7 +111,7 @@ public class Control
 		StreamSource source = null ;
 		if ( inputStream == null )
 		{
-			String path = this.dvbViewer.getPluginConfPath() ;
+			String path = this.dvbViewer.getXMLFilePath() ;
 			File f = new File( path + File.separator + NAME_XML_CONTROLFILE ) ;
 			if ( ! f.exists() )
 			{
@@ -160,6 +161,8 @@ public class Control
 		String  dvbServiceBroadCastAddress = null ;
 		String  dvbServiceMacAddress       = null ;
 		int     dvbServiceWaitTimeAfterWOL = 15 ;
+		
+		String dvbViewerPath = null ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
 		
@@ -312,7 +315,10 @@ public class Control
 	            		}
 	            		break ;
 	            	case DVBVIEWER :
-	            		if      ( attributeName.equals( "afterRecordingAction" ) )
+	            		
+	            		if      ( attributeName.equals( "dvbViewerPath" ) )
+	            			dvbViewerPath = value ;
+	            		else if ( attributeName.equals( "afterRecordingAction" ) )
 	            		{
 	            			try {
 	            				dvbViewerActionAfter = ActionAfterItems.valueOf( value ) ;
@@ -330,9 +336,7 @@ public class Control
 	            			
 	            		}
 	            		else if ( attributeName.equals( "timeZone" ) )
-	            		{
 	            			DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
-	            		}
 	            	}
 	            }
 	            if (    type == BlockType.CHANNEL_OFFSETS
@@ -385,6 +389,8 @@ public class Control
 		}
 		if ( this.dvbViewer != null )
 		{
+			if ( dvbViewerPath != null )
+				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
 			this.dvbViewer.setService(new DVBViewerService(dvbServiceEnable,
 					dvbServiceURL, dvbServiceName, dvbServicePassword));
 			this.dvbViewer.setEnableWOL(dvbServiceEnableWOL);
@@ -415,7 +421,7 @@ public class Control
 			return ;
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
         
-		File file = new File( this.dvbViewer.getPluginConfPath()
+		File file = new File( this.dvbViewer.getXMLFilePath()
 		          + File.separator
 		          + NAME_XML_CONTROLFILE ) ;
 
@@ -436,6 +442,8 @@ public class Control
 		    sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
 		      Provider.writeXML( sw ) ;
 		      sw.writeStartElement( "DVBViewer" ) ;
+		        if ( dvbViewer.getDVBViewerPath() != null )
+		        	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;

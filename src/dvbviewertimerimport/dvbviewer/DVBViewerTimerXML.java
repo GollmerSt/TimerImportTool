@@ -141,7 +141,7 @@ public class DVBViewerTimerXML {
 		ArrayList<DVBViewerEntry> result = new ArrayList<DVBViewerEntry>() ;
 		entries = new HashMap< Long, DVBViewerEntry >() ;
 		
-		File f = new File( dvbViewer.getDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
+		File f = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
 		if ( ! f.exists() )
 			return result ;
 		
@@ -212,7 +212,7 @@ public class DVBViewerTimerXML {
 		 
 		XMLStreamWriter writer = null ;
 		FileOutputStream os = null ;
-		File file = new File( dvbViewer.getDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
+		File file = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
 		try {
 			try {
 				writer = output.createXMLStreamWriter(

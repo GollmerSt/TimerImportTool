@@ -44,7 +44,7 @@ public class DVBViewerSetupXML {
 	{
 		map = new HashMap< String, HashMap< String, String > >() ;
 		
-		File f = new File( dvbViewer.getDataPath() + File.separator + NAME_XML_DVBVIEWER_SETUP ) ;
+		File f = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_SETUP ) ;
 		if ( ! f.exists() )
 			return ;
 			

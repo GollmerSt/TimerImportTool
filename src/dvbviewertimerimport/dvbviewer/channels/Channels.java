@@ -102,7 +102,7 @@ public class Channels {
 	}
 	public void openFileAndCheckHeader()
 	{
-		this.file = new File( this.dvbViewer.getDataPath()
+		this.file = new File( this.dvbViewer.getDVBViewerDataPath()
 				              + File.separator + CHANNEL_FILE_NAME ) ;
 		
 		try {

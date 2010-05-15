@@ -6,7 +6,6 @@ package dvbviewertimerimport.dvbviewer ;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -14,7 +13,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Properties;
 import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
@@ -79,59 +77,29 @@ public class DVBViewer {
 	private MaxID maxID = new MaxID() ;
 	private ArrayList< HashMap< String, Channel> > channelsLists 
 	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+	
 	private final String exePath ;
-	private final String iniPath ;
-	@SuppressWarnings("unused")
-	private final String dvbViewerPath ;
-	private boolean usePathFile = false ;
-	private boolean createPathFile = false ;
-	private String dataPath = null ;
-	private String savedDataPath = "" ;
-	private String pluginConfPath = null ;
+	private  String dvbViewerPath = null ;
+	private  String dvbViewerDataPath = null ;
+	private  String dvbViewerPluginDataPath = null ;
+	private  String xmlFilePath = null ;
+	
+	
 	private final String exeName ;
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
-	public DVBViewer( final String iniPath, String exeName )
+	
+	public DVBViewer( String exeName )
 	{
+		this.dvbViewerPath = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\dvbviewer.exe","" ) ;
+		if ( this.dvbViewerPath != null )
+		{
+			this.dvbViewerPath = this.dvbViewerPath.substring( 0, this.dvbViewerPath.lastIndexOf( '\\' )) ;
+		}
 		this.exeName = exeName + ".jar" ;
 		this.exePath = determineExePath() ;
-		if ( iniPath != null )
-			this.iniPath = iniPath ;
-		else
-			this.iniPath = exePath ;
-		this.dvbViewerPath = iniPath ;    // TODO:   Richtig oder nicht?
 		this.timersXML = new DVBViewerTimerXML( this ) ;
-	}
-	public boolean initDataPath()
-	{
-		if ( this.dataPath != null )
-			return true ;
-		String path =this.readDataPathFromProperties() ;
-		if ( path == null )
-		{
-			this.dataPath = this.determineDataPath() ;
-			if ( this.dataPath == null )
-				return false ;
-			this.pluginConfPath = this.dataPath + File.separator + NAME_CONFIG_PATH ;
-		}
-		else
-		{
-			this.savedDataPath = path ;
-			this.usePathFile = true ;
-			this.dataPath = path ;
-			this.pluginConfPath = this.dataPath ;
-		}
-		Log.setFile( this.dataPath ) ;
-		return true ;
-	}
-	public void setDataPath( String path )
-	{
-		createPathFile = true ;
-		this.dataPath = path ;
-		this.savedDataPath = path ;
-		this.pluginConfPath = this.dataPath ;
-		Log.setFile( this.dataPath ) ;
 	}
 	public void setProvider()
 	{
@@ -161,6 +129,28 @@ public class DVBViewer {
 		//System.out.println( this.exePath ) ;
 		return exePath ;
 	}
+	public String getXMLFilePath()
+	{
+		if ( this.xmlFilePath != null )
+			return this.xmlFilePath ;
+		
+		this.xmlFilePath = System.getenv( "APPDATA" ) ;
+		
+		if ( xmlFilePath == null)
+			this.xmlFilePath = this.getExePath() ;
+		else
+		{
+			this.xmlFilePath += File.separator + Constants.PROGRAM_NAME ;
+			
+			File dir = new File( this.xmlFilePath ) ;
+			
+			if ( !dir.exists() )
+				dir.mkdirs() ;
+		}
+		Log.setFile( this.xmlFilePath ) ;
+		return this.xmlFilePath ;
+	}
+	
 	private static boolean findIni( String exePath )
 	{
 		String [] iniFiles = new String[ 2 ] ;
@@ -177,15 +167,17 @@ public class DVBViewer {
 		}
 		return found ;
 	}
-	private String determineDataPath()
+	private void determineDataPath()
 	{
-		String iniFile = this.iniPath + File.separator + NAME_USERMODE_FILE ;
+		String iniFile = this.dvbViewerPath + File.separator + NAME_USERMODE_FILE ;
 		File f = new File( iniFile ) ;
-		BufferedReader bR;
+		BufferedReader bR = null ;
 		try {
 			bR = new BufferedReader(new FileReader(f));
 		} catch (FileNotFoundException e) {
-			return null ;
+			this.dvbViewerDataPath = null ;
+			this.dvbViewerPluginDataPath = null ;
+			return ;
 		}
 		String line = null ;
 		boolean modeBlock = false ;
@@ -215,7 +207,7 @@ public class DVBViewer {
 						{
 							userMode = true ;
 							if ( value.equals( "0" ) )
-								path = iniPath + path ;
+								path = dvbViewerPath + path ;
 							else if ( value.equals( "1" ) )
 								path = System.getenv( "APPDATA") + path ;
 							else if ( value.equals( "2" ) )
@@ -247,7 +239,8 @@ public class DVBViewer {
 		File directory = new File( path ) ;
 		if ( !directory.isDirectory() )
 			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + iniFile + "\" should be checked." ) ;
-		return path ;
+		this.dvbViewerDataPath       = path ;
+		this.dvbViewerPluginDataPath = path + File.separator + NAME_CONFIG_PATH ;
 	}
 	private void connectDVBViewerIfNecessary()
 	{
@@ -441,14 +434,25 @@ public class DVBViewer {
 		entry.setToDelete() ;
 	}
 	public ArrayList<DVBViewerEntry> getRecordEntries() { return this.recordEntries ; } ;
-	public String getExePath()        { return this.exePath ; } ;
-	public String getExeName()        { return this.exeName ; } ;
-	public String getDataPath()       { return this.dataPath ; } ;
-	public String getPluginConfPath() { return this.pluginConfPath ; } ;
+	public String getExePath()           { return this.exePath ; } ;
+	public String getExeName()           { return this.exeName ; } ;
+	public String getPluginConfPath()    { return this.dvbViewerPluginDataPath ; } ;
+	public String getDVBViewerDataPath() { return this.dvbViewerDataPath ; } ;
 	public dvbviewertimerimport.dvbviewer.channels.Channels getChannels()
 	{
 		return channels ;
 	}
+	
+	public String getDVBViewerPath() { return this.dvbViewerPath ; } ;
+	public void setDVBViewerPath( final String dvbViewerPath )
+	{
+		this.dvbViewerPath = dvbViewerPath ;
+		if ( dvbViewerPath != null )
+			this.determineDataPath() ;
+		else
+			dvbViewerDataPath = null ;
+	} ;
+	
 	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
 	public void setEnableWOL( boolean e ) { this.service.setEnableWOL( e ) ; } ;
@@ -558,7 +562,7 @@ public class DVBViewer {
 		
 		HashMap< Long, DVBViewerEntry > idMap = new HashMap< Long, DVBViewerEntry >() ;
 		
-		File f = new File( this.dataPath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
+		File f = new File( this.xmlFilePath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
 		if ( ! f.exists() )
 			return result ;
 		
@@ -604,7 +608,7 @@ public class DVBViewer {
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();
 		 
 		XMLStreamWriter writer = null ;
-		File file = new File( this.dataPath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
+		File file = new File( this.xmlFilePath + File.separator + NAME_XML_PROCESSED_RECORDINGS ) ;
 
 		try {
 			FileOutputStream os = null ;
@@ -642,100 +646,6 @@ public class DVBViewer {
 		ArrayList<DVBViewerEntry> lastTimers = readXML() ;
 		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
 		this.recordEntries = lastTimers ;
-	}
-	private String readDataPathFromProperties()
-	{
-		String name = this.iniPath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
-		
-		File f = new File( name ) ;
-		
-		if ( ! f.isFile() )
-			return null ;
-		
-		Properties properties = new Properties() ;
-		
-		FileInputStream is = null ;
-		
-		try {
-			properties.load( is = new FileInputStream( f ) ) ;
-			is.close() ;
-		} catch (FileNotFoundException e) {
-			throw new ErrorClass( e, NAME_IMPORT_PROPERTIES_FILE + " not found. The importer must be located in the DVBViewer directory.");
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		
-		String path = properties.getProperty( "DataPath" ) ;
-		
-		if ( path.length() == 0 )
-			throw new ErrorClass( "Illegal format of the file \"" + name + "\"." ) ;
-		
-		File directory = new File( path ) ;
-		
-		if ( !directory.isDirectory() )
-		{
-			Log.error( ResourceManager.msg( "DIRECTORY_NOT_EXISTS", directory.getAbsolutePath() ) ) ;
-			f.delete() ;
-			return null ;
-		}
-		
-		File channelFile = new File( path + File.separator + dvbviewertimerimport.dvbviewer.channels.Channels.CHANNEL_FILE_NAME ) ;
-
-		if ( ! channelFile.isFile() )
-		{
-			f.delete() ;
-			return null ;
-		}
-		Log.setFile(path) ;
-		
-		return path ;
-	}
-	public void writeDataPathToProperties()
-	{
-		String name = this.iniPath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
-		File f = new File( name ) ;
-		
-		if ( ! this.usePathFile )
-		{
-			if ( f.isFile() )
-				f.delete() ;	// TODO   Admin-Mode?????????
-			return ;
-		}
-		if ( ! this.createPathFile )
-			return ;
-		
-		Properties properties = new Properties() ;
-		properties.setProperty( "DataPath", this.dataPath ) ;
-		
-		FileOutputStream os = null ;
-		
-		try {
-			properties.store( os = new FileOutputStream( f ), "" ) ;
-			os.close() ;
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new ErrorClass( e, "Error on writing file " + name ) ;
-		}
-	}
-	public boolean isPathFileUsed() { return this.usePathFile ; } ;
-	public boolean setPathFileIsUsed( boolean use )
-	{
-		if ( use == this.usePathFile )
-			return false ;
-		
-		if ( ! use )
-		{
-			String path = this.determineDataPath() ;
-			if ( path == null )
-				return false ;
-			this.dataPath = path ;
-			this.pluginConfPath = path + File.separator + NAME_CONFIG_PATH ;
-		}
-		else
-			this.dataPath = this.savedDataPath ;
-		this.usePathFile = use ;
-		return true ;
 	}
 	public static void getDVBViewerCOMDll()
 	{

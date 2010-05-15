@@ -46,7 +46,6 @@ public class Miscellaneous extends MyTabPanel
 	 */
 	private static final long serialVersionUID = 6271528915024437692L;
 	
-	private final JCheckBox defaultDirectoryBox = new JCheckBox() ;
 	private final JTextField directoryPathText = new JTextField() ;
 	private final JButton fileSelectorButton = new JButton() ;
 	
@@ -206,7 +205,7 @@ public class Miscellaneous extends MyTabPanel
 				if ( aborted )
 					return ;
 				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
-				directoryPathText.setText( control.getDVBViewer().getDataPath() ) ;
+				directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
 			}
 			else if ( source == updateChannelsFromDVBViewer )
 			{
@@ -222,31 +221,6 @@ public class Miscellaneous extends MyTabPanel
 					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
 				}
 			}
-		}
-		
-	}
-	public class CheckBoxesChanged implements ItemListener
-	{
-		@Override
-		public void itemStateChanged(ItemEvent e) {
-			JCheckBox source = (JCheckBox)e.getSource() ;
-			boolean isSelected = source.isSelected() ;
-			
-			if ( source == defaultDirectoryBox )
-			{
-				DVBViewer dvbViewer = control.getDVBViewer() ;
-				fileSelectorButton.setEnabled( ! isSelected ) ;
-
-				if ( dvbViewer.setPathFileIsUsed( !isSelected ) )
-				{
-					directoryPathText.setText( dvbViewer.getDataPath() ) ;
-					setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
-					guiPanel.setChanged() ;
-				}
-				else
-					source.setSelected( ! dvbViewer.isPathFileUsed() ) ;
-			}
-
 		}
 		
 	}
@@ -292,24 +266,11 @@ public class Miscellaneous extends MyTabPanel
 
 		JPanel pathPanel = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DATA_PATH" ) ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER_PATH" ) ) ;
 		pathPanel.setBorder( tB ) ;
 
 
 		
-		c = new GridBagConstraints();
-		c.gridx      = 0 ;
-		c.gridy      = 0 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
-		//c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.insets     = i ;
-
-		this.defaultDirectoryBox.setText( ResourceManager.msg( "DVBVIEWER" ) ) ;
-		this.defaultDirectoryBox.addItemListener( new CheckBoxesChanged() ) ;
-		this.defaultDirectoryBox.setSelected( ! control.getDVBViewer().isPathFileUsed() ) ;
-		pathPanel.add( defaultDirectoryBox, c ) ;
-
-
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 0 ;
@@ -317,7 +278,7 @@ public class Miscellaneous extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
-		this.directoryPathText.setText( control.getDVBViewer().getDataPath() ) ;
+		this.directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
 		this.directoryPathText.setPreferredSize( new Dimension( 400,
 				this.directoryPathText.getPreferredSize().height ) ) ;
 		this.directoryPathText.setEditable( false ) ;
