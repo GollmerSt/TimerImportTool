@@ -28,7 +28,6 @@ import javax.xml.transform.stream.StreamSource;
 import dvbviewertimerimport.xml.StackXML;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.TimeOffsets;
-//import dvbviewertimerimport.dvbviewer.channels.Channels;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
