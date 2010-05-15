@@ -174,6 +174,18 @@ public class Channels {
 	}
 	public MappedByteBuffer getMappedByteBuffer() { return this.buffer ; } ;
 	public TreeMap< String, Channel > getChannels() { return this.channelMap ; } ;
+	
+	public boolean containsChannelID( String channelID )
+	{
+		String parts[] = channelID.split("\\|") ;
+		String channelName  = parts[ parts.length - 1 ] ;
+		if ( ! channelMap.containsKey( channelName ) )
+			return false ;
+		Channel channel = channelMap.get( channelName ) ;
+		if ( ! channel.getChannelID().equals( channelID ) )
+			return false ;
+		return true ;
+	}
 
 	public void readXML( final XMLEventReader  reader, XMLEvent ev, String name )
 	{
