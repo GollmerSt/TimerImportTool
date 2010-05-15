@@ -25,7 +25,7 @@ public final class TimerImportTool {
 	public static void main(String[] args) {
 
 		DVBViewer dvbViewer = null ;
-
+		
         try {
         	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
         	//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
@@ -113,12 +113,12 @@ public final class TimerImportTool {
 					case APPLY :
 						Log.out( "Configuration saved" ) ;
 						control.write() ;
-						dvbViewer.writeDataPathToIni() ;
+						dvbViewer.writeDataPathToProperties() ;
 						break ;
 					case OK :
 						control.write() ;
 						Log.out( "Configuration saved and terminated" ) ;
-						dvbViewer.writeDataPathToIni() ;
+						dvbViewer.writeDataPathToProperties() ;
 						System.exit( 0 ) ;
 						break ;
 					case CANCEL :
@@ -131,7 +131,7 @@ public final class TimerImportTool {
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;
-						dvbViewer.writeDataPathToIni() ;
+						dvbViewer.writeDataPathToProperties() ;
 						finished = true ;
 						break ;
 					case UPDATE :
