@@ -5,16 +5,16 @@
 package dvbviewertimerimport.dvbviewer ;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Properties;
 import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
@@ -45,7 +45,7 @@ public class DVBViewer {
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
 	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
-	private static final String NAME_IMPORT_INI_FILE          = "timerimporttool.ini" ;
+	private static final String NAME_IMPORT_PROPERTIES_FILE   = "timerimporttool.properties" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL         = "TimerImportToolCOM" ;
@@ -108,7 +108,7 @@ public class DVBViewer {
 	{
 		if ( this.dataPath != null )
 			return true ;
-		String path =this.readDataPathFromIni() ;
+		String path =this.readDataPathFromProperties() ;
 		if ( path == null )
 		{
 			this.dataPath = this.determineDataPath() ;
@@ -166,7 +166,7 @@ public class DVBViewer {
 	{
 		String [] iniFiles = new String[ 2 ] ;
 		iniFiles[ 0 ] = exePath + File.separator + NAME_USERMODE_FILE ;
-		iniFiles[ 1 ] = exePath + File.separator + NAME_IMPORT_INI_FILE ;
+		iniFiles[ 1 ] = exePath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
 		
 		boolean found = false ;
 		
@@ -644,55 +644,42 @@ public class DVBViewer {
 		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
 		this.recordEntries = lastTimers ;
 	}
-	private String readDataPathFromIni()
+	private String readDataPathFromProperties()
 	{
-		String name = this.iniPath + File.separator + NAME_IMPORT_INI_FILE ;
+		String name = this.iniPath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
 		
 		File f = new File( name ) ;
 		
 		if ( ! f.isFile() )
 			return null ;
 		
-		BufferedReader bR;
-		try {
-			bR = new BufferedReader(new FileReader(f));
-		} catch (FileNotFoundException e) {
-			throw new ErrorClass( e, NAME_IMPORT_INI_FILE + " not found. The importer must be located in the DVBViewer directory.");
-		}
-		String line = null ;
-		boolean pathBlock = false ;
+		Properties properties = new Properties() ;
 		
-		String path = "" ;
+		FileInputStream is = null ;
+		
 		try {
-			while ((line = bR.readLine()) != null)
-			{
-				line = line.trim() ;
-				if ( !pathBlock )
-				{
-					if ( line.equalsIgnoreCase( "[Pathes]") )
-						pathBlock = true ;
-				}
-				else
-				{
-					String [] parts = line.split( "=" ) ;
-					if ( parts.length != 2)
-						continue ;
-					if ( parts[0].trim().equalsIgnoreCase( "Data" ))
-					{
-						path = parts[1].trim() ;
-						break ;
-					}
-				}
-			}
-			bR.close() ;
-		} catch (IOException e) {
-			throw new ErrorClass( e, "Error on reading the file \"" + name + "\"." );
+			properties.load( is = new FileInputStream( f ) ) ;
+			is.close() ;
+		} catch (FileNotFoundException e) {
+			throw new ErrorClass( e, NAME_IMPORT_PROPERTIES_FILE + " not found. The importer must be located in the DVBViewer directory.");
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
+		
+		String path = properties.getProperty( "DataPath" ) ;
+		
 		if ( path.length() == 0 )
 			throw new ErrorClass( "Illegal format of the file \"" + name + "\"." ) ;
+		
 		File directory = new File( path ) ;
+		
 		if ( !directory.isDirectory() )
-			throw new ErrorClass( "Directory \"" + path + "\" not found. The File \"" + name + "\" should be checked." ) ;
+		{
+			Log.error( ResourceManager.msg( "DIRECTORY_NOT_EXISTS", directory.getAbsolutePath() ) ) ;
+			f.delete() ;
+			return null ;
+		}
 		
 		File channelFile = new File( path + File.separator + dvbviewertimerimport.dvbviewer.channels.Channels.CHANNEL_FILE_NAME ) ;
 
@@ -705,13 +692,10 @@ public class DVBViewer {
 		
 		return path ;
 	}
-	public void writeDataPathToIni()
+	public void writeDataPathToProperties()
 	{
-		String name = this.iniPath + File.separator + NAME_IMPORT_INI_FILE ;
+		String name = this.iniPath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
 		File f = new File( name ) ;
-		
-		String lineSeparator = System.getProperty("line.separator") ;
-
 		
 		if ( ! this.usePathFile )
 		{
@@ -722,12 +706,16 @@ public class DVBViewer {
 		if ( ! this.createPathFile )
 			return ;
 		
+		Properties properties = new Properties() ;
+		properties.setProperty( "DataPath", this.dataPath ) ;
+		
+		FileOutputStream os = null ;
+		
 		try {
-			BufferedWriter bW = new BufferedWriter( new FileWriter( f, false ) ) ;
-			bW.write( "[Pathes]" + lineSeparator ) ;
-			bW.write( "Data=" + this.dataPath + lineSeparator ) ;
-			bW.close() ;
-		} catch (IOException e) {
+			properties.store( os = new FileOutputStream( f ), "" ) ;
+			os.close() ;
+		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ErrorClass( e, "Error on writing file " + name ) ;
 		}
 	}
