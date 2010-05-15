@@ -17,6 +17,8 @@ public class Registry {
 		String command = "reg query \"" + path + "\" /v \"" + key + "\"" ;
 		//System.out.println( command ) ;
 		String out = Registry.exec( command ) ;
+		if ( out == null )
+			return null ;
 		String[] temps = out.split("REG_[A-Z][A-Z]\t");
 		if ( temps.length != 2)
 			return null ;
@@ -24,23 +26,30 @@ public class Registry {
 		//System.out.println( out ) ;
 		return out ;
 	}
-	static public void setValue( String path, String type, String key, String value )
+	static public boolean setValue( String path, String type, String key, String value )
 	{
 		String command = "reg add \"" + path + "\" /v \"" + key + "\" /t " + type + " /d \"" + value + "\" /f";
 		//System.out.println( command ) ;
-		Registry.exec( command ) ;
+		if ( Registry.exec( command ) == null )
+			return false ;
 		//System.out.print( out ) ;
+		return true ;
 	}
-	static public void delete( String path, String key )
+	static public boolean delete( String path, String key )
 	{
 		String command = "reg delete \"" + path + "\" /f" ;
 		if ( key.length() != 0 )
 			command += " /v " + key ;
 		//System.out.println( command ) ;
-		Registry.exec(command) ;
+		if ( Registry.exec( command ) == null )
+			return false ;
+		return true ;
 	}
-	static private String exec( String command )
+	private static String exec( String command )
 	{
+		if ( ! Registry.isAvailable() )
+			return null ;
+		
 		String result = "" ;
 		
 		Process p;
@@ -68,5 +77,13 @@ public class Registry {
 			throw new ErrorClass( e, "Error on reading the output of a command." ) ;
 		}
 		return result ;
+	}
+	public static boolean isAvailable()
+	{
+		String osName = System.getProperty( "os.name", ""  ).toLowerCase() ;
+		if ( osName.contains( "windows") )
+			return true ;
+		else
+			return false ;
 	}
 }
