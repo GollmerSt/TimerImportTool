@@ -642,7 +642,8 @@ public class ProviderAssignment  extends MyTabPanel
 					{
 						String parts[] = dvbViewer.split("\\|") ;
 						String out  = parts[ parts.length - 1 ] ;
-						return new MyTableObject( out, false ) ;
+						if ( control.getDVBViewer().getChannels().containsChannelID( dvbViewer ))
+							return new MyTableObject( out, false ) ;
 					}
 					else
 						return new MyTableObject( "", false ) ;

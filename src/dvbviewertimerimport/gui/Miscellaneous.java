@@ -215,6 +215,7 @@ public class Miscellaneous extends MyTabPanel
 					control.getDVBViewer().getChannels().read() ;
 					guiPanel.updateDVBViewerChannels() ;
 					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					guiPanel.updateIfChannelSetsChanged( null ) ;
 				} catch ( ErrorClass er )
 				{
 					setInfoText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channel.dat" ) ) ;

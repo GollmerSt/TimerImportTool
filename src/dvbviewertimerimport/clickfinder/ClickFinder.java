@@ -86,6 +86,8 @@ public class ClickFinder extends Provider {
 	
 	public boolean install() // boolean setDataDir )
 	{
+		if ( ! Registry.isAvailable() )
+			return false ;
 		String dataPathPara = "" ;
 		//if ( setDataDir )
 		//	dataPathPara = " -path \"\"\"" + this.dvbViewer.getDataPath() + "\"\"\"";
