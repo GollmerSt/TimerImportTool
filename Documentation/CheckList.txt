@@ -5,7 +5,7 @@ To do 16.03.2010:
 
 Feature:
 1. Remove all disabled merged entries, GUI/command line
-
+2. Offline-Mode
 
 
 
