@@ -67,56 +67,7 @@ public class Miscellaneous extends MyTabPanel
 	{
 		super( guiPanel );
 	}
-	class ComboCompChanged implements ComponentListener
-	{
-		@Override
-		public void componentHidden(ComponentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentMoved(ComponentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentResized(ComponentEvent arg0) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public void componentShown(ComponentEvent e)
-		{
-			if ( ! wasSelected )
-			{
-				MyComboBoxItem deflt = null ;
-				for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
-				{
-					MyComboBoxItem mc  = new MyComboBoxItem( l ) ;
-					languageBox.addItem( mc ) ;
-					if ( l.equals( control.getLanguage() ) )
-						deflt = mc;
-				}
-				languageBox.setSelectedItem( deflt ) ;
-
-				wasSelected = true ;
-				Object oDefault = null ;
-				TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
-				String defaultTimeZoneString = timeZoneDefault.getID() ;
-				for ( final String tzS : TimeZone.getAvailableIDs() )
-				{
-					MyTimeZoneObject o = new MyTimeZoneObject( TimeZone.getTimeZone( tzS ) ) ;
-					if ( tzS.equals( defaultTimeZoneString ) )
-						oDefault = o ;
-					timeZoneBox.addItem( o ) ;
-				}
-				timeZoneBox.setSelectedItem( oDefault ) ;
-			}
-		}
-	}
+	
 	class ComboSelected implements ActionListener
 	{
 		@Override
@@ -446,7 +397,6 @@ public class Miscellaneous extends MyTabPanel
 		
 		dvbViewerPanel.add( this.timeZoneBox, c ) ;
 		this.timeZoneBox.addActionListener( this.comboSelectedAction ) ;
-		this.addComponentListener( new ComboCompChanged() ) ;
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
@@ -539,7 +489,36 @@ public class Miscellaneous extends MyTabPanel
 		textInfoLabel.setPreferredSize( new Dimension( 600,16 ) ) ;
 
 		this.add( textInfoLabel, c ) ;
-}
+		
+		this.createCombosContent() ;
+	}
+    public void createCombosContent()
+    {
+		MyComboBoxItem deflt = null ;
+		for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
+		{
+			MyComboBoxItem mc  = new MyComboBoxItem( l ) ;
+			languageBox.addItem( mc ) ;
+			if ( l.equals( control.getLanguage() ) )
+				deflt = mc;
+		}
+		languageBox.setSelectedItem( deflt ) ;
+
+		wasSelected = true ;
+		Object oDefault = null ;
+		TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
+		String defaultTimeZoneString = timeZoneDefault.getID() ;
+		for ( final String tzS : TimeZone.getAvailableIDs() )
+		{
+			MyTimeZoneObject o = new MyTimeZoneObject( TimeZone.getTimeZone( tzS ) ) ;
+			if ( tzS.equals( defaultTimeZoneString ) )
+				oDefault = o ;
+			timeZoneBox.addItem( o ) ;
+		}
+		timeZoneBox.setSelectedItem( oDefault ) ;
+		wasSelected = true ;
+    }
+	
 	public void updateDVBViewerActions()
 	{
 		boolean isService = this.control.getDVBViewer().getService().isEnabled() ;
