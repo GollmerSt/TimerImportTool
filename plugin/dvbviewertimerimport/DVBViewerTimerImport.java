@@ -86,7 +86,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   public void handleTvDataUpdateFinished()
   {
     try {
-      this.control.getDVBViewer().process( this.dvbViewerProvider, false, null, Command.UPDATE ) ;
+      this.control.getDVBViewer().process( this.dvbViewerProvider, false, null, Command.UPDATE_TVBROWSER ) ;
     } catch ( ErrorClass e ) {
       this.errorMessage(  e ) ;
     } catch (Exception e) {
@@ -390,7 +390,7 @@ System.exit(0);
   {
     boolean result = true ;
 
-    if ( command == Command.UPDATE )
+    if ( command == Command.UPDATE_TVBROWSER )
     {
       this.updateMarks() ;
       return true ;
