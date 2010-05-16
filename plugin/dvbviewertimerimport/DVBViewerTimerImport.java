@@ -44,7 +44,6 @@ import dvbviewertimerimport.provider.Provider;
 public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 {
   private static Version version = null ;
-  static private final String exeName = "TimerImportTool" ;
 
   private PluginInfo pluginInfo = null ;
   private boolean isInitialized = false ;
@@ -122,7 +121,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     try {
       Log.setToDisplay(true);
 
-      dvbViewer = new DVBViewer( exeName ) ;
+      dvbViewer = new DVBViewer() ;
 
      control = new Control(dvbViewer) ;
     } catch (ErrorClass e) {
