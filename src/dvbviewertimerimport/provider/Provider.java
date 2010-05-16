@@ -53,6 +53,7 @@ public abstract class Provider implements DVBViewerProvider {
 	
 	public static void setIsPlugin() { isPlugin = true ; } ;
 	public static boolean isPlugin() { return isPlugin ; } ;
+	public static Provider processingProvider = null ;
 	
 	private final int id ;
 	protected final Control control ;
@@ -74,6 +75,7 @@ public abstract class Provider implements DVBViewerProvider {
 	private boolean isFilterEnabled = true ;
 	private boolean isPrepared = false ;
 	protected boolean isFunctional = true ;
+	protected boolean isSilent ;
 	private OutDatedInfo outDatedLimits = null ;
 	protected TimeZone timeZone = TimeZone.getDefault() ;
 	public Provider( Control control,
@@ -84,6 +86,7 @@ public abstract class Provider implements DVBViewerProvider {
 			         boolean canTest,
 			         boolean filter,
 			         boolean mustInstall,
+			         boolean silent ,
 			         boolean isOutDatedLimitsEnabled )
 	{
 		this.control      = control ;
@@ -96,6 +99,7 @@ public abstract class Provider implements DVBViewerProvider {
 		this.filter = filter ;
 		this.mustInstall = mustInstall ;
 		this.isPrepared = ! isOutDatedLimitsEnabled ;
+		this.isSilent = silent ;
 		if ( isOutDatedLimitsEnabled)
 		{
 			outDatedLimits = new OutDatedInfo( true ) ;
@@ -131,6 +135,7 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean canImport() { return this.canImport && this.isFunctional ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
+	public boolean isSilent() { return this.isSilent ; } ;
 	
 	public boolean isFunctional() { return isFunctional ; } ;
 	public void setIsFunctional( final boolean status ) { isFunctional = status ; } ;
@@ -152,6 +157,17 @@ public abstract class Provider implements DVBViewerProvider {
 			throw new ErrorClass( "URL is missing" ) ;
 	}
 	public boolean test() { return false ; } ;
+	
+	public static boolean isSilentProcessing()
+	{
+		if ( Provider.processingProvider == null )
+			return false ;
+		else
+			return Provider.processingProvider.isSilent ;
+	}
+	public static Provider getProcessingPrvider() { return Provider.processingProvider ; } ;
+	public static void setProcessingProvider( final Provider p) { Provider.processingProvider = p ; } ;
+	
 	public static ArrayList< Provider > getProviders() { return Provider.providers ; } ;
 	public static boolean contains( String provider ){ return Provider.names.contains( provider ) ; } ;
 	public static Provider getProvider( String providerName )

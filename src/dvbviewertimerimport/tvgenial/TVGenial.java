@@ -38,7 +38,7 @@ public class TVGenial extends Provider {
 	private final SimpleDateFormat dateFormat ;
 	
 	public TVGenial( Control control ) {
-		super( control, false, false, "TVGenial", false, false, false, true, false);
+		super( control, false, false, "TVGenial", false, false, false, true, false, false);
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
 		this.dateFormat.setTimeZone( timeZone ) ;

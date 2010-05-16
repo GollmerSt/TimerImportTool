@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JOptionPane;
 
+import dvbviewertimerimport.provider.Provider;
+
 
 public class Log {
 	private static final String NAME_LOG_FILE                 = "DVBVTimerImportTool" ;	
@@ -82,7 +84,7 @@ public class Log {
 			Log.ErrorBox( out, error ) ;
 			return out ;
 		}
-		if ( ( error && Log.toDisplay ) || toDisplay )
+		if ( ( error && ( Log.toDisplay || ! Provider.isSilentProcessing() ) ) || toDisplay )
 			Log.ErrorBox( out, error ) ;
 		return out ;
 	}

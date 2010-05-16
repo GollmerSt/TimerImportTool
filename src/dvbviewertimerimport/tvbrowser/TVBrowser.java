@@ -12,7 +12,7 @@ public class TVBrowser extends Provider
 {
 	public TVBrowser(Control control )
 	{
-		super(control, false, false, "TV-Browser", false, false, false, false, false);
+		super(control, false, false, "TV-Browser", false, false, false, false, false, false);
 		canImport = true ;
 		isFunctional = false ;
 		
