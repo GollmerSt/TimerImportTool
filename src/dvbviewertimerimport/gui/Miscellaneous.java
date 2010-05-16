@@ -11,8 +11,6 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -55,8 +53,6 @@ public class Miscellaneous extends MyTabPanel
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
 	private final JButton updateChannelsFromDVBViewer = new JButton() ;
-	
-	private boolean wasSelected = false ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
 	
@@ -504,7 +500,6 @@ public class Miscellaneous extends MyTabPanel
 		}
 		languageBox.setSelectedItem( deflt ) ;
 
-		wasSelected = true ;
 		Object oDefault = null ;
 		TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
 		String defaultTimeZoneString = timeZoneDefault.getID() ;
@@ -516,7 +511,6 @@ public class Miscellaneous extends MyTabPanel
 			timeZoneBox.addItem( o ) ;
 		}
 		timeZoneBox.setSelectedItem( oDefault ) ;
-		wasSelected = true ;
     }
 	
 	public void updateDVBViewerActions()
