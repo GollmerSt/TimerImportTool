@@ -1,3 +1,7 @@
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
+
 package dvbviewertimerimport.dvbviewer;
 
 public interface DVBViewerProvider {
