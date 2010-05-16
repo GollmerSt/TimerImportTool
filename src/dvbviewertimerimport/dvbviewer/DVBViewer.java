@@ -37,7 +37,7 @@ public class DVBViewer {
 	
 	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 	
-	public static enum Command { SET, DELETE, FIND, UPDATE } ;
+	public static enum Command { SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER } ;
 	
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
@@ -79,10 +79,11 @@ public class DVBViewer {
 	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	
 	private final String exePath ;
-	private  String dvbViewerPath = null ;
-	private  String dvbViewerDataPath = null ;
-	private  String dvbViewerPluginDataPath = null ;
-	private  String xmlFilePath = null ;
+	private String dvbViewerPath = null ;
+	private boolean isDVBViewerPathSetExternal = false ;
+	private String dvbViewerDataPath = null ;
+	private String dvbViewerPluginDataPath = null ;
+	private String xmlFilePath = null ;
 	
 	
 	private final String exeName ;
@@ -96,6 +97,7 @@ public class DVBViewer {
 		if ( this.dvbViewerPath != null )
 		{
 			this.dvbViewerPath = this.dvbViewerPath.substring( 0, this.dvbViewerPath.lastIndexOf( '\\' )) ;
+			this.determineDataPath();
 		}
 		this.exeName = exeName + ".jar" ;
 		this.exePath = determineExePath() ;
@@ -304,7 +306,7 @@ public class DVBViewer {
 			this.mergeXMLWithServiceData() ;
 			result  = provider.process(getAll, command ); ;
 			result &= provider.processEntry( args, command ) ;
-		if ( command != Command.FIND )
+		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
 		this.setDVBViewerTimers();
 		} catch ( Exception e ) {
 			this.disconnectDVBViewer();
@@ -446,12 +448,14 @@ public class DVBViewer {
 	public String getDVBViewerPath() { return this.dvbViewerPath ; } ;
 	public void setDVBViewerPath( final String dvbViewerPath )
 	{
+	  this.isDVBViewerPathSetExternal = true ;
 		this.dvbViewerPath = dvbViewerPath ;
 		if ( dvbViewerPath != null )
 			this.determineDataPath() ;
 		else
 			dvbViewerDataPath = null ;
 	} ;
+  public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
 	
 	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
