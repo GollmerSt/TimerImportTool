@@ -115,12 +115,6 @@ public class Control
 			File f = new File( path + File.separator + NAME_XML_CONTROLFILE ) ;
 			if ( ! f.exists() )
 			{
-				int answer = JOptionPane.showConfirmDialog( null,
-						ResourceManager.msg( "COPY_DEFAULT_CONTROL_FILE" ), 
-				        Constants.PROGRAM_NAME, 
-				        JOptionPane.OK_CANCEL_OPTION );
-				if ( answer == JOptionPane.CANCEL_OPTION )
-					throw new TerminateClass() ;
 				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xml" ) ;
 				ResourceManager.copyFile( path, "datafiles/DVBVTimerImportTool.xsd" ) ;
 			}
