@@ -135,6 +135,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        {
 	        	control.setDefaultProvider( p.getName() ) ;
 	        	getGUIPanel().setChanged() ;
+	        	getGUIPanel().updateExecuteButton() ;
 	        }
 	    }
 	}
