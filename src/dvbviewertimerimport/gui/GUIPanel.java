@@ -1,3 +1,7 @@
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
+
 package dvbviewertimerimport.gui;
 
 import java.awt.Window;
