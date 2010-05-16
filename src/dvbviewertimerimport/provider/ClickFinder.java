@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package dvbviewertimerimport.clickfinder ;
+package dvbviewertimerimport.provider ;
 
 import java.io.File;
 import java.text.ParseException;

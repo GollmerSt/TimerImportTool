@@ -1,4 +1,4 @@
-package dvbviewertimerimport.tvbrowser;
+package dvbviewertimerimport.provider;
 
 import java.util.HashMap;
 

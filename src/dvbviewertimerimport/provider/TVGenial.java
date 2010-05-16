@@ -2,7 +2,7 @@
 // $LastChangedRevision: 200 $
 // $LastChangedBy: Stefan Gollmer $
 
-package dvbviewertimerimport.tvgenial;
+package dvbviewertimerimport.provider;
 
 import java.io.BufferedReader;
 import java.io.File;

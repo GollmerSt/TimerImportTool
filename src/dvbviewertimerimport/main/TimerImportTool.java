@@ -16,11 +16,9 @@ import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.control.Control ;
 import dvbviewertimerimport.gui.GUI;
-import dvbviewertimerimport.gui.WorkPathSelector;
 import dvbviewertimerimport.gui.GUI.GUIStatus;
 
 public final class TimerImportTool {
-	static private final String exeName = "TimerImportTool" ;
 	private enum ImportType{ GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE } ;
 	public static void main(String[] args) {
 
@@ -54,7 +52,7 @@ public final class TimerImportTool {
 			boolean getAll = false ;
 
 			String paras = "" ;
-			String iniPath = null ;
+			String xmlPath = null ;
 
 			for ( int i = 0 ; i < args.length ; i++ )
 			{
@@ -71,12 +69,12 @@ public final class TimerImportTool {
 					type = ImportType.TVGENIAL ;
 				else if ( args[i].equalsIgnoreCase("-message") )
 					showMessageBox = true ;
-				else if ( args[i].equalsIgnoreCase("-iniPath") )
+				else if ( args[i].equalsIgnoreCase("-xmlPath") )
 				{
 					i++ ;
 					if ( i >= args.length )
 						throw new ErrorClass( "A directory path is necessary after the flag -path" ) ;
-					iniPath = args[ i ] ;
+					xmlPath = args[ i ] ;
 				}
 				else if ( args[i].equalsIgnoreCase("-update") )
 					type = ImportType.UPDATE ;
@@ -84,9 +82,9 @@ public final class TimerImportTool {
 
 			Log.setToDisplay(true);
 
-			dvbViewer = new DVBViewer( TimerImportTool.exeName ) ;
+			dvbViewer = new DVBViewer( xmlPath ) ;
 
-			Control control = new Control(dvbViewer);
+			Control control = new Control(dvbViewer );
 
 			//Log.setVerbose( true ) ;
 
@@ -153,9 +151,13 @@ public final class TimerImportTool {
 				showMessageBox |= provider.getMessage() ;
 				if ( provider.getVerbose() )
 					Log.setVerbose( true ) ;
+				
+				Provider.setProcessingProvider( provider ) ;
 			}
+			
+			
 
-			Log.setToDisplay(showMessageBox || type == ImportType.CLICKFINDER );
+			Log.setToDisplay(showMessageBox );
 
 			if ( paras.length() != 0)
 				Log.out( "Parameters: " + paras ) ;

@@ -2,7 +2,7 @@
 // $LastChangedRevision$
 // $LastChangedBy$
 
-package dvbviewertimerimport.tvinfo ;
+package dvbviewertimerimport.provider ;
 
 import java.io.IOException;
 import java.io.InputStream;

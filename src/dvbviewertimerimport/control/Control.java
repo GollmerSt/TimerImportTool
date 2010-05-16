@@ -28,16 +28,16 @@ import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
-import dvbviewertimerimport.clickfinder.ClickFinder;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
 import dvbviewertimerimport.dvbviewer.DVBViewerService ;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
+import dvbviewertimerimport.provider.ClickFinder;
 import dvbviewertimerimport.provider.Provider;
-import dvbviewertimerimport.tvbrowser.TVBrowser;
-import dvbviewertimerimport.tvgenial.TVGenial;
-import dvbviewertimerimport.tvinfo.TVInfo;
+import dvbviewertimerimport.provider.TVBrowser;
+import dvbviewertimerimport.provider.TVGenial;
+import dvbviewertimerimport.provider.TVInfo;
 import dvbviewertimerimport.xml.StackXML;
 
 

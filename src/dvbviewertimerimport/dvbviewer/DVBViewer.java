@@ -91,7 +91,12 @@ public class DVBViewer {
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
 	
-	public DVBViewer( String exeName )
+	public DVBViewer()
+	{
+		this( null ) ;
+	}
+	
+	public DVBViewer( String xmlPath )
 	{
 		this.dvbViewerPath = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\App Paths\\dvbviewer.exe","" ) ;
 		if ( this.dvbViewerPath != null )
@@ -99,9 +104,10 @@ public class DVBViewer {
 			this.dvbViewerPath = this.dvbViewerPath.substring( 0, this.dvbViewerPath.lastIndexOf( '\\' )) ;
 			this.determineDataPath();
 		}
-		this.exeName = exeName + ".jar" ;
+		this.exeName = Constants.PROGRAM_NAME + ".jar" ;
 		this.exePath = determineExePath() ;
 		this.timersXML = new DVBViewerTimerXML( this ) ;
+		this.xmlFilePath = xmlPath ;
 	}
 	public void setProvider()
 	{
