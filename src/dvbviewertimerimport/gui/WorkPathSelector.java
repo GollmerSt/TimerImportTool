@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-03-22 14:41:19 +0100 (Mo, 22. Mrz 2010) $
-// $LastChangedRevision: 201 $
-// $LastChangedBy: Stefan Gollmer $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbviewertimerimport.gui;
 
