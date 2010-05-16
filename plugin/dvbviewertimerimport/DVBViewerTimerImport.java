@@ -475,7 +475,7 @@ System.exit(0);
         program.getMinutes() ) ;
     long startTime = calendar.getTimeInMillis() ;
     long length = program.getLength() * 1000 * 60 ;
-    System.out.println( "Date: " + new java.util.Date( startTime ) + calendar ) ;
+    //System.out.println( "Date: " + new java.util.Date( startTime ) + calendar ) ;
     long endTime = startTime ;
     if ( length >= 0 )
       endTime += length ;
