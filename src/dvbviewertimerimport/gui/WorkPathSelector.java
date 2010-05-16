@@ -28,7 +28,11 @@ public class WorkPathSelector
 	}
 	public boolean show()
 	{
-		chooser.setCurrentDirectory( null ) ;
+    File pathFile = null ;
+    String path = dvbViewer.getDVBViewerPath() ;
+    if ( path != null )
+      pathFile = new File( path ) ;
+		chooser.setCurrentDirectory( pathFile ) ;
 /*		chooser.setFileFilter(new FileFilter() {
             public boolean accept(File f) {
                 return f.getName().equalsIgnoreCase( CHANNEL_FILE ) || f.isDirectory();
