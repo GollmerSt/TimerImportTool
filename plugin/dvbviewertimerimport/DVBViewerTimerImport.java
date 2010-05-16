@@ -2,7 +2,6 @@ package dvbviewertimerimport;
 
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,13 +11,8 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
-import util.ui.UiUtilities;
-import captureplugin.drivers.DeviceIf;
 
 import devplugin.ActionMenu;
 import devplugin.Date;
@@ -26,23 +20,15 @@ import devplugin.Plugin;
 import devplugin.PluginInfo;
 import devplugin.PluginTreeNode;
 import devplugin.Program;
-import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
-import devplugin.ThemeIcon;
 import devplugin.Version;
-import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
-import dvbviewertimerimport.dvbviewer.channels.Channels;
-import dvbviewertimerimport.gui.GUI;
 import dvbviewertimerimport.gui.GUIPanel;
-import dvbviewertimerimport.gui.WorkPathSelector;
-import dvbviewertimerimport.gui.GUI.GUIStatus;
-import dvbviewertimerimport.main.TimerImportTool;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ErrorClass;
@@ -50,7 +36,6 @@ import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
-import dvbviewertimerimport.tvbrowser.TVBrowser;
 
 /**
  * @author Stefan Gollmer
@@ -65,7 +50,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private boolean isInitialized = false ;
   private Control control = null ;
   private DVBViewer dvbViewer = null ;
-  private Channels channels = null ;
   private GUIPanel settingsPanel = null ;
 
   private Icon menuIcon = null ;
@@ -138,15 +122,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     try {
       Log.setToDisplay(true);
 
-      dvbViewer = new DVBViewer( "C:\\Programme\\AudioVideo\\DVBViewer", exeName ) ;
-
-      while ( ! dvbViewer.initDataPath() )
-      {
-        boolean aborted = ! ( new WorkPathSelector( dvbViewer , null)).show() ;
-        if ( aborted )
-          System.exit( 0 ) ;
-        dvbViewer.setPathFileIsUsed( true ) ;
-      }
+      dvbViewer = new DVBViewer( exeName ) ;
 
      control = new Control(dvbViewer) ;
     } catch (ErrorClass e) {
@@ -400,7 +376,6 @@ System.exit(0);
         return ;
       Log.out( "Configuration saved" ) ;
       control.write() ;
-      dvbViewer.writeDataPathToIni() ;
       channelAssignmentDvbVToTvB = null ;
     }
 
