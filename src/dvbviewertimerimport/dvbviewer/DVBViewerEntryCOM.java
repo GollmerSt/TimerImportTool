@@ -1,6 +1,6 @@
-// $LastChangedDate: 2010-04-04 19:24:20 +0200 (So, 04 Apr 2010) $
-// $LastChangedRevision: 230 $
-// $LastChangedBy: Stefan $
+// $LastChangedDate$
+// $LastChangedRevision$
+// $LastChangedBy$
 
 package dvbviewertimerimport.dvbviewer;
 
