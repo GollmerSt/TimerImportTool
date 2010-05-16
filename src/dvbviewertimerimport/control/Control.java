@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.swing.JOptionPane;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLOutputFactory;
@@ -229,113 +228,113 @@ public class Control
 				}
 				@SuppressWarnings("unchecked")
 				Iterator<Attribute> iter = ev.asStartElement().getAttributes();
-	            while( iter.hasNext() )
-	            {
-	            	Attribute a = iter.next();
-	            	String attributeName = a.getName().getLocalPart() ;
-	            	String value = a.getValue() ;
-	            	switch ( type )
-	            	{
-	            	case IMPORTER :
-	            		if      ( attributeName.equals( "programVersion" ) )
-	            		{
-	            			if ( Versions.getVersion().equals( value ) )
-	            				versionChanged = false ;
-	            		}
-	            		break ;
-	            	case CHANNEL_PROVIDER :
-	            		if      ( attributeName.equals( "name" ) )
-	            		{
-	            			provider = Provider.getProvider( value ) ;
-	            			if ( provider == null )
-	            				throw new ErrorClass ( ev, "Unknown provider name in file \"" + name + "\"" ) ;
-	            		}
-	            		else if ( attributeName.equals( "channelID" ) )
-	            		{
-	            			if ( ! value.matches("\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + name + "\"" ) ;
-	            			channelID = Long.valueOf( value ) ;
-	            		}
-	            		break ;
-	            	case DVBSERVICE :
-	            		if      ( attributeName.equals( "enable" ) )
-	            			dvbServiceEnable   = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
-	            		if      ( attributeName.equals( "url" ) )
-	            			dvbServiceURL      = value ;
-	            		else if ( attributeName.equals( "username" ) )
-	            			dvbServiceName     = value ;
-		            	else if ( attributeName.equals( "password" ) )
-		            		dvbServicePassword = value ;
-	            		break ;
-	            	case GLOBAL_OFFSETS :
-	            	case CHANNEL_OFFSETS :
-	            		if      ( attributeName.equals( "before" ) )
-	            			offsetBefore = value ;
-	            		else if ( attributeName.equals( "after"  ) )
-	            			offsetAfter  = value ;
-	            		else if ( attributeName.equals( "days"   ) )
-	            			offsetDays   = value ;
-	            		else if ( attributeName.equals( "begin"  ) )
-	            			offsetBegin  = value ;
-	            		else if ( attributeName.equals( "end"    ) )
-	            			offsetEnd    = value ;
-	            		break ;
-	            	case WOL :
-	            		if      ( attributeName.equals( "enable" ) )
-	            		{
-	            			if      ( value.equalsIgnoreCase( "true" ) )
-	            				dvbServiceEnableWOL = true ;
-	            			else if ( value.equalsIgnoreCase( "false" ) )
-	            				dvbServiceEnableWOL = false ;
-	            			else
-	            				throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + name + "\"" ) ;
-	            		}
-	            		else if ( attributeName.equals( "broadCastAddress" ) )
-	            		{
-	            			if ( ! value.matches("\\d+\\.\\d+\\.\\d+\\.\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + name + "\"" ) ;
-	            			dvbServiceBroadCastAddress = value ;
-	            		}
-	            		else if ( attributeName.equals( "macAddress" ) )
-	            		{
-	            			if ( ! value.matches("([\\dA-Fa-f]+[\\:\\-])+[\\dA-Fa-f]+"))
-	            				throw new ErrorClass ( ev, "Wrong mac address format in file \"" + name + "\"" ) ;
-	            			dvbServiceMacAddress = value ;
-	            		}
-	            		else if ( attributeName.equals( "waitTimeAfterWOL" ) )
-	            		{
-	            			if ( ! value.matches("\\d+"))
-	            				throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + name + "\"" ) ;
-	            			dvbServiceWaitTimeAfterWOL = Integer.valueOf( value ) ;
-	            		}
-	            		break ;
-	            	case DVBVIEWER :
-	            		
-	            		if      ( attributeName.equals( "dvbViewerPath" ) )
-	            			dvbViewerPath = value ;
-	            		else if ( attributeName.equals( "afterRecordingAction" ) )
-	            		{
-	            			try {
-	            				dvbViewerActionAfter = ActionAfterItems.valueOf( value ) ;
-	            			} catch ( IllegalArgumentException e ) {
-	            				throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + name + "\"" ) ;
-	            			}
-	            		}
-	            		else if ( attributeName.equals( "timerAction" ) )
-	            		{
-	            			try {
-	            				dvbViewerTimerAction = TimerActionItems.valueOf( value ) ;
-	            			} catch ( IllegalArgumentException e ) {
-	            				throw new ErrorClass ( ev, "Wrong timerAction format in file \"" + name + "\"" ) ;
-	            			}
-	            			
-	            		}
-	            		else if ( attributeName.equals( "timeZone" ) )
-	            			DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
-	            	}
-	            }
-	            if (    type == BlockType.CHANNEL_OFFSETS
-	                 || type == BlockType.GLOBAL_OFFSETS )
+				while( iter.hasNext() )
+				{
+					Attribute a = iter.next();
+					String attributeName = a.getName().getLocalPart() ;
+					String value = a.getValue() ;
+					switch ( type )
+					{
+					case IMPORTER :
+						if      ( attributeName.equals( "programVersion" ) )
+						{
+							if ( Versions.getVersion().equals( value ) )
+								versionChanged = false ;
+						}
+						break ;
+					case CHANNEL_PROVIDER :
+						if      ( attributeName.equals( "name" ) )
+						{
+							provider = Provider.getProvider( value ) ;
+							if ( provider == null )
+								throw new ErrorClass ( ev, "Unknown provider name in file \"" + name + "\"" ) ;
+						}
+						else if ( attributeName.equals( "channelID" ) )
+						{
+							if ( ! value.matches("\\d+"))
+								throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + name + "\"" ) ;
+							channelID = Long.valueOf( value ) ;
+						}
+						break ;
+					case DVBSERVICE :
+						if      ( attributeName.equals( "enable" ) )
+							dvbServiceEnable   = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
+						else if ( attributeName.equals( "url" ) )
+							dvbServiceURL      = value ;
+						else if ( attributeName.equals( "username" ) )
+							dvbServiceName     = value ;
+						else if ( attributeName.equals( "password" ) )
+							dvbServicePassword = value ;
+						break ;
+					case GLOBAL_OFFSETS :
+					case CHANNEL_OFFSETS :
+						if      ( attributeName.equals( "before" ) )
+							offsetBefore = value ;
+						else if ( attributeName.equals( "after"  ) )
+							offsetAfter  = value ;
+						else if ( attributeName.equals( "days"   ) )
+							offsetDays   = value ;
+						else if ( attributeName.equals( "begin"  ) )
+							offsetBegin  = value ;
+						else if ( attributeName.equals( "end"    ) )
+							offsetEnd    = value ;
+						break ;
+					case WOL :
+						if      ( attributeName.equals( "enable" ) )
+						{
+							if      ( value.equalsIgnoreCase( "true" ) )
+								dvbServiceEnableWOL = true ;
+							else if ( value.equalsIgnoreCase( "false" ) )
+								dvbServiceEnableWOL = false ;
+							else
+								throw new ErrorClass ( ev, "Wrong WOL enable format in file \"" + name + "\"" ) ;
+						}
+						else if ( attributeName.equals( "broadCastAddress" ) )
+						{
+							if ( ! value.matches("\\d+\\.\\d+\\.\\d+\\.\\d+"))
+								throw new ErrorClass ( ev, "Wrong broadcast address format in file \"" + name + "\"" ) ;
+							dvbServiceBroadCastAddress = value ;
+						}
+						else if ( attributeName.equals( "macAddress" ) )
+						{
+							if ( ! value.matches("([\\dA-Fa-f]+[\\:\\-])+[\\dA-Fa-f]+"))
+								throw new ErrorClass ( ev, "Wrong mac address format in file \"" + name + "\"" ) ;
+							dvbServiceMacAddress = value ;
+						}
+						else if ( attributeName.equals( "waitTimeAfterWOL" ) )
+						{
+							if ( ! value.matches("\\d+"))
+								throw new ErrorClass ( ev, "Wrong waitTimeAfterWOL format in file \"" + name + "\"" ) ;
+							dvbServiceWaitTimeAfterWOL = Integer.valueOf( value ) ;
+						}
+						break ;
+					case DVBVIEWER :
+						
+						if      ( attributeName.equals( "dvbViewerPath" ) )
+							dvbViewerPath = value ;
+						else if ( attributeName.equals( "afterRecordingAction" ) )
+						{
+							try {
+								dvbViewerActionAfter = ActionAfterItems.valueOf( value ) ;
+							} catch ( IllegalArgumentException e ) {
+								throw new ErrorClass ( ev, "Wrong afterAction format in file \"" + name + "\"" ) ;
+							}
+						}
+						else if ( attributeName.equals( "timerAction" ) )
+						{
+							try {
+								dvbViewerTimerAction = TimerActionItems.valueOf( value ) ;
+							} catch ( IllegalArgumentException e ) {
+								throw new ErrorClass ( ev, "Wrong timerAction format in file \"" + name + "\"" ) ;
+							}
+							
+						}
+						else if ( attributeName.equals( "timeZone" ) )
+							DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
+					}
+				}
+				if (    type == BlockType.CHANNEL_OFFSETS
+						|| type == BlockType.GLOBAL_OFFSETS )
 					try {
 						offsets.add(offsetBefore, offsetAfter, offsetDays, offsetBegin, offsetEnd) ;
 					} catch (ErrorClass e) {
@@ -371,16 +370,16 @@ public class Control
 						this.lookAndFeelName = data ;
 				}					
 			}					
-	        if( ev.isEndElement() )
-	        {
-	        	if      ( stack.equals( this.pathChannel ) )
+			if( ev.isEndElement() )
+			{
+				if      ( stack.equals( this.pathChannel ) )
 					try {
 						this.channelSets.add( channelSet ) ;
 					} catch (ErrorClass e) {
 						throw new ErrorClass( ev, e.getErrorString() + " in file \"" + name + "\"" ) ;
 					}
-	        	stack.pop();
-	        }
+					stack.pop();
+			}
 		}
 		if ( this.dvbViewer != null )
 		{
@@ -430,22 +429,22 @@ public class Control
 				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
 			}
 			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
-	        sw.setIndent( "    " );
+			sw.setIndent( "    " );
 			sw.writeStartDocument( "ISO-8859-1","1.0" ) ;
 			sw.writeStartElement( "Importer" ) ;
-		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
-		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
-		    sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
-		      Provider.writeXML( sw ) ;
-		      sw.writeStartElement( "DVBViewer" ) ;
+			sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
+			sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
+			sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
+			  Provider.writeXML( sw ) ;
+			  sw.writeStartElement( "DVBViewer" ) ;
 		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
-		        	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
+			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;
 			    sw.writeStartElement( "Channels" ) ;
 			      this.dvbViewer.getChannels().writeXML( sw, file ) ;
-				sw.writeEndElement();
+			    sw.writeEndElement();
 			  sw.writeEndElement();
 			  sw.writeStartElement( "DVBService" ) ;
 			  	DVBViewerService dvbs = this.dvbViewer.getService() ;
@@ -454,13 +453,13 @@ public class Control
 			    sw.writeAttribute( "username", dvbs.getUserName() ) ;
 			    sw.writeAttribute( "password", dvbs.getPassword() ) ;
 			    sw.writeAttribute( "timeZone", "Europe/Berlin" ) ;
-				sw.writeStartElement( "WakeOnLAN" ) ;
-				  sw.writeAttribute( "enable", dvbs.getEnableWOL() ) ;
-				  sw.writeAttribute( "broadCastAddress", dvbs.getBroadCastAddress() ) ;
-				  sw.writeAttribute( "macAddress", dvbs.getMacAddress() ) ;
-				  sw.writeAttribute( "waitTimeAfterWOL", Integer.toString( dvbs.getWaitTimeAfterWOL() ) ) ;
-				  sw.writeEndElement();
-			  sw.writeEndElement();
+			    sw.writeStartElement( "WakeOnLAN" ) ;
+			      sw.writeAttribute( "enable", dvbs.getEnableWOL() ) ;
+			      sw.writeAttribute( "broadCastAddress", dvbs.getBroadCastAddress() ) ;
+			      sw.writeAttribute( "macAddress", dvbs.getMacAddress() ) ;
+			      sw.writeAttribute( "waitTimeAfterWOL", Integer.toString( dvbs.getWaitTimeAfterWOL() ) ) ;
+			    sw.writeEndElement();
+			    sw.writeEndElement();
 			  
 			  sw.writeStartElement( "GUI" ) ;
 			  if ( this.defaultProvider != null )
@@ -500,8 +499,8 @@ public class Control
 			fos.close();
 		} catch (XMLStreamException e) {
 			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
-    } catch (IOException e) {
-      throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
+		} catch (IOException e) {
+			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
