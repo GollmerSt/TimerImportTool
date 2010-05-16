@@ -8,6 +8,7 @@ package dvbviewertimerimport.control ;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -420,10 +421,11 @@ public class Control
 		          + NAME_XML_CONTROLFILE ) ;
 
 		XMLStreamWriter  writer = null ;
+		FileOutputStream  fos = null ;
 		try {
 			try {
 				writer = output.createXMLStreamWriter(
-						new FileOutputStream( file), "ISO-8859-1");
+						fos =new FileOutputStream( file), "ISO-8859-1");
 			} catch (FileNotFoundException e) {
 				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
 			}
@@ -436,7 +438,7 @@ public class Control
 		    sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
 		      Provider.writeXML( sw ) ;
 		      sw.writeStartElement( "DVBViewer" ) ;
-		        if ( dvbViewer.getDVBViewerPath() != null )
+		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
 		        	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
@@ -495,8 +497,11 @@ public class Control
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
+			fos.close();
 		} catch (XMLStreamException e) {
 			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
+    } catch (IOException e) {
+      throw new ErrorClass( e,   "Error on writing XML file \"" + file.getPath() ) ;
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
