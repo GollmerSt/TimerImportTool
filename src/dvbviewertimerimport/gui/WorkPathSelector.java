@@ -28,31 +28,22 @@ public class WorkPathSelector
 	}
 	public boolean show()
 	{
-    File pathFile = null ;
-    String path = dvbViewer.getDVBViewerPath() ;
-    if ( path != null )
-      pathFile = new File( path ) ;
+		File pathFile = null ;
+		String path = dvbViewer.getDVBViewerPath() ;
+		if ( path != null )
+			pathFile = new File( path ) ;
 		chooser.setCurrentDirectory( pathFile ) ;
-/*		chooser.setFileFilter(new FileFilter() {
-            public boolean accept(File f) {
-                return f.getName().equalsIgnoreCase( CHANNEL_FILE ) || f.isDirectory();
-            }
-            public String getDescription() {
-                return "DVBViewer channel file";
-            }
-		}
-		);
-*/		chooser.setDialogTitle( ResourceManager.msg( "SELECT_DVBVIEWER_DIRECTORY" ) ) ;
+		chooser.setDialogTitle( ResourceManager.msg( "SELECT_DVBVIEWER_DIRECTORY" ) ) ;
 		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY ) ;
 		int returnVal = chooser.showDialog( window, ResourceManager.msg( "SELECT" ) ) ;
-        if (returnVal == JFileChooser.APPROVE_OPTION)
-        {
-            File file = chooser.getSelectedFile() ;
-            
-            dvbViewer.setDVBViewerPath( file.getAbsolutePath() ) ;
-            return true ;
-        }
-        else
-        	return false ;
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File file = chooser.getSelectedFile() ;
+
+			dvbViewer.setDVBViewerPath( file.getAbsolutePath() ) ;
+			return true ;
+		}
+		else
+			return false ;
 	}
 }
