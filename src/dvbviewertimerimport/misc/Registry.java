@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 
 
 public class Registry {
+		
 	static public String getValue( String path, String key )
 	{
 		String command = "reg query \"" + path + "\" /v \"" + key + "\"" ;
@@ -47,7 +48,7 @@ public class Registry {
 	}
 	private static String exec( String command )
 	{
-		if ( ! Registry.isAvailable() )
+		if ( ! Constants.IS_WINDOWS )
 			return null ;
 		
 		String result = "" ;
@@ -77,13 +78,5 @@ public class Registry {
 			throw new ErrorClass( e, "Error on reading the output of a command." ) ;
 		}
 		return result ;
-	}
-	public static boolean isAvailable()
-	{
-		String osName = System.getProperty( "os.name", ""  ).toLowerCase() ;
-		if ( osName.contains( "windows") )
-			return true ;
-		else
-			return false ;
 	}
 }

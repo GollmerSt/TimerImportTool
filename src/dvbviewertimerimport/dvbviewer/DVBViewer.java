@@ -45,7 +45,7 @@ public class DVBViewer {
 	private static final String NAME_IMPORT_PROPERTIES_FILE   = "timerimporttool.properties" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
-	public static final String NAME_DVBVIEWER_COM_DLL         = "TimerImportToolCOM" ;
+	public static final String NAME_DVBVIEWER_COM_DLL         = "DVBViewerTimerImport" ;
 	
 	private static boolean isDLLloaded = false ;
 
@@ -108,6 +108,10 @@ public class DVBViewer {
 		this.exePath = determineExePath() ;
 		this.timersXML = new DVBViewerTimerXML( this ) ;
 		this.xmlFilePath = xmlPath ;
+		
+		if ( ! DVBViewer.isDVBViewerCOMDllExecutable() && Constants.IS_WINDOWS )
+			DVBViewer.getDVBViewerCOMDll() ;
+
 	}
 	public void setProvider()
 	{
@@ -657,9 +661,15 @@ public class DVBViewer {
 		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
 		this.recordEntries = lastTimers ;
 	}
+	public static boolean isDVBViewerCOMDllExecutable()
+	{
+		File f = new File( DVBViewer.determineExePath() + File.separator
+		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
+		return f.canExecute() ;
+	}
 	public static void getDVBViewerCOMDll()
 	{
-		if ( isDLLloaded )
+		if ( isDLLloaded  && ! Constants.IS_WINDOWS )
 			return ;
 		String exePath = DVBViewer.determineExePath() ;
 		File f = new File ( exePath ) ;
@@ -673,6 +683,9 @@ public class DVBViewer {
 	}	
 	public static void getDVBViewerCOMDllAndCheckVersion()
 	{
+		if ( ! Constants.IS_WINDOWS )
+			return ;
+		
 		getDVBViewerCOMDll() ;
 		if ( ! DVBViewerCOM.getVersion().equals( Versions.getDVBViewerCOMVersion() ) )
 		{

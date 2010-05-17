@@ -11,5 +11,15 @@ public final class Constants {
 	public static final String PROGRAM_NAME                  = "DVBViewerTimerImport" ;
 	public static final String SYSTEM_LOOK_AND_FEEL_NAME     = "System" ;
 		
+	public static final boolean IS_WINDOWS ;
+	
+	static
+	{
+		String osName = System.getProperty( "os.name", ""  ).toLowerCase() ;
+		if ( osName.contains( "windows") )
+			IS_WINDOWS = true ;
+		else
+			IS_WINDOWS = false ;
+	}
 
 }

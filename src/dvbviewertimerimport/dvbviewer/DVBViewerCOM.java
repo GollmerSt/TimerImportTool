@@ -4,7 +4,6 @@
 
 package dvbviewertimerimport.dvbviewer;
 
-import java.io.File;
 import java.util.ArrayList;
 
 
@@ -24,9 +23,7 @@ public class DVBViewerCOM
 	
 	static
 	{
-		File f = new File( DVBViewer.determineExePath() + File.separator
-				           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
-		if ( ! f.canExecute() )
+		if ( ! DVBViewer.isDVBViewerCOMDllExecutable() )
 			DVBViewer.getDVBViewerCOMDll() ;
 
 		System.loadLibrary( DVBViewer.NAME_DVBVIEWER_COM_DLL );

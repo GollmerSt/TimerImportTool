@@ -84,9 +84,10 @@ public class ClickFinder extends Provider {
 		return true ;
 	}
 	
+	@Override
 	public boolean install() // boolean setDataDir )
 	{
-		if ( ! Registry.isAvailable() )
+		if ( ! Constants.IS_WINDOWS )
 			return false ;
 		String dataPathPara = "" ;
 		//if ( setDataDir )
@@ -114,6 +115,8 @@ public class ClickFinder extends Provider {
 				           + "\"\"\" -ClickFinder" + " -iniPath \"\"\"" + this.dvbViewer.getExePath() + "\"\"\" " + dataPathPara ) ;
 		return true ;
 	}
+	
+	@Override
 	 public boolean uninstall()
 	{
 		String regContents = Registry.getValue( "HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost", "AddOns" ) ;
@@ -133,10 +136,17 @@ public class ClickFinder extends Provider {
 		}
 		return true ;
 	}
+	
 	private long timeToLong( String time ) throws ParseException
 	{
 		Date d = new Date( dateFormat.parse(time).getTime()) ;
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
-	}	
+	}
+	
+	@Override
+	public boolean mustInstall()
+	{
+		return ( Constants.IS_WINDOWS ) ;
+	}
 }
