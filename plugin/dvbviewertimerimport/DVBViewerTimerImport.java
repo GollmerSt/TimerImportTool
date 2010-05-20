@@ -196,7 +196,7 @@ System.exit(0);
     if ( version == null )
     {
       int[] v = Versions.getIntVersion() ;
-      version = new Version(v[0], v[1], v[2], false) ;
+      version = new Version(v[0], v[1], v[2], true ) ;
     }
     return version ;
   }
