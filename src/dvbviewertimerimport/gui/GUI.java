@@ -29,6 +29,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import dvbviewertimerimport.control.Control;
+import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
@@ -200,7 +201,7 @@ public class GUI extends JFrame{
 		}
 	    this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
 	    this.setIconImage( this.programIcon.getImage() ) ;
-	    this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME ) ;
+	    this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME + " " + Versions.getVersion() ) ;
 	    this.setLayout(  new GridBagLayout() ) ;
         
 		GridBagConstraints c = null ;
