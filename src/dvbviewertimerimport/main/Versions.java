@@ -11,8 +11,8 @@ public class Versions {
 	private static final String DVBVIEWER_COM_DLL_VERSION	= "1.00.00" ;
 	
 	public static String getVersion() { return Integer.toString( MAJOR_VERSION ) 
-	  + "." + Integer.toString( MAJOR_VERSION )
-	  + "." + Integer.toString( MAJOR_VERSION ) ; } ;
+	  + "." + Integer.toString( MINOR_VERSION )
+	  + "." + Integer.toString( SUB_VERSION ) ; } ;
 	public static String getDVBViewerCOMVersion() { return DVBVIEWER_COM_DLL_VERSION ; } ;
 	
 	/**
