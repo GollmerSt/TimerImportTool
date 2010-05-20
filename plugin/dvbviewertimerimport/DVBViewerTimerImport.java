@@ -354,7 +354,7 @@ System.exit(0);
       if ( settingsPanel == null)
       {
         settingsPanel = new GUIPanel( control ) ;
-        settingsPanel.paint() ;
+        settingsPanel.init() ;
       }
       return settingsPanel ;
     }
