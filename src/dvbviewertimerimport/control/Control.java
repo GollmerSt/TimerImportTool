@@ -6,6 +6,7 @@ package dvbviewertimerimport.control ;
 
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,6 +46,8 @@ import dvbviewertimerimport.xml.StackXML;
 public class Control
 {
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
+	private static final String NAME_XML_CONTROLFILE_BACKUP   = "DVBVTimerImportTool.bak" ;
+	private static final String NAME_XML_CONTROLFILE_IMPORTED = "DVBVTimerImportTool.imp" ;
 	
 	private enum BlockType { INVALID , IMPORTER, CHANNEL_PROVIDER, DVBSERVICE,
 							 DVBVIEWER, GLOBAL_OFFSETS, CHANNEL_OFFSETS, CHANNEL, WOL } ;
@@ -73,6 +76,8 @@ public class Control
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
+	
+	private boolean isImported = false ;
 	
 	public Control( DVBViewer dvbViewer )
 	{
@@ -406,19 +411,33 @@ public class Control
 		if ( versionChanged )
 		{
 			DVBViewer.getDVBViewerCOMDllAndCheckVersion() ;
-			this.write() ;
+			this.write( null ) ;
 		}
 	}
-	public void write()
+	public boolean write( final File xmlFile )
 	{
-		if ( this.dvbViewer == null )
-			return ;
+		if ( this.dvbViewer == null || isImported )
+			return false ;
+		File file ;
+		if ( xmlFile == null  )
+		{
+			File toFile = new File(   this.dvbViewer.getXMLFilePath()
+	                         + File.separator
+	                         + NAME_XML_CONTROLFILE_BACKUP ) ;
+
+			file = new File(   this.dvbViewer.getXMLFilePath()
+                    + File.separator
+                    + NAME_XML_CONTROLFILE ) ;
+			
+			toFile.delete() ;
+			file.renameTo( toFile ) ;
+		}
+		else
+			file = xmlFile ;
+		
+
 		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
         
-		File file = new File( this.dvbViewer.getXMLFilePath()
-		          + File.separator
-		          + NAME_XML_CONTROLFILE ) ;
-
 		XMLStreamWriter  writer = null ;
 		FileOutputStream  fos = null ;
 		try {
@@ -505,7 +524,79 @@ public class Control
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return true ;
 	}
+	public void copyControlFile( File file, boolean from )
+	{
+		File source, destination ;
+		
+		File controlFile = new File(   this.dvbViewer.getXMLFilePath()
+                + File.separator
+                + NAME_XML_CONTROLFILE_IMPORTED ) ;
+		
+		if ( from )
+		{
+			source = file ;
+			destination = controlFile ;
+		}
+		else
+		{
+			source = controlFile ;
+			destination = file ;
+
+		}	
+		FileInputStream istream;
+		try {
+			istream = new FileInputStream( source );
+		} catch (FileNotFoundException e2) {
+			throw new ErrorClass(   "Unexpected error on reading file \""
+		              + source.getAbsolutePath()
+		              + "\"." ) ;
+		}
+
+		FileOutputStream ostream = null ;
+		try {
+			ostream = new FileOutputStream( destination );
+		} catch (FileNotFoundException e1) {
+			throw new ErrorClass(   "Unexpected error on writing file \""
+		              + destination.getAbsolutePath()
+		              + "\"." ) ;
+		}
+		try {
+			byte [] buffer = new byte[2048] ;
+
+			int length = 0 ;
+
+			while ( ( length = istream.read( buffer ) ) > 0 )
+				ostream.write( buffer, 0, length ) ;
+
+			istream.close() ;
+			ostream.close() ;
+		} catch (IOException e) {
+			throw new ErrorClass(   "Unexpected error on writing file \""
+					              + destination.getAbsolutePath()
+					              + "\"." ) ;
+		}
+
+    }
+	
+	public void renameImportedFile()
+	{
+		if ( !this.isImported )
+			return ;
+
+		File controlFile = new File(   this.dvbViewer.getXMLFilePath()
+                + File.separator
+                + NAME_XML_CONTROLFILE ) ;
+		
+		File importedFile = new File(   this.dvbViewer.getXMLFilePath()
+                + File.separator
+                + NAME_XML_CONTROLFILE_IMPORTED ) ;
+		
+		controlFile.delete() ;
+		importedFile.renameTo( controlFile ) ;
+	}
+
 	public void setDVBViewerEntries()
 	{
 	  this.dvbViewer.clearChannelLists() ;
@@ -525,6 +616,7 @@ public class Control
 	public void setLookAndFeelName( String name ) { this.lookAndFeelName = name ; } ;
 	public String getSeparator() { return this.separator ; } ;
 	public void setSeparator( String separator ) { this.separator = separator ; } ;
+	public void setIsImported() { this.isImported = true ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
 }

@@ -272,7 +272,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		}
 		
 	}
-	public void paint()
+	public void init()
 	{		
 		TitledBorder  tB = null ;
 		GridBagConstraints c = null ;
@@ -464,6 +464,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 		if ( active )
 		{
 			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			if ( p == null )
+				return ;
 			this.fillProviderChannelList( p.getName() ) ;
 		}
 	}

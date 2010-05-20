@@ -219,9 +219,9 @@ public class GUI extends JFrame{
 		c.fill       = GridBagConstraints.BOTH ;
 		//c.insets     = i ;
 	    
-		this.add( this.guiPanel, c ) ;
+		this.getContentPane().add( this.guiPanel, c ) ;
 		
-		this.guiPanel.paint() ;
+		this.guiPanel.init() ;
 		
 
 	    
@@ -237,7 +237,7 @@ public class GUI extends JFrame{
 	    
 	    this.executeButton.setText( ResourceManager.msg( "EXECUTE" ) ) ;
 	    this.executeButton.addActionListener( new ButtonPressed() ) ;
-	    this.add( executeButton, c ) ;
+	    this.getContentPane().add( executeButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -248,7 +248,7 @@ public class GUI extends JFrame{
 	    
 	    this.forceBox.setText( ResourceManager.msg( "ALL_TIMERS" ) ) ;
 	    this.forceBox.addItemListener( new AllTimersChanged() ) ;
-	    this.add( forceBox, c ) ;
+	    this.getContentPane().add( forceBox, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -259,7 +259,7 @@ public class GUI extends JFrame{
 	    
 	    this.updateButton.setText( ResourceManager.msg( "UPDATE_LIST" ) ) ;
 	    this.updateButton.addActionListener( new ButtonPressed() ) ;
-	    this.add( this.updateButton, c ) ;
+	    this.getContentPane().add( this.updateButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -271,7 +271,7 @@ public class GUI extends JFrame{
 	    
 	    this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
 	    this.okButton.addActionListener( new ButtonPressed() ) ;
-	    this.add( this.okButton, c ) ;
+	    this.getContentPane().add( this.okButton, c ) ;
 
 		
 
@@ -283,7 +283,7 @@ public class GUI extends JFrame{
 	    
 		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
 		this.cancelButton.addActionListener( new ButtonPressed() ) ;
-		this.add( cancelButton, c ) ;
+		this.getContentPane().add( cancelButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -294,18 +294,18 @@ public class GUI extends JFrame{
 	    
 		this.applyButton.setText( ResourceManager.msg( "APPLY" ) ) ;
 		this.applyButton.addActionListener( new ButtonPressed() ) ;
-		this.add( this.applyButton, c ) ;
+		this.getContentPane().add( this.applyButton, c ) ;
 
+        //this.setPreferredSize( new Dimension( 800,500 ) ) ;
 		this.pack(); 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation( (d.width  - this.getSize().width  ) / 2, 
-        		                (d.height - this.getSize().height ) / 2 ) ;
+		this.setVisible( true );         
+        this.setLocationRelativeTo(null);
         
         this.addWindowListener( new MyWindowListener() ) ;
         
+        
         this.guiPanel.updateExecuteButton() ;
         
-		this.setVisible( true );         
 	}
 	public void updateExecuteButton( boolean enableExecute )
 	{

@@ -378,7 +378,8 @@ System.exit(0);
       if ( ! init() )
         return ;
       Log.out( "Configuration saved" ) ;
-      control.write() ;
+      control.renameImportedFile() ;
+      control.write( null ) ;
       channelAssignmentDvbVToTvB = null ;
     }
 

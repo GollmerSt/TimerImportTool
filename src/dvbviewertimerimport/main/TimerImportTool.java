@@ -102,10 +102,12 @@ public final class TimerImportTool {
 					{
 					case APPLY :
 						Log.out( "Configuration saved" ) ;
-						control.write() ;
+						control.renameImportedFile() ;
+						control.write( null ) ;
 						break ;
 					case OK :
-						control.write() ;
+						control.renameImportedFile() ;
+						control.write( null ) ;
 						Log.out( "Configuration saved and terminated" ) ;
 						System.exit( 0 ) ;
 						break ;
@@ -115,7 +117,8 @@ public final class TimerImportTool {
 						break ;
 					case SAVE_EXECUTE :
 						Log.out( "Configuration saved" ) ;
-						control.write() ;
+						control.write( null ) ;
+						control.renameImportedFile() ;
 					case EXECUTE :
 						Log.out( "Execute import started" ) ;
 						provider = Provider.getProvider( control.getDefaultProvider() ) ;

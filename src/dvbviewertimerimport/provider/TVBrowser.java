@@ -17,8 +17,10 @@ public class TVBrowser extends Provider
 	public TVBrowser(Control control )
 	{
 		super(control, false, false, "TV-Browser", false, false, false, false, false, false);
-		canImport = true ;
-		isFunctional = false ;
+		this.canImport = true ;
+		this.canModify = false ;
+		this.canAddChannel = false ;
+		this.isFunctional = false ;
 		
 	}
 	

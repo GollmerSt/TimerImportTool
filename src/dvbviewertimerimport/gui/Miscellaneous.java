@@ -11,6 +11,7 @@ import java.awt.Insets;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -18,11 +19,13 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.importer.TVInfoDVBV;
@@ -46,6 +49,10 @@ public class Miscellaneous extends MyTabPanel
 	
 	private final JComboBox languageBox    = new JComboBox() ;
 	private final JComboBox lookAndFeelBox = new JComboBox() ;
+	
+	private final JButton exportButton = new JButton() ;
+	private final JButton importButton = new JButton() ;
+	
 	private final JComboBox actionAfterBox = new JComboBox() ;
 	private final JComboBox actionTimerBox = new JComboBox() ;
 	private final JComboBox timeZoneBox    = new JComboBox() ;
@@ -165,6 +172,23 @@ public class Miscellaneous extends MyTabPanel
 					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
 				}
 			}
+			else if ( source == exportButton )
+			{
+				File file = chooseImExportFile( false ) ;
+				if ( file == null )
+					return ;
+				exportButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+				control.write( file ) ;
+			}
+			else if ( source == importButton )
+			{
+				File file = chooseImExportFile( true ) ;
+				if ( file == null )
+					return ;
+				control.setIsImported() ;
+				control.copyControlFile( file, true ) ;
+				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
+			}
 		}
 		
 	}
@@ -201,7 +225,7 @@ public class Miscellaneous extends MyTabPanel
 		public String getTimeZoneString() { return timeZone.getID() ; } ;
 	} ;
 
-	public void paint()
+	public void init()
 	{		
 		Insets i = new Insets( 5, 5, 5, 5 );
 		
@@ -223,8 +247,7 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 
 		this.directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
-		this.directoryPathText.setPreferredSize( new Dimension( 400,
-				this.directoryPathText.getPreferredSize().height ) ) ;
+		this.directoryPathText.setPreferredSize( new Dimension( 400, this.directoryPathText.getPreferredSize().height ) ) ;
 		this.directoryPathText.setEditable( false ) ;
 		pathPanel.add( directoryPathText, c ) ;
 
@@ -320,11 +343,60 @@ public class Miscellaneous extends MyTabPanel
 		c.gridy      = 1 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.weightx    = 0.5 ;
+		c.weighty    = 1.0 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.BOTH ;
 		this.add( guiPanel, c ) ;
 
+		
+		
 
+		JPanel controlFilePanel = new JPanel( new GridBagLayout() ) ;
+		
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "CONTROL_FILE" ) ) ;
+		controlFilePanel.setBorder( tB ) ;
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.exportButton.addActionListener( new ButtonsPressed() ) ;
+		this.exportButton.setText( ResourceManager.msg( "EXPORT" ) ) ;
+		controlFilePanel.add( exportButton, c ) ;
+
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.importButton.addActionListener( new ButtonsPressed() ) ;
+		this.importButton.setText( ResourceManager.msg( "IMPORT" ) ) ;
+		controlFilePanel.add( importButton, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 2 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridheight = GridBagConstraints.REMAINDER ;
+		c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.fill       = GridBagConstraints.BOTH ;
+		this.add( controlFilePanel, c ) ;
+
+		
+		
 		
 		
 		JPanel dvbViewerPanel = new JPanel( new GridBagLayout() ) ;
@@ -467,22 +539,25 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 1 ;
-		c.weightx    = 0.5 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.gridheight = 2 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridheight = GridBagConstraints.REMAINDER ;
+		//c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		this.add( dvbViewerPanel, c ) ;
 		
 
+		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 2 ;
+		c.gridy      = 3 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridheight = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		textInfoLabel.setForeground( SystemColor.RED ) ;
-		textInfoLabel.setPreferredSize( new Dimension( 600,16 ) ) ;
+		this.textInfoLabel.setForeground( SystemColor.RED ) ;
+		this.textInfoLabel.setPreferredSize( new Dimension( 1,20 ) ) ;
 
 		this.add( textInfoLabel, c ) ;
 		
@@ -555,6 +630,7 @@ public class Miscellaneous extends MyTabPanel
                 + "\"" + TVInfoDVBV.NAME_IMPORTFILE + "\"" ) ;
 		this.updateChannelsFromDVBViewer.setText( ResourceManager.msg( "UPDATE_DVBV_CHANNELS" ) ) ;
 		this.updateToNewVersionButton.setText(   ResourceManager.msg( "UPDATE_CHANNELS" ) ) ;
+		this.exportButton.setText( ResourceManager.msg( "EXPORT" ) ) ;
 		this.setInfoText( "" ) ;
 	}
 	@Override
@@ -570,5 +646,41 @@ public class Miscellaneous extends MyTabPanel
 		}
 		this.updateDVBViewerActions() ;
 		this.updateText() ;
+	}
+	private File chooseImExportFile( boolean isImport)
+	{
+		final String description ;
+		if ( isImport )
+			description = ResourceManager.msg( "IMPORT_FILE_SEL_HEADER" ) ;
+		else
+			description = ResourceManager.msg( "EXPORT_FILE_SEL_HEADER" ) ;
+		
+		final JFileChooser chooser = new JFileChooser( (File)null ) ;
+		
+		chooser.setFileFilter(new FileFilter()
+		{
+            public boolean accept(File f)
+            {
+            	String parts[] = f.getName().split( "\\." ) ;
+            	if ( parts.length < 2 )
+            		return false ;
+            	return parts[ parts.length - 1 ].equals( "xml" ) ;
+            }
+            public String getDescription()
+            {
+                return ResourceManager.msg( "EXPORT_FILE_DESCRIPTION" ) ;
+            }
+		} ) ;
+
+		chooser.setDialogTitle( description ) ;
+		
+		int returnVal = chooser.showDialog( this.guiPanel.getWindow(), ResourceManager.msg( "SELECT" ) ) ;
+        if (returnVal == JFileChooser.APPROVE_OPTION)
+        {
+            File file = chooser.getSelectedFile() ;
+            return file ;
+        }
+        else
+        	return null ;
 	}
 }

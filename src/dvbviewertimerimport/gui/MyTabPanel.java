@@ -24,6 +24,7 @@ public abstract class MyTabPanel extends JPanel {
 		this.guiPanel = gui ;
 		this.control = gui.getControl() ;
 	}
-	public void update( boolean active ) {} ;
+	public abstract void update( boolean active ) ;
 	public GUIPanel getGUIPanel() { return guiPanel ; } ;
+	public abstract void init() ;
 }

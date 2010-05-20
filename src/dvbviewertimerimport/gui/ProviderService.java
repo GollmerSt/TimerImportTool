@@ -345,7 +345,7 @@ public class ProviderService extends MyTabPanel {
 	{
 		super( guiPanel ) ;
 	}
-	public void paint()
+	public void init()
 	{
 		Provider defaultProvider = Provider.getProvider( control.getDefaultProvider() ) ;
 		

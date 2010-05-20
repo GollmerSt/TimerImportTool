@@ -42,6 +42,7 @@ public class TVGenial extends Provider {
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
 		this.dateFormat.setTimeZone( timeZone ) ;
+		this.canAddChannel = false ;
 		this.canImport = true ;
 	}
 	@Override

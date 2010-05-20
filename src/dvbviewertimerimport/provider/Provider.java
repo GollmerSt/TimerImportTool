@@ -63,6 +63,8 @@ public abstract class Provider implements DVBViewerProvider {
 	private final boolean canTest ;
 	private final boolean mustInstall ;
 	protected boolean canImport = false ;
+	protected boolean canModify = true ;
+	protected boolean canAddChannel = true ;
 	private final String name ;
 	protected String url = "" ;
 	protected String username = null ;
@@ -133,6 +135,8 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean canExecute() { return this.canExecute ; } ;
 	public boolean canTest()   { return this.canTest ; } ;
 	public boolean canImport() { return this.canImport && this.isFunctional ; } ;
+	public boolean canModify() { return this.canModify ; } ;
+	public boolean canAddChannel() { return this.canAddChannel ; } ;
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
 	public boolean isSilent() { return this.isSilent ; } ;

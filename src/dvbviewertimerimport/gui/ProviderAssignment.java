@@ -91,10 +91,9 @@ public class ProviderAssignment  extends MyTabPanel
 	{
 		Provider p = (Provider) providerCombo.getSelectedItem() ;
 		
-		boolean canImport = p.canImport() ;
-		
-		this.addChannelButton.setEnabled   ( ! canImport && enable ) ;
-		this.importButton.setEnabled       ( canImport && enable ) ;
+		this.modifyChannelButton.setEnabled  ( p.canModify() && enable ) ;
+		this.addChannelButton.setEnabled   ( p.canAddChannel() && enable ) ;
+		this.importButton.setEnabled       ( p.canImport() && enable ) ;
 	}
 
 	public class LockBoxChanged implements ActionListener
@@ -107,7 +106,6 @@ public class ProviderAssignment  extends MyTabPanel
 			providerCombo.setEnabled( enable ) ;
 			channelCombo.setEnabled( enable ) ;
 			channelCombo.setEditable( enable ) ;
-			modifyChannelButton.setEnabled( enable ) ;
 			enableByProvider( enable ) ;
 			updateTable() ;
 			table.setEnabled( enable ) ;
@@ -160,7 +158,7 @@ public class ProviderAssignment  extends MyTabPanel
 					{
 						int tableLine = sorter.convertRowIndexToView( ics ) ;
 						table.setRowSelectionInterval( tableLine, tableLine ) ;
-						table.scrollRectToVisible(table.getCellRect(tableLine,0,true));
+						//table.scrollRectToVisible(table.getCellRect(tableLine,ix,true));
 					}
 				}
 			}
@@ -299,7 +297,7 @@ public class ProviderAssignment  extends MyTabPanel
 			map.put( c.getName(), new ChannelAssignment( c, ix ) ) ;
 		}
 	}
-	public void paint()
+	public void init()
 	{
 		Provider defaultProvider = Provider.getProvider( control.getDefaultProvider() ) ;
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -409,8 +407,10 @@ public class ProviderAssignment  extends MyTabPanel
 		
 		//this.deleteChannelButton.addActionListener( new ChannelButtonsPressed() ) ;
 		JScrollPane scrollPane = new JScrollPane( this.table );
-		scrollPane.setPreferredSize( new Dimension( 150+150*Provider.getProviders().size(),200 ) ) ;
-		scrollPane.setMinimumSize( new Dimension( 150+150*Provider.getProviders().size(),200 ) ) ;
+		//scrollPane.setPreferredSize( new Dimension( 150+150*Provider.getProviders().size(),230 ) ) ;
+		//scrollPane.setMinimumSize( new Dimension( 150+150*Provider.getProviders().size(),230 ) ) ;
+		scrollPane.setPreferredSize( new Dimension( 150+150*3, 230 ) ) ;
+		scrollPane.setMinimumSize( new Dimension( 150+150*3, 230 ) ) ;
 		this.table.setFillsViewportHeight(false);
 		this.setupTable() ;
 		this.add( scrollPane, c ) ;
@@ -425,7 +425,7 @@ public class ProviderAssignment  extends MyTabPanel
 		c.insets     = i ;
 		
 		messageLabel.setForeground( SystemColor.RED ) ;
-		messageLabel.setPreferredSize( new Dimension( 200,16 ) ) ;
+		messageLabel.setPreferredSize( new Dimension( 200,20 ) ) ;
 		this.add( this.messageLabel, c ) ;
 }
 	private void updateChannelComboBox()
@@ -442,9 +442,8 @@ public class ProviderAssignment  extends MyTabPanel
 	{
 	    this.sorter = new TableRowSorter<TableModel>(table.getModel());
 	    
-	    sorter.setComparator(  0, new MyTableComparator() ) ;
-	    sorter.setComparator(  1, new MyTableComparator() ) ;
-	    sorter.setComparator(  2, new MyTableComparator() ) ;
+	    for ( int i = 0 ; i <= Provider.getProviders().size() ; i++ )
+	    	sorter.setComparator(  i, new MyTableComparator() ) ;
 	    
 	    table.setRowSorter(sorter);
 	    
@@ -564,25 +563,27 @@ public class ProviderAssignment  extends MyTabPanel
 	{
 		private final String channel ;
 		private final boolean isEmpty ;
-		private final boolean isNullEntry ;
-		MyTableObject( String string, boolean isNullEntry )
+		private final ChannelSet channelSet ;
+		MyTableObject( String string, ChannelSet channelSet )
 		{
 			this.channel = string ;
 			this.isEmpty = ( string.length() == 0 ) ;
-			this.isNullEntry = isNullEntry ;
+			this.channelSet = channelSet ;
 		}
 		@Override
 		public String toString() { return channel ; } ;
+		public boolean isNullEntry() { return channelSet == null ; } ;
 	}
 	public class MyTableComparator implements Comparator< MyTableObject>
 	{
 		@Override
 		public int compare(MyTableObject o1, MyTableObject o2) {
-			if ( o1.isNullEntry || o2.isNullEntry )
+			if ( o1.isNullEntry() || o2.isNullEntry() )
 			{
-				if ( o1.isNullEntry )
+				if ( o1.isNullEntry() )
 					return 1 ;
-				return -1 ;
+				else
+					return -1 ;
 			}
 			if ( o1.isEmpty || o2.isEmpty )
 			{
@@ -643,19 +644,19 @@ public class ProviderAssignment  extends MyTabPanel
 						String parts[] = dvbViewer.split("\\|") ;
 						String out  = parts[ parts.length - 1 ] ;
 						if ( control.getDVBViewer().getChannels().containsChannelID( dvbViewer ))
-							return new MyTableObject( out, false ) ;
+							return new MyTableObject( out, cs ) ;
 					}
 					else
-						return new MyTableObject( "", false ) ;
+						return new MyTableObject( "", cs ) ;
 /*						return active ;
 					else
 						return inactive ;
 */				}
 				Channel channel = cs.getChannel( col - 1 ) ;
 				if ( channel != null )
-					return new MyTableObject( channel.getName(), false ) ;
+					return new MyTableObject( channel.getName(), cs ) ;
 				else
-					return new MyTableObject( "", false ) ;
+					return new MyTableObject( "", cs ) ;
 			}
 			else
 			{
@@ -663,7 +664,7 @@ public class ProviderAssignment  extends MyTabPanel
 					return "" ;
 					return inactive ;
 				else
-*/					return new MyTableObject( "", true ) ;
+*/					return new MyTableObject( "", null ) ;
 			}
 		}
 		@Override

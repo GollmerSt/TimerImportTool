@@ -4,6 +4,7 @@
 
 package dvbviewertimerimport.gui;
 
+import java.awt.Component;
 import java.awt.Window;
 import java.util.ArrayList;
 
@@ -57,8 +58,9 @@ public class GUIPanel extends JPanel
 			MyTabPanel source = (MyTabPanel)((JTabbedPane)e.getSource()).getSelectedComponent() ;
 			if ( source == null )
 				return ;
-			previousTab.update( false );
 			source.update( true ) ;
+			if ( previousTab != null )
+				previousTab.update( false );
 			previousTab = source ;
 		}
     	
@@ -79,7 +81,7 @@ public class GUIPanel extends JPanel
 	}
 	public void setChanged() { this.isChanged = true ; } ;
 	public boolean getChanged() { return this.isChanged ; } ;
-	public void paint()
+	public void init()
 	{ 
 		this.add( this.tabbedPane ) ;
 
@@ -95,15 +97,15 @@ public class GUIPanel extends JPanel
 	    this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), providerAssignment);
 	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
-	    this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
-	    this.previousTab = (MyTabPanel)dvbViewerAssignment ;
-	    dvbViewerAssignment.paint() ;
-	    tab2.paint() ;
-	    this.miscellaneous.paint() ;
-	    this.providerAssignment.paint() ;
+	    this.tabbedPane.setSelectedComponent( miscellaneous ) ;
 
+	    for ( Component tp : this.tabbedPane.getComponents() )
+	    	((MyTabPanel)tp).init() ;
+	    
+	    this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
+	    
         this.updateExecuteButton() ;
-	}
+}
 	public MyTabPanel getSelectedComponent()
 	{
 		return (MyTabPanel)this.tabbedPane.getSelectedComponent() ;
