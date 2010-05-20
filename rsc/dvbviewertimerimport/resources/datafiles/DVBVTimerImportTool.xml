@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd" programVersion="0.0.0">
+<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
     <Providers>
         <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
             <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
@@ -16,7 +16,7 @@
         <WakeOnLAN enable="false" broadCastAddress="192.168.43.255" macAddress="01:23:45:67:89:AB" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
-        <DefaultProvider>TVInfo</DefaultProvider>
+        <DefaultProvider>TV-Browser</DefaultProvider>
         <Language>de__</Language>
         <LookAndFeel>System</LookAndFeel>
     </GUI>
@@ -30,10 +30,6 @@
             <Provider name="TVGenial" channelID="10001">ARD</Provider>
             <Provider name="ClickFinder" channelID="10001">ARD</Provider>
             <Provider name="TV-Browser" channelID="10001">Das Erste (ARD)</Provider>
-            <Offsets>
-                <Offset before="15" after="60" days="0000011" begin="22:00"></Offset>
-                <Offset before="15" after="60" days="1000001" end="04:00"></Offset>
-            </Offsets>
             <Merge>false</Merge>
         </Channel>
         <Channel>
@@ -41,10 +37,6 @@
             <Provider name="TVGenial" channelID="10002">ZDF</Provider>
             <Provider name="ClickFinder" channelID="10002">ZDF</Provider>
             <Provider name="TV-Browser" channelID="10002">ZDF</Provider>
-            <Offsets>
-                <Offset before="15" after="60" days="0000011" begin="22:00" end="24:00"></Offset>
-                <Offset before="15" after="60" days="1000001" end="04:00"></Offset>
-            </Offsets>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Bayern</Provider>
