@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd" programVersion="0.0.0">
+<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd" programVersion="1.0.0">
     <Providers>
-        <Provider name="TVInfo" username="SGollmer" password="esamikro" triggeraction="16640" merge="true" message="false" verbose="true" filter="true">
+        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
             <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
             <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
         </Provider>
         <Provider name="TVGenial" merge="false" message="false" verbose="true" filter="false"></Provider>
-        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="true" verbose="true" filter="false"></Provider>
+        <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="TV-Browser" merge="false" message="false" verbose="false" filter="false"></Provider>
     </Providers>
-    <DVBViewer afterRecordingAction="DEFAULT" timerAction="DEFAULT" timeZone="Europe/Berlin">
+    <DVBViewer afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
         <Channels>
             <Entry id="551382375|3sat (2ch)"></Entry>
             <Entry id="551644519|3sat (AC3,deu)"></Entry>
@@ -139,7 +139,7 @@
             <Entry id="610299248|ZDFtheaterkanal (deu)"></Entry>
         </Channels>
     </DVBViewer>
-    <DVBService enable="false" url="localhost:50425" username="StefanGollmer" password="e$am1kro" timeZone="Europe/Berlin">
+    <DVBService enable="false" url="localhost" username="admin" password="admin" timeZone="Europe/Berlin">
         <WakeOnLAN enable="false" broadCastAddress="192.168.43.255" macAddress="01:23:45:67:89:AB" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
@@ -158,10 +158,6 @@
             <Provider name="ClickFinder" channelID="10001">ARD</Provider>
             <Provider name="TV-Browser" channelID="10001">Das Erste (ARD)</Provider>
             <DVBViewer>543583690|Das Erste (deu)</DVBViewer>
-            <Offsets>
-                <Offset before="15" after="60" days="0000011" begin="22:00"></Offset>
-                <Offset before="15" after="60" days="1000001" end="04:00"></Offset>
-            </Offsets>
             <Merge>false</Merge>
         </Channel>
         <Channel>
@@ -170,10 +166,6 @@
             <Provider name="ClickFinder" channelID="10002">ZDF</Provider>
             <Provider name="TV-Browser" channelID="10002">ZDF</Provider>
             <DVBViewer>544763238|ZDF (deu)</DVBViewer>
-            <Offsets>
-                <Offset before="15" after="60" days="0000011" begin="22:00" end="24:00"></Offset>
-                <Offset before="15" after="60" days="1000001" end="04:00"></Offset>
-            </Offsets>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Bayern</Provider>
@@ -247,7 +239,7 @@
             <Provider name="ClickFinder">BR Alpha</Provider>
             <Provider name="TVGenial" channelID="10028">alpha</Provider>
             <Provider name="TV-Browser" channelID="10028">BR-alpha</Provider>
-            <DVBViewer>582905296|BR-alpha*</DVBViewer>
+            <DVBViewer>628780871|BR-alpha (ger)</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF2</Provider>
@@ -342,7 +334,6 @@
             <Provider name="TVInfo">BloombergTV</Provider>
             <Provider name="ClickFinder">BloombergTV</Provider>
             <Provider name="TVGenial" channelID="10045">bloom</Provider>
-            <DVBViewer>623378533|Bloomberg European TV - C</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">CNBC</Provider>
@@ -400,7 +391,6 @@
             <Provider name="ClickFinder">NTV</Provider>
             <Provider name="TVGenial" channelID="10007">n-tv</Provider>
             <Provider name="TV-Browser" channelID="10007">n-tv</Provider>
-            <DVBViewer>541667130|n-tv</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Phoenix</Provider>
@@ -819,7 +809,6 @@
             <Provider name="ClickFinder">SKY</Provider>
             <Provider name="TVGenial" channelID="10560">Select</Provider>
             <Provider name="TV-Browser" channelID="10560">Sky Select</Provider>
-            <DVBViewer>721420306|Sky Select</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sky Sport HD</Provider>
@@ -1111,11 +1100,9 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">Super RTL CH</Provider>
-            <DVBViewer>546385673|Super RTL CH</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Channel 21</Provider>
-            <DVBViewer>545861439|Channel 21</DVBViewer>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">TV5</Provider>
@@ -1387,6 +1374,9 @@
         </Channel>
         <Channel>
             <Provider name="TV-Browser">SWR SR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TV-Browser">TV-Lernsender.NRW</Provider>
         </Channel>
     </Channels>
 </Importer>
