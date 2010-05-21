@@ -136,7 +136,7 @@ public class DVBViewer {
 				e.printStackTrace();
 			}
 		}
-		System.out.println( exePath ) ;
+		//System.out.println( exePath ) ;
 		return exePath ;
 	}
 	public String getXMLFilePath()
