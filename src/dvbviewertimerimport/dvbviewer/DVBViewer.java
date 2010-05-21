@@ -42,7 +42,6 @@ public class DVBViewer {
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
 	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
-	private static final String NAME_IMPORT_PROPERTIES_FILE   = "timerimporttool.properties" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL         = "DVBViewerTimerImport" ;
@@ -161,22 +160,6 @@ public class DVBViewer {
 		return this.xmlFilePath ;
 	}
 	
-	private static boolean findIni( String exePath )
-	{
-		String [] iniFiles = new String[ 2 ] ;
-		iniFiles[ 0 ] = exePath + File.separator + NAME_USERMODE_FILE ;
-		iniFiles[ 1 ] = exePath + File.separator + NAME_IMPORT_PROPERTIES_FILE ;
-		
-		boolean found = false ;
-		
-		for ( String iniFile : iniFiles )
-		{
-			File f = new File( iniFile ) ;
-			if ( f.exists() )
-				found = true ;
-		}
-		return found ;
-	}
 	private void determineDataPath()
 	{
 		String iniFile = this.dvbViewerPath + File.separator + NAME_USERMODE_FILE ;
