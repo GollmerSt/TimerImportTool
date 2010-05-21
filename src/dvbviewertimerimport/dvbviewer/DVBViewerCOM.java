@@ -23,11 +23,7 @@ public class DVBViewerCOM
 	
 	static
 	{
-		if ( ! DVBViewer.isDVBViewerCOMDllExecutable() )
-			DVBViewer.getDVBViewerCOMDll() ;
-
-		System.loadLibrary( DVBViewer.NAME_DVBVIEWER_COM_DLL );
-		DVBViewer.setDLLisLoaded() ;
+		DVBViewer.loadDVBViewerCOMDll() ;
 
 		DVBViewerCOM.initLog() ;
 	}
