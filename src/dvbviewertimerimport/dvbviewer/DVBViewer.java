@@ -688,7 +688,7 @@ public class DVBViewer {
 		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 		
 		if ( ! f.canExecute() || force )
-			if ( ! f.canWrite() )
+			if ( ! new File( exePath).canWrite() )
 			{
 				Log.error( ResourceManager.msg( "ADMINISTRATOR" ) ) ;
 				throw new TerminateClass( 1 ) ;
