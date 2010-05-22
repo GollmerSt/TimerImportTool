@@ -174,8 +174,8 @@ public class DVBViewer {
 		}
 		String line = null ;
 		boolean modeBlock = false ;
-		boolean userMode = false ;
 		boolean root = false ;
+		int userMode = -1 ;
 		
 		String path = "" ;
 		try {
@@ -198,11 +198,16 @@ public class DVBViewer {
 						String value = line.substring(p+1).trim() ;
 						if ( key.equalsIgnoreCase( "UserMode" ) )
 						{
-							userMode = true ;
 							if ( value.equals( "0" ) )
+							{
 								path = dvbViewerPath + path ;
+								userMode = 0 ;
+							}
 							else if ( value.equals( "1" ) )
+							{
 								path = System.getenv( "APPDATA") + path ;
+								userMode = 1 ;
+							}
 							else if ( value.equals( "2" ) )
 							{
 								String temp = System.getenv( "APPDATA") ;
@@ -211,11 +216,12 @@ public class DVBViewer {
 									temp = "" ;
 								path =   System.getenv( "ALLUSERSPROFILE")
 								       + temp + path ;
+								userMode = 2 ;
 							}
 							else
 								throw new ErrorClass( "The file \"" + iniFile + "\" contains an illegal user mode.") ;
 						}
-						else if ( key.equalsIgnoreCase( "Root" ) )
+						else if ( key.equalsIgnoreCase( "Root" ) && userMode != 0 )
 						{
 							root = true ;
 							path += File.separator + value ;
@@ -227,7 +233,7 @@ public class DVBViewer {
 		} catch (IOException e) {
 			throw new ErrorClass( e, "Error on reading the file \"" + iniFile + "\"." );
 		}
-		if ( !userMode && ! root )
+		if ( userMode == -1 || ( ! root && userMode != 0 ) )
 			throw new ErrorClass( "Illegal format of the file \"" + iniFile + "\"." ) ;
 		File directory = new File( path ) ;
 		if ( !directory.isDirectory() )
