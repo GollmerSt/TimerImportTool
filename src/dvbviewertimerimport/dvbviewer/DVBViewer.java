@@ -677,6 +677,7 @@ public class DVBViewer {
 		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 		
 		if ( ! f.canExecute() || force )
+		{
 			if ( ! new File( exePath).canWrite() )
 			{
 				Log.error( ResourceManager.msg( "ADMINISTRATOR" ) ) ;
@@ -684,6 +685,7 @@ public class DVBViewer {
 			}
 			ResourceManager.copyBinaryFile( exePath, "datafiles/"
 				                        + NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
+		}
 		return true ;
 
 	}
@@ -700,8 +702,52 @@ public class DVBViewer {
 		}
 	}
 	
+	public boolean isDVBViewerExecuting()
+	{
+		if ( DVBViewerCOM.connect() )		// actual running
+		{
+			DVBViewerCOM.disconnect() ;
+			return true ;
+		}
+		return false ;
+	}
 	public static void setDLLisLoaded()
 	{
 		DVBViewer.isDLLloaded = true ;
+	}
+	public boolean startDVBViewer()
+	{
+		if ( isDVBViewerExecuting() )
+			return true ;
+		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		if ( ! f.canExecute() )
+			return false ;
+		try {
+			Runtime.getRuntime().exec( f.getAbsolutePath() ) ;
+		} catch (IOException e) {
+			return false ;
+		}
+		return true ;
+	}
+	public boolean startDVBViewerAndSelectChannel( String channelID )
+	{
+		String [] parts = channelID.split( "\\|" ) ;
+		if ( parts.length != 2 )
+			return false ;
+/*		if ( DVBViewerCOM.connect() )		// actual running
+		{
+			DVBViewerCOM.setCurrentChannel( parts[0] ) ;
+			return true ;
+		}
+*/		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		if ( ! f.canExecute() )
+			return false ;
+		try {
+			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
+			Runtime.getRuntime().exec( f.getAbsolutePath() + " -c:" + parts[0] ) ;
+		} catch (IOException e) {
+			return false ;
+		}
+		return true ;
 	}
 }
