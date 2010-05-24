@@ -57,8 +57,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
   private Icon menuIcon = null ;
   private Icon[] markIcons = null ;
-  private String deleteTimer = null ;
-  private String addTimer = null ;
+  private String mainMenue = null ;
+  private String selChannel = null ;
+  
+  private DVBViewerChannelChooseAction chooseChannelAction = new DVBViewerChannelChooseAction() ;
+  private DVBViewerTimerAction timerAction = new DVBViewerTimerAction() ;
 
   private DVBViewerProvider dvbViewerProvider = this ;
   private int providerID ;
@@ -120,7 +123,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     if ( isInitialized )
       return true ;
 
-	Provider.setIsPlugin() ;
+    Provider.setIsPlugin() ;
 
     try {
       Log.setToDisplay(true);
@@ -138,20 +141,24 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     } catch (TerminateClass e) {
       return false ;
     }
-	this.provider = Provider.getProvider( "TV-Browser" ) ;
-	this.provider.setIsFunctional( true ) ;
-	this.providerID = provider.getID() ;
+    this.provider = Provider.getProvider( "TV-Browser" ) ;
+    this.provider.setIsFunctional( true ) ;
+    this.providerID = provider.getID() ;
 
     this.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
 
     this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
-    this.deleteTimer = ResourceManager.msg( "DELETE_TIMER" ) ;
-    this.addTimer = ResourceManager.msg( "ADD_TIMER" ) ;
+    
+    this.mainMenue   = ResourceManager.msg( "DVBVIEWER" ) ;
+
+
 
     if ( provider.getVerbose() )
       Log.setVerbose( true ) ;
 
     Log.setToDisplay(provider.getMessage() );
+    
+    control.setDVBViewerEntries() ;
 
     isInitialized = true ;
     return true ;
@@ -242,10 +249,129 @@ System.exit(0);
       return null ;
     return channelAssignmentDvbVToTvB.get( dvbVChannelName ) ;
   }
+  
+  
+  private class DVBViewerChannelChooseAction extends AbstractAction
+  {
+    private Program program = null ;
+    
+    public DVBViewerChannelChooseAction()
+    {
+      super() ;
+      putValue(Action.NAME, ResourceManager.msg( "SELECT_CHANNEL" )  ) ;
+      //putValue(Action.SMALL_ICON, menuIcon ) ;
+   }
+
+    public void update( final Program program )
+    {
+      this.program = program ;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e)
+    {
+      if ( dvbViewer == null )
+        return ;
+      devplugin.Channel tvBChannel = this.program.getChannel() ;
+      
+      dvbviewertimerimport.dvbviewer.Channel dvbChannel = null ;
+      
+      try {
+        dvbChannel = dvbViewer.getDVBViewerChannel( provider, tvBChannel.getName() ) ;
+      } catch ( ErrorClass e1 ) {
+        errorMessage( e1 ) ;
+        return;
+      }
+      
+      dvbViewer.startDVBViewerAndSelectChannel( dvbChannel.getDVBViewer() ) ;
+    }
+  }
+
+  private class DVBViewerTimerAction extends AbstractAction
+  {
+    private Program program = null ;
+    private Command command = null ;
+    private String addTimer    = ResourceManager.msg( "ADD_TIMER" ) ;
+    private String deleteTimer = ResourceManager.msg( "DELETE_TIMER" ) ;
+
+    public void update( final Program program, final Command command )
+    {
+      this.program = program ;
+      this.command = command ;
+      if ( command == Command.SET )
+      {
+        putValue(Action.NAME, addTimer ) ;
+        //putValue(Action.SMALL_ICON, menuIcon ) ;
+      }
+      else
+      {
+        putValue(Action.NAME, deleteTimer ) ;
+        //putValue(Action.SMALL_ICON, menuIcon ) ;
+      }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0)
+    {
+      try {
+        control.getDVBViewer().process( dvbViewerProvider, false, this.program, this.command ) ;
+      } catch ( ErrorClass e ) {
+        errorMessage( e ) ;
+        return;
+      }
+      catch (Exception e ) {
+        errorMessage( e ) ;
+        e.printStackTrace();
+        return ;
+      } catch (TerminateClass e) {
+        return ;
+      }
+      if ( dvbViewer != null )
+        dvbViewer.writeXML() ;
+      markProgram( program, command == Command.SET ) ;
+
+     program.validateMarking() ;
+     updateTreeNode();
+    }
+    
+  }
+
+  
+  public ActionMenu getContextMenuActions( final Program program)
+  {
+    Action mainAction = new devplugin.ContextMenuAction() ;
+    mainAction.putValue(Action.NAME, mainMenue ) ;
+    mainAction.putValue(Action.SMALL_ICON, menuIcon ) ;
+    
+    Action [] subActions = new AbstractAction[ 2 ] ;
+    
+    subActions[ 0 ] = chooseChannelAction ;
+    chooseChannelAction.update( program ) ;
+    
+    Command temp = Command.SET ;
+    try {
+      if ( control.getDVBViewer().process( dvbViewerProvider, false, program, Command.FIND ) )
+        temp = Command.DELETE ;
+    } catch ( ErrorClass e ) {
+      this.errorMessage( e ) ;
+      return null ;
+    }
+    catch (Exception e ) {
+      this.errorMessage( e ) ;
+      e.printStackTrace();
+      return null ;
+    } catch (TerminateClass e) {
+      return null ;
+    }
+    
+    subActions[ 1 ] = timerAction ;
+    timerAction.update( program, temp ) ;
+    
+    return new ActionMenu(mainAction, subActions );
+  }
 
 
-
-  @Override
+/*  @Override
   public ActionMenu getContextMenuActions( final Program program)
   {
     if ( ! init() )
@@ -271,7 +397,6 @@ System.exit(0);
       @Override
       public void actionPerformed(ActionEvent evt)
       {
-        control.setDVBViewerEntries() ;
         try {
           control.getDVBViewer().process( dvbViewerProvider, false, program, command ) ;
         } catch ( ErrorClass e ) {
@@ -310,6 +435,7 @@ System.exit(0);
     return new ActionMenu(action);
   }
 
+*/
   private void markProgram( final Program program, boolean mark )
   {
     if ( mark )
@@ -377,6 +503,7 @@ System.exit(0);
     {
       if ( ! init() )
         return ;
+      control.setDVBViewerEntries() ;
       Log.out( "Configuration saved" ) ;
       control.renameImportedFile() ;
       control.write( null ) ;
