@@ -448,7 +448,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		for ( ChannelSet channelSet : sets )
 		{
 			Channel c = channelSet.getChannel( providerID ) ;
-			if ( c == null && provider.containsChannel( c ) )
+			if ( c == null || ! provider.containsChannel( c ) )
 				continue ;
 			channelMap.put( c.getName(), channelSet ) ;
 		}
