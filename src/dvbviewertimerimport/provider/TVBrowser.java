@@ -5,6 +5,7 @@
 package dvbviewertimerimport.provider;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
@@ -14,6 +15,8 @@ import dvbviewertimerimport.provider.Provider;
 
 public class TVBrowser extends Provider
 {
+	private HashSet< String > channelSet = null ;
+	
 	public TVBrowser(Control control )
 	{
 		super(control, false, false, "TV-Browser", false, false, false, false, false, false);
@@ -64,5 +67,25 @@ public class TVBrowser extends Provider
 			}
 		}
 		return count ;
+	}
+	@Override
+	public boolean containsChannel( final Channel channel )
+	{
+		if ( ! isFunctional() )
+			return true ;
+		
+		if (this.channelSet == null)
+		{
+			this.channelSet = new HashSet<String>();
+			String[] channels = DVBViewerTimerImport.getTVBChannelNames();
+			for (String name : channels)
+				this.channelSet.add(name);
+		}
+		return this.channelSet.contains( channel.getName() ) ;
+	}		
+	@Override
+	public void updateChannelMap()
+	{
+		this.channelSet = null ;
 	}
 }
