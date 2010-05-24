@@ -438,7 +438,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 	}
 	private void fillProviderChannelList( String providerName )
 	{
-		int providerID = Provider.getProviderID( providerName ) ;
+		Provider provider = Provider.getProvider( providerName ) ;
+		int providerID = provider.getID() ;
 		
 		ArrayList<ChannelSet> sets = control.getChannelSets() ;
 		
@@ -447,7 +448,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		for ( ChannelSet channelSet : sets )
 		{
 			Channel c = channelSet.getChannel( providerID ) ;
-			if ( c == null )
+			if ( c == null && provider.containsChannel( c ) )
 				continue ;
 			channelMap.put( c.getName(), channelSet ) ;
 		}
