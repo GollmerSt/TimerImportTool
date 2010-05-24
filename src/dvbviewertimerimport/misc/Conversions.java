@@ -95,14 +95,15 @@ public final class Conversions {
 		{
 			String choiceOrg = choiceObject.toString() ;
 			String choice = reworkFunc.stringToString( choiceOrg ) ;
-			int wiegthFirstChar = 0 ;
-			if( string.trim().substring( 0, charCount).equalsIgnoreCase( choice.trim().substring( 0, charCount) ) )
-				wiegthFirstChar = weightOfFirstChar ;
+			int weigthFirstChar = 0 ;
+			if ( string.trim().length() >= charCount && choice.trim().length() >= charCount )
+				if( string.trim().substring( 0, charCount).equalsIgnoreCase( choice.trim().substring( 0, charCount) ) )
+					weigthFirstChar = weightOfFirstChar ;
 			
 			
 			ArrayList< Integer > partLength = getSplitedLength( string, choice, charCount ) ;
 			
-			int weight = weightFunc.arrayIntToInt( partLength, wiegthFirstChar, string, choiceOrg ) ;
+			int weight = weightFunc.arrayIntToInt( partLength, weigthFirstChar, string, choiceOrg ) ;
 
 			if ( weight > weightMax )
 			{
