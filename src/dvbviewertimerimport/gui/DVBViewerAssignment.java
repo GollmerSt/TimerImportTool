@@ -176,12 +176,14 @@ public class DVBViewerAssignment extends MyTabPanel{
 			out = out.replaceAll("[-_\\.\\s]", "") ;
 			if ( out.equals( "rtl"))
 				out = "rtltelevision" ;
-			if ( out.equals( "ard"))
+			else if ( out.equals( "ard"))
 				out = "daserste" ;
-			if ( out.equals( "b3"))
+			else if ( out.equals( "b3"))
 				out = "bayer" ;
-			if ( out.equals( "srtl" ))
+			else if ( out.equals( "srtl" ))
 				out = "superrtl" ;
+			else if ( out.equals( "br" ))
+				out = "bayerisches" ;
 			return out ;
 		}
 	}
