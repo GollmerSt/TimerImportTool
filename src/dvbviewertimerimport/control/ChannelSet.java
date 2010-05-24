@@ -19,6 +19,7 @@ public class ChannelSet {
 	private String dvbViewerChannel = null ;
 	private TimeOffsets timeOffsets = new TimeOffsets() ;
 	private Merge merge = Merge.INVALID ;
+	private boolean isAutomaticAssigned = false ;
 	
 	public Channel add( int type, String name, long id )
 	{
@@ -35,6 +36,9 @@ public class ChannelSet {
 				it.remove() ;
 		}
 	}
+	public boolean isAutomaticAssigned() { return this.isAutomaticAssigned ; } ;
+	public void setAutomaticAssigned() { this.isAutomaticAssigned = true ; } ;
+	
 	public void setTimeOffsets( TimeOffsets timeOffsets ) { this.timeOffsets = timeOffsets ; }
 	public TimeOffsets getTimeOffsets() { return timeOffsets ; } ;
 	public void setMerge( Merge merge ) { this.merge = merge ; } ;

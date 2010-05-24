@@ -88,4 +88,9 @@ public class TVBrowser extends Provider
 	{
 		this.channelSet = null ;
 	}
+	@Override
+	public boolean isChannelMapAvailable()
+	{
+		return isFunctional() ;
+	}
 }

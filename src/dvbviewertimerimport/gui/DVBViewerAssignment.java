@@ -51,6 +51,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private final JComboBox dvbViewerCombo = new JComboBox() ;
 	private final JButton channelOffsetButton = new JButton() ;
 	private final JButton globalOffsetButton = new JButton() ;
+	private final JButton automaticallyAssignButton = new JButton() ;
 	private final JComboBox mergeCombo = new JComboBox() ;
 	private TreeMap< String, Integer > dvbViewerLongChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
 	private HashMap< String, Integer > dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
@@ -89,9 +90,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 		 */
 		private static final long serialVersionUID = -224601712240775345L;
 		private ImageIcon offsets   = ResourceManager.createImageIcon( "icons/dvbViewer Red16.png", "DVBViewer icon" ) ;
-		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
-	    private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
+		private ImageIcon active    = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
+	    private ImageIcon inactive  = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
 	    private ImageIcon unknown   = ResourceManager.createImageIcon( "icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
+	    private ImageIcon automatic = ResourceManager.createImageIcon( "icons/dvbViewer Yellow16.png", "DVBViewer yellow icon" ) ;
 	    
 	    public SpecialCellRenderer()
 	    {
@@ -112,7 +114,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        if ( channelSet.getDVBViewerChannel() != null )
 	        {
 	        	if ( dvbViewerLongChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
-	        		if ( channelSet.getTimeOffsets().size() > 0 )
+	        		if ( channelSet.isAutomaticAssigned() )
+	        			this.setIcon( this.automatic ) ;
+	        		else if ( channelSet.getTimeOffsets().size() > 0 )
 	        			this.setIcon( this.offsets ) ;
 	        		else
 	        			this.setIcon( this.active ) ;
@@ -131,6 +135,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        JComboBox cb = (JComboBox)e.getSource();
 	        Provider p = (Provider)cb.getSelectedItem() ;
 	        fillProviderChannelList( p.getName() ) ;
+	        automaticallyAssignButton.setEnabled( p.isChannelMapAvailable() ) ;
 	        if ( ! p.getName().equals( control.getDefaultProvider() ) )
 	        {
 	        	control.setDefaultProvider( p.getName() ) ;
@@ -160,6 +165,25 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        } 
 		}
 	}
+	private class FunctionChannelChoice extends Function
+	{
+		public String stringToString( String in )
+		{
+			String out = in.split( "\\(" )[0].trim() ;
+			out = out.toLowerCase() ;
+			out = Conversions.replaceDiacritical( out ) ;
+			out = out.replaceAll("[-_\\.\\s]", "") ;
+			if ( out.equals( "rtl"))
+				out = "rtltelevision" ;
+			if ( out.equals( "ard"))
+				out = "daserste" ;
+			if ( out.equals( "b3"))
+				out = "bayer" ;
+			if ( out.equals( "srtl" ))
+				out = "superrtl" ;
+			return out ;
+		}
+	}
 	public class ProviderChannelSelected implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e)
 	    {
@@ -178,26 +202,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
 	    	    @SuppressWarnings("unchecked")
 				Object o = Conversions.getTheBestChoice( name, (Collection) control.getDVBViewer().getChannels().getChannels().values(),
-						3, 2, new Function()
-						{
-							public String stringToString( String in )
-							{
-								String out = in.split( "\\(" )[0].trim() ;
-								out = out.toLowerCase() ;
-								out = Conversions.replaceDiacritical( out ) ;
-								out = out.replaceAll("[-_\\.\\s]", "") ;
-								if ( out.equals( "rtl"))
-									out = "rtltelevision" ;
-								if ( out.equals( "ard"))
-									out = "daserste" ;
-								if ( out.equals( "b3"))
-									out = "bayer" ;
-								if ( out.equals( "srtl" ))
-									out = "superrtl" ;
-								return out ;
-							}
-						}
-				) ;
+						3, 2, new FunctionChannelChoice() ) ;
 	    	    if ( o == null )
 	    	    	ix = 0 ;
 	    	    else
@@ -246,29 +251,37 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        }
 	    }
 	}
-	public class OffsetButtonsPressed implements ActionListener
+	public class ButtonsPressed implements ActionListener
 	{
 
 		@Override
 		public void actionPerformed(ActionEvent e ) {
 			JButton source = (JButton)e.getSource() ;
-			TimeOffsets offsets = null ;
-			int line = -1 ;
-			DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
-			ChannelSetAssignment csa = null ;
-			if ( source == channelOffsetButton )
+			if ( source == channelOffsetButton || ( source == globalOffsetButton ) )
 			{
-				line = providerChannelList.getSelectedIndex() ;
-				if ( line < 0 )
-					return ;
-				csa = (ChannelSetAssignment)model.getElementAt( line ) ;
-				offsets = csa.channelSet.getTimeOffsets() ;
+				TimeOffsets offsets = null ;
+				int line = -1 ;
+				DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
+				ChannelSetAssignment csa = null ;
+				if ( source == channelOffsetButton )
+				{
+					line = providerChannelList.getSelectedIndex() ;
+					if ( line < 0 )
+						return ;
+					csa = (ChannelSetAssignment)model.getElementAt( line ) ;
+					offsets = csa.channelSet.getTimeOffsets() ;
+				}
+				else
+					offsets = TimeOffsets.getGeneralTimeOffsets() ;
+				new OffsetsDialog( getGUIPanel(), offsets ) ;
+				if ( csa != null )
+					model.setElementAt( csa, line ) ;
 			}
-			else if ( source == globalOffsetButton )
-				offsets = TimeOffsets.getGeneralTimeOffsets() ;
-			new OffsetsDialog( getGUIPanel(), offsets ) ;
-			if ( csa != null )
-				model.setElementAt( csa, line ) ;
+			else if ( source == automaticallyAssignButton )
+			{
+				Provider p = (Provider)providerCombo.getSelectedItem() ;
+				assignAutomatically( p ) ;
+			}
 		}
 		
 	}
@@ -372,7 +385,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 
 		this.channelOffsetButton.setText( ResourceManager.msg( "OFFSETS" ) ) ;
-		this.channelOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
+		this.channelOffsetButton.addActionListener( new ButtonsPressed() ) ;
 		channelPane.add( this.channelOffsetButton, c ) ;
 		
 
@@ -431,8 +444,25 @@ public class DVBViewerAssignment extends MyTabPanel{
 //		c.insets     = new Insets( 40, 5, 5, 5 ); ;
 
 		this.globalOffsetButton.setText( ResourceManager.msg( "GLOBAL_OFFSETS" ) ) ;
-		this.globalOffsetButton.addActionListener( new OffsetButtonsPressed() ) ;
+		this.globalOffsetButton.addActionListener( new ButtonsPressed() ) ;
 		this.add( this.globalOffsetButton, c ) ;
+		
+		
+		
+		c = new GridBagConstraints();
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.gridx      = 1 ;
+		c.gridy      = 3 ;
+		c.weighty    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTH ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+//		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.insets     = i ;
+//		c.insets     = new Insets( 40, 5, 5, 5 ); ;
+
+		this.automaticallyAssignButton.setText( ResourceManager.msg( "ASSIGN_AUTOMATICALLY" ) ) ;
+		this.automaticallyAssignButton.addActionListener( new ButtonsPressed() ) ;
+		this.add( this.automaticallyAssignButton, c ) ;
 		
 		this.providerCombo.setSelectedItem( Provider.getProvider( control.getDefaultProvider() ) ) ;
 	}
@@ -458,6 +488,38 @@ public class DVBViewerAssignment extends MyTabPanel{
 				
 		for ( Map.Entry<String, ChannelSet > e : channelMap.entrySet() )
 			map.addElement( new ChannelSetAssignment( e.getKey(), e.getValue()) ) ;
+	}
+	private void assignAutomatically( Provider provider )
+	{
+		if ( ! provider.isChannelMapAvailable() )
+			return ;
+		
+		int providerID = provider.getID() ;
+		
+		ArrayList<ChannelSet> sets = control.getChannelSets() ;
+				
+		for ( ChannelSet cs : sets )
+		{
+			if ( cs.getDVBViewerChannel() != null )
+				continue ;
+    		Channel channel = cs.getChannel( providerID ) ;
+			if ( channel == null || ! provider.containsChannel( channel ) )
+				continue ;
+    		String name = channel.getName() ;
+    	    @SuppressWarnings("unchecked")
+			Object o = Conversions.getTheBestChoice( name, (Collection) control.getDVBViewer().getChannels().getChannels().values(),
+					3, 2, new FunctionChannelChoice() ) ;
+    	    if ( o == null )
+    	    	continue ;
+    	   
+    	    int ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
+    	    
+    	    cs.setDVBViewerChannel( ( (dvbviewertimerimport.dvbviewer.channels.Channel)this.dvbViewerCombo.getItemAt( ix )).getChannelID() ) ;
+    	    cs.setAutomaticAssigned() ;
+    	}
+		this.update( true );
+    	this.getGUIPanel().setChanged() ;
+
 	}
 	@Override
 	public void update( boolean active )
