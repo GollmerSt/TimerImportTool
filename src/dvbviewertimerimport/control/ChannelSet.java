@@ -42,7 +42,7 @@ public class ChannelSet {
 		}
 	}
 	public boolean isAutomaticAssigned() { return this.isAutomaticAssigned ; } ;
-	public void setAutomaticAssigned() { this.isAutomaticAssigned = true ; } ;
+	public void setAutomaticAssigned( boolean val) { this.isAutomaticAssigned = val ; } ;
 	
 	public void setTimeOffsets( TimeOffsets timeOffsets ) { this.timeOffsets = timeOffsets ; }
 	public TimeOffsets getTimeOffsets() { return timeOffsets ; } ;

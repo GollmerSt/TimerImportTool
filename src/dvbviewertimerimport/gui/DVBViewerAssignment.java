@@ -160,6 +160,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        	getGUIPanel().setChanged() ;
 	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	        	csa.channelSet.setDVBViewerChannel( null ) ;
+	        	csa.channelSet.setAutomaticAssigned( false ) ;
 	        	DefaultListModel model = (DefaultListModel) providerChannelList.getModel() ;
 	        	model.set( ix, csa) ;
 	        } 
@@ -230,6 +231,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        	getGUIPanel().setChanged() ;
 	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	        	csa.channelSet.setDVBViewerChannel( c.getChannelID() ) ;
+	        	csa.channelSet.setAutomaticAssigned( false ) ;
 	        	providerChannelList.setSelectedValue(csa, false) ;
 	        }
 	    }
@@ -515,7 +517,7 @@ public class DVBViewerAssignment extends MyTabPanel{
     	    int ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
     	    
     	    cs.setDVBViewerChannel( ( (dvbviewertimerimport.dvbviewer.channels.Channel)this.dvbViewerCombo.getItemAt( ix )).getChannelID() ) ;
-    	    cs.setAutomaticAssigned() ;
+    	    cs.setAutomaticAssigned( true ) ;
     	}
 		this.update( true );
     	this.getGUIPanel().setChanged() ;
