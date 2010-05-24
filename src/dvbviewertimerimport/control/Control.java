@@ -599,9 +599,9 @@ public class Control
 
 	public void setDVBViewerEntries()
 	{
+    if ( this.dvbViewer == null)
+      return ;
 	  this.dvbViewer.clearChannelLists() ;
-		if ( this.dvbViewer == null)
-			return ;
 		this.dvbViewer.setSeparator( this.separator ) ;
 		for ( ChannelSet cs : this.channelSets )
 		{
