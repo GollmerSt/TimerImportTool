@@ -346,12 +346,15 @@ public class DVBViewer {
 	
 	public Channel getDVBViewerChannel( final Provider provider, final String providerChannel )
 	{
-    this.prepareProvider( provider ) ;
-    HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
-    if ( ! channelMap.containsKey( providerChannel ) )
-      throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
-    Channel c =  channelMap.get( providerChannel ) ;
-	  return c ;
+		this.prepareProvider( provider ) ;
+		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
+		if ( ! channelMap.containsKey( providerChannel ) )
+			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
+		Channel c =  channelMap.get( providerChannel ) ;
+		String dvbViewerChannel = c.getDVBViewer() ;
+		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
+			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel ) ) ;
+		return c ;
 	}
 	
 	public void addNewEntry( Provider provider,
@@ -367,9 +370,7 @@ public class DVBViewer {
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
 		end  += o.getPostOffset(end)*60000 ;
-		String dvbViewerChannel = c.getDVBViewer() ;
-		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
-			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", channel ) ) ;
+
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
 											   providerID,
 											   start,
@@ -405,10 +406,8 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-    Channel c =  this.getDVBViewerChannel( provider, channel) ;
-		String dvbViewerChannel = c.getDVBViewer() ;
-		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
-			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;
+		Channel c =  this.getDVBViewerChannel( provider, channel) ;
+
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
 											   null,
 											   start,
