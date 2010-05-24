@@ -453,7 +453,8 @@ public class Control
 			sw.writeStartElement( "Importer" ) ;
 			sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 			sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
-			sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
+			if ( xmlFile == null )
+			  sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
 			  Provider.writeXML( sw ) ;
 			  sw.writeStartElement( "DVBViewer" ) ;
 		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
