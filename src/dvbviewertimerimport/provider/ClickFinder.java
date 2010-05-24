@@ -89,7 +89,6 @@ public class ClickFinder extends Provider {
 	{
 		if ( ! Constants.IS_WINDOWS )
 			return false ;
-		String dataPathPara = "" ;
 		//if ( setDataDir )
 		//	dataPathPara = " -path \"\"\"" + this.dvbViewer.getDataPath() + "\"\"\"";
 		String regContents = Registry.getValue( "HKLM\\SOFTWARE\\EWE\\TVGhost\\TVGhost", "AddOns" ) ;
