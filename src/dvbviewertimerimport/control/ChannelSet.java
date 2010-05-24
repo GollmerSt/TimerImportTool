@@ -27,6 +27,11 @@ public class ChannelSet {
 		channels.add( channel ) ;
 		return channel ;
 	}
+	public Channel add( final Channel channel )
+	{
+		channels.add( channel ) ;
+		return channel ;
+	}
 	public void remove( int type )
 	{
 		for ( Iterator< Channel > it = channels.iterator() ; it.hasNext() ; )

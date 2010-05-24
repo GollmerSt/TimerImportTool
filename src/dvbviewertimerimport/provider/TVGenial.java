@@ -14,8 +14,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.TimeZone;
 
+import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
@@ -37,6 +39,8 @@ public class TVGenial extends Provider {
 
 	private final SimpleDateFormat dateFormat ;
 	
+	private HashSet< Long > channelSet = null ;
+	
 	public TVGenial( Control control ) {
 		super( control, false, false, "TVGenial", false, false, false, true, false, false);
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
@@ -44,6 +48,8 @@ public class TVGenial extends Provider {
 		this.dateFormat.setTimeZone( timeZone ) ;
 		this.canAddChannel = false ;
 		this.canImport = true ;
+		
+		this.isFunctional = null != Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
 	}
 	@Override
 	public boolean install()
@@ -101,29 +107,13 @@ public class TVGenial extends Provider {
 		
 		return true ;
 	}
-	@Override
-	public int importChannels( boolean check )
+	private ArrayList< Channel > readChannels()
 	{
-		if ( check )
-			return 0 ;
-		
 		String dataPath = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "PublicDataRoot") ;
 		if ( dataPath == null )
-			return -1 ;
-
-		HashMap< Long, ChannelSet > mapByID = new HashMap< Long, ChannelSet >() ;
-		HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
+			return null ;
 		
-		int pid = this.getID() ;
-		
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( pid ) ;
-			if ( c == null )
-				continue ;
-			mapByID.put( c.getID(), cs ) ;
-			mapByName.put( c.getName(), cs ) ;
-		}
+		ArrayList< Channel > list = new ArrayList< Channel >() ;
 
 		File f = new File( dataPath + File.separator + NAME_CHANNEL_FILE ) ;
 		
@@ -134,14 +124,24 @@ public class TVGenial extends Provider {
 		try {
 			fr = new FileReader( f );
 		} catch (FileNotFoundException e) {
-			return -1 ;
+			return null ;
 		}
 			
 		BufferedReader br = new BufferedReader( fr ) ;
 			
 		String line ;
 		
-		int count = 0 ;
+		HashMap< String, Long > nameMap = new HashMap< String, Long >() ;
+
+		int pid = this.getID() ;
+		
+		for ( ChannelSet cs : this.control.getChannelSets() )
+		{
+			Channel c = cs.getChannel( pid ) ;
+			if ( c == null )
+				continue ;
+			nameMap.put( c.getName(), c.getID() ) ;
+		}
 			
 		try {
 			while ( (line = br.readLine() ) != null )
@@ -158,21 +158,57 @@ public class TVGenial extends Provider {
 				String name = parts[1] ;
 				String nameLong = name ;
 				
-				if ( ! mapByID.containsKey( tvuid ) )
+				
+				int countR = 0 ;
+				while ( nameMap.containsKey( nameLong ) )
 				{
-					int countR = 0 ;
-					while ( mapByName.containsKey( nameLong ) )
-						nameLong = name + Integer.valueOf( countR++ ) ;
-					ChannelSet cs = new ChannelSet() ;
-					cs.add( pid, nameLong, tvuid ) ;
-					control.getChannelSets().add( cs ) ;
-					mapByID.put( tvuid, cs ) ;
-					mapByName.put( nameLong, cs ) ;
-					count++ ;
+					if ( nameMap.get( nameLong) == tvuid )
+						break ;
+					nameLong = name + Integer.valueOf( countR++ ) ;
 				}
+				Channel c = new Channel( pid, nameLong, tvuid ) ;
+				list.add( c ) ; ;
+				nameMap.put( nameLong, tvuid ) ;
 			}
 		} catch (IOException e) {
+			return null ;
+		}
+	return list ;
+}
+	@Override
+	public int importChannels( boolean check )
+	{
+		if ( check )
+			return 0 ;
+		
+		ArrayList< Channel > channels = readChannels() ;
+		
+		if ( channels == null )
 			return -1 ;
+		
+		HashMap< Long, ChannelSet > mapByID = new HashMap< Long, ChannelSet >() ;
+
+		int pid = this.getID() ;
+		
+		for ( ChannelSet cs : this.control.getChannelSets() )
+		{
+			Channel c = cs.getChannel( pid ) ;
+			if ( c == null )
+				continue ;
+			mapByID.put( c.getID(), cs ) ;
+		}
+		
+		int count = 0 ;
+
+		for ( Channel c : channels )
+		{
+			if ( ! mapByID.containsKey( c.getID() ) )
+			{
+				ChannelSet cs = new ChannelSet() ;
+				cs.add( c ) ;
+				control.getChannelSets().add( cs ) ;
+				count++ ;
+			}
 		}
 	return count ;
 	}
@@ -263,5 +299,31 @@ public class TVGenial extends Provider {
 		Date d = new Date( dateFormat.parse(time).getTime()) ;
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
-	}	
+	}
+	
+	@Override
+	public boolean containsChannel( final Channel channel )
+	{
+		if ( ! isFunctional() )
+			return true ;
+		
+		if (this.channelSet == null)
+		{
+			this.channelSet = new HashSet< Long >();
+			ArrayList< Channel > channels = readChannels() ;
+			for ( Channel c : channels)
+				this.channelSet.add( c.getID() );
+		}
+		return this.channelSet.contains( channel.getID() ) ;
+	}		
+	@Override
+	public void updateChannelMap()
+	{
+		this.channelSet = null ;
+	}
+	@Override
+	public boolean isChannelMapAvailable()
+	{
+		return isFunctional() ;
+	}
 }
