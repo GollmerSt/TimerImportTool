@@ -324,6 +324,6 @@ public class TVGenial extends Provider {
 	@Override
 	public boolean isChannelMapAvailable()
 	{
-		return isFunctional() ;
+		return false ;
 	}
 }
