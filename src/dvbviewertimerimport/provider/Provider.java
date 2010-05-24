@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Stack;
 import java.util.TimeZone;
 
+import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
@@ -80,6 +81,7 @@ public abstract class Provider implements DVBViewerProvider {
 	protected boolean isSilent ;
 	private OutDatedInfo outDatedLimits = null ;
 	protected TimeZone timeZone = TimeZone.getDefault() ;
+	
 	public Provider( Control control,
 					 boolean hasAccount,
 			         boolean hasURL,
@@ -148,8 +150,13 @@ public abstract class Provider implements DVBViewerProvider {
 	public OutDatedInfo getOutDatedLimits() { return this.outDatedLimits ; } ;
 	public boolean install()   { return true ; } ;
 	public boolean uninstall() { return true ; } ;
+	
+	public boolean containsChannel( final Channel channel) { return true ; } ;
+	public void updateChannelMap() { } ;
+	
 	public int importChannels( boolean check ) { return -1 ; } ;
 	public int importChannels() { return this.importChannels( false ) ; } ;
+	
 	public boolean process( boolean getAll, DVBViewer.Command command )   { return true ; } ;
 	public boolean processEntry( Object args, DVBViewer.Command command ) { return true ; } ;
 	public void check()
