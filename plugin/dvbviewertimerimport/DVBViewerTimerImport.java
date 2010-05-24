@@ -55,6 +55,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private DVBViewer dvbViewer = null ;
   private GUIPanel settingsPanel = null ;
 
+  private Icon channelChooseIcon = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
+  private Icon timerIcon = ResourceManager.createImageIcon( "icons/dvbViewer Timer16.png", "Timer icon" ) ;
+
   private Icon menuIcon = null ;
   private Icon[] markIcons = null ;
   private String mainMenue = null ;
@@ -146,8 +149,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
     this.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
 
-    this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
-    
+    this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewerTimer icon" ) ;
+   
     this.mainMenue   = ResourceManager.msg( "DVBVIEWER" ) ;
 
 
@@ -258,7 +261,7 @@ System.exit(0);
     {
       super() ;
       putValue(Action.NAME, ResourceManager.msg( "SELECT_CHANNEL" )  ) ;
-      //putValue(Action.SMALL_ICON, menuIcon ) ;
+      putValue(Action.SMALL_ICON, channelChooseIcon ) ;
    }
 
     public void update( final Program program )
@@ -300,7 +303,7 @@ System.exit(0);
       if ( command == Command.SET )
       {
         putValue(Action.NAME, addTimer ) ;
-        //putValue(Action.SMALL_ICON, menuIcon ) ;
+        putValue(Action.SMALL_ICON, timerIcon ) ;
       }
       else
       {
