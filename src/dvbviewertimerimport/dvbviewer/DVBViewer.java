@@ -734,6 +734,8 @@ public class DVBViewer {
 	}
 	public boolean startDVBViewerAndSelectChannel( String channelID )
 	{
+		if ( channelID == null )
+			return false ;
 		String [] parts = channelID.split( "\\|" ) ;
 		if ( parts.length != 2 )
 			return false ;
