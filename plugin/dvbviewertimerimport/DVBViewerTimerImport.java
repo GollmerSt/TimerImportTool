@@ -58,7 +58,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private Icon menuIcon = null ;
   private Icon[] markIcons = null ;
   private String mainMenue = null ;
-  private String selChannel = null ;
   
   private DVBViewerChannelChooseAction chooseChannelAction = new DVBViewerChannelChooseAction() ;
   private DVBViewerTimerAction timerAction = new DVBViewerTimerAction() ;
