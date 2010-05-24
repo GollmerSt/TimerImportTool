@@ -344,6 +344,16 @@ public class DVBViewer {
 		}
 	}
 	
+	public Channel getDVBViewerChannel( final Provider provider, final String providerChannel )
+	{
+    this.prepareProvider( provider ) ;
+    HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
+    if ( ! channelMap.containsKey( providerChannel ) )
+      throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
+    Channel c =  channelMap.get( providerChannel ) ;
+	  return c ;
+	}
+	
 	public void addNewEntry( Provider provider,
 							 String providerID,
 							 String channel, 
@@ -351,11 +361,7 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		this.prepareProvider( provider ) ;
-		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
-		if ( ! channelMap.containsKey( channel ) )
-			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", channel ) ) ;
-		Channel c =  channelMap.get( channel ) ;
+		Channel c =  this.getDVBViewerChannel( provider, channel) ;
 		TimeOffsets o = c.getOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
@@ -399,10 +405,7 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
-		if ( ! channelMap.containsKey( channel ) )
-			throw new ErrorClass( "Channel \"" + channel + "\" not found in channel list" ) ;
-		Channel c =  channelMap.get( channel ) ;
+    Channel c =  this.getDVBViewerChannel( provider, channel) ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 			throw new ErrorClass( "DVBViewer entry of channel \"" + channel + "\" not defined in channel list" ) ;

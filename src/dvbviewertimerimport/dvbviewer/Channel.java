@@ -9,8 +9,6 @@ import dvbviewertimerimport.misc.Enums.Merge;
 
 public class Channel {
 	private final String dvbViewer ;
-//	private final String tvInfo ;
-//	private final String clickFinder ;
 	private final TimeOffsets offsets ;
 	private final Merge merge ;
 
