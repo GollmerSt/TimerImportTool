@@ -161,6 +161,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     Log.setToDisplay(provider.getMessage() );
     
     control.setDVBViewerEntries() ;
+    
+    control.setDefaultProvider( provider.getName() ) ;
 
     isInitialized = true ;
     return true ;
