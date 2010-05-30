@@ -45,6 +45,7 @@ public class DVBViewer {
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL         = "DVBViewerTimerImport" ;
+	private static String PATH_PLUGIN_DATA ;
 	
 	private static boolean isDLLloaded = false ;
 
@@ -89,6 +90,25 @@ public class DVBViewer {
 	private String separator      = ",," ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
+	
+	static
+	{
+		String path = System.getenv( "APPDATA" ) ;
+		
+		if ( path == null)
+			path = DVBViewer.determineExePath() ;
+		else
+		{
+			path += File.separator + Constants.PROGRAM_NAME ;
+			
+			File dir = new File( path ) ;
+			
+			if ( !dir.exists() )
+				dir.mkdirs() ;
+		}
+		Log.setFile( path ) ;
+		DVBViewer.PATH_PLUGIN_DATA = path ;
+	}
 	
 	public DVBViewer()
 	{
@@ -142,21 +162,8 @@ public class DVBViewer {
 	{
 		if ( this.xmlFilePath != null )
 			return this.xmlFilePath ;
-		
-		this.xmlFilePath = System.getenv( "APPDATA" ) ;
-		
-		if ( xmlFilePath == null)
-			this.xmlFilePath = this.getExePath() ;
 		else
-		{
-			this.xmlFilePath += File.separator + Constants.PROGRAM_NAME ;
-			
-			File dir = new File( this.xmlFilePath ) ;
-			
-			if ( !dir.exists() )
-				dir.mkdirs() ;
-		}
-		Log.setFile( this.xmlFilePath ) ;
+			this.xmlFilePath = DVBViewer.PATH_PLUGIN_DATA ;
 		return this.xmlFilePath ;
 	}
 	
@@ -658,7 +665,7 @@ public class DVBViewer {
 		if ( DVBViewer.isDLLloaded )
 			return true ;
 		
-		File f = new File( DVBViewer.determineExePath() + File.separator
+		File f = new File( DVBViewer.PATH_PLUGIN_DATA + File.separator
 		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 		
 		System.load( f.getAbsolutePath() );
@@ -673,7 +680,7 @@ public class DVBViewer {
 		if ( ! Constants.IS_WINDOWS )
 			return false ;
 		
-		String exePath = DVBViewer.determineExePath() ;
+		String exePath = DVBViewer.PATH_PLUGIN_DATA ;
 		
 		File f = new File( exePath + File.separator
 		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
