@@ -130,12 +130,15 @@ public final class TVInfo extends Provider {
 			long  start = 0;
 			long  end   = 0 ;
 			String title = null ;
+			boolean ignore = false ;
 			while( reader.hasNext() ) {
 				XMLEvent ev = reader.nextEvent();
 				if( ev.isStartElement() )
 				{
 					stack.push( ev.asStartElement().getName().getLocalPart() );
-					if ( ! stack.equals( this.xmlPathTVinfoEntry ) ) continue ;
+					if ( ! stack.equals( this.xmlPathTVinfoEntry ) )
+						continue ;
+					ignore = false ;
 					channel = null;
 					providerID = null ;
 					start = 0 ;
@@ -167,15 +170,23 @@ public final class TVInfo extends Provider {
 					}
 					if ( ( start & end ) == 0 )
 						throw new ErrorClass( ev, "Error in  TVinfo data, start or end time not given" ) ; 
-					if ( channel.length() == 0 )
-						throw new ErrorClass( ev, "Error in  TVinfo data, channel not given" ) ; 
+					if ( channel == null || channel.length() == 0 )
+					{
+						ignore = true ;        // Workaround: Empty channel entries are "normal"
+						//throw new ErrorClass( ev, "Error in  TVinfo data, channel not given" ) ;
+					}
 				}
 				if ( ev.isCharacters() )
 				{
 					if ( stack.equals( this.xmlPathTVinfoTitle ) )
 					{
-						title = ev.asCharacters().getData() ;
-						this.dvbViewer.addNewEntry( this, providerID, channel, start, end, title) ;
+						if ( ! ignore )
+						{
+							title = ev.asCharacters().getData() ;
+							this.dvbViewer.addNewEntry( this, providerID, channel, start, end, title) ;
+						}
+						else
+							Log.out( "Empty channelname in TVInfo data at line " + Integer.toString( ev.getLocation().getLineNumber() ) + ", entry ignored"  ) ;
 					}
 				}					
 				if( ev.isEndElement() ) stack.pop();
