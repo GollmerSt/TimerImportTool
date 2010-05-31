@@ -127,7 +127,7 @@ public class Channels {
 		this.headerLength       = SUPPORTED_HEADER_LENGTH ;
 		this.channelEntryLength = SUPPORTED_CHANNEL_ENTRY_LENGTH ;
 }
-	public void read()
+	public void read( boolean onlyTV )
 	{
 		this.openFileAndCheckHeader() ;
 		
@@ -148,7 +148,7 @@ public class Channels {
 				Channel channel = new Channel( this ) ;
 				channel.read();
 				
-				if ( channel.isVideo() )
+				if ( ! onlyTV || channel.isVideo() )
 					this.channelMap.put( channel.getChannelName(), channel ) ;
 				
 			}

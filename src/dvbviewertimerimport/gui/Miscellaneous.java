@@ -18,6 +18,7 @@ import java.util.TimeZone;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -60,6 +61,7 @@ public class Miscellaneous extends MyTabPanel
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
 	private final JButton updateChannelsFromDVBViewer = new JButton() ;
+	private final JCheckBox onlyTVCheckBox = new JCheckBox( ResourceManager.msg( "ONLY_TV" ) ) ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
 	
@@ -162,7 +164,7 @@ public class Miscellaneous extends MyTabPanel
 			{
 				try
 				{
-					control.getDVBViewer().getChannels().read() ;
+					control.getDVBViewer().getChannels().read( onlyTVCheckBox.isSelected() ) ;
 					guiPanel.updateDVBViewerChannels() ;
 					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 					guiPanel.updateIfChannelSetsChanged( null ) ;
@@ -306,7 +308,6 @@ public class Miscellaneous extends MyTabPanel
 			c.fill       = GridBagConstraints.HORIZONTAL ;
 			c.insets     = i ;
 
-			this.languageBox.addActionListener( new ComboSelected() ) ;
 			guiPanel.add( this.languageBox, c ) ;
 
 		
@@ -409,14 +410,27 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
-		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.weightx    = 0.5 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.weightx    = 0.5 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
-		this.tvinfoDVBVButton.addActionListener( new ButtonsPressed() ) ;
-		dvbViewerPanel.add( tvinfoDVBVButton, c ) ;
+		dvbViewerPanel.add( this.onlyTVCheckBox, c ) ;
+		this.onlyTVCheckBox.setSelected( true ) ;
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 0 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.updateChannelsFromDVBViewer.addActionListener( new ButtonsPressed() ) ;
+		dvbViewerPanel.add( this.updateChannelsFromDVBViewer, c ) ;
 
 		
 		c = new GridBagConstraints();
@@ -428,8 +442,8 @@ public class Miscellaneous extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
-		this.updateChannelsFromDVBViewer.addActionListener( new ButtonsPressed() ) ;
-		dvbViewerPanel.add( updateChannelsFromDVBViewer, c ) ;
+		this.tvinfoDVBVButton.addActionListener( new ButtonsPressed() ) ;
+		dvbViewerPanel.add( this.tvinfoDVBVButton, c ) ;
 
 		
 		c = new GridBagConstraints();
@@ -441,7 +455,7 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 
 		this.updateToNewVersionButton.addActionListener( new ButtonsPressed() ) ;
-		dvbViewerPanel.add( updateToNewVersionButton, c ) ;
+		dvbViewerPanel.add( this.updateToNewVersionButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -569,11 +583,12 @@ public class Miscellaneous extends MyTabPanel
 		for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
 		{
 			MyComboBoxItem mc  = new MyComboBoxItem( l ) ;
-			languageBox.addItem( mc ) ;
+			this.languageBox.addItem( mc ) ;
 			if ( l.equals( control.getLanguage() ) )
 				deflt = mc;
 		}
-		languageBox.setSelectedItem( deflt ) ;
+		this.languageBox.setSelectedItem( deflt ) ;
+		this.languageBox.addActionListener( new ComboSelected() ) ;
 
 		Object oDefault = null ;
 		TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
