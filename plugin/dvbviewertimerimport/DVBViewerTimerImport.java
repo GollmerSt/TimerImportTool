@@ -349,9 +349,6 @@ System.exit(0);
     
     Action [] subActions = new AbstractAction[ 2 ] ;
     
-    subActions[ 0 ] = chooseChannelAction ;
-    chooseChannelAction.update( program ) ;
-    
     Command temp = Command.SET ;
     try {
       if ( control.getDVBViewer().process( dvbViewerProvider, false, program, Command.FIND ) )
@@ -368,8 +365,11 @@ System.exit(0);
       return null ;
     }
     
-    subActions[ 1 ] = timerAction ;
+    subActions[ 0 ] = timerAction ;
     timerAction.update( program, temp ) ;
+    
+    subActions[ 1 ] = chooseChannelAction ;
+    chooseChannelAction.update( program ) ;
     
     return new ActionMenu(mainAction, subActions );
   }
