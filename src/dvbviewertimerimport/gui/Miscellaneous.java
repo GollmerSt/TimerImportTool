@@ -170,7 +170,7 @@ public class Miscellaneous extends MyTabPanel
 					guiPanel.updateIfChannelSetsChanged( null ) ;
 				} catch ( ErrorClass er )
 				{
-					setInfoText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channel.dat" ) ) ;
+					setInfoText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channels.dat" ) ) ;
 					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
 				}
 			}
