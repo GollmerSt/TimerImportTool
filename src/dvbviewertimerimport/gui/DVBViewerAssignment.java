@@ -5,9 +5,11 @@
 package dvbviewertimerimport.gui;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -39,6 +42,7 @@ import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.TimeOffsets;
 import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.Enums;
+import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Function;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
@@ -51,8 +55,13 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private final JComboBox dvbViewerCombo = new JComboBox() ;
 	private final JButton channelOffsetButton = new JButton() ;
 	private final JButton globalOffsetButton = new JButton() ;
+	private final JButton updateChannelsFromDVBViewer = new JButton() ;
+	private final JCheckBox onlyTVCheckBox = new JCheckBox( ResourceManager.msg( "ONLY_TV" ) ) ;
 	private final JButton automaticallyAssignButton = new JButton() ;
 	private final JComboBox mergeCombo = new JComboBox() ;
+	
+	private final JLabel textInfoLabel = new JLabel() ;
+
 	private TreeMap< String, Integer > dvbViewerLongChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
 	private HashMap< String, Integer > dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
 	private boolean ignoreNextDVBViewerChannelChange = false ;
@@ -132,6 +141,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	public class ProviderSelected implements ActionListener
 	{
 	    public void actionPerformed(ActionEvent e) {
+			updateText() ;
 	        JComboBox cb = (JComboBox)e.getSource();
 	        Provider p = (Provider)cb.getSelectedItem() ;
 	        fillProviderChannelList( p.getName() ) ;
@@ -154,6 +164,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			updateText() ;
 	        int ix = providerChannelList.getSelectedIndex() ;
 	        if ( ix >= 0 )
 	        {
@@ -190,6 +201,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	public class ProviderChannelSelected implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e)
 	    {
+			updateText() ;
 	    	ChannelSetAssignment csa = (ChannelSetAssignment)((JList)e.getSource()).getSelectedValue() ;
 	    	if ( csa == null )
 	    		return ;
@@ -219,6 +231,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	public class DVBViewerChannelSelected implements ActionListener
 	{
 	    public void actionPerformed(ActionEvent e) {
+			updateText() ;
 	    	if ( ignoreNextDVBViewerChannelChange )
 	    	{
 		    	ignoreNextDVBViewerChannelChange = false ;
@@ -241,6 +254,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	public class MergeChanged implements ActionListener
 	{
 	    public void actionPerformed(ActionEvent e) {
+			updateText() ;
 	    	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
 	    	if ( csa == null )
 	    		return ;
@@ -260,6 +274,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 
 		@Override
 		public void actionPerformed(ActionEvent e ) {
+			updateText() ;
 			JButton source = (JButton)e.getSource() ;
 			if ( source == channelOffsetButton || ( source == globalOffsetButton ) )
 			{
@@ -285,6 +300,20 @@ public class DVBViewerAssignment extends MyTabPanel{
 			{
 				Provider p = (Provider)providerCombo.getSelectedItem() ;
 				assignAutomatically( p ) ;
+			}
+			else if ( source == updateChannelsFromDVBViewer )
+			{
+				try
+				{
+					control.getDVBViewer().getChannels().read( onlyTVCheckBox.isSelected() ) ;
+					guiPanel.updateDVBViewerChannels() ;
+					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					guiPanel.updateIfChannelSetsChanged( null ) ;
+				} catch ( ErrorClass er )
+				{
+					textInfoLabel.setText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channels.dat" ) ) ;
+					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
+				}
 			}
 		}
 		
@@ -321,7 +350,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 1 ;
-		c.gridwidth  = 2 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.weighty    = 1.0 ;
 		c.fill       = GridBagConstraints.BOTH ;
 		c.insets     = i ;
@@ -344,7 +373,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.gridy      = 0 ;
 		c.gridwidth  = 1 ;
 		c.weightx    = 0.5 ;
-		c.gridheight = 4 ;
+		c.gridheight = 5 ;
 		c.fill       = GridBagConstraints.BOTH ;
 
 		this.add( provider, c ) ;
@@ -368,6 +397,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.gridx      = 1 ;
 		c.gridy      = 0 ;
 		c.weightx    = 0.5 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
 		this.add( dvbViewer, c ) ;
@@ -429,7 +459,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.gridx      = 1 ;
 		c.gridy      = 1 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.insets     = i ;
+		//c.insets     = i ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
 		this.add( channelPane, c ) ;
@@ -443,7 +473,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		c.weighty    = 0.5 ;
 		c.anchor     = GridBagConstraints.NORTH ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
-//		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.insets     = i ;
 //		c.insets     = new Insets( 40, 5, 5, 5 ); ;
 
@@ -454,11 +484,36 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		
 		c = new GridBagConstraints();
-		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.gridx      = 1 ;
 		c.gridy      = 3 ;
-		c.weighty    = 0.5 ;
-		c.anchor     = GridBagConstraints.NORTH ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.weighty    = 1.0 ;
+		c.anchor     = GridBagConstraints.SOUTHEAST ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.add( this.onlyTVCheckBox, c ) ;
+		this.onlyTVCheckBox.setSelected( true ) ;
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 3 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.weightx    = 0.5 ;
+		c.anchor     = GridBagConstraints.SOUTHWEST ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.updateChannelsFromDVBViewer.addActionListener( new ButtonsPressed() ) ;
+		this.add( this.updateChannelsFromDVBViewer, c ) ;
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 4 ;
+		//c.weighty    = 0.5 ;
+		c.anchor     = GridBagConstraints.SOUTHWEST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 //		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.insets     = i ;
@@ -468,7 +523,21 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.automaticallyAssignButton.addActionListener( new ButtonsPressed() ) ;
 		this.add( this.automaticallyAssignButton, c ) ;
 		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 5 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridheight = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		this.textInfoLabel.setForeground( SystemColor.RED ) ;
+		this.textInfoLabel.setPreferredSize( new Dimension( 1,20 ) ) ;
+		
+		this.add( this.textInfoLabel, c ) ;
+		
 		this.providerCombo.setSelectedItem( Provider.getProvider( control.getDefaultProvider() ) ) ;
+		this.updateText() ;
 	}
 	private void fillProviderChannelList( String providerName )
 	{
@@ -534,6 +603,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 			if ( p == null )
 				return ;
 			this.fillProviderChannelList( p.getName() ) ;
+			updateText() ;
 		}
 	}
 	public void updateDVBViewerChannels()
@@ -558,5 +628,10 @@ public class DVBViewerAssignment extends MyTabPanel{
 			}
 		}
 		this.dvbViewerCombo.updateUI() ;
+	}
+	private void updateText()
+	{
+		this.updateChannelsFromDVBViewer.setText( ResourceManager.msg( "UPDATE_DVBV_CHANNELS" ) ) ;
+		this.textInfoLabel.setText( "" ) ;
 	}
 }

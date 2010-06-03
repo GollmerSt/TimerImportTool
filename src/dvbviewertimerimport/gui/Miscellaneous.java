@@ -18,7 +18,6 @@ import java.util.TimeZone;
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
@@ -60,8 +59,6 @@ public class Miscellaneous extends MyTabPanel
 	private final JTextField separatorBox  = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
-	private final JButton updateChannelsFromDVBViewer = new JButton() ;
-	private final JCheckBox onlyTVCheckBox = new JCheckBox( ResourceManager.msg( "ONLY_TV" ) ) ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
 	
@@ -159,20 +156,6 @@ public class Miscellaneous extends MyTabPanel
 					return ;
 				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
 				directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
-			}
-			else if ( source == updateChannelsFromDVBViewer )
-			{
-				try
-				{
-					control.getDVBViewer().getChannels().read( onlyTVCheckBox.isSelected() ) ;
-					guiPanel.updateDVBViewerChannels() ;
-					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
-					guiPanel.updateIfChannelSetsChanged( null ) ;
-				} catch ( ErrorClass er )
-				{
-					setInfoText( ResourceManager.msg( "ERROR_READING_FILE_NNNN", "channels.dat" ) ) ;
-					updateChannelsFromDVBViewer.setText( ResourceManager.msg( "ERROR_READING_FILE" ) ) ;
-				}
 			}
 			else if ( source == exportButton )
 			{
@@ -281,14 +264,14 @@ public class Miscellaneous extends MyTabPanel
 
 		
 		
-		JPanel guiPanel = new JPanel( new GridBagLayout() ) ;
-		
-		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "GUI" ) ) ;
-		guiPanel.setBorder( tB ) ;
-
-
-		if ( this.guiPanel.getLookAndFeelNames() != null && true )
+		if ( this.guiPanel.getLookAndFeelNames() != null && true)
 		{
+
+			JPanel guiPanel = new JPanel( new GridBagLayout() ) ;
+		
+			tB = BorderFactory.createTitledBorder( ResourceManager.msg( "GUI" ) ) ;
+			guiPanel.setBorder( tB ) ;
+
 
 			c = new GridBagConstraints();
 			c.gridx      = 0 ;
@@ -337,17 +320,17 @@ public class Miscellaneous extends MyTabPanel
 			this.lookAndFeelBox.addActionListener( new ComboSelected() ) ;
 			
 			guiPanel.add( this.lookAndFeelBox, c ) ;
-		}
 
-		c = new GridBagConstraints();
-		c.gridx      = 0 ;
-		c.gridy      = 1 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.weightx    = 0.5 ;
-		c.weighty    = 1.0 ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
-		c.fill       = GridBagConstraints.BOTH ;
-		this.add( guiPanel, c ) ;
+			c = new GridBagConstraints();
+			c.gridx      = 0 ;
+			c.gridy      = 1 ;
+			//c.gridwidth  = GridBagConstraints.REMAINDER ;
+			c.weightx    = 0.5 ;
+			c.weighty    = 1.0 ;
+			c.anchor     = GridBagConstraints.NORTHEAST ;
+			c.fill       = GridBagConstraints.BOTH ;
+			this.add( guiPanel, c ) ;
+		}
 
 		
 		
@@ -406,32 +389,6 @@ public class Miscellaneous extends MyTabPanel
 		dvbViewerPanel.setBorder( tB ) ;
 
 		
-		
-		c = new GridBagConstraints();
-		c.gridx      = 0 ;
-		c.gridy      = 0 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
-		//c.weightx    = 0.5 ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.insets     = i ;
-
-		dvbViewerPanel.add( this.onlyTVCheckBox, c ) ;
-		this.onlyTVCheckBox.setSelected( true ) ;
-
-		
-		c = new GridBagConstraints();
-		c.gridx      = 1 ;
-		c.gridy      = 0 ;
-		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		//c.weightx    = 0.5 ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.insets     = i ;
-
-		this.updateChannelsFromDVBViewer.addActionListener( new ButtonsPressed() ) ;
-		dvbViewerPanel.add( this.updateChannelsFromDVBViewer, c ) ;
-
 		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
@@ -557,7 +514,7 @@ public class Miscellaneous extends MyTabPanel
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.gridheight = GridBagConstraints.REMAINDER ;
 		//c.anchor     = GridBagConstraints.NORTHEAST ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.fill       = GridBagConstraints.BOTH ;
 		this.add( dvbViewerPanel, c ) ;
 		
 
@@ -643,7 +600,6 @@ public class Miscellaneous extends MyTabPanel
 	{
 		this.tvinfoDVBVButton.setText(   ResourceManager.msg( "IMPORT_TV" )
                 + "\"" + TVInfoDVBV.NAME_IMPORTFILE + "\"" ) ;
-		this.updateChannelsFromDVBViewer.setText( ResourceManager.msg( "UPDATE_DVBV_CHANNELS" ) ) ;
 		this.updateToNewVersionButton.setText(   ResourceManager.msg( "UPDATE_CHANNELS" ) ) ;
 		this.exportButton.setText( ResourceManager.msg( "EXPORT" ) ) ;
 		this.setInfoText( "" ) ;
