@@ -51,6 +51,9 @@ public class Log {
 	}
 	public static String out( boolean verbose, boolean error, String out, boolean toDisplay )
 	{
+		String lineSeparator = System.getProperty( "line.separator" );
+		System.getProperty( "line.separator" );
+
 		if ( verbose && ! Log.isVerbose() )
 			return out ;
 		if ( file == null )
@@ -66,14 +69,14 @@ public class Log {
 			synchronized ( Log.file ) {
 				fstream = new FileWriter(Log.file, true);
 				BufferedWriter bf = new BufferedWriter(fstream);
-				String[] strings = out.split("\n");
+				String[] strings = out.split("(\r\n)|\r|\n");
 				for (int i = 0; i < strings.length; i++)
 				{
 					if (i != 0)
 						bf.write("                     ");
 					else
 						bf.write(dateString);
-					bf.write(strings[i] + '\n');
+					bf.write(strings[i] + lineSeparator );
 				}
 				bf.close();
 			}
