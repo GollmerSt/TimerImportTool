@@ -356,11 +356,17 @@ public class DVBViewer {
 		this.prepareProvider( provider ) ;
 		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
 		if ( ! channelMap.containsKey( providerChannel ) )
+		{
+			ErrorClass.setWarníng() ;
 			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
+		}
 		Channel c =  channelMap.get( providerChannel ) ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
+		{
+			ErrorClass.setWarníng() ;
 			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel ) ) ;
+		}
 		return c ;
 	}
 	
