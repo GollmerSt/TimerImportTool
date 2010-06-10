@@ -551,7 +551,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		for ( ChannelSet channelSet : sets )
 		{
 			Channel c = channelSet.getChannel( providerID ) ;
-			if ( c == null || ! provider.containsChannel( c ) )
+			if ( c == null || ! provider.containsChannel( c, true ) )
 				continue ;
 			channelMap.put( c.getName(), channelSet ) ;
 		}
@@ -576,7 +576,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 			if ( cs.getDVBViewerChannel() != null )
 				continue ;
     		Channel channel = cs.getChannel( providerID ) ;
-			if ( channel == null || ! provider.containsChannel( channel ) )
+			if ( channel == null || ! provider.containsChannel( channel, false ) )
 				continue ;
     		String name = channel.getName() ;
     	    @SuppressWarnings("unchecked")
