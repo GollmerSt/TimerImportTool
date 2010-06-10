@@ -69,7 +69,7 @@ public class TVBrowser extends Provider
 		return count ;
 	}
 	@Override
-	public boolean containsChannel( final Channel channel )
+	public boolean containsChannel( final Channel channel, boolean ifList )
 	{
 		if ( ! isFunctional() )
 			return true ;

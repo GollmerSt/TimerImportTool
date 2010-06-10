@@ -301,7 +301,7 @@ public class TVGenial extends Provider {
 	}
 	
 	@Override
-	public boolean containsChannel( final Channel channel )
+	public boolean containsChannel( final Channel channel, boolean ifList )
 	{
 		if ( ! isFunctional() )
 			return true ;

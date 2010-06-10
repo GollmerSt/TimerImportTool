@@ -151,7 +151,7 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean install()   { return true ; } ;
 	public boolean uninstall() { return true ; } ;
 	
-	public boolean containsChannel( final Channel channel) { return true ; } ;
+	public boolean containsChannel( final Channel channel, boolean ifList) { return true ; } ;
 	public void updateChannelMap() { } ;
 	public boolean isChannelMapAvailable() { return false ; } ;
 	

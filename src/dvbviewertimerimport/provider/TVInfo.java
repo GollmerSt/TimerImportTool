@@ -7,9 +7,6 @@ package dvbviewertimerimport.provider ;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -17,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -36,6 +32,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import dvbviewertimerimport.control.Channel;
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.* ;
@@ -55,11 +53,16 @@ public final class TVInfo extends Provider {
 	private ArrayList< MyEntry > unresolvedEntries= null ;
 	private HashSet< String > solvedChannels = new HashSet< String >() ;
 	
+	private HashSet< String >   userSender = null ;
+	private ArrayList< String > allSender  = null ;
+
+	
 	public Provider getTVInfo() { return this ; } ;
 
 	public TVInfo( Control control )
 	{
 		super( control, true, true, "TVInfo", true, true, true, false, true, true ) ;
+		this.canImport = true ;
 		this.dvbViewer = this.control.getDVBViewer() ;
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss") ;
@@ -82,24 +85,7 @@ public final class TVInfo extends Provider {
 	public InputStream connect() throws DigestException, NoSuchAlgorithmException
 	{
 		String completeURL = this.url + "?username=" + this.username + "&password=" + this.getMD5() ;
-		Log.out( true, "TVInfo URL: " + completeURL ) ;
-		
-		URL tvInfoURL;
-		try {
-			tvInfoURL = new URL( completeURL );
-		} catch (MalformedURLException e2) {
-			throw new ErrorClass( e2, "TVInfo URL not correct, the TVInfo should be checked." ) ;
-		}
-
-		URLConnection tvInfo = null ;
-		InputStream result = null ;
-		try {
-			tvInfo = tvInfoURL.openConnection();
-			result = tvInfo.getInputStream() ;
-		} catch (IOException e) {
-			throw new ErrorClass( e, "TVInfo data not available." );
-		}
-		return result ;
+		return Html.getStream( completeURL, "TVInfo XML" ) ;
 	}
 	
 	@Override
@@ -250,7 +236,7 @@ public final class TVInfo extends Provider {
 		return true ;
 	}
 	
-	public class MyMerkzettelParserCallback extends HTMLEditorKit.ParserCallback
+	public class MerkzettelParserCallback extends HTMLEditorKit.ParserCallback
 	{
 		private int tableDiv = -1 ;
 		private boolean isTableRead = false ;
@@ -261,11 +247,6 @@ public final class TVInfo extends Provider {
 		private MyEntry actEntry = null ;
 		private char[] date = null ;
 		private boolean ignore = false ;
-		
-		MyMerkzettelParserCallback()
-		{
-			super() ;
-		}
 		
 		public HashMap< Long, ArrayList< MyEntry > > getResult() { return this.entries ; } ;
 		
@@ -280,22 +261,35 @@ public final class TVInfo extends Provider {
 				else if ( tableDiv >= 0 )
 					this.tableDiv++ ;
 			}
-			else if ( this.tableDiv >= 0 && t == HTML.Tag.TR )
+			else if ( this.tableDiv >= 0 )
 			{
-				this.column = -1 ;
-				this.row++ ;
-				this.ignore = false ;
-				if ( this.row > 0 )
-					this.actEntry = new MyEntry() ;
+				if ( t == HTML.Tag.TR )
+				{
+					this.column = -1 ;
+					this.row++ ;
+					this.ignore = false ;
+					if ( this.row > 0 )
+						this.actEntry = new MyEntry() ;
+				}
+				else if ( t == HTML.Tag.TD )
+					if ( this.column < 0 && a.containsAttribute( HTML.Attribute.COLSPAN, "5"))
+						this.ignore = true ;
+					else
+						this.column++ ;
+				else if ( t == HTML.Tag.A )
+					this.isA = true ;
 			}
-			else if ( this.tableDiv >= 0 && t == HTML.Tag.TD )
-				if ( this.column < 0 && a.containsAttribute( HTML.Attribute.COLSPAN, "5"))
-					this.ignore = true ;
-				else
-					this.column++ ;
-			else if ( this.tableDiv >= 0 && t == HTML.Tag.A )
-				this.isA = true ;
 		}
+	    public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
+	    {
+			if ( this.isTableRead )
+				return ;
+			if ( this.tableDiv >= 0 )
+			{
+				if ( this.row > 0 && t == HTML.Tag.IMG && column == 1 )
+					this.actEntry.channel = (String) a.getAttribute( HTML.Attribute.ALT ) ;
+			}
+	    }
 		public void handleEndTag(HTML.Tag t, int pos)
 		{
 			if ( t == HTML.Tag.DIV )
@@ -368,27 +362,18 @@ public final class TVInfo extends Provider {
 	public void readMerklisteAndAddUnresolverEntries()
 	{
 		String completeURL = "http://www.tvinfo.de/merkzettel?LIMIT=200&user=" + this.username + "&pass=" + this.getMD5() ;
-		Log.out( true, "TVInfo Merkzettel URL: " + completeURL ) ;
 		
-		URL merkzettelURL;
-		try {
-			merkzettelURL = new URL( completeURL );
-		} catch (MalformedURLException e2) {
-			Log.out( "TVInfo URL not correct, the TVInfo should be checked." ) ;
-			return ;
-		}
-
-		URLConnection merkzettel = null ;
 		InputStream stream = null ;
-		try {
-			merkzettel = merkzettelURL.openConnection();
-			stream = merkzettel.getInputStream() ;
-		} catch (IOException e) {
-			Log.out( "TVInfo data not available." );
+		
+		try
+		{
+			stream = Html.getStream( completeURL, "TVInfo Merkzettel" ) ;
+		} catch ( ErrorClass e ) {
+			Log.out( e.getErrorString() ) ;
 			return ;
 		}
 		
-		MyMerkzettelParserCallback myCallBack = new MyMerkzettelParserCallback() ;
+		MerkzettelParserCallback myCallBack = new MerkzettelParserCallback() ;
 		
 		try {
 			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, false);
@@ -455,42 +440,167 @@ public final class TVInfo extends Provider {
 		else
 			return d1.getTime() ;
 	}
+	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback
+	{
+		private boolean isListUserSenderStarted = false ;
+		private boolean isUserSenderRead = false ;
+		private boolean isAllSenderRead = false ;
+		
+		private boolean isH1 = false ;
+		private boolean isH3 = false ;
+		private boolean isLI = false ;
+		private boolean isSender = false ;
+		private boolean isSenderAuswahl = false ;
+		private String channel = null ;
+				
+		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
+		{
+			if ( this.isUserSenderRead && this.isAllSenderRead )
+				return ;
+			if ( t == HTML.Tag.H1 )
+				this.isH1 = true ;
+			else if ( t == HTML.Tag.H3 )
+				this.isH3 = true ;
+			else if ( t == HTML.Tag.UL && this.isSender )
+			{
+				this.isSender = false ;
+				this.isListUserSenderStarted = true ;
+			}
+			else if ( t == HTML.Tag.LI && this.isListUserSenderStarted )
+				this.isLI = true ;
+		}
+	    public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
+	    {
+			if ( ! this.isSenderAuswahl )
+				return ;
+			if ( t == HTML.Tag.IMG )
+				allSender.add( (String) a.getAttribute( HTML.Attribute.ALT ) ) ;
+			if ( t == HTML.Tag.INPUT )
+				if ( a.containsAttribute( HTML.Attribute.VALUE, "Änderungen speichern" ) )
+				{
+					this.isSenderAuswahl = false ;
+					this.isAllSenderRead = true ;
+				}
+			
+	    }
+		public void handleEndTag(HTML.Tag t, int pos)
+		{
+			if ( this.isUserSenderRead && this.isAllSenderRead )
+				return ;
+			if ( t == HTML.Tag.H1 )
+				this.isH1 = false ;
+			else if ( t == HTML.Tag.H3 )
+				this.isH3 = false ;
+			if ( t == HTML.Tag.UL && this.isListUserSenderStarted )
+			{
+				this.isListUserSenderStarted = false ;
+				this.isUserSenderRead = true ;
+			}
+			if ( t == HTML.Tag.LI && this.isListUserSenderStarted )
+			{
+				if ( this.channel != null )
+					userSender.add( channel ) ;
+				this.isLI = false ;
+				this.channel = null ;
+			}
+		}
+		public void handleText(char[] data, int pos)
+		{
+			if ( this.isUserSenderRead && this.isAllSenderRead )
+				return ;
+			if ( this.isH3 )
+			{
+				if ( new String(data).equals( "Sender:") )
+					this.isSender = true ;
+			}
+			else if ( this.isH1 )
+			{
+				if ( new String(data).equals( "Senderauswahl") )
+					this.isSenderAuswahl = true ;
+			}
+			else if ( this.isListUserSenderStarted && this.isLI )
+			{
+				this.channel = new String( data ) ;
+				if ( this.channel.equals( ">>") )
+					this.channel = null ;
+			}
+		}
+	}
+	public void readSystem_EditSenderPage()
+	{
+		this.userSender = new HashSet< String >() ;
+		this.allSender = new ArrayList< String >() ;
+		
+		String completeURL = "http://www.tvinfo.de/system/_editSender.php?user=" + this.username + "&pass=" + this.getMD5() ;
+		
+		InputStream stream = null ;
+		
+		try
+		{
+			stream = Html.getStream( completeURL, "TVInfo Sender/Bearbeiten" ) ;
+		} catch ( ErrorClass e ) {
+			Log.out( e.getErrorString() ) ;
+			return ;
+		}
+		
+		System_EditSenderParserCallback myCallBack = new System_EditSenderParserCallback() ;
+		
+		try {
+			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, false);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	@Override
+	public int importChannels( boolean check )
+	{
+		if ( check )
+			return 0 ;
+		
+		if ( this.allSender == null )
+			this.readSystem_EditSenderPage() ;
+
+		int count = 0 ;
+	    
+		HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
+    
+		int pid = this.getID() ;
+    
+		for ( ChannelSet cs : this.control.getChannelSets() )
+		{
+			Channel c = cs.getChannel( pid ) ;
+			if ( c == null )
+				continue ;
+			mapByName.put( c.getName(), cs ) ;
+		}
+    
+		for ( String channel : this.allSender )
+		{
+			if ( ! mapByName.containsKey( channel ) )
+			{
+				ChannelSet cs = new ChannelSet() ;
+				cs.add( pid, channel, -1 ) ;
+				control.getChannelSets().add( cs ) ;
+				mapByName.put( channel, cs ) ;
+				count++ ;
+			}
+		}
+		return count ;
+	} ;
+	@Override
+	public boolean containsChannel( final Channel channel, boolean ifList )
+	{
+		if ( ifList )
+			return true ;
+		
+		if (this.userSender == null)
+			this.readSystem_EditSenderPage() ;
+		return this.userSender.contains( channel.getName() ) ;
+	}
+	@Override
+	public boolean isChannelMapAvailable()
+	{
+		return true ;
+	}
 }
-/*
- * Adresse: http://www.tvinfo.de/merkzettel?LIMIT=200&user=DVBViewerImport&pass=35be4d96599a458f928b2ba6689a0239
-
- * Zu parsende Teile im HTML-Merkzettel:
- * 
- * Start der Tabelle: <div class="Box4 col1">
- * Ende der Tabelle: zugehörige </div>-Tag
- * Zeilen-Aufbau:
- <tr class="lightestBlue">
-
-  <td>&nbsp;</td>
-<!--Sendername:  -->  <td><span class="bold ">SWR</span></td>
-<!--Datum:       -->  <td>DO 10.6.</td>
-<!--Uhrzeit:     -->  <td class="bold tRed">13:30</td>
-<!--Titel:     -->    <td><input type="hidden" name="sidnr[110326328]" value="110326328" /><a href="/fernsehprogramm/sendung/110326328_mit+einem+rutsch+ins+glck" class="bold">Mit einem Rutsch ins Glück</a> <i>&nbsp;</i></td>
-  <td><select class="w100" name="dayOffset[110326328]">
-
-    <option value="-1" selected="selected">keine</option>
-    <option value="0"   >am selben Tag</option>
-    <option value="1"   >1 Tag vorher</option>
-    <option value="2"   >2 Tage vorher</option>
-    <option value="3"   >3 Tage vorher</option>
-    <option value="4"   >4 Tage vorher</option>
-
-  </select></td>
-  <td><select class="v12 w80" name="smsOffset[110326328]">
-    <option value="0"  selected="selected" >keine</option>
-    <option value="1"   >kurz vorher</option>
-    <option value="3"   >3 h vorher</option>
-    <option value="6"   >6 h vorher</option>
-    <option value="12" >12 h vorher</option>
-
-  </select></td>
-  <td><input type="checkbox" value="1" name="rec[110326328]" title="aufnehmen" checked="checked"/></td>
-  <td><input type="checkbox" name="del[110326328]" value="1" /></td>
-  <td>&nbsp;</td>
-</tr>
- */
