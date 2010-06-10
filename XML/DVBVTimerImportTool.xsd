@@ -154,7 +154,7 @@
     		</xsd:element>
 
     	</xsd:all>
-    	<xsd:attribute name="programVersion" use="required">
+    	<xsd:attribute name="programVersion" use="prohibited">
     		<xsd:simpleType>
     			<xsd:restriction base="xsd:string">
     				<xsd:pattern value="\d+\.\d+\.\d+"></xsd:pattern>
