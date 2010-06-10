@@ -3,128 +3,164 @@
             elementFormDefault="qualified">
   <xsd:element name="Importer">
     <xsd:complexType>
-      <xsd:all>
-      	<xsd:element name="Providers">
-      		<xsd:complexType>
-      			<xsd:sequence>
-      				<xsd:element name="Provider" type="Provider"
-      					maxOccurs="unbounded" minOccurs="1">
-      				</xsd:element>
-      			</xsd:sequence>
-      		</xsd:complexType>
-      	</xsd:element>
+    	<xsd:all>
+    		<xsd:element name="Providers">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="Provider" type="Provider"
+    						maxOccurs="unbounded" minOccurs="1">
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
 
 
-      	<xsd:element name="DVBViewer">
+    		<xsd:element name="DVBViewer">
 
-      		<xsd:complexType>
-      			<xsd:attribute name="afterRecordingAction">
-      				<xsd:simpleType>
-      					<xsd:restriction base="xsd:string">
-      						<xsd:enumeration value="NONE"></xsd:enumeration>
-      						<xsd:enumeration value="POWER_OFF"></xsd:enumeration>
-      						<xsd:enumeration value="STANDBY"></xsd:enumeration>
-      						<xsd:enumeration value="HIBERNATE"></xsd:enumeration>
-      					</xsd:restriction>
-      				</xsd:simpleType>
-      			</xsd:attribute>
-      		</xsd:complexType>
-      	</xsd:element>
-      	<xsd:element name="DVBService" minOccurs="0">
-      		<xsd:complexType>
-      			<xsd:all>
-      				<xsd:element name="WakeOnLAN" minOccurs="0">
-      					<xsd:complexType>
-      						<xsd:attribute name="enable"
-      							type="xsd:boolean" use="required" />
-      						<xsd:attribute name="broadCastAddress"
-      							type="xsd:string" use="required" />
-      						<xsd:attribute name="macAddress"
-      							type="myMacType" use="required" />
-      						<xsd:attribute name="waitTimeAfterWOL"
-      							type="xsd:integer" />
-      					</xsd:complexType>
-      				</xsd:element>
-      			</xsd:all>
-      			<xsd:attribute name="enable" type="xsd:boolean">
-      			</xsd:attribute>
-      			<xsd:attribute name="url" type="xsd:string"
-      				use="required" />
-      			<xsd:attribute name="username" type="xsd:string"
-      				use="required" />
-      			<xsd:attribute name="password" type="xsd:string"
-      				use="required" />
-      			<xsd:attribute name="timeZone" type="xsd:string"
-      				use="required" />
-      		</xsd:complexType>
-      	</xsd:element>
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="Channels">
+    						<xsd:complexType>
+    							<xsd:sequence maxOccurs="unbounded" minOccurs="0">
 
-      	<xsd:element name="GUI" maxOccurs="1" minOccurs="0">
-      		<xsd:complexType>
-      			<xsd:sequence>
-      				<xsd:element name="DefaultProvider"
-      					type="providerName">
+    								<xsd:element name="Entry">
+    									<xsd:complexType>
+    										<xsd:attribute
+    											name="id" type="myDVBViewerChannelType">
+    										</xsd:attribute>
+    									</xsd:complexType>
+    								</xsd:element>
+    							</xsd:sequence>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    				<xsd:attribute name="afterRecordingAction">
+    					<xsd:simpleType>
+    						<xsd:restriction base="xsd:string">
+    							<xsd:enumeration value="NONE"></xsd:enumeration>
+    							<xsd:enumeration value="POWER_OFF"></xsd:enumeration>
+    							<xsd:enumeration value="STANDBY"></xsd:enumeration>
+    							<xsd:enumeration value="HIBERNATE"></xsd:enumeration>
+    							<xsd:enumeration value="DEFAULT"></xsd:enumeration>
+    						</xsd:restriction>
+    					</xsd:simpleType>
+    				</xsd:attribute>
+    				<xsd:attribute name="timerAction">
+    					<xsd:simpleType>
+    						<xsd:restriction base="xsd:string">
+    							<xsd:enumeration value="RECORD"></xsd:enumeration>
+    							<xsd:enumeration value="TUNE"></xsd:enumeration>
+    							<xsd:enumeration value="AUDIO_PLUGIN"></xsd:enumeration>
+    							<xsd:enumeration value="VIDEO_PLUGIN"></xsd:enumeration>
+    							<xsd:enumeration value="DEFAULT"></xsd:enumeration>
+    						</xsd:restriction>
+    					</xsd:simpleType>
+    				</xsd:attribute>
+    				<xsd:attribute name="timeZone" type="xsd:string">
+    				</xsd:attribute>
+    			</xsd:complexType>
+    		</xsd:element>
+    		<xsd:element name="DVBService" minOccurs="0">
+    			<xsd:complexType>
+    				<xsd:all>
+    					<xsd:element name="WakeOnLAN" minOccurs="0">
+    						<xsd:complexType>
+    							<xsd:attribute name="enable"
+    								type="xsd:boolean" use="required" />
+    							<xsd:attribute name="broadCastAddress"
+    								type="xsd:string" use="required" />
+    							<xsd:attribute name="macAddress"
+    								type="myMacType" use="required" />
+    							<xsd:attribute name="waitTimeAfterWOL"
+    								type="xsd:integer" />
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:all>
+    				<xsd:attribute name="enable" type="xsd:boolean">
+    				</xsd:attribute>
+    				<xsd:attribute name="url" type="xsd:string"
+    					use="required" />
+    				<xsd:attribute name="username" type="xsd:string"
+    					use="required" />
+    				<xsd:attribute name="password" type="xsd:string"
+    					use="required" />
+    				<xsd:attribute name="timeZone" type="xsd:string"
+    					use="required" />
+    			</xsd:complexType>
+    		</xsd:element>
 
-      				</xsd:element>
-      				<xsd:element name="Language" minOccurs="0">
-      					<xsd:simpleType>
-      						<xsd:restriction base="xsd:string">
-      							<xsd:enumeration value="de"></xsd:enumeration>
-      							<xsd:enumeration value="en"></xsd:enumeration>
-      							<xsd:enumeration value=""></xsd:enumeration>
-      						</xsd:restriction>
-      					</xsd:simpleType>
-      				</xsd:element>
-      				<xsd:element name="LookAndFeel"
-      					type="xsd:string">
-      				</xsd:element>
-      			</xsd:sequence>
-      		</xsd:complexType>
-      	</xsd:element>
+    		<xsd:element name="GUI" maxOccurs="1" minOccurs="0">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="DefaultProvider"
+    						type="providerName">
 
-      	<xsd:element name="Offsets" type="myOffsetsType"
-      		minOccurs="0" />
-      	<xsd:element name="Separator" type="xsd:string" minOccurs="0" />
+    					</xsd:element>
+    					<xsd:element name="Language" minOccurs="0">
+    						<xsd:simpleType>
+    							<xsd:restriction base="xsd:string">
+    								<xsd:pattern value="[^_]+_[^_]*_[^_]*"></xsd:pattern>
+    							</xsd:restriction>
+    						</xsd:simpleType>
+    					</xsd:element>
+    					<xsd:element name="LookAndFeel"
+    						type="xsd:string">
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
 
-      	<xsd:element name="Channels" minOccurs="1">
-      		<xsd:complexType>
-      			<xsd:sequence>
-      				<xsd:element name="Channel" maxOccurs="unbounded"
-      					minOccurs="1">
-      					<xsd:complexType>
-      						<xsd:sequence>
-      							<xsd:element name="Provider"
-      								minOccurs="0" maxOccurs="unbounded">
-      								<xsd:complexType>
+    		<xsd:element name="Offsets" type="myOffsetsType"
+    			minOccurs="0" />
+    		<xsd:element name="Separator" type="xsd:string"
+    			minOccurs="0" />
 
-      									<xsd:simpleContent>
-      										<xsd:extension
-      											base="xsd:string">
-      											<xsd:attribute
-      												name="name" type="providerName">
-      											</xsd:attribute>
-      											<xsd:attribute
-      												name="channelID" type="xsd:long">
-      											</xsd:attribute>
-      										</xsd:extension>
-      									</xsd:simpleContent>
-      								</xsd:complexType>
-      							</xsd:element>
+    		<xsd:element name="Channels" minOccurs="1">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="Channel"
+    						maxOccurs="unbounded" minOccurs="1">
+    						<xsd:complexType>
+    							<xsd:sequence>
+    								<xsd:element name="Provider"
+    									minOccurs="0" maxOccurs="unbounded">
+    									<xsd:complexType>
 
-      							<xsd:element name="DVBViewer"
-      								type="myDVBViewerChannelType" minOccurs="0" />
-      							<xsd:element name="Offsets"
-      								type="myOffsetsType" minOccurs="0" />
-      							<xsd:element name="Merge"
-      								type="xsd:boolean" minOccurs="0" />
-      						</xsd:sequence>
-      					</xsd:complexType>
-      				</xsd:element>
-      			</xsd:sequence>
-      		</xsd:complexType>
-      	</xsd:element>
+    										<xsd:simpleContent>
+    											<xsd:extension
+    												base="xsd:string">
+    												<xsd:attribute
+    													name="name" type="providerName">
+    												</xsd:attribute>
+    												<xsd:attribute
+    													name="channelID" type="xsd:long">
+    												</xsd:attribute>
+    											</xsd:extension>
+    										</xsd:simpleContent>
+    									</xsd:complexType>
+    								</xsd:element>
 
-      </xsd:all>
+    								<xsd:element name="DVBViewer"
+    									type="myDVBViewerChannelType" minOccurs="0" />
+    								<xsd:element name="Offsets"
+    									type="myOffsetsType" minOccurs="0" />
+    								<xsd:element name="Merge"
+    									type="xsd:boolean" minOccurs="0" />
+    							</xsd:sequence>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+
+    	</xsd:all>
+    	<xsd:attribute name="programVersion" use="prohibited">
+    		<xsd:simpleType>
+    			<xsd:restriction base="xsd:string">
+    				<xsd:pattern value="\d+\.\d+\.\d+"></xsd:pattern>
+    			</xsd:restriction>
+    		</xsd:simpleType>
+    	</xsd:attribute>
     </xsd:complexType>
   </xsd:element>
 
@@ -170,6 +206,7 @@
   		<xsd:enumeration value="TVInfo"></xsd:enumeration>
   		<xsd:enumeration value="ClickFinder"></xsd:enumeration>
   		<xsd:enumeration value="TVGenial"></xsd:enumeration>
+  		<xsd:enumeration value="TV-Browser"></xsd:enumeration>
   	</xsd:restriction>
   </xsd:simpleType>
 

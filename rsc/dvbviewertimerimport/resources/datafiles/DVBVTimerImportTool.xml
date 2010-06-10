@@ -494,9 +494,9 @@
             <Provider name="TVGenial" channelID="40002">NL 2</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">NL3</Provider>
             <Provider name="ClickFinder">NL3</Provider>
             <Provider name="TVGenial" channelID="40003">NL 3</Provider>
+            <Provider name="TVInfo" channelID="40003">NL 3</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF1</Provider>
@@ -935,6 +935,7 @@
             <Provider name="ClickFinder">TV5</Provider>
             <Provider name="TVGenial" channelID="70006">TV5</Provider>
             <Provider name="TV-Browser" channelID="70006">TV5</Provider>
+            <Provider name="TVInfo" channelID="70006">TV5</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Kinowelt TV</Provider>
@@ -953,6 +954,7 @@
             <Provider name="ClickFinder">RTL Crime</Provider>
             <Provider name="TVGenial" channelID="10094">Crime</Provider>
             <Provider name="TV-Browser" channelID="10094">RTL Crime</Provider>
+            <Provider name="TVInfo" channelID="10094">RTL Crime</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">MEZZO</Provider>
@@ -1018,6 +1020,7 @@
         <Channel>
             <Provider name="ClickFinder">LIG TV</Provider>
             <Provider name="TV-Browser">LIGA total!</Provider>
+            <Provider name="TVInfo">LIGATOTAL</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">TVP Info</Provider>
@@ -1051,6 +1054,7 @@
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Eurosport HD</Provider>
+            <Provider name="TVInfo">Eurosport HD</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">B.TV</Provider>
@@ -1114,6 +1118,7 @@
             <Provider name="TVGenial" channelID="10519">DisnXD</Provider>
             <Provider name="ClickFinder" channelID="10519">Disney XD</Provider>
             <Provider name="TV-Browser" channelID="10519">Disney XD</Provider>
+            <Provider name="TVInfo" channelID="10519">Disney XD</Provider>
         </Channel>
         <Channel>
             <Provider name="TVGenial" channelID="10550">skynews</Provider>
@@ -1138,6 +1143,7 @@
         </Channel>
         <Channel>
             <Provider name="TVGenial" channelID="10559">Hist.HD</Provider>
+            <Provider name="TVInfo" channelID="10559">History HD</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">ERF</Provider>
@@ -1186,12 +1192,14 @@
         </Channel>
         <Channel>
             <Provider name="TV-Browser">sixx</Provider>
+            <Provider name="TVInfo">sixx</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">Sky Select+</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">Sport1</Provider>
+            <Provider name="TVInfo">Sport1</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">sportdigital TV</Provider>
@@ -1204,6 +1212,21 @@
         </Channel>
         <Channel>
             <Provider name="TV-Browser">TV-Lernsender.NRW</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Big Brother</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">PULS4</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">Sonnenklar TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">HD Suisse</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ServusTV</Provider>
         </Channel>
     </Channels>
 </Importer>
