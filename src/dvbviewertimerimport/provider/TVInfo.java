@@ -33,7 +33,6 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.control.Channel;
-import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.* ;

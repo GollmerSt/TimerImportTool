@@ -5,13 +5,11 @@
 package dvbviewertimerimport.provider;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 
 
 import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
-import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.provider.Provider;
 
