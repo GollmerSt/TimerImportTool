@@ -54,7 +54,7 @@ public final class TVInfo extends Provider {
 	private HashSet< String > solvedChannels = new HashSet< String >() ;
 	
 	private HashSet< String >   userSender = null ;
-	private ArrayList< String > allSender  = null ;
+	private ArrayList< Channel > allSender  = null ;
 
 	
 	public Provider getTVInfo() { return this ; } ;
@@ -474,7 +474,20 @@ public final class TVInfo extends Provider {
 			if ( ! this.isSenderAuswahl )
 				return ;
 			if ( t == HTML.Tag.IMG )
-				allSender.add( (String) a.getAttribute( HTML.Attribute.ALT ) ) ;
+			{
+				
+				Channel c = new Channel( getID(), (String) a.getAttribute( HTML.Attribute.ALT ), -1  )
+				{
+					@Override
+					public Object getIDKey()
+					{
+						return this.getName() ;
+					}
+					@Override
+					public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
+				};
+				allSender.add( c ) ;
+			}
 			if ( t == HTML.Tag.INPUT )
 				if ( a.containsAttribute( HTML.Attribute.VALUE, "Änderungen speichern" ) )
 				{
@@ -529,7 +542,7 @@ public final class TVInfo extends Provider {
 	public void readSystem_EditSenderPage()
 	{
 		this.userSender = new HashSet< String >() ;
-		this.allSender = new ArrayList< String >() ;
+		this.allSender = new ArrayList< Channel >() ;
 		
 		String completeURL = "http://www.tvinfo.de/system/_editSender.php?user=" + this.username + "&pass=" + this.getMD5() ;
 		
@@ -558,35 +571,14 @@ public final class TVInfo extends Provider {
 		if ( check )
 			return 0 ;
 		
+		return this.assignChannels() ;
+	}
+	@Override
+	protected ArrayList< Channel > readChannels()
+	{
 		if ( this.allSender == null )
 			this.readSystem_EditSenderPage() ;
-
-		int count = 0 ;
-	    
-		HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
-    
-		int pid = this.getID() ;
-    
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( pid ) ;
-			if ( c == null )
-				continue ;
-			mapByName.put( c.getName(), cs ) ;
-		}
-    
-		for ( String channel : this.allSender )
-		{
-			if ( ! mapByName.containsKey( channel ) )
-			{
-				ChannelSet cs = new ChannelSet() ;
-				cs.add( pid, channel, -1 ) ;
-				control.getChannelSets().add( cs ) ;
-				mapByName.put( channel, cs ) ;
-				count++ ;
-			}
-		}
-		return count ;
+		return this.allSender ;
 	} ;
 	@Override
 	public boolean containsChannel( final Channel channel, boolean ifList )

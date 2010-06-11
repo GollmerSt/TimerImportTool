@@ -106,7 +106,8 @@ public class TVGenial extends Provider {
 		
 		return true ;
 	}
-	private ArrayList< Channel > readChannels()
+	@Override
+	protected ArrayList< Channel > readChannels()
 	{
 		String dataPath = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "PublicDataRoot") ;
 		if ( dataPath == null )
@@ -165,7 +166,16 @@ public class TVGenial extends Provider {
 						break ;
 					nameLong = name + Integer.valueOf( countR++ ) ;
 				}
-				Channel c = new Channel( pid, nameLong, tvuid ) ;
+				Channel c = new Channel( pid, nameLong, tvuid ) 
+				{
+					@Override
+					public Object getIDKey()
+					{
+						return Long.valueOf( getID() ) ;
+					}
+					@Override
+					public Object getIDKey( final Channel c ) { return Long.valueOf( c.getID() ) ; } ;  // ID of the provider, type is provider dependent
+				};
 				list.add( c ) ; ;
 				nameMap.put( nameLong, tvuid ) ;
 			}
@@ -173,43 +183,14 @@ public class TVGenial extends Provider {
 			return null ;
 		}
 	return list ;
-}
+	}
 	@Override
 	public int importChannels( boolean check )
 	{
 		if ( check )
 			return 0 ;
 		
-		ArrayList< Channel > channels = readChannels() ;
-		
-		if ( channels == null )
-			return -1 ;
-		
-		HashMap< Long, ChannelSet > mapByID = new HashMap< Long, ChannelSet >() ;
-
-		int pid = this.getID() ;
-		
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( pid ) ;
-			if ( c == null )
-				continue ;
-			mapByID.put( c.getID(), cs ) ;
-		}
-		
-		int count = 0 ;
-
-		for ( Channel c : channels )
-		{
-			if ( ! mapByID.containsKey( c.getID() ) )
-			{
-				ChannelSet cs = new ChannelSet() ;
-				cs.add( c ) ;
-				control.getChannelSets().add( cs ) ;
-				count++ ;
-			}
-		}
-	return count ;
+		return this.assignChannels() ;
 	}
 	private String getParaInfo()
 	{

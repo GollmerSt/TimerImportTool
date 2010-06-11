@@ -4,8 +4,10 @@
 
 package dvbviewertimerimport.provider;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+
 
 import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
@@ -28,6 +30,29 @@ public class TVBrowser extends Provider
 	}
 	
 	@Override
+	protected ArrayList< Channel > readChannels()
+	{
+		String [] channels = DVBViewerTimerImport.getTVBChannelNames() ;
+		
+		ArrayList< Channel > result = new ArrayList< Channel >() ;
+		
+		for ( String cS : channels )
+		{
+			Channel c = new Channel( getID(), (String) cS, -1  )
+			{
+				@Override
+				public Object getIDKey()
+				{
+					return this.getName() ;
+				}
+				@Override
+				public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
+			};
+			result.add( c ) ;
+		}
+		return result ;
+	} ;
+	@Override
 	public int importChannels( boolean check )
 	{
 		if ( check )
@@ -35,38 +60,8 @@ public class TVBrowser extends Provider
 		
 		if ( ! isFunctional() )
 			return -1 ;
-    
-		String [] channels = DVBViewerTimerImport.getTVBChannelNames() ;
-    
-		if ( channels == null )
-			return -1 ;
-    
-		int count = 0 ;
-    
-		HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
-    
-		int pid = this.getID() ;
-    
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( pid ) ;
-			if ( c == null )
-				continue ;
-			mapByName.put( c.getName(), cs ) ;
-		}
-    
-		for ( String channel : channels )
-		{
-			if ( ! mapByName.containsKey( channel ) )
-			{
-				ChannelSet cs = new ChannelSet() ;
-				cs.add( pid, channel, -1 ) ;
-				control.getChannelSets().add( cs ) ;
-				mapByName.put( channel, cs ) ;
-				count++ ;
-			}
-		}
-		return count ;
+		
+		return this.assignChannels() ;
 	}
 	@Override
 	public boolean containsChannel( final Channel channel, boolean ifList )

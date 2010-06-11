@@ -5,11 +5,13 @@
 package dvbviewertimerimport.provider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
 import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Channel;
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
@@ -157,6 +159,7 @@ public abstract class Provider implements DVBViewerProvider {
 	
 	public int importChannels( boolean check ) { return -1 ; } ;
 	public int importChannels() { return this.importChannels( false ) ; } ;
+	protected ArrayList< Channel > readChannels() { return null ; } ;
 	
 	public boolean process( boolean getAll, DVBViewer.Command command )   { return true ; } ;
 	public boolean processEntry( Object args, DVBViewer.Command command ) { return true ; } ;
@@ -369,6 +372,47 @@ public abstract class Provider implements DVBViewerProvider {
 		  }
 		sw.writeEndElement() ;
 	}
+
+	public int assignChannels()
+	{
+		ArrayList< Channel > channels = readChannels() ;
+		
+		if ( channels == null )
+			return -1 ;
+		
+		HashMap< Object, ChannelSet > mapByID = new HashMap< Object, ChannelSet >() ;
+
+		int pid = this.getID() ;
+		
+		if ( channels.size() == 0 )
+			return 0 ;
+		Channel channelProv = (Channel) channels.toArray()[ 0 ] ;
+
+		for ( ChannelSet cs : this.control.getChannelSets() )
+		{
+			Channel c = cs.getChannel( pid ) ;
+			if ( c == null )
+				continue ;
+			mapByID.put( channelProv.getIDKey( c ), cs ) ;
+		}
+		
+		int count = 0 ;
+		
+			
+
+		for ( Channel c : channels )
+		{
+			if ( ! mapByID.containsKey( c.getIDKey() ) )
+			{
+				ChannelSet cs = new ChannelSet() ;
+				cs.add( c ) ;
+				control.getChannelSets().add( cs ) ;
+				count++ ;
+			}
+		}
+	return count ;
+	} ;
+
 	 public TimeZone getTimeZone() { return this.timeZone ; } ;
    public void setTimeZone( TimeZone timeZone) { this.timeZone = timeZone; } ;
 }
