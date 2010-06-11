@@ -622,7 +622,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.dvbViewerCombo.removeAllItems() ;
 
 		dvbviewertimerimport.dvbviewer.channels.Channel emptyChannel = new dvbviewertimerimport.dvbviewer.channels.Channel() ;
-//		this.ignoreNextDVBViewerChannelChange = true ;
+
 		this.dvbViewerCombo.addItem( emptyChannel ) ;
 		
 		if ( control.getDVBViewer().getChannels().getChannels() != null )
