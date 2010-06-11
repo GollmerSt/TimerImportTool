@@ -222,7 +222,7 @@ public class ProviderAssignment  extends MyTabPanel
 					p.updateChannelMap() ;
 					updateIfChannelSetsChanged( p ) ;
 					importButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
-					messageLabel.setText( Integer.toString( count ) + ResourceManager.msg( "CHANNELS_IMPORTED" ) ) ;
+					messageLabel.setText( ResourceManager.msg( "CHANNELS_IMPORTED", Integer.toString( count ) ) ) ;
 				}
 				else
 					importButton.setText( ResourceManager.msg( "FAILED" ) ) ;

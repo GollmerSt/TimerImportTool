@@ -61,6 +61,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 	private final JComboBox mergeCombo = new JComboBox() ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
+	
+	private final DVBViewerChannelSelected dvbViewerChannelSelected = new DVBViewerChannelSelected() ;
 
 	private TreeMap< String, Integer > dvbViewerLongChannelAssignment = new TreeMap< String, Integer >( new MyComparator() );
 	private HashMap< String, Integer > dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
@@ -240,6 +242,8 @@ public class DVBViewerAssignment extends MyTabPanel{
 
 	        JComboBox cb = (JComboBox)e.getSource();
 	        dvbviewertimerimport.dvbviewer.channels.Channel c = (dvbviewertimerimport.dvbviewer.channels.Channel)cb.getSelectedItem() ;
+	        if ( c == null )
+	        	return ;
 	        int ix = providerChannelList.getSelectedIndex() ;
 	        if ( ix >= 0 )
 	        {
@@ -387,7 +391,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER" ) ) ;
 		dvbViewer.setBorder( tB ) ;
 		
-		this.dvbViewerCombo.addActionListener( new DVBViewerChannelSelected() ) ;
+		this.dvbViewerCombo.addActionListener( dvbViewerChannelSelected ) ;
 		
 		this.updateDVBViewerChannels() ;
 		
@@ -612,9 +616,13 @@ public class DVBViewerAssignment extends MyTabPanel{
 		
 		this.dvbViewerLongChannelAssignment  = new TreeMap< String, Integer >( new MyComparator() );
 		this.dvbViewerShortChannelAssignment = new HashMap< String, Integer >();
-		this.dvbViewerCombo.removeAllItems() ;
 		
+		this.providerChannelList.clearSelection() ;
+
+		this.dvbViewerCombo.removeAllItems() ;
+
 		dvbviewertimerimport.dvbviewer.channels.Channel emptyChannel = new dvbviewertimerimport.dvbviewer.channels.Channel() ;
+//		this.ignoreNextDVBViewerChannelChange = true ;
 		this.dvbViewerCombo.addItem( emptyChannel ) ;
 		
 		if ( control.getDVBViewer().getChannels().getChannels() != null )
@@ -627,6 +635,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 				this.dvbViewerCombo.addItem( channel ) ;
 			}
 		}
+		
 		this.dvbViewerCombo.updateUI() ;
 	}
 	private void updateText()
