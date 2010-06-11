@@ -43,4 +43,6 @@ public class Channel {
 			out += "  Id = \"" + id + "\"" ;
 		return out ;
 	}
+	public Object getIDKey() { return null ; } ;  // ID of the provider, type is provider dependent
+	public Object getIDKey( final Channel c ) { return c.getIDKey() ; } ;  // ID of the provider, type is provider dependent
 }
