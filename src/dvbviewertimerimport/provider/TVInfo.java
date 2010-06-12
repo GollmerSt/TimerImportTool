@@ -247,6 +247,10 @@ public final class TVInfo extends Provider {
 		private char[] date = null ;
 		private boolean ignore = false ;
 		
+		private int columnSender = -1 ;
+		private int columnBeginn = -1 ;
+		private int columnTitel  = -1 ;
+		
 		public HashMap< Long, ArrayList< MyEntry > > getResult() { return this.entries ; } ;
 		
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
@@ -285,8 +289,20 @@ public final class TVInfo extends Provider {
 				return ;
 			if ( this.tableDiv >= 0 )
 			{
-				if ( this.row > 0 && t == HTML.Tag.IMG && column == 1 )
+				if ( this.row > 0 && t == HTML.Tag.IMG && column == this.columnSender )
 					this.actEntry.channel = (String) a.getAttribute( HTML.Attribute.ALT ) ;
+				else if ( this.row == 0 && t == HTML.Tag.INPUT )
+				{
+					if ( a.containsAttribute( HTML.Attribute.VALUE, "Sender" ) )
+						this.columnSender = this.column ;
+					else if ( a.containsAttribute( HTML.Attribute.VALUE, "Beginn" ) )
+					{
+						this.columnBeginn = this.column ;
+						this.column++ ;  // Two columns are necessary ( Date, Time)
+					}
+					else if ( a.containsAttribute( HTML.Attribute.VALUE, "Titel" ) )
+						this.columnTitel = this.column ;
+				}
 			}
 	    }
 		public void handleEndTag(HTML.Tag t, int pos)
@@ -327,33 +343,32 @@ public final class TVInfo extends Provider {
 				return ;
 			if ( this.tableDiv >= 0 && this.row > 0 )
 			{
-				switch ( column )
+				if ( this.column == this.columnSender )
 				{
-				case 1 :
 					this.actEntry.channel = new String( data ) ;
 					if ( solvedChannels.contains( this.actEntry.channel ) )
 						this.ignore = true ;
-					break ;
-				case 2 :
+					
+				}
+				else if ( this.column == this.columnBeginn )
 					this.date  = data ;
-					break ;
-				case 3 :
+				else if ( this.column == this.columnBeginn+1 )
+				{
 					if ( this.date == null )
+						this.ignore = true ;
+					else
 					{
-						this.ignore = true ;
-						break ;
+						try
+						{
+							this.actEntry.start = htmlTimeToLong( new String( this.date ), new String( data ) ) ;
+						} catch (ParseException e) {
+							this.ignore = true ;
+						}
 					}
-					try {
-						this.actEntry.start = htmlTimeToLong( new String( this.date ), new String( data ) ) ;
-					} catch (ParseException e) {
-						this.ignore = true ;
-					}
-					break ;
-				case 4 :
-				case 5 :
+				}
+				else if ( this.column == this.columnTitel )
 					if ( this.isA && data != null && this.actEntry.title == null )
 						this.actEntry.title = new String( data ) ;
-				}
 			}
 		}
 	}
@@ -488,13 +503,14 @@ public final class TVInfo extends Provider {
 				allSender.add( c ) ;
 			}
 			if ( t == HTML.Tag.INPUT )
+			{
 				if ( a.containsAttribute( HTML.Attribute.VALUE, "Änderungen speichern" ) )
 				{
 					this.isSenderAuswahl = false ;
 					this.isAllSenderRead = true ;
 				}
-			
-	    }
+			}
+		}
 		public void handleEndTag(HTML.Tag t, int pos)
 		{
 			if ( this.isUserSenderRead && this.isAllSenderRead )
