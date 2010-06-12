@@ -39,10 +39,13 @@ import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.xml.StackXML;
 
-public final class TVInfo extends Provider {	
+public final class TVInfo extends Provider {
+	
+	private static final String senderURL = "http://www.tvinfo.de/system/_editSender.php" ;
+	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200" ;
 
-	private final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>( "epg_schedule", "epg_schedule_entry" ) ;
-	private final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>( "epg_schedule", "epg_schedule_entry", "title" ) ;
+	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>( "epg_schedule", "epg_schedule_entry" ) ;
+	private static final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>( "epg_schedule", "epg_schedule_entry", "title" ) ;
 	
 
 	private final DVBViewer dvbViewer ;
@@ -190,14 +193,14 @@ public final class TVInfo extends Provider {
 				if( ev.isStartElement() )
 				{
 					stack.push( ev.asStartElement().getName().getLocalPart() );
-					if ( ! stack.equals( this.xmlPathTVinfoEntry ) )
+					if ( ! stack.equals( TVInfo.xmlPathTVinfoEntry ) )
 						continue ;
 					entry = new MyEntry() ;
 					entry.readAttributes( ev ) ;
 				}
 				if ( ev.isCharacters() )
 				{
-					if ( stack.equals( this.xmlPathTVinfoTitle ) )
+					if ( stack.equals( TVInfo.xmlPathTVinfoTitle ) )
 					{
 						entry.setTitle( ev.asCharacters().getData() ) ;
 						boolean isAdded = false ;
@@ -375,7 +378,7 @@ public final class TVInfo extends Provider {
 	
 	public void readMerklisteAndAddUnresolverEntries()
 	{
-		String completeURL = "http://www.tvinfo.de/merkzettel?LIMIT=200&user=" + this.username + "&pass=" + this.getMD5() ;
+		String completeURL = TVInfo.merkzettelURL + "&user=" + this.username + "&pass=" + this.getMD5() ;
 		
 		InputStream stream = null ;
 		
@@ -559,7 +562,7 @@ public final class TVInfo extends Provider {
 		this.userSender = new HashSet< String >() ;
 		this.allSender = new ArrayList< Channel >() ;
 		
-		String completeURL = "http://www.tvinfo.de/system/_editSender.php?user=" + this.username + "&pass=" + this.getMD5() ;
+		String completeURL = TVInfo.senderURL + "?user=" + this.username + "&pass=" + this.getMD5() ;
 		
 		InputStream stream = null ;
 		
