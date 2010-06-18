@@ -12,9 +12,13 @@ import javax.xml.stream.XMLStreamException;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 
 
-public class TimeOffsets  implements Cloneable {
+public class TimeOffsets  implements Cloneable
+{
+	
 	private static TimeOffsets generalTimeOffsets = new TimeOffsets() ;
 	private ArrayList<OffsetEntry> offsets  = null;
+	private boolean useGlobal = true ;
+	
 	public TimeOffsets()
 	{
 		this.offsets  = new ArrayList<OffsetEntry>() ;
@@ -23,6 +27,7 @@ public class TimeOffsets  implements Cloneable {
 	public TimeOffsets clone()
 	{
 		TimeOffsets offsets = new TimeOffsets() ;
+		offsets.useGlobal = this.useGlobal ;
 		for ( OffsetEntry oe : this.offsets )
 			offsets.offsets.add( oe.clone() ) ;
 		return offsets ;
@@ -30,6 +35,7 @@ public class TimeOffsets  implements Cloneable {
 	public void assign( TimeOffsets offsets )
 	{
 		this.offsets = offsets.offsets ;
+		this.useGlobal = offsets.useGlobal ;
 	}
 	public void add( String pre, String post, String weekdaysString, String startTime, String endTime )
 	{
@@ -64,14 +70,14 @@ public class TimeOffsets  implements Cloneable {
 	public long getPreOffset( long time )
 	{
 		long offset = 0 ;
-		if ( this != generalTimeOffsets )
+		if ( this != generalTimeOffsets && this.useGlobal )
 			offset = this.getMax( time, 0, generalTimeOffsets.offsets, 0 ) ;
 		return this.getMax( time, offset, this.offsets, 0 ) ;
 	}
 	public long getPostOffset( long time )
 	{
 		long offset = 0 ;
-		if ( this != generalTimeOffsets )
+		if ( this != generalTimeOffsets && this.useGlobal )
 			offset = this.getMax( time, 0, generalTimeOffsets.offsets, 1 ) ;
 		return this.getMax( time, offset, offsets, 1 ) ;
 	}
@@ -83,6 +89,8 @@ public class TimeOffsets  implements Cloneable {
 		
 		sw.writeStartElement( "Offsets" ) ;
 		
+		sw.writeAttribute( "useGlobal", this.useGlobal ) ;
+		
 		for ( OffsetEntry e : this.offsets )
 			e.writeXML( sw ) ;
 		
@@ -90,4 +98,7 @@ public class TimeOffsets  implements Cloneable {
 	}
 	public OffsetEntry getOffset( int ix ) { return offsets.get( ix ) ; } ;
 	public int size() { return offsets.size() ; } ;
+	
+	public boolean getUseGlobal() { return this.useGlobal ; } ;
+	public void setUseGlobal( final boolean useGlobal ) { this.useGlobal = useGlobal ; } ;
 }

@@ -58,6 +58,7 @@ public class OffsetsDialog extends JDialog {
 
 	private final TimeOffsets offsets ;
 	private final TimeOffsets originalOffsets ;
+	private final boolean isGlobal ;
 	
 	private final JTable table = new JTable() ;
 	private final String[] columnNames = new String[ 7 ];
@@ -65,6 +66,7 @@ public class OffsetsDialog extends JDialog {
 	private final JButton cancelButton = new JButton() ;
 	private final JButton newButton = new JButton() ; 
 	private final JButton deleteButton = new JButton() ; 
+	private final JCheckBox globalCheckBox = new JCheckBox() ; 
 	
 	private final GUIPanel guiPanel ;
 	
@@ -93,6 +95,7 @@ public class OffsetsDialog extends JDialog {
 			{
 				guiPanel.setChanged() ;
 				table.editingStopped( null ) ;
+				offsets.setUseGlobal( ! globalCheckBox.isSelected() ) ;
 				originalOffsets.assign( offsets ) ;
 				dispose() ;
 			}
@@ -117,10 +120,11 @@ public class OffsetsDialog extends JDialog {
 		
 	}
 	
-	public OffsetsDialog( final GUIPanel guiPanel, final TimeOffsets offsets )
+	public OffsetsDialog( final GUIPanel guiPanel, final TimeOffsets offsets, final boolean isGlobal )
 	{
 		super( guiPanel.getWindow() , java.awt.Dialog.ModalityType.APPLICATION_MODAL  ) ;
 
+		this.isGlobal = isGlobal ;
 		this.originalOffsets = offsets ;
 		this.offsets = offsets.clone() ;
 		this.guiPanel = guiPanel ;
@@ -132,9 +136,9 @@ public class OffsetsDialog extends JDialog {
 		this.columnNames[3] = ResourceManager.msg( "START" ) ;
 		this.columnNames[4] = ResourceManager.msg( "END" ) ;
 		
-		paint() ;
+		init() ;
 	}
-	public void paint()
+	public void init()
 	{
 	    this.setTitle( ResourceManager.msg( "OFFSET_DIALOG" ) ) ;
 	    this.setLayout(  new GridBagLayout() ) ;
@@ -146,6 +150,20 @@ public class OffsetsDialog extends JDialog {
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.insets     = i ;
+		
+		this.globalCheckBox.setText( ResourceManager.msg( "IGNORE_GLOBAL_OFFSET_SETTING" ) );
+		this.add( this.globalCheckBox, c ) ;
+		this.globalCheckBox.setVisible( ! this.isGlobal ) ;
+		this.globalCheckBox.setSelected( ! this.offsets.getUseGlobal() ) ;
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 1 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;

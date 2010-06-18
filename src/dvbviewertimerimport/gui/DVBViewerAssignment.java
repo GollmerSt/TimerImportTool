@@ -286,6 +286,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 				int line = -1 ;
 				DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
 				ChannelSetAssignment csa = null ;
+				boolean isGlobal = true ;
 				if ( source == channelOffsetButton )
 				{
 					line = providerChannelList.getSelectedIndex() ;
@@ -293,10 +294,11 @@ public class DVBViewerAssignment extends MyTabPanel{
 						return ;
 					csa = (ChannelSetAssignment)model.getElementAt( line ) ;
 					offsets = csa.channelSet.getTimeOffsets() ;
+					isGlobal = false ;
 				}
 				else
 					offsets = TimeOffsets.getGeneralTimeOffsets() ;
-				new OffsetsDialog( getGUIPanel(), offsets ) ;
+				new OffsetsDialog( getGUIPanel(), offsets, isGlobal ) ;
 				if ( csa != null )
 					model.setElementAt( csa, line ) ;
 			}
