@@ -30,7 +30,6 @@
             <Provider name="TVGenial" channelID="10001">ARD</Provider>
             <Provider name="ClickFinder" channelID="10001">ARD</Provider>
             <Provider name="TV-Browser" channelID="10001">Das Erste (ARD)</Provider>
-            <Merge>false</Merge>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ZDF</Provider>
