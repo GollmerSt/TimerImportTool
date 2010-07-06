@@ -126,6 +126,8 @@ public class OffsetEntry implements Cloneable {
 			e.printStackTrace();
 		}
 		//System.out.println(  dayTime ) ;
+		if ( lowerTime > upperTime )
+			upperTime += Constants.DAYMILLSEC ;
 		return time >= lowerTime && time <= upperTime ;
 	}
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
