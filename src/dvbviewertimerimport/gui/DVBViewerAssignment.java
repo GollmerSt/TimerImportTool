@@ -45,6 +45,7 @@ import dvbviewertimerimport.misc.Enums;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Function;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.misc.Enums.Merge;
 import dvbviewertimerimport.provider.Provider;
 
 
@@ -100,7 +101,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		 * 
 		 */
 		private static final long serialVersionUID = -224601712240775345L;
-		private ImageIcon offsets   = ResourceManager.createImageIcon( "icons/dvbViewer Red16.png", "DVBViewer icon" ) ;
+		private ImageIcon red      = ResourceManager.createImageIcon( "icons/dvbViewer Red16.png", "DVBViewer icon" ) ;
 		private ImageIcon active    = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
 	    private ImageIcon inactive  = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
 	    private ImageIcon unknown   = ResourceManager.createImageIcon( "icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
@@ -127,8 +128,9 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        	if ( dvbViewerLongChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
 	        		if ( channelSet.isAutomaticAssigned() )
 	        			this.setIcon( this.automatic ) ;
-	        		else if ( channelSet.getTimeOffsets().size() > 0 )
-	        			this.setIcon( this.offsets ) ;
+	        		else if (    channelSet.getTimeOffsets().size() > 0
+	        				  ||  channelSet.getMerge() != Merge.INVALID )
+	        			this.setIcon( this.red ) ;
 	        		else
 	        			this.setIcon( this.active ) ;
 	        	else 
@@ -270,6 +272,11 @@ public class DVBViewerAssignment extends MyTabPanel{
 	        {
 	        	csa.channelSet.setMerge( res ) ;
 	        	getGUIPanel().setChanged() ;
+				DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
+				int line = providerChannelList.getSelectedIndex() ;
+				if ( line < 0 )
+					return ;
+				model.setElementAt( csa, line ) ;
 	        }
 	    }
 	}

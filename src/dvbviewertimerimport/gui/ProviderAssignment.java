@@ -403,7 +403,9 @@ public class ProviderAssignment  extends MyTabPanel
 		c.gridx      = 0 ;
 		c.gridy      = 2 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.fill       = GridBagConstraints.BOTH ;
+		c.weightx    = 1.0 ;
+		c.weighty    = 1.0 ;
 		c.insets     = i ;
 
 		//this.deleteChannelButton.addActionListener( new ChannelButtonsPressed() ) ;

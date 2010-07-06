@@ -656,7 +656,7 @@ public class ProviderService extends MyTabPanel {
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
 		c.weightx    = 1 ;
-		//c.weighty    = 0.5 ;
+		c.weighty    = 1 ;
 		c.fill       = GridBagConstraints.BOTH ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 

@@ -4,6 +4,7 @@
 
 package dvbviewertimerimport.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Window;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class GUIPanel extends JPanel
 	
 	public GUIPanel( GUI gui, Control control )
 	{
+		super( new BorderLayout() ) ;
 		this.gui = gui ;
 		this.control = control ;
 		this.isChanged = false ;
@@ -83,7 +85,6 @@ public class GUIPanel extends JPanel
 	public boolean getChanged() { return this.isChanged ; } ;
 	public void init()
 	{ 
-		this.add( this.tabbedPane ) ;
 
 	    
 	    dvbViewerAssignment = new DVBViewerAssignment( this ) ;
@@ -104,7 +105,8 @@ public class GUIPanel extends JPanel
 	    
 	    this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
 	    
-        this.updateExecuteButton() ;
+		this.add( this.tabbedPane, BorderLayout.CENTER ) ;
+		this.updateExecuteButton() ;
 }
 	public MyTabPanel getSelectedComponent()
 	{

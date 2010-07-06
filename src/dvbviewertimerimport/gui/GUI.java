@@ -51,10 +51,12 @@ public class GUI extends JFrame{
 	private boolean isChanged = false ;
 	
 	private final GUIPanel guiPanel ;
+	private final GUI gui ;
 
 	private final JCheckBox forceBox ;
     private final JButton executeButton ;
     private final JButton updateButton ;
+    private final JButton modifyButton ;
     private final JButton okButton ;
     private final JButton cancelButton ;
     private final JButton applyButton ;
@@ -87,10 +89,11 @@ public class GUI extends JFrame{
 		this.forceBox = new JCheckBox() ;
 		this.executeButton = new JButton() ;
 		this.updateButton = new JButton() ;
+		this.modifyButton = new JButton() ;
 		this.okButton = new JButton() ;
 		this.cancelButton = new JButton() ;
 		this.applyButton = new JButton() ;
-	
+		this.gui = this ;
 	}
 
 	private class MyWindowListener implements WindowListener
@@ -178,6 +181,10 @@ public class GUI extends JFrame{
 				status = GUIStatus.UPDATE ;
 				waitAPP() ;
 			}
+			if ( button == modifyButton )
+			{
+				new TimersDialog( gui, control ).init() ;
+			}
 		}
 	}
 	public class AllTimersChanged implements ItemListener
@@ -264,6 +271,17 @@ public class GUI extends JFrame{
 		c = new GridBagConstraints();
 		c.gridx      = 3 ;
 		c.gridy      = 1 ;
+		c.anchor     = GridBagConstraints.NORTHWEST ;
+		c.insets     = i ;
+	    
+	    this.modifyButton.setText( ResourceManager.msg( "TIMER_TABLE" ) ) ;
+	    this.modifyButton.addActionListener( new ButtonPressed() ) ;
+	    this.getContentPane().add( this.modifyButton, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 4 ;
+		c.gridy      = 1 ;
 		c.weightx    = 1.0 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -275,7 +293,7 @@ public class GUI extends JFrame{
 		
 
 		c = new GridBagConstraints();
-		c.gridx      = 4 ;
+		c.gridx      = 5 ;
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
@@ -286,7 +304,7 @@ public class GUI extends JFrame{
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 5 ;
+		c.gridx      = 6 ;
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;

@@ -57,9 +57,9 @@ import javax.swing.event.TreeModelListener;
 public class TreeTableModelAdapter extends AbstractTableModel
 {
     /**
-         *
-         */
-        private static final long serialVersionUID = 8187917107271722873L;
+     *
+    */
+    private static final long serialVersionUID = 8187917107271722873L;
         JTree tree;
     TreeTableModel treeTableModel;
 
@@ -120,7 +120,7 @@ public class TreeTableModelAdapter extends AbstractTableModel
         return tree.getRowCount();
     }
 
-    protected Object nodeForRow(int row) {
+    private Object nodeForRow(int row) {
         TreePath treePath = tree.getPathForRow(row);
         return treePath.getLastPathComponent();
     }

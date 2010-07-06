@@ -11,7 +11,6 @@ import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
@@ -164,13 +163,14 @@ public class OffsetsDialog extends JDialog {
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 1 ;
+		c.weightx    = 1.0 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
 		JScrollPane scrollPane = new JScrollPane( this.table );
-		scrollPane.setPreferredSize( new Dimension( 500,200 ) ) ;
-		scrollPane.setMinimumSize( new Dimension( 500,200 ) ) ;
+		scrollPane.setPreferredSize( new Dimension( 420,200 ) ) ;
+		scrollPane.setMinimumSize( new Dimension( 420,200 ) ) ;
 		this.table.setFillsViewportHeight(false);
 		this.setupTable() ;
 		this.add( scrollPane, c ) ;
@@ -226,9 +226,7 @@ public class OffsetsDialog extends JDialog {
 		
 		
 		this.pack(); 
-        Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
-        this.setLocation( (d.width  - this.getSize().width  ) / 2, 
-        		                (d.height - this.getSize().height ) / 2 ) ;
+        this.setLocationRelativeTo(null);
 		this.setVisible( true );
 		
  	}
