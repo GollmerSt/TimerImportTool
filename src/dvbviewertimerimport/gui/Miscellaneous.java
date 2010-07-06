@@ -23,6 +23,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -532,7 +533,14 @@ public class Miscellaneous extends MyTabPanel
 
 		this.add( textInfoLabel, c ) ;
 		
-		this.createCombosContent() ;
+		SwingUtilities.invokeLater(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				createCombosContent() ;	
+			}
+		} ) ;
 	}
     public void createCombosContent()
     {
