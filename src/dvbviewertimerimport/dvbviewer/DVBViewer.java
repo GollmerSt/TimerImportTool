@@ -319,7 +319,7 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		return result ;
 	}
-	private void addRecordingEntry( DVBViewerEntry entry )
+	public void addRecordingEntry( DVBViewerEntry entry )
 	{
 		if ( entry.getID() < 0L )
 		{
@@ -467,7 +467,7 @@ public class DVBViewer {
 		else
 			dvbViewerDataPath = null ;
 	} ;
-  public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
+	public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
 	
 	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
@@ -534,6 +534,7 @@ public class DVBViewer {
 			}
 		}
 	}
+	public void reworkMergeElements() { DVBViewerEntry.reworkMergeElements( this.recordEntries, this.separator, this.maxID ) ; } 
 	public void setDVBViewerTimers() throws InterruptedException
 	{
 		this.removeOutdatedProviderEntries();
@@ -570,6 +571,7 @@ public class DVBViewer {
 		DVBViewerEntry.afterRecordingSettingProcces( this.recordEntries ) ;
 	}
 	public void setSeparator( String s ) { this.separator = s ; } ;
+	public String getSeparator() { return this.separator ; } ;
 	public ArrayList<DVBViewerEntry> readXML()
 	{
 		maxID.reset() ;

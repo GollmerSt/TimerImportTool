@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Stack;
 
+import javax.swing.tree.TreePath;
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
@@ -73,6 +74,8 @@ public final class DVBViewerEntry  implements Cloneable{
 	private StatusService statusService ;
 	private long serviceID ;
 	private final String channel ;
+	private String program = null ;
+	private String channelID = null ;
 	private long start ;
 	private long end ;
 	private long startOrg ;
@@ -89,7 +92,9 @@ public final class DVBViewerEntry  implements Cloneable{
 	private boolean mergingChanged = false ;
 	private long mergeID = -1 ;
 	private DVBViewerEntry mergeElement = null ;
+	private DVBViewerEntry root = null ;
 	private ToDo toDo ;
+	private boolean isCollapsed = false ;
 
 
 	public DVBViewerEntry( 	long id ,
@@ -131,6 +136,28 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.provider = provider ;
 		this.outDatedInfo = outDatedInfo.clone() ;
 		this.toDo = toDo ;
+	}
+	public DVBViewerEntry()    // only for root node
+	{
+		this.id = -1 ;
+		this.isFilterElement = false ;
+		this.statusService = StatusService.DISABLED ;
+		this.serviceID = -1 ; 
+		this.providerID = null ;
+		this.channel = null ;
+		this.start = -1 ;
+		this.end = -1 ;
+		this.startOrg = -1 ;
+		this.endOrg = -1 ;
+		this.days = null ;
+		this.title =  null ;
+		this.timerAction = TimerActionItems.DEFAULT ;
+		this.actionAfter = ActionAfterItems.DEFAULT ;
+		this.mergeStatus = MergeStatus.DISABLED ;
+		this.mergeID = -1 ;
+		this.provider = null ;
+		this.outDatedInfo = null ;
+		this.toDo = ToDo.NONE ;
 	}
 
 	public DVBViewerEntry( boolean enable, long serviceID, String channel, long start, long end, String days,
@@ -190,8 +217,35 @@ public final class DVBViewerEntry  implements Cloneable{
 		}
 		
 		entry.mergedEntries = this.mergedEntries ;
+		entry.program = this.program ;
 		
 		return entry ;
+	}
+	private void splitChannel()
+	{
+		String [] parts = this.channel.split("\\|") ;
+		if ( parts.length == 2 )
+		{
+			this.channelID = parts[0] ;
+			this.program = parts[1] ;
+		}
+		else
+		{
+			this.channelID = "" ;
+			this.program = "" ;
+		}
+	}
+	public String getProgram()
+	{
+		if ( this.program == null )
+			this.splitChannel() ;
+		return this.program ;
+	}
+	public String getChannelID()
+	{
+		if ( this.channelID == null )
+			this.splitChannel() ;
+		return this.channelID ;
 	}
 	private void setMergeStatus( MergeStatus m )
 	{
@@ -200,8 +254,11 @@ public final class DVBViewerEntry  implements Cloneable{
 		else
 			this.mergeStatus = m ;
 	}
-	private String createTitle( String separator )
+	private void createTitle( String separator )
 	{
+		if ( ! this.isMergeElement() )
+			return ;
+		
 		boolean first = true ;
 		
 		String title = "" ;
@@ -214,11 +271,37 @@ public final class DVBViewerEntry  implements Cloneable{
 				title += separator ;
 			title += e.title ;
 		}
-		return title;
+		this.title = title;
+	}
+	private void calcStartEnd()
+	{
+		if ( ! this.isMergeElement() )
+			return ;
+		
+		long start = this.mergedEntries.get(0).getStart() ;
+		long end   = -1 ;
+		long startOrg = this.mergedEntries.get(0).getStartOrg() ;
+		long endOrg   = -1 ;
+				
+		for ( DVBViewerEntry e : this.mergedEntries )
+		{
+			if ( start > e.getStart() )
+				start = e.getStart() ;
+			if ( end < e.getEnd() )
+				end = e.getEnd() ;
+			if ( startOrg > e.getStartOrg() )
+				startOrg = e.getStartOrg() ;
+			if ( endOrg < e.getEndOrg() )
+				endOrg = e.getEndOrg() ;
+		}
+		this.start = start;
+		this.end   = end;
+		this.startOrg = startOrg ;
+		this.endOrg   = endOrg ;
 	}
 	private CompStatus compareWithService( final DVBViewerEntry service )
 	{
-		if ( ! this.channel.split("\\|")[0].equals( service.channel.split("\\|")[0] ) )
+		if ( ! this.getChannelID().equals( service.getChannelID() ) )
 			return CompStatus.DIFFER ;
 		
 		if ( ! this.days.equals( service.days ) )
@@ -436,9 +519,9 @@ public final class DVBViewerEntry  implements Cloneable{
 					n.startOrg = nStartOrg ;
 					n.endOrg = nEndOrg ;
 					n.mergedEntries = nMergedEntries ;
-          for ( DVBViewerEntry nE : n.mergedEntries )
-            nE.mergeElement = n ;
-					n.title = n.createTitle( separator ) ;
+					for ( DVBViewerEntry nE : n.mergedEntries )
+						nE.mergeElement = n ;
+					n.createTitle( separator ) ;
 					if ( n.mergeElement != null )
 						n.mergeElement.mergedEntries.add( n ) ;
 					if ( n.serviceID >= 0 )
@@ -452,14 +535,14 @@ public final class DVBViewerEntry  implements Cloneable{
 				}
 				else if ( ! isIn )
 				{
-				  if ( nMergedEntries.size() == 1 )
-          {
-            DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
-            modify.statusService = StatusService.ENABLED ;
-            modify.mergeElement = null ;
-            modify.toDo = ToDo.UPDATE ; // evtl. anders wenn modify = merge elemenet, aber kommt das vor?
-          }
-          nStart = -1 ;
+					if ( nMergedEntries.size() == 1 )
+					{
+						DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
+						modify.statusService = StatusService.ENABLED ;
+						modify.mergeElement = null ;
+						modify.toDo = ToDo.UPDATE ; // evtl. anders wenn modify = merge elemenet, aber kommt das vor?
+					}
+					nStart = -1 ;
 				}
 				else 
 				{
@@ -480,7 +563,7 @@ public final class DVBViewerEntry  implements Cloneable{
 					}
 					x.mergedEntries = nMergedEntries ;
 					String titleOld = x.title ;
-					x.title = x.createTitle( separator ) ;
+					x.createTitle( separator ) ;
 					if (    x.toDo == ToDo.NONE  && x.serviceID >= 0
 						 && ( x.start != nStart || x.end != nEnd || ! titleOld.equals( x.title ) ) )
 						x.toDo = ToDo.UPDATE ;
@@ -587,29 +670,29 @@ public final class DVBViewerEntry  implements Cloneable{
 	
 	private boolean addMergedEntry( DVBViewerEntry entry )
 	{
-	  boolean isMergeElement = entry.isMergeElement() ;
 		if ( this.mergedEntries == null )
 			this.mergedEntries = new ArrayList< DVBViewerEntry >() ;
+		boolean isMergeElement = entry.isMergeElement() ;
 		boolean isIncluded = false ;
 		if ( ! isMergeElement )
 		{
-		  entry.mergedEntries = new ArrayList< DVBViewerEntry >() ;
-		  entry.mergedEntries.add( entry ) ;
+			entry.mergedEntries = new ArrayList< DVBViewerEntry >() ;
+			entry.mergedEntries.add( entry ) ;
 		}
 		for ( DVBViewerEntry dE : entry.mergedEntries )
 		{
-		  dE.mergeElement = this ;
-	    for ( int ix = 0 ; ix < this.mergedEntries.size() ; ix++ )
-	    {
-	      if ( this.mergedEntries.get( ix ).start > dE.start )
-	      {
-	        this.mergedEntries.add( ix, dE ) ;
-	        isIncluded = true ;
-	        break ;
-	      } 
-	    }
-		  if ( isIncluded == false )
-		    this.mergedEntries.add( dE ) ;
+			dE.mergeElement = this ;
+			for ( int ix = 0 ; ix < this.mergedEntries.size() ; ix++ )
+			{
+				if ( this.mergedEntries.get( ix ).start > dE.start )
+				{
+					this.mergedEntries.add( ix, dE ) ;
+					isIncluded = true ;
+					break ;
+				} 
+			}
+			if ( isIncluded == false )
+			this.mergedEntries.add( dE ) ;
 		}
 		entry.mergedEntries = null ;
 		return isMergeElement ;
@@ -632,12 +715,12 @@ public final class DVBViewerEntry  implements Cloneable{
 			this.toDo = ToDo.NEW ;
 		}
 		if ( this.addMergedEntry( dE ) )
-	    dE.toDo = ToDo.DELETE ;
+			dE.toDo = ToDo.DELETE ;
 		else
 		{
-	    dE.disable() ;
-	    dE.mergeElement = this ;
-	    dE.mergeStatus = MergeStatus.ENABLED ;
+			dE.disable() ;
+			dE.mergeElement = this ;
+			dE.mergeStatus = MergeStatus.ENABLED ;
 		}
 		  
 		this.mergeStatus = MergeStatus.ENABLED ;
@@ -646,7 +729,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.end      = Math.max( this.end,  dE.getEnd() ) ;
 		this.endOrg   = Math.max( this.endOrg,  dE.endOrg ) ;
 
-		this.title = this.createTitle( separator ) ;
+		this.createTitle( separator ) ;
 		if ( this.toDo == ToDo.NONE )
 			this.toDo = ToDo.UPDATE ;
 		else if ( this.toDo == ToDo.DELETE )
@@ -674,18 +757,29 @@ public final class DVBViewerEntry  implements Cloneable{
 	public String getTitle() {return this.title ; } ;
 	public ActionAfterItems getActionAfter() { return actionAfter ; } ;
 	public TimerActionItems getTimerAction() { return timerAction ; } ;
-	public String toString() {return this.title ; } ;
+	public String toString() {return "" ; } ; //this.title ; } ;
 	public long getStart() { return this.start ; } ;
 	public long getEnd()   { return this.end ; } ;
 	public long getStartOrg() { return this.startOrg ; } ;
+	public long getEndOrg() { return this.endOrg ; } ;
 	public String getDays() { return this.days ; } ;
+	public ArrayList< DVBViewerEntry > getMergedEntries() { return this.mergedEntries ; } ;
+	public void setMergedEntries( ArrayList< DVBViewerEntry > entries) { this.mergedEntries = entries; } ;
 	public 	boolean isInRange( long start, long end )
 	{
 		if ( this.start <= start && this.end >= start )
 			return true ;
 		if ( this.start <= end && this.end >= end )
 			return true ;
+		if ( start <= this.start && end >= this.end )
+			return true ;
+		if ( start <= this.end && end >= this.end )
+			return true ;
 		return false ;
+	}
+	public 	boolean isInRange( DVBViewerEntry e )
+	{
+		return this.isInRange( e.start, e.end ) ;
 	}
 	public boolean isOutdated( long now)
 	{
@@ -709,7 +803,7 @@ public final class DVBViewerEntry  implements Cloneable{
 			return false ;
 		if ( dE.toDo == ToDo.DELETE )
 			return false ;
-		return this.isInRange( dE.start, dE.end ) ;
+		return this.isInRange( dE ) ;
 	}
 	public void setToDo( ToDo t ) { this.toDo = t ; } ;
 	public ToDo getToDo() { return this.toDo ; } ;
@@ -727,6 +821,8 @@ public final class DVBViewerEntry  implements Cloneable{
 	{
 		return    this.statusService == StatusService.ENABLED ;
 	}
+	public boolean isDeleted() { return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER ; } ;
+	public boolean isMerged() { return this.mergeElement != null ; } ;
 	public boolean isMergeElement()
 	{
 		return this.mergedEntries != null && this.mergedEntries.size() != 0 ;
@@ -790,6 +886,10 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.toDo = ToDo.DELETE ;
 		this.prepareRemove() ;
 	} ;
+	public boolean exists()
+	{
+		return this.toDo != ToDo.DELETE ;
+	}
 	public void prepareRemove()
 	{
 		if ( this.mergedEntries != null )
@@ -828,7 +928,167 @@ public final class DVBViewerEntry  implements Cloneable{
 			itE.remove() ;
 		}
 	}
-	
+	public void setRoot( final DVBViewerEntry root ) { this.root = root ; } ;
+	public DVBViewerEntry getParent()
+	{
+		if ( this.mergeElement == null )
+			return this.root ;
+		else
+			return this.mergeElement ;
+	}
+	public TreePath getPath()
+	{
+		if ( this.mergeElement == null )
+		{
+			DVBViewerEntry[] path = { this.root, this } ;
+			return new TreePath( path ) ;
+		}
+		else
+		{
+			DVBViewerEntry[] path = { this.mergeElement.root, this.mergeElement, this } ;
+			return new TreePath( path ) ;
+		}
+	}
+	public boolean 	isCollapsed() { return this.isCollapsed ; } ;
+	public void setIsCollapsed( boolean isCollapsed ) { this.isCollapsed = isCollapsed ; } ;
+	public static boolean isMergePossible( final DVBViewerEntry [] entries )
+	{
+		if ( entries.length < 2 )
+			return false ;
+		
+		String program = null ;
+		
+		long start = -1 ;
+		long end = -1 ;
+		
+		for ( DVBViewerEntry entry : entries )
+		{
+			DVBViewerEntry act = entry ;
+			if ( entry.isMerged() )
+				act = entry.mergeElement ;
+			if ( program == null )
+				program = entry.getChannel() ;
+			if ( ! program.equals( entry.getChannel() ) )
+				return false ;
+			if ( start < 0 || act.start < start )
+				start = act.start ;
+			if ( end < 0 || act.end > end )
+				end = act.end ;
+		}
+		return ( end - start ) < Constants.DAYMILLSEC ;
+	}
+	public static void mergeEntries( final DVBViewer dvbViewer,  final DVBViewerEntry [] entries )
+	{
+		if ( entries.length == 0 )
+			return ;
+		
+		DVBViewerEntry mergeElement = null ;
+		
+		for ( DVBViewerEntry entry : entries )
+			if ( entry.isMergeElement() )
+			{
+				mergeElement = entry ;
+				break ;
+			}
+			else if ( entry.isMerged() )
+			{
+				mergeElement = entry.mergeElement ;
+				break ;
+			}
+		if ( mergeElement == null )
+			mergeElement = entries[ 0 ] ;
+		
+		for ( int ix = 0 ; ix < entries.length ; ix++ )
+		{
+			DVBViewerEntry entry = entries[ ix ] ;
+			if ( entry == mergeElement )
+				continue ;
+			if ( entry.mergeElement != null && mergeElement.mergedEntries.contains( entry ))
+				continue ;
+			DVBViewerEntry newEntry = mergeElement.update( entries[ ix ], dvbViewer.getSeparator() ) ;
+			if ( newEntry != null )
+				dvbViewer.addRecordingEntry( newEntry ) ;
+		}
+	}
+	public static boolean isSplittingPossible( final DVBViewerEntry [] entries )
+	{
+		boolean isMerged = false ; ;
+		boolean isMergeElement = false ;
+		for ( DVBViewerEntry entry : entries )
+		{
+			if ( entry.isMerged() )
+				isMerged = true ;
+			else if ( entry.isMergeElement() )
+				isMergeElement = true ;
+			else
+				return false ;
+		}
+		return isMerged ^ isMergeElement ;
+	}
+	public static void splitEntries( final DVBViewer dvbViewer, final DVBViewerEntry [] entries )
+	{
+		for ( DVBViewerEntry entryBase : entries )
+		{
+			if ( entryBase.isMergeElement() )
+			{
+				for ( DVBViewerEntry entry : entryBase.mergedEntries )
+				{
+					entry.mergeElement = null ;
+					entry.statusService = StatusService.ENABLED ;
+					entry.toDo = ToDo.UPDATE ;
+				}
+				entryBase.mergedEntries = null ;
+				entryBase.toDo = ToDo.DELETE ;
+			}
+			else
+			{
+				if( entryBase.mergeElement == null )
+					continue ;
+				
+				if ( entryBase.mergeElement.mergedEntries.size() <= 2 )
+				{
+					DVBViewerEntry mergeElement = entryBase.mergeElement ;
+					for ( DVBViewerEntry entry : mergeElement.mergedEntries )
+					{
+						entry.mergeElement = null ;
+						entry.statusService = StatusService.ENABLED ;
+						entry.toDo = ToDo.UPDATE ;
+					}
+					mergeElement.mergedEntries = null ;
+					if ( mergeElement.toDo == ToDo.NEW )
+						dvbViewer.getRecordEntries().remove( mergeElement ) ;
+					mergeElement.toDo = ToDo.DELETE ;
+				}
+				else
+				{
+					DVBViewerEntry mergeElement = entryBase.mergeElement ;
+					mergeElement.mergedEntries.remove( entryBase ) ;
+					mergeElement.createTitle( dvbViewer.getSeparator() ) ;
+					mergeElement.calcStartEnd() ;
+					if ( mergeElement.toDo != ToDo.NEW )
+						mergeElement.toDo = ToDo.UPDATE ;
+					entryBase.statusService = StatusService.ENABLED ;
+					entryBase.mergeElement = null ;
+					entryBase.toDo = ToDo.UPDATE ;
+				}
+			}
+		}
+	}
+	public static boolean isDeletePossible( final DVBViewerEntry [] entries )
+	{
+		
+		for ( DVBViewerEntry entry : entries )
+		{
+			if ( entry.isMergeElement() )
+				return false ;
+		}
+		return entries.length > 0 ;
+	}
+	public static void deleteEntries( final DVBViewerEntry [] entries )
+	{
+		for ( DVBViewerEntry entry : entries )
+			entry.setToDelete() ;
+	}
 	public static DVBViewerEntry readXML( final XMLEventReader  reader, XMLEvent ev, String name )
 	{
 		Stack< String > stack = new Stack< String >() ;
@@ -858,44 +1118,44 @@ public final class DVBViewerEntry  implements Cloneable{
 
 					@SuppressWarnings("unchecked")
 					Iterator<Attribute> iter = ev.asStartElement().getAttributes();
-			        while( iter.hasNext() )
-			        {
-			        	Attribute a = iter.next();
-			        	String attributeName = a.getName().getLocalPart() ;
-			        	String value = a.getValue() ;
-			        	if (      attributeName.equals( "id" ) )
-			        		id = Integer.valueOf( value ) ;
-			        	else if ( attributeName.equals( "providerID" ) )
-			        		providerID = value ;
-			        	else if ( attributeName.equals( "isFilterElement" ) )
-			        		isFilterElement = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
-			        	else if ( attributeName.equals( "statusService" ) )
-			        		statusService = StatusService.valueOf( value ) ;
-			        	else if ( attributeName.equals( "channel" ) )
-			        		channel =value ;
-			        	else if ( attributeName.equals( "start" ) )
-			        		start = Long.valueOf( value ) ;
-			        	else if ( attributeName.equals( "end" ) )
-			        		end = Long.valueOf( value ) ;
-				        else if ( attributeName.equals( "startOrg" ) )
-				        	startOrg = Long.valueOf( value ) ;
-				        else if ( attributeName.equals( "endOrg" ) )
-				        	endOrg = Long.valueOf( value ) ;
-				        else if ( attributeName.equals( "days" ) )
-				        	days = value ;
-				        else if ( attributeName.equals( "timerAction" ) )
-				        	timerAction = TimerActionItems.valueOf( value ) ;
-				        else if ( attributeName.equals( "actionAfter" ) )
-				        	actionAfter = ActionAfterItems.valueOf( value ) ;
-			        	else if ( attributeName.equals( "mergeStatus" ) )
-			        		mergeStatus = MergeStatus.valueOf( value ) ;
-			        	else if ( attributeName.equals( "mergeID" ) )
-			        		mergeID = Integer.valueOf( value ) ;
-				        else if ( attributeName.equals( "provider" ) )
-				        	provider = Provider.getProvider( value ) ;
-			        	else
-			        		outDatedInfo.readXML( attributeName, value) ;
-			        }
+					while( iter.hasNext() )
+					{
+						Attribute a = iter.next();
+						String attributeName = a.getName().getLocalPart() ;
+						String value = a.getValue() ;
+						if (      attributeName.equals( "id" ) )
+							id = Integer.valueOf( value ) ;
+						else if ( attributeName.equals( "providerID" ) )
+							providerID = value ;
+						else if ( attributeName.equals( "isFilterElement" ) )
+							isFilterElement = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
+						else if ( attributeName.equals( "statusService" ) )
+							statusService = StatusService.valueOf( value ) ;
+						else if ( attributeName.equals( "channel" ) )
+							channel =value ;
+						else if ( attributeName.equals( "start" ) )
+							start = Long.valueOf( value ) ;
+						else if ( attributeName.equals( "end" ) )
+							end = Long.valueOf( value ) ;
+						else if ( attributeName.equals( "startOrg" ) )
+							startOrg = Long.valueOf( value ) ;
+						else if ( attributeName.equals( "endOrg" ) )
+							endOrg = Long.valueOf( value ) ;
+						else if ( attributeName.equals( "days" ) )
+							days = value ;
+						else if ( attributeName.equals( "timerAction" ) )
+							timerAction = TimerActionItems.valueOf( value ) ;
+						else if ( attributeName.equals( "actionAfter" ) )
+							actionAfter = ActionAfterItems.valueOf( value ) ;
+						else if ( attributeName.equals( "mergeStatus" ) )
+							mergeStatus = MergeStatus.valueOf( value ) ;
+						else if ( attributeName.equals( "mergeID" ) )
+							mergeID = Integer.valueOf( value ) ;
+						else if ( attributeName.equals( "provider" ) )
+							provider = Provider.getProvider( value ) ;
+						else
+							outDatedInfo.readXML( attributeName, value) ;
+					}
 			        entry = new DVBViewerEntry( id, isFilterElement, statusService,
 												-1, providerID, channel,
 												start, end, startOrg, endOrg,
@@ -903,7 +1163,7 @@ public final class DVBViewerEntry  implements Cloneable{
 												mergeStatus, mergeID, provider,
 												outDatedInfo,
 												ToDo.NONE ) ;
-		        }
+				}
 			}
 			if ( ev.isCharacters() )
 			{
