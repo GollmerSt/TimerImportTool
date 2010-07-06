@@ -393,9 +393,9 @@ public class TreeTableExample2 {
      */
     class IndicatorRenderer extends DefaultTableCellRenderer {
         /**
-                 *
-                 */
-                private static final long serialVersionUID = -2689778929098174288L;
+         *
+         */
+        private static final long serialVersionUID = -2689778929098174288L;
         /** Makes sure the number of displayed in an internationalized
          * manner. */
         protected NumberFormat       formatter;
