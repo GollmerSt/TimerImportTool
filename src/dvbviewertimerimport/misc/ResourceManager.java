@@ -241,7 +241,7 @@ public class ResourceManager {
 		}
 		msg = msg.replace( "'", "''") ;
 		String ret = MessageFormat.format( msg, (Object[]) strings ) ;
-	isMsgInProcess = false ;
+		isMsgInProcess = false ;
 		return ret ;
 	}
 }
