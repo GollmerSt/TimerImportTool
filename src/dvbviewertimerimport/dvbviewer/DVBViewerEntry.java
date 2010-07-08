@@ -115,6 +115,7 @@ public final class DVBViewerEntry  implements Cloneable{
 							long mergeID,
 							Provider provider ,
 							OutDatedInfo outDatedInfo ,
+				            boolean isCollapsed,
 							ToDo toDo )
 	{
 		this.id = id ;
@@ -135,6 +136,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.mergeID = mergeID ;
 		this.provider = provider ;
 		this.outDatedInfo = outDatedInfo.clone() ;
+		this.isCollapsed = isCollapsed ;
 		this.toDo = toDo ;
 	}
 	public DVBViewerEntry()    // only for root node
@@ -157,6 +159,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.mergeID = -1 ;
 		this.provider = null ;
 		this.outDatedInfo = null ;
+		this.isCollapsed = false ;
 		this.toDo = ToDo.NONE ;
 	}
 
@@ -165,7 +168,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	{
 		this( -1, false, StatusService.ENABLED , serviceID, null, channel, start ,end ,
 				         start, end, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
-				         -1, null, new OutDatedInfo(), ToDo.NONE ) ;
+				         -1, null, new OutDatedInfo(), false, ToDo.NONE ) ;
 
 		if ( this.days.equals( "-------" ) )
 			this.mergeStatus = MergeStatus.DISABLED ;
@@ -188,7 +191,7 @@ public final class DVBViewerEntry  implements Cloneable{
 	{
 		this( -1, false, StatusService.ENABLED , -1, providerID, channel, start ,end ,
 				  startOrg, endOrg, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
-				  -1, provider, new OutDatedInfo(), ToDo.NEW ) ;
+				  -1, provider, new OutDatedInfo(), false, ToDo.NEW ) ;
 		
 		boolean isFilterElement = false ;
 		if ( provider != null )
@@ -208,7 +211,8 @@ public final class DVBViewerEntry  implements Cloneable{
 													this.endOrg, this.days, this.title, 
 													this.timerAction, this.actionAfter,
 													this.mergeStatus, this.mergeID,
-													this.provider, this.outDatedInfo.clone(), this.toDo ) ;
+													this.provider, this.outDatedInfo.clone(),
+													this.isCollapsed,this.toDo ) ;
 		
 		if ( this.mergedEntries != null )
 		{
@@ -273,7 +277,7 @@ public final class DVBViewerEntry  implements Cloneable{
 		}
 		this.title = title;
 	}
-	private void calcStartEnd()
+	public void calcStartEnd()
 	{
 		if ( ! this.isMergeElement() )
 			return ;
@@ -758,8 +762,11 @@ public final class DVBViewerEntry  implements Cloneable{
 	public ActionAfterItems getActionAfter() { return actionAfter ; } ;
 	public TimerActionItems getTimerAction() { return timerAction ; } ;
 	public String toString() {return "" ; } ; //this.title ; } ;
+	public DVBViewerEntry getMergeEntry() { return this.mergeElement ; } ;
 	public long getStart() { return this.start ; } ;
 	public long getEnd()   { return this.end ; } ;
+	public void setStart( long start ) { this.start = start ; } ;
+	public void setEnd  ( long end )   { this.end   = end ; } ;
 	public long getStartOrg() { return this.startOrg ; } ;
 	public long getEndOrg() { return this.endOrg ; } ;
 	public String getDays() { return this.days ; } ;
@@ -1112,6 +1119,7 @@ public final class DVBViewerEntry  implements Cloneable{
 					MergeStatus mergeStatus = MergeStatus.UNKNOWN ;
 					long mergeID = -1 ;
 					Provider provider = null ;
+					boolean isCollapsed = false ;
 					OutDatedInfo outDatedInfo = new OutDatedInfo() ;
 					ActionAfterItems actionAfter = ActionAfterItems.NONE ;
 					TimerActionItems timerAction = TimerActionItems.RECORD ;
@@ -1153,6 +1161,8 @@ public final class DVBViewerEntry  implements Cloneable{
 							mergeID = Integer.valueOf( value ) ;
 						else if ( attributeName.equals( "provider" ) )
 							provider = Provider.getProvider( value ) ;
+						else if ( attributeName.equals( "isCollapsed" ) )
+							isCollapsed = dvbviewertimerimport.xml.Conversions.getBoolean( value, ev, name ) ;
 						else
 							outDatedInfo.readXML( attributeName, value) ;
 					}
@@ -1161,7 +1171,7 @@ public final class DVBViewerEntry  implements Cloneable{
 												start, end, startOrg, endOrg,
 												days, "", timerAction, actionAfter, 
 												mergeStatus, mergeID, provider,
-												outDatedInfo,
+												outDatedInfo, isCollapsed,
 												ToDo.NONE ) ;
 				}
 			}
@@ -1217,6 +1227,8 @@ public final class DVBViewerEntry  implements Cloneable{
 			  sw.writeAttribute( "timerAction",      this.timerAction.name() ) ;
 			  sw.writeAttribute( "actionAfter",      this.actionAfter.name() ) ;
 			  sw.writeAttribute( "mergeStatus",      this.mergeStatus.name() ) ;
+			  if ( this.isCollapsed )
+			    sw.writeAttribute( "isCollapsed",    true ) ;
 			  if ( this.mergeElement != null )
 			  {
 				  long mergeID = this.mergeElement.id ;

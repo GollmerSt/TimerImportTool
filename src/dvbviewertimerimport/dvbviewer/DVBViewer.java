@@ -448,6 +448,7 @@ public class DVBViewer {
 		entry.setToDelete() ;
 	}
 	public ArrayList<DVBViewerEntry> getRecordEntries() { return this.recordEntries ; } ;
+	public void resetRecordEntries() { this.recordEntries = null ; } ;
 	public String getExePath()           { return this.exePath ; } ;
 	public String getExeName()           { return this.exeName ; } ;
 	public String getPluginConfPath()    { return this.dvbViewerPluginDataPath ; } ;
