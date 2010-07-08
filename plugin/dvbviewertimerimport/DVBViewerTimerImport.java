@@ -17,7 +17,6 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-
 import devplugin.ActionMenu;
 import devplugin.Date;
 import devplugin.Plugin;
@@ -33,6 +32,7 @@ import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
 import dvbviewertimerimport.gui.GUIPanel;
+import dvbviewertimerimport.gui.TimersDialog;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ErrorClass;
@@ -656,4 +656,26 @@ System.exit(0);
   {
     return true ;
   }
+  /*
+  * @return the action to use for the menu and the toolbar or <code>null</code>
+  *         if the plugin does not provide this feature.
+  */
+  @Override
+  public ActionMenu getButtonAction() {
+    AbstractAction action = new AbstractAction()
+    {
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        new TimersDialog( null, control ).init() ;
+      }};
+
+    action.putValue(Action.NAME, ResourceManager.msg( "DVBVIEWER" ) );
+    action.putValue(Action.SMALL_ICON, ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewerTimer icon" ));
+    action.putValue(BIG_ICON, ResourceManager.createImageIcon( "icons/dvbViewer Programm24.png", "DVBViewerTimer icon" ));
+    action.putValue(Action.SHORT_DESCRIPTION, getInfo().getDescription());
+
+    return new ActionMenu(action);
+  }
+
 }
