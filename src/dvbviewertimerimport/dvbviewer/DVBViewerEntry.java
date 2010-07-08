@@ -1012,9 +1012,14 @@ public final class DVBViewerEntry  implements Cloneable{
 				continue ;
 			if ( entry.mergeElement != null && mergeElement.mergedEntries.contains( entry ))
 				continue ;
-			DVBViewerEntry newEntry = mergeElement.update( entries[ ix ], dvbViewer.getSeparator() ) ;
+			entry.mergeStatus = MergeStatus.DISABLED ;
+			DVBViewerEntry newEntry = mergeElement.update( entry, dvbViewer.getSeparator() ) ;
 			if ( newEntry != null )
+			{
+				newEntry.mergeStatus = MergeStatus.DISABLED ;
 				dvbViewer.addRecordingEntry( newEntry ) ;
+			}
+			
 		}
 	}
 	public static boolean isSplittingPossible( final DVBViewerEntry [] entries )
@@ -1042,9 +1047,11 @@ public final class DVBViewerEntry  implements Cloneable{
 				{
 					entry.mergeElement = null ;
 					entry.statusService = StatusService.ENABLED ;
+					entry.mergeStatus = MergeStatus.DISABLED ;
 					entry.toDo = ToDo.UPDATE ;
 				}
 				entryBase.mergedEntries = null ;
+				entryBase.mergeStatus = MergeStatus.DISABLED ;
 				entryBase.toDo = ToDo.DELETE ;
 			}
 			else
@@ -1059,6 +1066,7 @@ public final class DVBViewerEntry  implements Cloneable{
 					{
 						entry.mergeElement = null ;
 						entry.statusService = StatusService.ENABLED ;
+						entry.mergeStatus = MergeStatus.DISABLED ;
 						entry.toDo = ToDo.UPDATE ;
 					}
 					mergeElement.mergedEntries = null ;
@@ -1076,6 +1084,7 @@ public final class DVBViewerEntry  implements Cloneable{
 						mergeElement.toDo = ToDo.UPDATE ;
 					entryBase.statusService = StatusService.ENABLED ;
 					entryBase.mergeElement = null ;
+					entryBase.mergeStatus = MergeStatus.DISABLED ;
 					entryBase.toDo = ToDo.UPDATE ;
 				}
 			}
