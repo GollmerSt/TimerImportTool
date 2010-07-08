@@ -15,35 +15,28 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
-import java.util.TimeZone;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerDateModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import dvbviewertimerimport.control.OffsetEntry;
 import dvbviewertimerimport.control.TimeOffsets;
-import dvbviewertimerimport.misc.Constants;
-import dvbviewertimerimport.misc.Conversions;
 import dvbviewertimerimport.misc.ResourceManager;
 
 public class OffsetsDialog extends JDialog {
@@ -52,7 +45,6 @@ public class OffsetsDialog extends JDialog {
 	 */
 	private static final long serialVersionUID = 5037000535757796243L;
 
-	public static final long   DAY_TIME_ORIGIN ; 
 	private static final SimpleDateFormat dayTimeFormat ;
 
 	private final TimeOffsets offsets ;
@@ -71,17 +63,8 @@ public class OffsetsDialog extends JDialog {
 	
 	static
 	{
-		long origin = 0 ;
-		
-		try {
-			origin = new SimpleDateFormat("HH:mm").parse("00:00").getTime() ;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		DAY_TIME_ORIGIN = origin ;
 		dayTimeFormat =  new SimpleDateFormat("HH:mm");
-		dayTimeFormat.setTimeZone( TimeZone.getTimeZone("GMT0") ) ;
+		//dayTimeFormat.setTimeZone( TimeZone.getTimeZone("GMT0") ) ;
 	}
 
 	private class ButtonsPressed implements ActionListener
@@ -252,14 +235,14 @@ public class OffsetsDialog extends JDialog {
 		column.setPreferredWidth( 22*7+2 ) ;
 		
 		column = this.table.getColumnModel().getColumn( 3 ) ;
-		column.setCellRenderer( new DayTimeRenderer() ) ;
-		column.setCellEditor( new DayTimeEditor() ) ;
-		column.setPreferredWidth( 60 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
+		column.setPreferredWidth( 65 ) ;
 		
 		column = this.table.getColumnModel().getColumn( 4 ) ;
-		column.setCellRenderer( new DayTimeRenderer() ) ;
-		column.setCellEditor( new DayTimeEditor() ) ;
-		column.setPreferredWidth( 60 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
+		column.setPreferredWidth( 65 ) ;
 		
 	    table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
 	}
@@ -343,12 +326,12 @@ public class OffsetsDialog extends JDialog {
 			case 4 :
 				long dayTime = 0L;
 				try {
-					dayTime = Conversions.dayTimeToLong( entry.getDayTimes()[ col - 3 ] );
+					dayTime = dayTimeToLong( entry.getDayTimes()[ col - 3 ] );
 				} catch (ParseException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				return new Integer( (int)dayTime ) ;
+				return new Long( dayTime ) ;
 			}
 			return null ;
 		}
@@ -373,9 +356,9 @@ public class OffsetsDialog extends JDialog {
 				break ;
 			case 3 :
 			case 4 :
-				long dayTime = ((Integer)value).longValue() ;
-				if ( dayTime == Constants.LASTMINUTE )
-					dayTime = Constants.DAYMILLSEC ;
+				long dayTime = ((Long)value).longValue() ;
+				//if ( dayTime == Constants.LASTMINUTE )
+				//	dayTime = Constants.DAYMILLSEC ;
 				entry.getDayTimes()[ col - 3 ] = longToDayTime( dayTime ) ;
 				break ;
 			}
@@ -511,65 +494,13 @@ public class OffsetsDialog extends JDialog {
 			return true;
 		}
     }
-    static class DayTimeRenderer extends DefaultTableCellRenderer {
-        /**
-		 * 
-		 */
-		private static final long serialVersionUID = -4474533646976393816L;
-		public DayTimeRenderer()
-        { 
-        	super();
-        	this.setHorizontalAlignment(JLabel.RIGHT) ;
-        }
-		public void setValue(Object value) {
-			long time = ((Integer)value).longValue() ;
-			String d = longToDayTime( time );
-            this.setText(d);
-        }
-    }
-    public class DayTimeEditor extends AbstractCellEditor implements TableCellEditor
-    {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 2756852706034748338L;
-		private final JSpinner spinner ;
-		
-		public DayTimeEditor()
-		{
-			Date start = new Date( DAY_TIME_ORIGIN ) ;
-			Date end = new Date( DAY_TIME_ORIGIN + Constants.DAYMILLSEC - 60000 ) ;
-			SpinnerDateModel model = new SpinnerDateModel(start, start, end, Calendar.HOUR ) ;
-			spinner = new JSpinner( model ) ;
-			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm"));   	}
-		@Override
-    	public Component getTableCellEditorComponent(
-    				JTable table,
-    				Object object,
-    				boolean isSelected,
-    				int row,
-    				int column)
-    	{
-			long dayTime = ((Integer)object).longValue() ;
-			if ( dayTime == Constants.DAYMILLSEC )
-				dayTime = Constants.DAYMILLSEC - 60000 ;
-    		Date value = new Date( dayTime + DAY_TIME_ORIGIN )  ;
-    		spinner.setValue( value ) ;
-    		return spinner ;
-    	}
-		@Override
-		public Object getCellEditorValue() {
-			long result = ((Date)spinner.getValue()).getTime() - DAY_TIME_ORIGIN ;
-			return new Integer( (int) result ) ;
-		}
-		@Override
-		public boolean shouldSelectCell(EventObject arg0) {
-			return true;
-		}
-    }
 	public static String longToDayTime( long d )
 	{
 		return dayTimeFormat.format( new Date( d ) ) ;
+	}
+	public static long dayTimeToLong( String t ) throws ParseException
+	{
+		return dayTimeFormat.parse( t ).getTime() ;
 	}
 
 }

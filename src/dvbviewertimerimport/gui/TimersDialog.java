@@ -9,11 +9,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Enumeration;
 
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -25,6 +27,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import dvbviewertimerimport.gui.treetable.JTreeTable ; 
+import dvbviewertimerimport.gui.treetable.JTreeTable.TreeTableCellRenderer;
 import dvbviewertimerimport.misc.ResourceManager;
 
 import dvbviewertimerimport.control.Control;
@@ -36,26 +39,24 @@ public class TimersDialog extends JDialog {
 	 * 
 	 */
 	private static final long serialVersionUID = -1269656564974135595L;
-	
-	private final GUI gui ; 
+
+
 	private final Control control ; 
-	private boolean isChanged = false ;
 		
 	private MyTreeTable recordingTable = null ;
 	private TimersTreeTableModel treeTableModel = null ;
+		
+    private final JButton reloadButton = new JButton() ;
+    private final JButton okButton = new JButton() ;
+    private final JButton cancelButton = new JButton() ;
+    private final JButton applyButton = new JButton() ;
+	
 	
 	private TimerstablePopUpMenu tablePopUp = null ;
-	
-	public TimersDialog( Control control )
-	{
-		this( null, control ) ;
-	}
-
 	
 	public TimersDialog( GUI gui, Control control )
 	{
 		super( gui , java.awt.Dialog.ModalityType.APPLICATION_MODAL  ) ;
-		this.gui = gui ;
 		this.control = control ;
 		//this.setLayout( new BorderLayout() )  ;
 		this.setLayout( new GridBagLayout() )  ;
@@ -71,7 +72,7 @@ public class TimersDialog extends JDialog {
 		private static final long serialVersionUID = 5883200778909176606L;
 		public MyTreeTable(TimersTreeTableModel treeTableModel) {
 			super(treeTableModel);
-			treeTableModel.setTree( this.getTree() ) ;
+			treeTableModel.setTreeTable( this ) ;
 			treeTableModel.updateRoot() ;
 			this.getTree().addTreeExpansionListener( new ExpandListener() ) ;
 		}
@@ -143,23 +144,12 @@ public class TimersDialog extends JDialog {
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.fill       = GridBagConstraints.BOTH ;
 		c.weightx    = 1.0 ;
+		c.weighty    = 1.0 ;
 		c.insets     = i ;
 		
-		this.recordingTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		
-		this.recordingTable.getColumnModel().getColumn( 0 ).setPreferredWidth( 50 ) ;
-		this.recordingTable.getColumnModel().getColumn( 1 ).setPreferredWidth( 100 ) ;
-		this.recordingTable.getColumnModel().getColumn( 2 ).setPreferredWidth( 50 ) ;
-		this.recordingTable.getColumnModel().getColumn( 3 ).setPreferredWidth( 50 ) ;
-		this.recordingTable.getColumnModel().getColumn( 4 ).setPreferredWidth( 50 ) ;
-		this.recordingTable.getColumnModel().getColumn( 5 ).setPreferredWidth( 180 ) ;
-		this.recordingTable.getColumnModel().getColumn( 6 ).setPreferredWidth( 80 ) ;
-		this.recordingTable.getColumnModel().getColumn( 7 ).setPreferredWidth( 100 ) ;
-		this.recordingTable.getColumnModel().getColumn( 8 ).setPreferredWidth( 100 ) ;
-		this.recordingTable.getColumnModel().getColumn( 9 ).setPreferredWidth( 100 ) ;
-
+		this.setupTable() ;
 		
 		JScrollPane scrollPane = new JScrollPane( this.recordingTable );
 		scrollPane.setPreferredSize( new Dimension( 150+150*5, 230 ) ) ;
@@ -170,10 +160,121 @@ public class TimersDialog extends JDialog {
 
 		this.tablePopUp = new TimerstablePopUpMenu ( this.control, this.recordingTable ) ;
 
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		//c.fill       = GridBagConstraints.BOTH ;
+		//c.weightx    = 1.0 ;
+		//c.weighty    = 1.0 ;
+		c.insets     = i ;
+		
+		this.reloadButton.addActionListener( new ButtonsPressed() ) ;
+		this.reloadButton.setText( ResourceManager.msg( "RELOAD" ) ) ;
+		this.add( this.reloadButton, c ) ;
+
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		//c.fill       = GridBagConstraints.BOTH ;
+		c.weightx    = 1.0 ;
+		//c.weighty    = 1.0 ;
+		c.insets     = i ;
+		
+		this.okButton.addActionListener( new ButtonsPressed() ) ;
+		this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
+		this.add( this.okButton, c ) ;
+
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		//c.fill       = GridBagConstraints.BOTH ;
+		//c.weightx    = 1.0 ;
+		//c.weighty    = 1.0 ;
+		c.insets     = i ;
+		
+		this.cancelButton.addActionListener( new ButtonsPressed() ) ;
+		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
+		this.add( this.cancelButton, c ) ;
+
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.NORTHEAST ;
+		//c.fill       = GridBagConstraints.BOTH ;
+		//c.weightx    = 1.0 ;
+		//c.weighty    = 1.0 ;
+		c.insets     = i ;
+		
+		this.applyButton.addActionListener( new ButtonsPressed() ) ;
+		this.applyButton.setText( ResourceManager.msg( "APPLY" ) ) ;
+		this.add( this.applyButton, c ) ;
+		
 		this.pack(); 
         this.setLocationRelativeTo(null);
 		this.setVisible( true );
 	}
+
+	private void setupTable()
+	{
+		this.recordingTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		
+		this.recordingTable.setRowHeight(21) ;
+		
+		TableColumn column = null ;
+		column = this.recordingTable.getColumnModel().getColumn( 0 ) ;
+		column.setPreferredWidth( 50 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 1 ) ;
+		column.setPreferredWidth( 100 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 2 ) ;
+		column.setPreferredWidth( 180 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 3 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DateRenderer() ) ;
+		column.setCellEditor( new TimeGUIHelper.DateEditor() ) ;
+		column.setPreferredWidth( 80 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 4 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
+		column.setPreferredWidth( 60 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 5 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
+		column.setPreferredWidth( 60 ) ;
+		
+		this.recordingTable.getColumnModel().getColumn( 6 ).setPreferredWidth( 80 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 7 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DateRenderer() ) ;
+		column.setPreferredWidth( 95 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 8 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setPreferredWidth( 85 ) ;
+		
+		column = this.recordingTable.getColumnModel().getColumn( 9 ) ;
+		column.setCellRenderer( new TimeGUIHelper.DayTimeRenderer() ) ;
+		column.setPreferredWidth( 85 ) ;
+	}
+
 	
 	class MyTableMouseListener implements MouseListener
 	{
@@ -216,6 +317,61 @@ public class TimersDialog extends JDialog {
                 tablePopUp.show(evt.getComponent(), evt.getX(), evt.getY());
                 
             }
+		}
+	}
+	private class ButtonsPressed implements ActionListener
+	{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			recordingTable.editingStopped( null ) ;
+			JButton source = (JButton)e.getSource() ;
+			
+			TreeTableCellRenderer jTree = (TreeTableCellRenderer) recordingTable.getTree() ;
+			TimersTreeTableModel treeModel = (TimersTreeTableModel) jTree.getModel() ; 
+
+			if ( source == okButton )
+			{
+				if ( treeModel.isChanged() )
+				{
+					try {
+						control.getDVBViewer().setDVBViewerTimers() ;
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					control.getDVBViewer().writeXML() ;
+					treeModel.setIsChanged( false ) ;
+				}
+				dispose() ;
+			}
+			else if ( source == cancelButton )
+			{
+				control.getDVBViewer().resetRecordEntries() ;
+				treeModel.setIsChanged( false ) ;
+				dispose() ;
+			}
+			else if ( source == applyButton )
+			{
+				recordingTable.editingStopped( null ) ;
+				if ( treeModel.isChanged() )
+				{
+					try {
+						control.getDVBViewer().setDVBViewerTimers() ;
+					} catch (InterruptedException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					control.getDVBViewer().writeXML() ;
+					treeModel.setIsChanged( false ) ;
+				}
+			}
+			else if ( source == reloadButton )
+			{
+				control.getDVBViewer().updateDVBViewer() ;
+				treeModel.setIsChanged( false ) ;
+				treeModel.updateRoot() ;
+			}
 		}
 	}
 }

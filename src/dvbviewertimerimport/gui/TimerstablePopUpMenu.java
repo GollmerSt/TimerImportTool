@@ -65,6 +65,7 @@ public class TimerstablePopUpMenu extends JPopupMenu
 			menu.control.getDVBViewer().reworkMergeElements() ;
 			TreeTableCellRenderer jTree = (TreeTableCellRenderer) menu.table.getTree() ;
 			TimersTreeTableModel treeModel = (TimersTreeTableModel) jTree.getModel() ; 
+			treeModel.setIsChanged( true ) ;
 			treeModel.updateRoot() ;
 		}
 	}
@@ -82,7 +83,8 @@ public class TimerstablePopUpMenu extends JPopupMenu
 			DVBViewerEntry.splitEntries( menu.control.getDVBViewer(), menu.table.getSelectedEntries() ) ;
 			menu.control.getDVBViewer().reworkMergeElements() ;
 			TreeTableCellRenderer jTree = (TreeTableCellRenderer) menu.table.getTree() ;
-			TimersTreeTableModel treeModel = (TimersTreeTableModel) jTree.getModel() ; 
+			TimersTreeTableModel treeModel = (TimersTreeTableModel) jTree.getModel() ;
+			treeModel.setIsChanged( true ) ;
 			treeModel.updateRoot() ;
 		}
 	}
@@ -100,6 +102,7 @@ public class TimerstablePopUpMenu extends JPopupMenu
 			menu.control.getDVBViewer().reworkMergeElements() ;
 			TreeTableCellRenderer jTree = (TreeTableCellRenderer) menu.table.getTree() ;
 			TimersTreeTableModel treeModel = (TimersTreeTableModel) jTree.getModel() ; 
+			treeModel.setIsChanged( true ) ;
 			treeModel.updateRoot() ;
 		}
 	}

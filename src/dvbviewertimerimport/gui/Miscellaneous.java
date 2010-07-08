@@ -23,7 +23,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -203,10 +202,13 @@ public class Miscellaneous extends MyTabPanel
 			this.timeZone = timeZone ;
 		}
 		private final TimeZone timeZone ;
+		private String string = null ;
 		@Override
 		public String toString()
 		{
-			return String.format( "(GMT%+03d:00) %s", timeZone.getRawOffset()/1000/60/60,timeZone.getID()) ;
+			if ( this.string == null)
+				this.string = String.format( "(GMT%+03d:00) %s", timeZone.getRawOffset()/1000/60/60,timeZone.getID()) ;
+			return string ;
 		}
 		public String getTimeZoneString() { return timeZone.getID() ; } ;
 	} ;
@@ -533,14 +535,7 @@ public class Miscellaneous extends MyTabPanel
 
 		this.add( textInfoLabel, c ) ;
 		
-		SwingUtilities.invokeLater(new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				createCombosContent() ;	
-			}
-		} ) ;
+		this.createCombosContent() ;	
 	}
     public void createCombosContent()
     {
