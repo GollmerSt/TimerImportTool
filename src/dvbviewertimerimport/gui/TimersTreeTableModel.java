@@ -85,6 +85,8 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 			if ( entry.isDeleted() )
 				continue ;
 			entry.setRoot( (DVBViewerEntry) this.root ) ;
+			if ( entry.isRemoved() )
+				continue ;
 			if ( entry.isMerged() )
 				continue ;
 			children.add( entry ) ;
