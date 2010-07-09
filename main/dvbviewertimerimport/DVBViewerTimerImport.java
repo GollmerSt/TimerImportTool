@@ -1,5 +1,9 @@
 package dvbviewertimerimport;
 
+import java.util.ArrayList;
+
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
+
 /**
  * @author Stefan Gollmer
  *
@@ -10,4 +14,5 @@ public class DVBViewerTimerImport
   {
 	  return null ;
   }
+  public static void updateRecordings( ArrayList< DVBViewerEntry > entries ) { }
  }
