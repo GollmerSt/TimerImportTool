@@ -824,10 +824,8 @@ public final class DVBViewerEntry  implements Cloneable{
 		this.outDatedInfo.resetMissing() ;
 	}
 	public boolean isDisabled() { return this.statusService != StatusService.ENABLED ; } ;
-	public boolean isEnabled()
-	{
-		return    this.statusService == StatusService.ENABLED ;
-	}
+	public boolean isEnabled() { return this.statusService == StatusService.ENABLED ; }
+	public boolean isRemoved() { return this.statusService == StatusService.REMOVED ; }
 	public boolean isDeleted() { return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER ; } ;
 	public boolean isMerged() { return this.mergeElement != null ; } ;
 	public boolean isMergeElement()
