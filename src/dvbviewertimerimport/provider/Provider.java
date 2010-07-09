@@ -14,6 +14,7 @@ import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 
@@ -57,6 +58,13 @@ public abstract class Provider implements DVBViewerProvider {
 	public static void setIsPlugin() { isPlugin = true ; } ;
 	public static boolean isPlugin() { return isPlugin ; } ;
 	public static Provider processingProvider = null ;
+	public static void updateRecordingsAllProviders( ArrayList< DVBViewerEntry > entries )
+	{
+		for ( Provider provider : Provider.providers )
+		{
+			provider.updateRecordings( entries ) ;
+		}
+	}
 	
 	private final int id ;
 	protected final Control control ;
@@ -161,6 +169,7 @@ public abstract class Provider implements DVBViewerProvider {
 	public int importChannels() { return this.importChannels( false ) ; } ;
 	protected ArrayList< Channel > readChannels() { return null ; } ;
 	
+	public void updateRecordings( ArrayList< DVBViewerEntry > entries ) {} ;
 	public boolean process( boolean getAll, DVBViewer.Command command )   { return true ; } ;
 	public boolean processEntry( Object args, DVBViewer.Command command ) { return true ; } ;
 	public void check()
