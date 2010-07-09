@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -29,6 +30,7 @@ import javax.swing.tree.TreePath;
 import dvbviewertimerimport.gui.treetable.JTreeTable ; 
 import dvbviewertimerimport.gui.treetable.JTreeTable.TreeTableCellRenderer;
 import dvbviewertimerimport.misc.ResourceManager;
+import dvbviewertimerimport.provider.Provider;
 
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
@@ -341,6 +343,7 @@ public class TimersDialog extends JDialog {
 						e1.printStackTrace();
 					}
 					control.getDVBViewer().writeXML() ;
+					Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 					treeModel.setIsChanged( false ) ;
 				}
 				dispose() ;
@@ -363,12 +366,14 @@ public class TimersDialog extends JDialog {
 						e1.printStackTrace();
 					}
 					control.getDVBViewer().writeXML() ;
+					Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 					treeModel.setIsChanged( false ) ;
 				}
 			}
 			else if ( source == reloadButton )
 			{
 				control.getDVBViewer().updateDVBViewer() ;
+				Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 				treeModel.setIsChanged( false ) ;
 				treeModel.updateRoot() ;
 			}
