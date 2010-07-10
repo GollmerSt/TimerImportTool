@@ -671,23 +671,20 @@ public class Miscellaneous extends MyTabPanel
 	@Override
 	public void update( boolean active )
 	{
-		if ( ! active )
+		if ( ! this.control.getSeparator().equals( this.separatorBox.getText() ) )
 		{
-			if ( ! this.control.getSeparator().equals( this.separatorBox.getText() ) )
-			{
-				this.control.setSeparator( this.separatorBox.getText() ) ;
-				this.guiPanel.setChanged() ;
-			}
-			if ( ! this.control.getDVBViewer().getViewParameters().equals( this.viewParameters.getText() ))
-			{
-				this.control.getDVBViewer().setViewParameters( this.viewParameters.getText() ) ;
-				this.guiPanel.setChanged() ;
-			}
-			if ( ! this.control.getDVBViewer().getRecordingParameters().equals( this.recordingParameters.getText() ))
-			{
-				this.control.getDVBViewer().setRecordingParameters( this.recordingParameters.getText() ) ;
-				this.guiPanel.setChanged() ;
-			}
+			this.control.setSeparator( this.separatorBox.getText() ) ;
+			this.guiPanel.setChanged() ;
+		}
+		if ( ! this.control.getDVBViewer().getViewParameters().equals( this.viewParameters.getText() ))
+		{
+			this.control.getDVBViewer().setViewParameters( this.viewParameters.getText() ) ;
+			this.guiPanel.setChanged() ;
+		}
+		if ( ! this.control.getDVBViewer().getRecordingParameters().equals( this.recordingParameters.getText() ))
+		{
+			this.control.getDVBViewer().setRecordingParameters( this.recordingParameters.getText() ) ;
+			this.guiPanel.setChanged() ;
 		}
 		this.updateDVBViewerActions() ;
 		this.updateText() ;
