@@ -52,8 +52,7 @@ public class TimersDialog extends JDialog {
     private final JButton okButton = new JButton() ;
     private final JButton cancelButton = new JButton() ;
     private final JButton applyButton = new JButton() ;
-	
-	
+		
 	private TimerstablePopUpMenu tablePopUp = null ;
 	private static ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
 	
@@ -124,6 +123,7 @@ public class TimersDialog extends JDialog {
 			this.control.getDVBViewer().updateDVBViewer() ;
 		
 		this.treeTableModel = new TimersTreeTableModel( this.control.getDVBViewer() ) ;
+		this.treeTableModel.setTimersDialog( this ) ;
 		
 		this.recordingTable = new MyTreeTable( this.treeTableModel ) ;
 		
@@ -227,6 +227,8 @@ public class TimersDialog extends JDialog {
 		this.applyButton.addActionListener( new ButtonsPressed() ) ;
 		this.applyButton.setText( ResourceManager.msg( "APPLY" ) ) ;
 		this.add( this.applyButton, c ) ;
+		
+		this.updateButtons() ;
 		
 		this.pack(); 
         this.setLocationRelativeTo(null);
@@ -380,5 +382,12 @@ public class TimersDialog extends JDialog {
 				treeModel.updateRoot() ;
 			}
 		}
+	}
+	public void updateButtons()
+	{
+		if ( this.treeTableModel == null )
+			return ;
+		
+		this.applyButton.setEnabled( this.treeTableModel.isChanged() ) ;
 	}
 }

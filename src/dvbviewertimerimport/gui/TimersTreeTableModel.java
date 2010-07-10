@@ -51,6 +51,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 	} ;
 	
 	private final DVBViewer dvbViewer ;
+	private TimersDialog dialog = null ;
 	private JTreeTable treeTable = null ;
 	private boolean isChanged = false ;
 	
@@ -62,6 +63,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 	}
 	
 	public void setTreeTable( JTreeTable treeTable ) { this.treeTable = treeTable ; } ;
+	public void setTimersDialog( TimersDialog dialog ){ this.dialog = dialog ; } ;
 	
 	class MyComparator implements Comparator< DVBViewerEntry >
 	{
@@ -151,7 +153,11 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 	}
 	
 	public boolean isChanged() { return this.isChanged ; } ;
-	public void setIsChanged( boolean isChanged ) { this.isChanged = isChanged; } ;
+	public void setIsChanged( boolean isChanged )
+	{
+		this.isChanged = isChanged;
+		this.dialog.updateButtons() ;
+	} ;
 
 	@Override
 	public int getColumnCount()
@@ -219,15 +225,15 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 		{
 			case 3 :
 				TimersTreeTableModel.setStartEnd( this, entry, (Long)aValue, entry.getStart(), entry.getEnd() ) ;
-				this.isChanged = true ;
+				this.setIsChanged( true ) ;
 				break ;
 			case 4 :
 				TimersTreeTableModel.setStartEnd( this, entry, entry.getStart(), (Long)aValue, entry.getEnd() ) ;
-				this.isChanged = true ;
+				this.setIsChanged( true ) ;
 				break ;
 			case 5 :
 				TimersTreeTableModel.setStartEnd( this, entry, entry.getStart(), entry.getStart(), (Long)aValue ) ;
-				this.isChanged = true ;
+				this.setIsChanged( true ) ;
 				break ;
 		}
 		
