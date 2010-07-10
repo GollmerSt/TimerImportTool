@@ -48,6 +48,8 @@ import dvbviewertimerimport.provider.Provider;
 public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 {
   private static Version version = null ;
+  
+  private static DVBViewerTimerImport plugin = null ;
 
   private PluginInfo pluginInfo = null ;
   private boolean isInitialized = false ;
@@ -75,6 +77,18 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
   private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
 
+  
+  /**
+   * 
+   */
+  public DVBViewerTimerImport()
+  {
+    DVBViewerTimerImport.plugin = this ;
+  }
+  protected void finalize() 
+  {
+    DVBViewerTimerImport.plugin = null ;
+  }
 
  /**
    * Called by the host-application during start-up.
@@ -374,72 +388,6 @@ System.exit(0);
     return new ActionMenu(mainAction, subActions );
   }
 
-
-/*  @Override
-  public ActionMenu getContextMenuActions( final Program program)
-  {
-    if ( ! init() )
-      return null ;
-    // Eine Aktion erzeugen, die die Methode sendMail(Program) aufruft, sobald sie aktiviert wird.
-    Command temp = Command.SET ;
-    try {
-      if ( control.getDVBViewer().process( dvbViewerProvider, false, program, Command.FIND ) )
-        temp = Command.DELETE ;
-    } catch ( ErrorClass e ) {
-      this.errorMessage( e ) ;
-      return null ;
-    }
-    catch (Exception e ) {
-      this.errorMessage( e ) ;
-      e.printStackTrace();
-      return null ;
-    } catch (TerminateClass e) {
-    	return null ;
-    }
-    final Command command = temp ;
-    AbstractAction action = new AbstractAction() {
-      @Override
-      public void actionPerformed(ActionEvent evt)
-      {
-        try {
-          control.getDVBViewer().process( dvbViewerProvider, false, program, command ) ;
-        } catch ( ErrorClass e ) {
-          errorMessage( e ) ;
-          return;
-        }
-        catch (Exception e ) {
-          errorMessage( e ) ;
-          e.printStackTrace();
-          return ;
-        } catch (TerminateClass e) {
-        	return ;
-        }
-        if ( dvbViewer != null )
-          dvbViewer.writeXML() ;
-        if ( command == Command.SET )
-          markProgram( program, true ) ;
-        else
-          markProgram( program, false ) ;
-       program.validateMarking() ;
-       updateTreeNode();
-      }
-    };
-
-    // Der Aktion einen Namen geben. Dieser Name wird dann im Kontextmenü gezeigt
-    if ( command == Command.SET )
-        action.putValue(Action.NAME, addTimer );
-      else
-        action.putValue(Action.NAME, deleteTimer );
-
-    // Der Aktion ein Icon geben. Dieses Icon wird mit dem Namen im Kontextmenü gezeigt
-    // Das Icon sollte 16x16 Pixel groß sein
-    action.putValue(Action.SMALL_ICON, menuIcon );
-
-    // Das Aktions-Menü erzeugen und zurückgeben
-    return new ActionMenu(action);
-  }
-
-*/
   private void markProgram( final Program program, boolean mark )
   {
     if ( mark )
@@ -585,14 +533,14 @@ System.exit(0);
     Program [] programs = Plugin.getPluginManager().getMarkedPrograms() ;
     for ( Program program : programs )
     {
-      program.unmark( this ) ;
+      this.markProgram( program, false ) ;
     }
     for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
     {
       if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
       {
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
-        this.mRootNode.addProgram( program ) ;
+        this.markProgram( program, true ) ;
         program.validateMarking() ;
       }
     }
@@ -676,6 +624,14 @@ System.exit(0);
     action.putValue(Action.SHORT_DESCRIPTION, getInfo().getDescription());
 
     return new ActionMenu(action);
+  }
+  /**
+   * @param entries
+   */
+  public static void updateRecordings( ArrayList< DVBViewerEntry > entries )
+  {
+    if ( DVBViewerTimerImport.plugin != null)
+      DVBViewerTimerImport.plugin.updateMarks() ;
   }
 
 }
