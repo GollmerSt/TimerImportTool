@@ -163,6 +163,8 @@ public class Control
 		int     dvbServiceWaitTimeAfterWOL = 15 ;
 		
 		String dvbViewerPath = null ;
+		String viewParameters = null ;
+		String recordingParameters = null ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
 		
@@ -332,6 +334,11 @@ public class Control
 						
 						if      ( attributeName.equals( "dvbViewerPath" ) )
 							dvbViewerPath = value ;
+						else if ( attributeName.equals( "viewParameters" ) )
+							viewParameters = value ;
+						else if ( attributeName.equals( "recordingParameters" ) )
+							recordingParameters = value ;
+
 						else if ( attributeName.equals( "afterRecordingAction" ) )
 						{
 							try {
@@ -404,6 +411,11 @@ public class Control
 		{
 			if ( dvbViewerPath != null )
 				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
+			if ( viewParameters != null )
+				this.dvbViewer.setViewParameters( viewParameters ) ;
+			if ( viewParameters != null )
+				this.dvbViewer.setRecordingParameters( recordingParameters ) ;
+			
 			this.dvbViewer.setService(new DVBViewerService(dvbServiceEnable,
 					dvbServiceURL, dvbServiceName, dvbServicePassword));
 			this.dvbViewer.setEnableWOL(dvbServiceEnableWOL);
@@ -473,6 +485,10 @@ public class Control
 			  sw.writeStartElement( "DVBViewer" ) ;
 		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
 			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
+				if ( ! dvbViewer.getViewParameters().equals("") )
+					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
+				if ( ! dvbViewer.getRecordingParameters().equals("" ) )
+					sw.writeAttribute( "recordingParameters", dvbViewer.getRecordingParameters() ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;
