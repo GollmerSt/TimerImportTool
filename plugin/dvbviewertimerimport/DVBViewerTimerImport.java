@@ -181,28 +181,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     isInitialized = true ;
     return true ;
   }
-/*        dvbViewer.writeDataPathToIni() ;
-
-  if ( paras.length() != 0)
-    Log.out( "Parameters: " + paras ) ;
-
-  dvbViewer.process( provider, getAll, args ) ;
-
-if ( ErrorClass.isWarning() )
-{
-  Log.out( "Import finished, but warnings occurs. The messages should be checked"  ) ;
-  if ( showMessageBox|| provider.getID() == Provider.getProviderID("ClickFinder") )
-    JOptionPane.showMessageDialog(null, "Warnings occurs", provider.getName() + " status", JOptionPane.WARNING_MESSAGE);
-}
-else
-{
-  Log.out( "Import successfull finished" ) ;
-  if ( showMessageBox )
-    JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status", JOptionPane.INFORMATION_MESSAGE);
-}
-System.exit(0);
-  }
-*/
 
   /**
    * @param e Throwable of the last exception/error ....
@@ -458,6 +436,7 @@ System.exit(0);
       control.setDVBViewerEntries() ;
       Log.out( "Configuration saved" ) ;
       control.renameImportedFile() ;
+      settingsPanel.updateTab() ;
       control.write( null ) ;
       channelAssignmentDvbVToTvB = null ;
     }
