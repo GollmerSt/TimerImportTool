@@ -150,4 +150,8 @@ public class GUIPanel extends JPanel
 	{
 		this.miscellaneous.updateDVBViewerActions() ;
 	}
+	public void updateTab()
+	{
+		this.getSelectedComponent().update( false ) ;
+		}
 }

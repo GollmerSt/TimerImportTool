@@ -147,8 +147,7 @@ public class GUI extends JFrame{
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			MyTabPanel tabPanel = guiPanel.getSelectedComponent() ;
-			tabPanel.update( false ) ;
+			guiPanel.updateTab() ;
 
 			JButton button = (JButton) e.getSource() ;
 			
