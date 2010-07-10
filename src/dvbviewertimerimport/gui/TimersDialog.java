@@ -55,6 +55,7 @@ public class TimersDialog extends JDialog {
 	
 	
 	private TimerstablePopUpMenu tablePopUp = null ;
+	private static ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
 	
 	public TimersDialog( GUI gui, Control control )
 	{
@@ -62,6 +63,7 @@ public class TimersDialog extends JDialog {
 		this.control = control ;
 		//this.setLayout( new BorderLayout() )  ;
 		this.setLayout( new GridBagLayout() )  ;
+		this.setIconImage( TimersDialog.programIcon.getImage() ) ;
 	}
 	
 	

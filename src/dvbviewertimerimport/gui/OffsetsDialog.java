@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.EventObject;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -58,7 +59,9 @@ public class OffsetsDialog extends JDialog {
 	private final JButton newButton = new JButton() ; 
 	private final JButton deleteButton = new JButton() ; 
 	private final JCheckBox globalCheckBox = new JCheckBox() ; 
-	
+
+	private static ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
+
 	private final GUIPanel guiPanel ;
 	
 	static
@@ -117,6 +120,8 @@ public class OffsetsDialog extends JDialog {
 		this.columnNames[2] = ResourceManager.msg( "WEEKDAYS" ) ;
 		this.columnNames[3] = ResourceManager.msg( "START" ) ;
 		this.columnNames[4] = ResourceManager.msg( "END" ) ;
+		
+		this.setIconImage( OffsetsDialog.programIcon.getImage() ) ;
 		
 		init() ;
 	}
