@@ -83,6 +83,8 @@ public class DVBViewer {
 	private boolean isDVBViewerPathSetExternal = false ;
 	private String dvbViewerDataPath = null ;
 	private String dvbViewerPluginDataPath = null ;
+	private String viewParameters = "" ;
+	private String recordingParameters = "" ;
 	private String xmlFilePath = null ;
 	
 	
@@ -468,6 +470,10 @@ public class DVBViewer {
 		else
 			dvbViewerDataPath = null ;
 	} ;
+	public String getViewParameters() { return this.viewParameters ; } ;
+	public void setViewParameters( final String viewParameters ) { this.viewParameters = viewParameters ; } ;
+	public String getRecordingParameters() { return this.recordingParameters ; } ;
+	public void setRecordingParameters( final String recordingParameters ) { this.recordingParameters = recordingParameters ; } ;
 	public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
 	
 	public void setService( DVBViewerService s ) { this.service = s ; }
@@ -764,7 +770,7 @@ public class DVBViewer {
 			return false ;
 		try {
 			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
-			Runtime.getRuntime().exec( f.getAbsolutePath() + " -c:" + parts[0] ) ;
+			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() + " -c:" + parts[0] ) ;
 		} catch (IOException e) {
 			return false ;
 		}
