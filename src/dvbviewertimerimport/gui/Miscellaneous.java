@@ -46,6 +46,8 @@ public class Miscellaneous extends MyTabPanel
 	
 	private final JTextField directoryPathText = new JTextField() ;
 	private final JButton fileSelectorButton = new JButton() ;
+	private final JTextField viewParameters = new JTextField() ;
+	private final JTextField recordingParameters = new JTextField() ;
 	
 	private final JComboBox languageBox    = new JComboBox() ;
 	private final JComboBox lookAndFeelBox = new JComboBox() ;
@@ -222,11 +224,22 @@ public class Miscellaneous extends MyTabPanel
 
 		JPanel pathPanel = new JPanel( new GridBagLayout() ) ;
 		
-		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER_PATH" ) ) ;
+		tB = BorderFactory.createTitledBorder( ResourceManager.msg( "DVBVIEWER_PARAS" ) ) ;
 		pathPanel.setBorder( tB ) ;
 
 
 		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel pathLabel = new JLabel( ResourceManager.msg( "PATH" ) ) ;
+		pathPanel.add( pathLabel, c ) ;
+
+
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 0 ;
@@ -256,6 +269,55 @@ public class Miscellaneous extends MyTabPanel
 		pathPanel.add( fileSelectorButton, c ) ;
 
 
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel viewParaLabel = new JLabel( ResourceManager.msg( "VIEW_PARAS" ) ) ;
+		pathPanel.add( viewParaLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.viewParameters.setText( control.getDVBViewer().getViewParameters() ) ;
+		this.viewParameters.setPreferredSize( new Dimension( 400, this.directoryPathText.getPreferredSize().height ) ) ;
+		pathPanel.add( viewParameters, c ) ;
+
+
+		
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 2 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		JLabel recordingParaLabel = new JLabel( ResourceManager.msg( "RECORDING_PARAS" ) ) ;
+		pathPanel.add( recordingParaLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 2 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		this.recordingParameters.setText( control.getDVBViewer().getRecordingParameters() ) ;
+		this.recordingParameters.setPreferredSize( new Dimension( 400, this.directoryPathText.getPreferredSize().height ) ) ;
+		pathPanel.add( recordingParameters, c ) ;
+
+
+		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
@@ -263,7 +325,6 @@ public class Miscellaneous extends MyTabPanel
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		this.add( pathPanel, c ) ;
-
 
 		
 		
@@ -615,6 +676,16 @@ public class Miscellaneous extends MyTabPanel
 			if ( ! this.control.getSeparator().equals( this.separatorBox.getText() ) )
 			{
 				this.control.setSeparator( this.separatorBox.getText() ) ;
+				this.guiPanel.setChanged() ;
+			}
+			if ( ! this.control.getDVBViewer().getViewParameters().equals( this.viewParameters.getText() ))
+			{
+				this.control.getDVBViewer().setViewParameters( this.viewParameters.getText() ) ;
+				this.guiPanel.setChanged() ;
+			}
+			if ( ! this.control.getDVBViewer().getRecordingParameters().equals( this.recordingParameters.getText() ))
+			{
+				this.control.getDVBViewer().setRecordingParameters( this.recordingParameters.getText() ) ;
 				this.guiPanel.setChanged() ;
 			}
 		}
