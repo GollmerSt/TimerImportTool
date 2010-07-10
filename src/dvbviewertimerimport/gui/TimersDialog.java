@@ -116,7 +116,7 @@ public class TimersDialog extends JDialog {
 		}
 	}
 	
-	void init()
+	public void init()
 	{
 		if ( this.control.getDVBViewer().getRecordEntries() == null )
 			this.control.getDVBViewer().updateDVBViewer() ;
