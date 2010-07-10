@@ -413,7 +413,7 @@ public class Control
 				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
 			if ( viewParameters != null )
 				this.dvbViewer.setViewParameters( viewParameters ) ;
-			if ( viewParameters != null )
+			if ( recordingParameters != null )
 				this.dvbViewer.setRecordingParameters( recordingParameters ) ;
 			
 			this.dvbViewer.setService(new DVBViewerService(dvbServiceEnable,
