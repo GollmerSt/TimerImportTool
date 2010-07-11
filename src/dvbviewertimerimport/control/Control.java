@@ -165,6 +165,7 @@ public class Control
 		String dvbViewerPath = null ;
 		String viewParameters = null ;
 		String recordingParameters = null ;
+		boolean startIfRecording = false ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
 		
@@ -338,7 +339,15 @@ public class Control
 							viewParameters = value ;
 						else if ( attributeName.equals( "recordingParameters" ) )
 							recordingParameters = value ;
-
+						else if ( attributeName.equals( "startIfRecording" ) )
+						{
+							if      ( value.equalsIgnoreCase( "true" ) )
+								startIfRecording = true ;
+							else if ( value.equalsIgnoreCase( "false" ) )
+								startIfRecording = false ;
+							else
+								throw new ErrorClass ( ev, "Wrong startIfRecording format in file \"" + name + "\"" ) ;
+						}
 						else if ( attributeName.equals( "afterRecordingAction" ) )
 						{
 							try {
@@ -415,6 +424,7 @@ public class Control
 				this.dvbViewer.setViewParameters( viewParameters ) ;
 			if ( recordingParameters != null )
 				this.dvbViewer.setRecordingParameters( recordingParameters ) ;
+			this.dvbViewer.setStartIfRecording( startIfRecording ) ;
 			
 			this.dvbViewer.setService(new DVBViewerService(dvbServiceEnable,
 					dvbServiceURL, dvbServiceName, dvbServicePassword));
@@ -489,6 +499,8 @@ public class Control
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )
 					sw.writeAttribute( "recordingParameters", dvbViewer.getRecordingParameters() ) ;
+				if ( dvbViewer.getStartIfRecording() )
+					sw.writeAttribute( "startIfRecording", true ) ;
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;
@@ -532,7 +544,7 @@ public class Control
 			  
 			  TimeOffsets.getGeneralTimeOffsets().writeXML( sw ) ;
 			  
-			  if ( this.separator.length() != 0 )
+			  if ( this.separator != null && this.separator.length() != 0 )
 			  {
 				  sw.writeStartElement( "Separator" ) ;
 				  sw.writeCharacters( this.separator ) ;

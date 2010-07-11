@@ -96,7 +96,6 @@ public class GUIPanel extends JPanel
 	    this.tabbedPane.add( ResourceManager.msg( "PROVIDER_SERVICE" ), tab2);
 	    this.tabbedPane.add( ResourceManager.msg( "MISCELLANEOUS" ), this.miscellaneous);
 	    this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), providerAssignment);
-	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
 	    
 	    this.tabbedPane.setSelectedComponent( miscellaneous ) ;
 
@@ -106,7 +105,9 @@ public class GUIPanel extends JPanel
 	    this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
 	    
 		this.add( this.tabbedPane, BorderLayout.CENTER ) ;
-		this.updateExecuteButton() ;
+	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
+
+	    this.updateExecuteButton() ;
 }
 	public MyTabPanel getSelectedComponent()
 	{
@@ -152,6 +153,6 @@ public class GUIPanel extends JPanel
 	}
 	public void updateTab()
 	{
-		this.getSelectedComponent().update( false ) ;
+		this.getSelectedComponent().update( true ) ;
 		}
 }

@@ -85,6 +85,7 @@ public class DVBViewer {
 	private String dvbViewerPluginDataPath = null ;
 	private String viewParameters = "" ;
 	private String recordingParameters = "" ;
+	private boolean startIfRecording = false ;
 	private String xmlFilePath = null ;
 	
 	
@@ -474,6 +475,8 @@ public class DVBViewer {
 	public void setViewParameters( final String viewParameters ) { this.viewParameters = viewParameters ; } ;
 	public String getRecordingParameters() { return this.recordingParameters ; } ;
 	public void setRecordingParameters( final String recordingParameters ) { this.recordingParameters = recordingParameters ; } ;
+	public boolean getStartIfRecording() { return this.startIfRecording ; } ; 
+	public void setStartIfRecording( boolean startIfRecording ) { this.startIfRecording = startIfRecording ; } ; 
 	public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
 	
 	public void setService( DVBViewerService s ) { this.service = s ; }
@@ -569,7 +572,11 @@ public class DVBViewer {
 		if ( this.service != null && this.service.isEnabled() )
 			this.service.setTimers( this.recordEntries ) ;
 		else if ( ! DVBViewerCOM.setTimers( this.recordEntries ) )
+		{
 			timersXML.setTimers( this.recordEntries ) ;
+			if ( this.startIfRecording )
+				this.startDVBViewerIfRecording() ;
+		}
 		
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
 			           + "\nNumber of deleted entries: " + Integer.toString( deletedEntries )
@@ -771,6 +778,33 @@ public class DVBViewer {
 		try {
 			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
 			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() + " -c:" + parts[0] ) ;
+		} catch (IOException e) {
+			return false ;
+		}
+		return true ;
+	}
+	public boolean startDVBViewerIfRecording()
+	{
+		boolean isRecording = false ;
+		long now = System.currentTimeMillis() ;
+		for ( DVBViewerEntry entry : this.recordEntries )
+		{
+			if ( entry.isDisabled() )
+				continue ;
+			if ( ! entry.isInRange( now, now ) )
+				continue ;
+			isRecording = true ;
+			break ;
+		}
+		
+		if ( !isRecording )
+			return true;
+
+		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		if ( ! f.canExecute() )
+			return false ;
+		try {
+			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getRecordingParameters() ) ;
 		} catch (IOException e) {
 			return false ;
 		}
