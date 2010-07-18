@@ -278,11 +278,22 @@ public class DVBViewer {
 				this.recordEntries = this.timersXML.readTimers() ;
 		}
 	}
-	public void updateDVBViewer()
+	public void updateDVBViewer( boolean readXML )
 	{
+		
+		ArrayList< DVBViewerEntry > previousXML ;
+		
+		if ( readXML )
+			previousXML = null ;
+		else
+		{
+			previousXML = this.recordEntries ;
+			for ( DVBViewerEntry entry : previousXML )
+				entry.clearServiceID() ;
+		}
 		this.connectDVBViewerIfNecessary();
 		readDVBViewerTimers() ;
-		this.mergeXMLWithServiceData() ;
+		this.mergeXMLWithServiceData( previousXML ) ;
 		try {
 			this.setDVBViewerTimers() ;
 		} catch (InterruptedException e) {
@@ -310,7 +321,7 @@ public class DVBViewer {
 		try
 		{
 			this.readDVBViewerTimers() ;
-			this.mergeXMLWithServiceData() ;
+			this.mergeXMLWithServiceData( null ) ;
 			result  = provider.process(getAll, command ); ;
 			result &= provider.processEntry( args, command ) ;
 		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
@@ -561,7 +572,7 @@ public class DVBViewer {
 
 		for ( DVBViewerEntry d : this.recordEntries )
 		{
-			if ( d.mustDeleted() )
+			if ( d.mustDVBViewerDeleted() )
 				deletedEntries++ ;
 			else if ( d.mustUpdated() )
 				updatedEntries++ ;
@@ -673,9 +684,11 @@ public class DVBViewer {
 			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getAbsolutePath() ) ;
 		}
 	}
-	public void mergeXMLWithServiceData()
+	public void mergeXMLWithServiceData( ArrayList<DVBViewerEntry> lastTimers )
 	{
-		ArrayList<DVBViewerEntry> lastTimers = readXML() ;
+		if ( lastTimers == null )
+			lastTimers = readXML() ;
+		
 		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
 		this.recordEntries = lastTimers ;
 	}

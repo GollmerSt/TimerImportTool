@@ -60,6 +60,9 @@ public class DVBViewerCOM
 		
 		DVBViewerEntryCOM[] array = (DVBViewerEntryCOM[]) items.toArray( new DVBViewerEntryCOM[0] ) ;
 		
+		if ( array.length == 0 )
+			return true ;
+		
 		if ( ! DVBViewerCOM.connect() )
 			return false ;
 		

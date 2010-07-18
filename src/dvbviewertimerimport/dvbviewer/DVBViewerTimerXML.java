@@ -260,7 +260,7 @@ public class DVBViewerTimerXML {
 	{
 		for ( DVBViewerEntry d : entries )
 		{
-			if ( d.mustDeleted() )
+			if ( d.mustDVBViewerDeleted() )
 			{
 				this.entries.remove( d.getServiceID() ) ;
 				Log.out( true, "Entry \"" + DVBViewerTimerXML.createString( d ) +"\" removed." ) ;
@@ -273,8 +273,9 @@ public class DVBViewerTimerXML {
 			}
 			else if ( ! d.mustIgnored() )
 			{
-				d.setServiceID( this.maxRecordingNo ++ ) ;
-				this.entries.put( d.getServiceID(), d ) ;
+				//d.setServiceID( this.maxRecordingNo ++ ) ;
+				//this.entries.put( d.getServiceID(), d ) ;
+				this.entries.put( this.maxRecordingNo++, d ) ;
 				Log.out( true, "Entry \"" + DVBViewerTimerXML.createString( d ) +"\" added." ) ;
 			}
 		}

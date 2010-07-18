@@ -8,7 +8,7 @@ public class Versions {
 	private static final int MAJOR_VERSION					= 1 ;
   private static final int MINOR_VERSION					= 2 ;
   private static final int SUB_VERSION						= 0 ;
-	private static final String DVBVIEWER_COM_DLL_VERSION	= "1.00.00" ;
+	private static final String DVBVIEWER_COM_DLL_VERSION	= "1.00.01" ;
 	
 	public static String getVersion() { return Integer.toString( MAJOR_VERSION ) 
 	  + "." + Integer.toString( MINOR_VERSION )

@@ -126,7 +126,7 @@ public final class TimerImportTool {
 						break ;
 					case UPDATE :
 						Log.out( "Timer update started" ) ;
-						dvbViewer.updateDVBViewer() ;
+						dvbViewer.updateDVBViewer( true ) ;
 					}
 				}
 			}
@@ -144,7 +144,7 @@ public final class TimerImportTool {
 					provider = Provider.getProvider( "TVGenial" ) ;
 					break ;
 				case UPDATE :
-					dvbViewer.updateDVBViewer() ;
+					dvbViewer.updateDVBViewer( true ) ;
 			}
 
 			control.setDVBViewerEntries() ;

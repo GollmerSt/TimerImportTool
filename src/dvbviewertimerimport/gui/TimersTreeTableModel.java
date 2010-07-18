@@ -9,6 +9,7 @@ import java.util.GregorianCalendar;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry.ToDo;
 import dvbviewertimerimport.gui.treetable.AbstractTreeTableModel;
 import dvbviewertimerimport.gui.treetable.JTreeTable;
 import dvbviewertimerimport.gui.treetable.TreeTableModel;
@@ -82,13 +83,16 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 		
 		ArrayList< DVBViewerEntry > children = new ArrayList< DVBViewerEntry >() ;
 		
+		long now = System.currentTimeMillis() ;
+		
 		for ( DVBViewerEntry entry : list )
 		{
-			if ( entry.isDeleted() )
+			if ( ! entry.canDisplayed( now ) )
 				continue ;
+			
 			entry.setRoot( (DVBViewerEntry) this.root ) ;
-			if ( entry.isRemoved() )
-				continue ;
+			//if ( entry.isRemoved() )
+			//	continue ;
 			if ( entry.isMerged() )
 				continue ;
 			children.add( entry ) ;
@@ -268,12 +272,16 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 			entry.setStart( newStart ) ;
 			entry.setEnd( newEnd ) ;
 		}
+		if ( entry.getToDo() != ToDo.NEW )
+			entry.setToDo( ToDo.UPDATE ) ;
 	}
 	private static long calcTime( long dateDate, long timeDate )
 	{
 		calendarD.clear() ;
 		calendarD.setTimeInMillis( dateDate ) ;
+		calendarT.clear() ;
 		calendarT.setTimeInMillis( timeDate ) ;
+		calendarW.clear() ;
 		calendarW.set(
 				calendarD.get( Calendar.YEAR ),
 				calendarD.get( Calendar.MONTH ),

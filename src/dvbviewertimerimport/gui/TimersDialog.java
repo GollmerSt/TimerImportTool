@@ -5,6 +5,7 @@
 package dvbviewertimerimport.gui;
 
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -76,6 +77,7 @@ public class TimersDialog extends JDialog {
 			super(treeTableModel);
 			treeTableModel.setTreeTable( this ) ;
 			treeTableModel.updateRoot() ;
+			
 			this.getTree().addTreeExpansionListener( new ExpandListener() ) ;
 		}
 		public DVBViewerEntry [] getSelectedEntries()
@@ -114,12 +116,64 @@ public class TimersDialog extends JDialog {
 				entry.setIsCollapsed( false ) ;
 			}
 		}
+		static class MyTreeRenderer extends DefaultTreeCellRenderer
+		{
+
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 2282592846369354672L;
+			
+			private ImageIcon activeTimerIcon  = ResourceManager.createImageIcon( "icons/dvbViewer Timer14.png", "Timer icon" ) ;
+			private ImageIcon disabledTimerIcon = ResourceManager.createImageIcon("icons/dvbViewer TimerDisabled 14.png", "Timer icon deleted" ) ;
+			private ImageIcon filterTimerIcon = ResourceManager.createImageIcon("icons/dvbViewer TimerFilter 14.png", "Timer icon deleted" ) ;
+			
+			public MyTreeRenderer()
+			{
+				super() ;
+				
+				this.setLeafIcon( activeTimerIcon ) ;
+				
+				
+			}
+		    public Component getTreeCellRendererComponent(
+                    JTree tree,
+                    Object value,
+                    boolean sel,
+                    boolean expanded,
+                    boolean leaf,
+                    int row,
+                    boolean hasFocus)
+		    {
+		    	super.getTreeCellRendererComponent(
+                    tree, value, sel,
+                    expanded, leaf, row,
+                    hasFocus);
+		    	DVBViewerEntry entry = (DVBViewerEntry)value ;
+		    	setText("") ;
+		    	if ( ! leaf )
+		    		return this ;
+		    	if (entry.isRemoved() && ! entry.isMerged() )
+		    		setIcon(filterTimerIcon) ;
+		    	else if ( entry.isDisabled() )
+		    	{
+		    		if ( entry.isMerged() )
+		    		{
+		    			if ( entry.getMergeEntry().isDisabled() )
+		    				setIcon(disabledTimerIcon);
+		    		}
+		    		else 
+	    				setIcon(disabledTimerIcon);
+		    	}
+			    return this;
+		    } 
+		}
 	}
 	
 	public void init()
 	{
 		if ( this.control.getDVBViewer().getRecordEntries() == null )
-			this.control.getDVBViewer().updateDVBViewer() ;
+			this.control.getDVBViewer().updateDVBViewer( true ) ;
 		
 		this.treeTableModel = new TimersTreeTableModel( this.control.getDVBViewer() ) ;
 		this.treeTableModel.setTimersDialog( this ) ;
@@ -128,11 +182,9 @@ public class TimersDialog extends JDialog {
 		
 		JTree tree = this.recordingTable.getTree() ;
 		tree.setRootVisible( false ) ;
-		ImageIcon leafIcon = ResourceManager.createImageIcon( "icons/dvbViewer Timer14.png", "Timer icon" ) ;
 
-	    DefaultTreeCellRenderer renderer = 
-	    	new DefaultTreeCellRenderer();
-	        renderer.setLeafIcon(leafIcon);
+		MyTreeTable.MyTreeRenderer renderer = 
+	    	new MyTreeTable.MyTreeRenderer();
 	        tree.setCellRenderer(renderer);
 
 		this.recordingTable.addMouseListener( new MyTableMouseListener() ) ;
@@ -345,6 +397,7 @@ public class TimersDialog extends JDialog {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					control.getDVBViewer().updateDVBViewer( false ) ;
 					control.getDVBViewer().writeXML() ;
 					Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 					treeModel.setIsChanged( false ) ;
@@ -368,6 +421,7 @@ public class TimersDialog extends JDialog {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+					control.getDVBViewer().updateDVBViewer( false ) ;
 					control.getDVBViewer().writeXML() ;
 					Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 					treeModel.setIsChanged( false ) ;
@@ -375,7 +429,7 @@ public class TimersDialog extends JDialog {
 			}
 			else if ( source == reloadButton )
 			{
-				control.getDVBViewer().updateDVBViewer() ;
+				control.getDVBViewer().updateDVBViewer( true) ;
 				Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 				treeModel.setIsChanged( false ) ;
 				treeModel.updateRoot() ;

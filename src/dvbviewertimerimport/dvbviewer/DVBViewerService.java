@@ -240,7 +240,7 @@ public class DVBViewerService {
 			command = "timeredit" ;
 			query += "&id=" + Long.toString( e.getServiceID() ) ;
 		}
-		else if ( e.mustDeleted() )
+		else if ( e.mustDVBViewerDeleted() )
 		{
 			command = "timerdelete" ;
 			query += "&id=" + Long.toString( e.getServiceID() ) ;
@@ -270,11 +270,11 @@ public class DVBViewerService {
 	public void setTimers( ArrayList<DVBViewerEntry> entries )
 	{
 		for ( DVBViewerEntry d : entries )
-			if ( d.mustDeleted() )
+			if ( d.mustDVBViewerDeleted() )
 				this.setTimerEntry( d  ) ;
 		
 		for ( DVBViewerEntry d : entries )
-			if ( ! d.mustIgnored() && ! d.mustDeleted() )
+			if ( ! d.mustIgnored() && ! d.mustDVBViewerDeleted() )
 				this.setTimerEntry( d ) ;
 	}
 	public ArrayList<DVBViewerEntry> readTimers()

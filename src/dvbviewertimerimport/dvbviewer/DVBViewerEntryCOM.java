@@ -48,6 +48,7 @@ public class DVBViewerEntryCOM {
 		{
 			case DELETE :
 			case DELETE_BY_PROVIDER :
+			case DELETE_DVBVIEWER :
 				this.id = (int) e.getServiceID() ;
 				this.mustDelete = true ;
 				break ;
