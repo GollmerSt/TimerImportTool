@@ -341,8 +341,13 @@ public class DVBViewer {
 		}
 		this.recordEntries.add( entry ) ;
 	}
-	private void prepareProvider( Provider provider )
+	private void prepareProvider()
 	{
+		Provider provider = Provider.getProcessingProvider() ;
+		
+		if ( provider == null )
+			return ;
+		
 		if ( provider.isPrepared() )
 			return ;
 		
@@ -356,18 +361,9 @@ public class DVBViewer {
 			}
 		}
 	}
-	private void removeOutdatedProviderEntries()
-	{		
-		for ( DVBViewerEntry e : this.recordEntries )
-		{
-			if ( e.isOutdatedByProvider() )
-				e.setToDelete() ;
-		}
-	}
-	
 	public Channel getDVBViewerChannel( final Provider provider, final String providerChannel )
 	{
-		this.prepareProvider( provider ) ;
+		this.prepareProvider() ;
 		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
 		if ( ! channelMap.containsKey( providerChannel ) )
 		{
@@ -545,7 +541,7 @@ public class DVBViewer {
 					DVBViewerEntry i = this.recordEntries.get( iI ) ;
 					if ( o.mustMerge( i ) )
 					{
-						DVBViewerEntry newEntry = o.update( i, this.separator ) ;
+						DVBViewerEntry newEntry = o.update( i, true ) ;
 						if ( newEntry != null )
 							this.addRecordingEntry( newEntry ) ;
 						changed = true ;
@@ -558,7 +554,7 @@ public class DVBViewer {
 	public void reworkMergeElements() { DVBViewerEntry.reworkMergeElements( this.recordEntries, this.separator, this.maxID ) ; } 
 	public void setDVBViewerTimers() throws InterruptedException
 	{
-		this.removeOutdatedProviderEntries();
+		DVBViewerEntry.removeOutdatedProviderEntries( this.recordEntries );
 		
 		DVBViewerEntry.beforeRecordingSettingProcces(
 				this.recordEntries,

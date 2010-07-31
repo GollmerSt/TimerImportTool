@@ -189,7 +189,7 @@ public abstract class Provider implements DVBViewerProvider {
 		else
 			return Provider.processingProvider.isSilent ;
 	}
-	public static Provider getProcessingPrvider() { return Provider.processingProvider ; } ;
+	public static Provider getProcessingProvider() { return Provider.processingProvider ; } ;
 	public static void setProcessingProvider( final Provider p) { Provider.processingProvider = p ; } ;
 	
 	public static ArrayList< Provider > getProviders() { return Provider.providers ; } ;

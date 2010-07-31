@@ -9,12 +9,20 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.CharBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.charset.CharacterCodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.MalformedInputException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -25,7 +33,10 @@ import javax.xml.stream.events.XMLEvent;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
+import dvbviewertimerimport.misc.Base64;
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.xml.StackXML;
 
 
@@ -47,6 +58,14 @@ public class Channels {
 	private MappedByteBuffer buffer = null ;
 	private long headerLength = 0 ;
 	private long channelEntryLength = 0 ;
+	
+	private static CharsetDecoder decoder ;
+	
+	static
+	{
+	    Charset charset = Charset.forName("Windows-1252");
+	    Channels.decoder = charset.newDecoder();
+	}
 	
 	public class MyComparator implements Comparator< String>
 	{
@@ -86,7 +105,15 @@ public class Channels {
 		} catch ( BufferUnderflowException e ) {
 			throwErrorWrongVersion() ;
 		}
-		return new String( buffer, 0, stringLength ) ;
+		
+	    CharBuffer cBuf = null ;
+		try {
+			cBuf = Channels.decoder.decode( ByteBuffer.wrap( buffer, 0, stringLength ) );
+		} catch (CharacterCodingException e) {
+			Log.out( "Illegal format: " + new String( buffer, 0, stringLength ) ) ;
+			return null ;
+		}
+		return new String( cBuf.toString() ) ;
 	}
 	private byte readByte()
 	{
@@ -135,6 +162,7 @@ public class Channels {
 		
 		try {
 			long size = this.fileChannel.size() ;
+			boolean wasMessageFired = false ;
 			
 			int numEntries = (int) (( size - this.headerLength ) / this.channelEntryLength) ;
 			for ( int n = 0 ; n < numEntries ; n++ )
@@ -148,9 +176,13 @@ public class Channels {
 				Channel channel = new Channel( this ) ;
 				channel.read();
 				
-				if ( ! onlyTV || channel.isVideo() )
+				if ( channel.isFailed() && ( ! onlyTV || channel.isVideo() ) )
 					this.channelMap.put( channel.getChannelName(), channel ) ;
-				
+				if ( channel.isFailed() && ! wasMessageFired)
+				{
+					Log.error( ResourceManager.msg( "ILLEGAL_FORMAT_DVBVIEWER_CHANNEL" ) ) ;
+					wasMessageFired = true ;
+				}
 			}
 		} catch (IOException e1) {
 			throw new ErrorClass( "Unexpected error on reading \"" + this.file.getAbsolutePath() );
@@ -208,12 +240,20 @@ public class Channels {
 			        {
 			        	Attribute a = iter.next();
 			        	String attributeName = a.getName().getLocalPart() ;
-			        	String value = a.getValue() ;
+			        	String value;
+						try {
+							value = a.getValue();
+						} catch (Exception e1) {
+							value = null ;			// channels.dat could contain invalid entries
+						}
 			        	if ( attributeName.equals( "id" ) )
 			        		channelID = value ;
 			        }
-			        entry = Channel.createByChannelID( channelID ) ;
-					channelMap.put( entry.getChannelName(), entry) ;
+			        if ( channelID != null )
+			        {
+			        	entry = Channel.createByChannelID( channelID ) ;
+			        	channelMap.put( entry.getChannelName(), entry) ;
+			        }
 		        }
 			}
 			else if ( ev.isEndElement() )
@@ -239,7 +279,7 @@ public class Channels {
 			for ( Channel c : this.channelMap.values() )
 			{
 				sw.writeStartElement( "Entry" ) ;
-				  sw.writeAttribute( "id", c.getChannelID() ) ;
+				sw.writeAttribute( "id", c.getChannelID() ) ;
 				sw.writeEndElement() ;
 			}
 		} catch (XMLStreamException e) {

@@ -65,7 +65,7 @@ public class OutDatedInfo implements Cloneable
 			return false ;
 		if ( provInfo.enabled == false )
 			return false ;
-		if ( provInfo.missingSince + OutDatedInfo.now >= this.missingSince )
+		if ( provInfo.missingSince + OutDatedInfo.now < this.missingSince )
 			return false ;
 		if ( provInfo.missingSyncSince >= this.missingSyncSince )
 			return false ;

@@ -45,12 +45,17 @@ public class Channel {
 		id |= tuner.getAudioPID() << 16 ;
 		id |= tuner.getServiceID() ;
 		
+		if ( channelName == null )
+		{
+			return ;
+		}
 		this.channelID = Long.toString( id ) + "|" + this.channelName ;
 	}
 	public String getChannelName() { return this.channelName ; } ;
 	public String toString() { return this.channelName ; } ;
 	public String getChannelID() { return this.channelID ; }
 	public boolean isVideo() { return this.isVideo ; } ;
+	public boolean isFailed() { return this.channelName != null ; } ;
 	public static Channel createByChannelID( String channelID )
 	{
 		String [] parts = channelID.split( "[|]" ) ;

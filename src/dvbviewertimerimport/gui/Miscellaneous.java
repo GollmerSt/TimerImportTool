@@ -29,6 +29,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.importer.TVInfoDVBV;
 import dvbviewertimerimport.importer.UpdateImporter;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
@@ -63,6 +64,7 @@ public class Miscellaneous extends MyTabPanel
 	private final JTextField separatorBox  = new JTextField() ;
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
+	private final JCheckBox inActiveIfMerged = new JCheckBox() ;
 	
 	private final JLabel textInfoLabel = new JLabel() ;
 	
@@ -532,7 +534,7 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 3 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
@@ -554,7 +556,7 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 4 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
@@ -577,7 +579,7 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 5 ;
-		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
@@ -601,12 +603,38 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 6 ;
+		c.weightx    = 1.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
 		this.separatorBox.setText( control.getSeparator() ) ;
-		dvbViewerPanel.add( separatorBox, c ) ;
+		dvbViewerPanel.add( this.separatorBox, c ) ;
+		
+		
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 6 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		JLabel inActiveIfMegedLabel = new JLabel( ResourceManager.msg( "INACTIVEIFMERGED" ) ) ;
+		dvbViewerPanel.add( inActiveIfMegedLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 6 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		this.inActiveIfMerged.setSelected( DVBViewerEntry.getInActiveIfMerged() ) ;
+		dvbViewerPanel.add( this.inActiveIfMerged, c ) ;
+		
 
 	
 		c = new GridBagConstraints();
@@ -729,6 +757,11 @@ public class Miscellaneous extends MyTabPanel
 			if ( this.control.getDVBViewer().getStartIfRecording() != ( this.startRecording.isSelected() ) )
 			{
 				this.control.getDVBViewer().setStartIfRecording( this.startRecording.isSelected() ) ;
+				this.guiPanel.setChanged() ;
+			}
+			if ( DVBViewerEntry.getInActiveIfMerged() != this.inActiveIfMerged.isSelected() )
+			{
+				DVBViewerEntry.setInActiveIfMerged( this.inActiveIfMerged.isSelected() ) ;
 				this.guiPanel.setChanged() ;
 			}
 		}

@@ -30,6 +30,7 @@ import javax.xml.transform.stream.StreamSource;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.dvbviewer.DVBViewer ;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerService ;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.* ;
@@ -168,6 +169,7 @@ public class Control
 		boolean startIfRecording = false ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
+		boolean inActiveIfMerged = true ;
 		
 
 		while( reader.hasNext() )
@@ -348,6 +350,15 @@ public class Control
 							else
 								throw new ErrorClass ( ev, "Wrong startIfRecording format in file \"" + name + "\"" ) ;
 						}
+						else if ( attributeName.equals( "inActiveIfMerged" ) )
+						{
+							if      ( value.equalsIgnoreCase( "true" ) )
+								inActiveIfMerged = true ;
+							else if ( value.equalsIgnoreCase( "false" ) )
+								inActiveIfMerged = false ;
+							else
+								throw new ErrorClass ( ev, "Wrong inActiveIfMerged format in file \"" + name + "\"" ) ;
+						}
 						else if ( attributeName.equals( "afterRecordingAction" ) )
 						{
 							try {
@@ -438,7 +449,9 @@ public class Control
 			this.dvbViewer.setMacAddress(dvbServiceMacAddress);
 			this.dvbViewer.setWaitTimeAfterWOL(dvbServiceWaitTimeAfterWOL);
 			this.dvbViewer.setAfterRecordingAction(dvbViewerActionAfter);
-			this.dvbViewer.setTimerAction(dvbViewerTimerAction);		}
+			this.dvbViewer.setTimerAction(dvbViewerTimerAction);
+			DVBViewerEntry.setInActiveIfMerged( inActiveIfMerged ) ;
+		}
 		try {
 			reader.close() ;
 		} catch (XMLStreamException e) {
@@ -504,6 +517,8 @@ public class Control
 			    sw.writeAttribute( "afterRecordingAction", dvbViewer.getAfterRecordingAction().name() ) ;
 			    sw.writeAttribute( "timerAction", dvbViewer.getTimerAction().name() ) ;
 			    sw.writeAttribute( "timeZone", DVBViewer.getTimeZone().getID() ) ;
+			    if ( ! DVBViewerEntry.getInActiveIfMerged() )
+			    	sw.writeAttribute( "inActiveIfMerged", DVBViewerEntry.getInActiveIfMerged() ) ;
 			    sw.writeStartElement( "Channels" ) ;
 			      this.dvbViewer.getChannels().writeXML( sw, file ) ;
 			    sw.writeEndElement();
