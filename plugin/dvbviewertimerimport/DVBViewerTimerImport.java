@@ -17,12 +17,18 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
+import org.apache.commons.lang.StringUtils;
+
+import captureplugin.drivers.DeviceIf;
+
 import devplugin.ActionMenu;
 import devplugin.Date;
 import devplugin.Plugin;
 import devplugin.PluginInfo;
 import devplugin.PluginTreeNode;
 import devplugin.Program;
+import devplugin.ProgramReceiveIf;
+import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
 import devplugin.Version;
 import dvbviewertimerimport.control.ChannelSet;
@@ -50,6 +56,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private static Version version = null ;
   
   private static DVBViewerTimerImport plugin = null ;
+  
+  private static String ADD_TIMER    = ResourceManager.msg( "ADD_TIMER" ) ;
+  private static String DELETE_TIMER = ResourceManager.msg( "DELETE_TIMER" ) ;
 
   private PluginInfo pluginInfo = null ;
   private boolean isInitialized = false ;
@@ -287,8 +296,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   {
     private Program program = null ;
     private Command command = null ;
-    private String addTimer    = ResourceManager.msg( "ADD_TIMER" ) ;
-    private String deleteTimer = ResourceManager.msg( "DELETE_TIMER" ) ;
 
     public void update( final Program program, final Command command )
     {
@@ -296,12 +303,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       this.command = command ;
       if ( command == Command.SET )
       {
-        putValue(Action.NAME, addTimer ) ;
+        putValue(Action.NAME, DVBViewerTimerImport.ADD_TIMER ) ;
         putValue(Action.SMALL_ICON, timerIcon ) ;
       }
       else
       {
-        putValue(Action.NAME, deleteTimer ) ;
+        putValue(Action.NAME, DVBViewerTimerImport.DELETE_TIMER ) ;
         //putValue(Action.SMALL_ICON, menuIcon ) ;
       }
     }
@@ -611,6 +618,45 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   {
     if ( DVBViewerTimerImport.plugin != null)
       DVBViewerTimerImport.plugin.updateMarks() ;
+  }
+  @Override
+  public boolean canReceiveProgramsWithTarget()
+  {
+      return getProgramReceiveTargets().length >0;
+  }
+  @Override
+  public boolean receivePrograms(Program[] programArr, ProgramReceiveTarget receiveTarget) {
+      if (receiveTarget == null || receiveTarget.getTargetId() == null )
+        return false;
+
+      String id = receiveTarget.getTargetId();
+      
+     if ( id.equals( "RECORD" ) )
+     {
+       for ( Program pgm : programArr )
+         processEntry( pgm, DVBViewer.Command.SET ) ;
+       updateMarks() ;
+       return true ;
+     }
+     else if ( id.equals( "REMOVE" ) )
+     {
+      for ( Program pgm : programArr )
+         processEntry( pgm, DVBViewer.Command.DELETE ) ;
+      updateMarks() ;
+      return true ;
+     }
+     return false ;
+  }
+
+  @Override
+  public ProgramReceiveTarget[] getProgramReceiveTargets()
+  {
+      ProgramReceiveTarget ADD_TARGET    = new ProgramReceiveTarget( this, DVBViewerTimerImport.ADD_TIMER,    "RECORD" ) ;
+      ProgramReceiveTarget REMOVE_TARGET = new ProgramReceiveTarget( this, DVBViewerTimerImport.DELETE_TIMER, "REMOVE" ) ;
+
+      ProgramReceiveTarget [] targets = { ADD_TARGET, REMOVE_TARGET } ;
+      
+      return targets ;
   }
 
 }
