@@ -17,12 +17,9 @@ import java.nio.channels.FileChannel;
 import java.nio.charset.CharacterCodingException;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.MalformedInputException;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Iterator;
-import java.util.SortedMap;
 import java.util.Stack;
 import java.util.TreeMap;
 
@@ -33,7 +30,6 @@ import javax.xml.stream.events.XMLEvent;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
-import dvbviewertimerimport.misc.Base64;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
@@ -176,7 +172,7 @@ public class Channels {
 				Channel channel = new Channel( this ) ;
 				channel.read();
 				
-				if ( channel.isFailed() && ( ! onlyTV || channel.isVideo() ) )
+				if ( ! channel.isFailed() && ( ! onlyTV || channel.isVideo() ) )
 					this.channelMap.put( channel.getChannelName(), channel ) ;
 				if ( channel.isFailed() && ! wasMessageFired)
 				{
