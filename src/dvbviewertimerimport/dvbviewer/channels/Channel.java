@@ -55,7 +55,7 @@ public class Channel {
 	public String toString() { return this.channelName ; } ;
 	public String getChannelID() { return this.channelID ; }
 	public boolean isVideo() { return this.isVideo ; } ;
-	public boolean isFailed() { return this.channelName != null ; } ;
+	public boolean isFailed() { return this.channelName == null ; } ;
 	public static Channel createByChannelID( String channelID )
 	{
 		String [] parts = channelID.split( "[|]" ) ;
