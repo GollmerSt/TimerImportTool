@@ -79,7 +79,8 @@ public class Control
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
 	
-	private boolean isImported = false ;
+	private enum ImportStatus { FALSE, PENDING, IMPORTED } ;
+	private ImportStatus importStatus = ImportStatus.FALSE ;
 	
 	public Control( DVBViewer dvbViewer )
 	{
@@ -465,7 +466,7 @@ public class Control
 	}
 	public boolean write( final File xmlFile )
 	{
-		if ( this.dvbViewer == null || isImported )
+		if ( this.dvbViewer == null || this.importStatus != ImportStatus.FALSE )
 			return false ;
 		File file ;
 		if ( xmlFile == null  )
@@ -640,8 +641,10 @@ public class Control
 	
 	public void renameImportedFile()
 	{
-		if ( !this.isImported )
+		if ( this.importStatus != ImportStatus.PENDING )
 			return ;
+		
+		this.importStatus = ImportStatus.IMPORTED ;
 
 		File controlFile = new File(   this.dvbViewer.getXMLFilePath()
                 + File.separator
@@ -674,7 +677,7 @@ public class Control
 	public void setLookAndFeelName( String name ) { this.lookAndFeelName = name ; } ;
 	public String getSeparator() { return this.separator ; } ;
 	public void setSeparator( String separator ) { this.separator = separator ; } ;
-	public void setIsImported() { this.isImported = true ; } ;
+	public void setIsImported() { this.importStatus = ImportStatus.PENDING ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
 }
