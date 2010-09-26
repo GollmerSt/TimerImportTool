@@ -189,8 +189,11 @@ public class Control
 					type = BlockType.IMPORTER ;
 				else if ( stack.equals( this.pathDVBViewerChannels ) )
 				{
-					this.dvbViewer.getChannels().readXML( reader, ev, name ) ;
-					stack.pop() ;
+					if ( this.dvbViewer != null )
+					{
+						this.dvbViewer.getChannels().readXML( reader, ev, name ) ;
+						stack.pop() ;
+					}
 					continue ;
 				}
 				else if ( stack.equals( this.pathProviders ) )
