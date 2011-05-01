@@ -20,7 +20,7 @@ public class Registry {
 		String out = Registry.exec( command ) ;
 		if ( out == null )
 			return null ;
-		String[] temps = out.split("REG_[A-Z][A-Z]\t");
+		String[] temps = out.split("REG_[A-Z][A-Z][\t ]+");
 		if ( temps.length != 2)
 			return null ;
 		out = temps[1].trim() ;

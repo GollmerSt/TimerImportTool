@@ -23,11 +23,9 @@ public class Html {
 			throw new ErrorClass( e, "The URL \"" + urlString + "\" is malformed, the setup should be checked." ) ;
 		}
 
-		URLConnection connection = null ;
 		InputStream result = null ;
 		try {
-			connection = url.openConnection();
-			result = connection.getInputStream() ;
+			result = url.openStream() ;
 		} catch (IOException e) {
 			throw new ErrorClass( e, "The URL \"" + urlString + "\" is not available." );
 		}
