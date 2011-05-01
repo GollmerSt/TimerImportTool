@@ -99,7 +99,7 @@ public class DVBViewerEntryCOM {
 		return new DVBViewerEntry(
 				this.enabled,
 				this.id,
-				this.channelID,
+				DVBViewer.reworkChannelID( this.channelID ) ,
 				toJavaDate( this.startTime ),
 				toJavaDate( this.endTime ),
 				this.days,

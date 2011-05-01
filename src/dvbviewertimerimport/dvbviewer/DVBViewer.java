@@ -51,6 +51,18 @@ public class DVBViewer {
 
 	private static final StackXML<String> xmlPath = new StackXML< String >( "Processed", "Entry" ) ;
 
+	public static String reworkChannelID( final String channelID )
+	{
+		String channel = channelID ;
+		String [] channelParts = channel.split("\\|") ;
+		if ( channelParts.length != 2 )
+			return channelID ;
+		Long no = Long.parseLong( channelParts[0] ) ;
+		no &= 0xffffffffL ;
+		channel = no.toString() + "|" + channelParts[1] ;
+		return channel;
+	}
+
 	public class MaxID
 	{
 		long maxID = -1 ;

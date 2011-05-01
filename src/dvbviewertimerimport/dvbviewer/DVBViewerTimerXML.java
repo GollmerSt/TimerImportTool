@@ -97,7 +97,7 @@ public class DVBViewerTimerXML {
 		DVBViewerEntry entry = new DVBViewerEntry(
 				field[ FIELD_ENABLED ].equalsIgnoreCase( "true" ) ,
 				ix,
-				field[ FIELD_CHANNELID ] ,
+				DVBViewer.reworkChannelID( field[ FIELD_CHANNELID ] ) ,
 				start ,
 				end ,
 				field[ FIELD_DAYS ] ,

@@ -362,7 +362,9 @@ public class DVBViewerService {
 							
 							case 2 :
 								if ( attributeName.equals( "ID" ) )
-									channel = value ;
+								{
+									channel = DVBViewer.reworkChannelID( value ) ;
+								}
 								break ;
 						}
 					}
