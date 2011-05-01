@@ -240,9 +240,11 @@ public final class TVInfo extends Provider {
 	
 	public class MerkzettelParserCallback extends HTMLEditorKit.ParserCallback
 	{
+		private boolean isOK = true ;
 		private int tableDiv = -1 ;
 		private boolean isTableRead = false ;
 		private boolean isA = false ;
+		private boolean isTitle = true ;
 		private int column = -1 ;
 		private int row = -1 ;
 		private HashMap< Long, ArrayList< MyEntry > > entries= null ;
@@ -255,11 +257,14 @@ public final class TVInfo extends Provider {
 		private int columnTitel  = -1 ;
 		
 		public HashMap< Long, ArrayList< MyEntry > > getResult() { return this.entries ; } ;
+		public boolean isOK() { return this.isOK ; } ;
 		
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
 		{
 			if ( this.isTableRead )
 				return ;
+			else if (t == HTML.Tag.TITLE )
+				this.isTitle = true ;
 			if ( t == HTML.Tag.DIV )
 			{
 				if ( a.containsAttribute( HTML.Attribute.CLASS, "Box4 col1" ) )
@@ -342,6 +347,12 @@ public final class TVInfo extends Provider {
 		}
 		public void handleText(char[] data, int pos)
 		{
+			if ( isTitle )
+			{
+				String title = new String( data ) ;
+				if ( ! title.contains( "myTVinfo Merkzettel" ))
+					this.isOK = false ;
+			}
 			if ( this.isTableRead || this.ignore )
 				return ;
 			if ( this.tableDiv >= 0 && this.row > 0 )
@@ -393,7 +404,7 @@ public final class TVInfo extends Provider {
 		MerkzettelParserCallback myCallBack = new MerkzettelParserCallback() ;
 		
 		try {
-			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, false);
+			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -401,7 +412,7 @@ public final class TVInfo extends Provider {
 		
 		HashMap< Long, ArrayList< MyEntry > > hashMap = myCallBack.getResult() ;
 		
-		if ( hashMap == null )
+		if ( hashMap == null || ! myCallBack.isOK() )
 		{
 			Log.out( "Empty channelnames can't assigned. Merkzettel format changed? Entries ignored"  ) ;
 			return ;
@@ -462,6 +473,7 @@ public final class TVInfo extends Provider {
 		private boolean isListUserSenderStarted = false ;
 		private boolean isUserSenderRead = false ;
 		private boolean isAllSenderRead = false ;
+		private boolean isOK = true ;
 		
 		private boolean isH1 = false ;
 		private boolean isH3 = false ;
@@ -469,6 +481,9 @@ public final class TVInfo extends Provider {
 		private boolean isSender = false ;
 		private boolean isSenderAuswahl = false ;
 		private String channel = null ;
+		private boolean isTitle = false ;
+		
+		public boolean isOK() { return this.isOK ; } ;
 				
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
 		{
@@ -478,6 +493,8 @@ public final class TVInfo extends Provider {
 				this.isH1 = true ;
 			else if ( t == HTML.Tag.H3 )
 				this.isH3 = true ;
+			else if (t == HTML.Tag.TITLE )
+				this.isTitle = true ;
 			else if ( t == HTML.Tag.UL && this.isSender )
 			{
 				this.isSender = false ;
@@ -522,6 +539,8 @@ public final class TVInfo extends Provider {
 				this.isH1 = false ;
 			else if ( t == HTML.Tag.H3 )
 				this.isH3 = false ;
+			else if ( t == HTML.Tag.TITLE )
+				this.isTitle = false ;
 			if ( t == HTML.Tag.UL && this.isListUserSenderStarted )
 			{
 				this.isListUserSenderStarted = false ;
@@ -537,6 +556,12 @@ public final class TVInfo extends Provider {
 		}
 		public void handleText(char[] data, int pos)
 		{
+			if ( isTitle )
+			{
+				String title = new String( data ) ;
+				if ( ! title.contains( "Sender konfigurieren" ))
+					this.isOK = false ;
+			}
 			if ( this.isUserSenderRead && this.isAllSenderRead )
 				return ;
 			if ( this.isH3 )
@@ -577,10 +602,16 @@ public final class TVInfo extends Provider {
 		System_EditSenderParserCallback myCallBack = new System_EditSenderParserCallback() ;
 		
 		try {
-			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, false);
+			new ParserDelegator().parse( new  InputStreamReader( stream ) , myCallBack, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		if (!myCallBack.isOK())
+		{
+			this.allSender = null ;
+			Log.out( "TVInfo pages are modified. Get a new version if available" ) ;
+
 		}
 	}
 	@Override
