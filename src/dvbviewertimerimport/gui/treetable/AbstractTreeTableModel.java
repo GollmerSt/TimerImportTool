@@ -172,8 +172,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
     // Default impelmentations for methods in the TreeTableModel interface.
     //
 
-    @SuppressWarnings("unchecked")
-        public Class getColumnClass(int column) { return Object.class; }
+        public Class<?> getColumnClass(int column) { return Object.class; }
 
    /** By default, make the column with the Tree in it the only editable one.
     *  Making this column editable causes the JTable to forward mouse

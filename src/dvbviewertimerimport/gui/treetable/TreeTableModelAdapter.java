@@ -111,8 +111,7 @@ public class TreeTableModelAdapter extends AbstractTableModel
         return treeTableModel.getColumnName(column);
     }
 
-    @SuppressWarnings("unchecked")
-        public Class getColumnClass(int column) {
+        public Class<?> getColumnClass(int column) {
         return treeTableModel.getColumnClass(column);
     }
 

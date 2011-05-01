@@ -616,9 +616,8 @@ public class ProviderAssignment  extends MyTabPanel
 	    public String getColumnName(int col) {
 	        return columnNames[col];
 	    }
-		@SuppressWarnings("unchecked")
 		@Override
-	    public Class getColumnClass(int col)
+	    public Class<MyTableObject> getColumnClass(int col)
 		{
 /*			if ( col == 0 )
 				return ImageIcon.class ;

@@ -293,9 +293,8 @@ public class OffsetsDialog extends JDialog {
 	    public String getColumnName(int col) {
 	        return columnNames[col];
 	    }
-		@SuppressWarnings("unchecked")
 		@Override
-	    public Class getColumnClass(int col)
+	    public Class<?> getColumnClass(int col)
 		{
 			if ( col == 2 )
 				return WeekDayObject.class ;

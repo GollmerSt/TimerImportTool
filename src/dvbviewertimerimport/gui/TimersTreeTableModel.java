@@ -23,8 +23,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 	private static GregorianCalendar calendarW  = new GregorianCalendar() ;
 
 	// Types of the columns.
-	@SuppressWarnings("unchecked")
-	static protected Class[]  cTypes =
+	static protected Class<?>[]  cTypes =
 	{
 		TreeTableModel.class, 						// tree
 		String.class,								// Program
@@ -174,9 +173,8 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 	{
 		return cNames[ column ] ;
 	}
-	@SuppressWarnings("unchecked")
 	@Override
-	public Class getColumnClass(int column)
+	public Class<?> getColumnClass(int column)
 	{
 		return TimersTreeTableModel.cTypes[ column ];
 	}

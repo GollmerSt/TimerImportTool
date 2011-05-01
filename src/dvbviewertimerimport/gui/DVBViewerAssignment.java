@@ -219,8 +219,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	else
 	    	{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
-	    	    @SuppressWarnings("unchecked")
-				Object o = Conversions.getTheBestChoice( name, (Collection) control.getDVBViewer().getChannels().getChannels().values(),
+				Object o = Conversions.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 						3, 2, new FunctionChannelChoice() ) ;
 	    	    if ( o == null )
 	    	    	ix = 0 ;
@@ -592,8 +591,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 			if ( channel == null || ! provider.containsChannel( channel, false ) )
 				continue ;
     		String name = channel.getName() ;
-    	    @SuppressWarnings("unchecked")
-			Object o = Conversions.getTheBestChoice( name, (Collection) control.getDVBViewer().getChannels().getChannels().values(),
+			Object o = Conversions.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 					3, 2, new FunctionChannelChoice() ) ;
     	    if ( o == null )
     	    	continue ;
