@@ -103,6 +103,7 @@ public class DVBViewer {
 	
 	private final String exeName ;
 	private String separator      = ",," ;
+	private int maxTitleLength = -1 ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
 	
@@ -563,7 +564,7 @@ public class DVBViewer {
 			}
 		}
 	}
-	public void reworkMergeElements() { DVBViewerEntry.reworkMergeElements( this.recordEntries, this.separator, this.maxID ) ; } 
+	public void reworkMergeElements() { DVBViewerEntry.reworkMergeElements( this.recordEntries, this.separator, this.maxID, this.maxTitleLength ) ; } 
 	public void setDVBViewerTimers() throws InterruptedException
 	{
 		DVBViewerEntry.removeOutdatedProviderEntries( this.recordEntries );
@@ -571,7 +572,8 @@ public class DVBViewer {
 		DVBViewerEntry.beforeRecordingSettingProcces(
 				this.recordEntries,
 				this.separator,
-				this.maxID ) ;
+				this.maxID,
+				this.maxTitleLength) ;
 		this.merge() ;
 			
 		int updatedEntries = 0 ;
@@ -605,6 +607,8 @@ public class DVBViewer {
 	}
 	public void setSeparator( String s ) { this.separator = s ; } ;
 	public String getSeparator() { return this.separator ; } ;
+	public void setMaxTitleLength( int t ) { this.maxTitleLength = t ; } ;
+	public int getMaxTitleLength() { return this.maxTitleLength ; } ;
 	public ArrayList<DVBViewerEntry> readXML()
 	{
 		maxID.reset() ;
@@ -697,7 +701,7 @@ public class DVBViewer {
 		if ( lastTimers == null )
 			lastTimers = readXML() ;
 		
-		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID ) ;
+		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID, this.maxTitleLength ) ;
 		this.recordEntries = lastTimers ;
 	}
 	public static boolean loadDVBViewerCOMDll()

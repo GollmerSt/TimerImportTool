@@ -23,7 +23,10 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.UIManager;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
@@ -62,6 +65,9 @@ public class Miscellaneous extends MyTabPanel
 	private final JComboBox actionTimerBox = new JComboBox() ;
 	private final JComboBox timeZoneBox    = new JComboBox() ;
 	private final JTextField separatorBox  = new JTextField() ;
+	private final JCheckBox maxTitleLengthBox = new JCheckBox() ;
+	private final JSpinner maxTitleLengthSpinner = new JSpinner() ;
+
 	private final JButton tvinfoDVBVButton = new JButton() ;
 	private final JButton updateToNewVersionButton = new JButton() ;
 	private final JCheckBox inActiveIfMerged = new JCheckBox() ;
@@ -74,6 +80,19 @@ public class Miscellaneous extends MyTabPanel
 	public Miscellaneous( GUIPanel guiPanel )
 	{
 		super( guiPanel );
+	}
+	
+	class CheckBoxAction implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			JCheckBox c = (JCheckBox)e.getSource() ;
+			
+			if ( c == maxTitleLengthBox )
+			{
+				maxTitleLengthSpinner.setEnabled( maxTitleLengthBox.isSelected() ) ;
+			}
+		}
 	}
 	
 	class ComboSelected implements ActionListener
@@ -98,6 +117,7 @@ public class Miscellaneous extends MyTabPanel
 					
 				}
 			}
+			
 			
 			else if ( c == actionAfterBox )
 			{
@@ -421,7 +441,7 @@ public class Miscellaneous extends MyTabPanel
 			
 			this.lookAndFeelBox.setSelectedItem( this.control.getLookAndFeelName() ) ;
 			
-			this.lookAndFeelBox.addActionListener( new ComboSelected() ) ;
+			this.lookAndFeelBox.addActionListener( comboSelectedAction ) ;
 			
 			guiPanel.add( this.lookAndFeelBox, c ) ;
 
@@ -539,7 +559,7 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 		
 		dvbViewerPanel.add( this.timeZoneBox, c ) ;
-		this.timeZoneBox.addActionListener( this.comboSelectedAction ) ;
+		this.timeZoneBox.addActionListener( comboSelectedAction ) ;
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
@@ -589,8 +609,40 @@ public class Miscellaneous extends MyTabPanel
 		
 
 		c = new GridBagConstraints();
-		c.gridx      = 0 ;
+		c.gridx      = 1 ;
 		c.gridy      = 6 ;
+		c.weightx    = 1.0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		this.maxTitleLengthBox.setText( ResourceManager.msg( "LIMIT_TITLE_LENGTH" ) ) ;
+		this.maxTitleLengthBox.addActionListener( new CheckBoxAction() ) ;
+		this.maxTitleLengthBox.setSelected( control.getMaxTitleLength() >= 0 ) ;
+		dvbViewerPanel.add( this.maxTitleLengthBox, c ) ;
+		
+		
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 6 ;
+		c.weightx    = 1.0 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		SpinnerModel lengthModel = new SpinnerNumberModel(
+                control.getMaxTitleLength()< 20?20:control.getMaxTitleLength(), //initial value
+                20, 256, 1 ) ;
+		this.maxTitleLengthSpinner.setModel( lengthModel );
+		this.maxTitleLengthSpinner.setEnabled( control.getMaxTitleLength() >= 0 ) ;
+		dvbViewerPanel.add( this.maxTitleLengthSpinner, c ) ;		
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 7 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -602,7 +654,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 6 ;
+		c.gridy      = 7 ;
 		c.weightx    = 1.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -616,7 +668,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
-		c.gridy      = 6 ;
+		c.gridy      = 7 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -627,7 +679,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 3 ;
-		c.gridy      = 6 ;
+		c.gridy      = 7 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -675,7 +727,7 @@ public class Miscellaneous extends MyTabPanel
 				deflt = mc;
 		}
 		this.languageBox.setSelectedItem( deflt ) ;
-		this.languageBox.addActionListener( new ComboSelected() ) ;
+		this.languageBox.addActionListener( comboSelectedAction ) ;
 
 		Object oDefault = null ;
 		TimeZone timeZoneDefault = DVBViewer.getTimeZone() ;
@@ -742,6 +794,14 @@ public class Miscellaneous extends MyTabPanel
 			if ( this.control.getSeparator() == null || ( ! this.control.getSeparator().equals( this.separatorBox.getText() ) ) )
 			{
 				this.control.setSeparator( this.separatorBox.getText() ) ;
+				this.guiPanel.setChanged() ;
+			}
+			int length = (Integer) this.maxTitleLengthSpinner.getModel().getValue() ;
+			if ( ! this.maxTitleLengthBox.isSelected() )
+				length = -1 ;
+			if ( length != this.control.getMaxTitleLength() )
+			{
+				this.control.setMaxTitleLength( length ) ;
 				this.guiPanel.setChanged() ;
 			}
 			if ( ! this.control.getDVBViewer().getViewParameters().equals( this.viewParameters.getText() ))

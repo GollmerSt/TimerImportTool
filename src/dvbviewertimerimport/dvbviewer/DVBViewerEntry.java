@@ -293,7 +293,7 @@ public final class DVBViewerEntry  implements Cloneable
 			}
 		}
 	}
-	private void createTitle( String separator )
+	private void createTitle( String separator, final int maxLength )
 	{
 		if ( ! this.isMergeElement() )
 			return ;
@@ -302,13 +302,26 @@ public final class DVBViewerEntry  implements Cloneable
 		
 		String title = "" ;
 		
+		int max_length = maxLength ;
+		
+		max_length -= (this.mergedEntries.size()-1)*separator.length() ;
+		
+		int length = 0 ;
+		for ( DVBViewerEntry e : this.mergedEntries )
+			length += e.title.length() ;
+		if ( length < max_length || max_length < 0 )
+			max_length = length ;
+		
 		for ( DVBViewerEntry e : this.mergedEntries )
 		{
 			if ( first )
 				first = false ;
 			else
 				title += separator ;
-			title += e.title ;
+			int pLength = e.title.length() * max_length / length ;
+			length     -= e.title.length() ;
+			max_length -= pLength ;
+			title += e.title.substring(0, pLength) ;
 		}
 		this.title = title;
 	}
@@ -519,7 +532,8 @@ public final class DVBViewerEntry  implements Cloneable
 		}
 	}
 	public static void reworkMergeElements( final ArrayList<DVBViewerEntry> xml,
-											final String separator, DVBViewer.MaxID maxID )
+											final String separator, DVBViewer.MaxID maxID,
+											final int maxTitleLength )
 	{
 		ArrayList< DVBViewerEntry > newMergeEntries = new ArrayList< DVBViewerEntry >() ;
 		
@@ -599,7 +613,7 @@ public final class DVBViewerEntry  implements Cloneable
 					n.mergedEntries = nMergedEntries ;
 					for ( DVBViewerEntry nE : n.mergedEntries )
 						nE.mergeElement = n ;
-					n.createTitle( separator ) ;
+					n.createTitle( separator, maxTitleLength ) ;
 					if ( n.mergeElement != null )
 						n.mergeElement.mergedEntries.add( n ) ;
 					if ( n.serviceID >= 0 )
@@ -641,7 +655,7 @@ public final class DVBViewerEntry  implements Cloneable
 					}
 					x.mergedEntries = nMergedEntries ;
 					String titleOld = x.title ;
-					x.createTitle( separator ) ;
+					x.createTitle( separator, maxTitleLength ) ;
 					if (    x.toDo == ToDo.NONE  && x.serviceID >= 0
 						 && ( x.start != nStart || x.end != nEnd || ! titleOld.equals( x.title ) ) )
 						x.toDo = ToDo.UPDATE ;
@@ -685,7 +699,8 @@ public final class DVBViewerEntry  implements Cloneable
 			          final ArrayList<DVBViewerEntry> xml, 
 			          final ArrayList<DVBViewerEntry> service,
 			          final String separator,
-			          final DVBViewer.MaxID maxID )
+			          final DVBViewer.MaxID maxID,
+			          final int maxTitleLength)
 	{
 		// Fist pass:  Find and assign all easy to assign service entries,
 		//             remove the entries from the merge elements
@@ -696,7 +711,7 @@ public final class DVBViewerEntry  implements Cloneable
 		
 		// Second pass:  Rework merge elements
 		
-		reworkMergeElements( xml, separator, maxID ) ;
+		reworkMergeElements( xml, separator, maxID, maxTitleLength ) ;
 			
 		// Third pass:  Try to assign the modifies merge entries again,
 		//              which aren't assigned
@@ -724,10 +739,11 @@ public final class DVBViewerEntry  implements Cloneable
 	}
 	
 	public static void beforeRecordingSettingProcces( final ArrayList<DVBViewerEntry> xml,
-													  final String separator, DVBViewer.MaxID maxID )
+													  final String separator, DVBViewer.MaxID maxID,
+													  final int maxTitleLength)
 	{
 		DVBViewerEntry.removeOutdatedProviderEntries( xml ) ;
-		DVBViewerEntry.reworkMergeElements( xml, separator, maxID ) ;
+		DVBViewerEntry.reworkMergeElements( xml, separator, maxID, maxTitleLength ) ;
 	}
 	public static void afterRecordingSettingProcces( final ArrayList<DVBViewerEntry> xml )
 	{

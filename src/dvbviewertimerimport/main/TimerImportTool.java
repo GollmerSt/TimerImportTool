@@ -85,6 +85,7 @@ public final class TimerImportTool {
 			dvbViewer = new DVBViewer( xmlPath ) ;
 
 			Control control = new Control(dvbViewer );
+			control.setDVBViewerEntries() ;
 
 			//Log.setVerbose( true ) ;
 
@@ -104,6 +105,7 @@ public final class TimerImportTool {
 						Log.out( "Configuration saved" ) ;
 						control.renameImportedFile() ;
 						control.write( null ) ;
+						control.setDVBViewerEntries() ;
 						break ;
 					case OK :
 						control.renameImportedFile() ;

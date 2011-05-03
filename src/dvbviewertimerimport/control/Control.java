@@ -65,6 +65,7 @@ public class Control
 	private final StackXML<String> pathChannelDVBViewer	  = new StackXML<String>( "Importer", "Channels", "Channel", "DVBViewer" ) ;
 	private final StackXML<String> pathChannelMerge		  = new StackXML<String>( "Importer", "Channels", "Channel", "Merge" ) ;
 	private final StackXML<String> pathSeparator		  = new StackXML<String>( "Importer",  "Separator" ) ;
+	private final StackXML<String> pathMaxTitleLength     = new StackXML<String>( "Importer",  "MaxTitleLength" ) ;
 	private final StackXML<String> pathWOL				  = new StackXML<String>( "Importer",  "DVBService", "WakeOnLAN") ;
 	private final StackXML<String> pathDefaultProvider	  = new StackXML<String>( "Importer",  "GUI", "DefaultProvider" ) ;
 	private final StackXML<String> pathLanguage			  = new StackXML<String>( "Importer",  "GUI", "Language" ) ;
@@ -78,6 +79,7 @@ public class Control
 
 	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>() ;
 	private String separator = null ;
+	private int maxTitleLength = -1 ;
 	
 	private enum ImportStatus { FALSE, PENDING, IMPORTED } ;
 	private ImportStatus importStatus = ImportStatus.FALSE ;
@@ -406,6 +408,12 @@ public class Control
 					}
 					else if ( stack.equals( this.pathSeparator) )
 						this.separator = data ;
+					else if ( stack.equals( this.pathMaxTitleLength ) )
+					{
+						if ( ! data.matches("\\d+"))
+							throw new ErrorClass ( ev, "Wrong MaxTitleLength format in file \"" + name + "\"" ) ;
+						this.maxTitleLength= Integer.valueOf( data ) ;
+					}
 					else if ( stack.equals( this.pathDefaultProvider ) )
 						this.defaultProvider = data ;
 					else if ( stack.equals( this.pathLanguage ) )
@@ -569,6 +577,12 @@ public class Control
 				  sw.writeCharacters( this.separator ) ;
 				  sw.writeEndElement() ;
 			  }
+			  if ( this.maxTitleLength >= 0 )
+			  {
+				  sw.writeStartElement( "MaxTitleLength" ) ;
+				  sw.writeCharacters( Integer.toString( this.maxTitleLength ) ) ;
+				  sw.writeEndElement() ;
+			  }
 			  sw.writeStartElement( "Channels" ) ;
 			    for ( ChannelSet cs : this.channelSets )
 			    	cs.writeXML( sw ) ;
@@ -667,6 +681,7 @@ public class Control
 			return ;
 		this.dvbViewer.clearChannelLists() ;
 		this.dvbViewer.setSeparator( this.separator ) ;
+		this.dvbViewer.setMaxTitleLength( this.maxTitleLength ) ;
 		for ( ChannelSet cs : this.channelSets )
 		{
 			this.dvbViewer.addChannel( cs ) ;
@@ -680,6 +695,8 @@ public class Control
 	public void setLookAndFeelName( String name ) { this.lookAndFeelName = name ; } ;
 	public String getSeparator() { return this.separator ; } ;
 	public void setSeparator( String separator ) { this.separator = separator ; } ;
+	public int getMaxTitleLength() { return this.maxTitleLength ; } ;
+	public void setMaxTitleLength( int l ) { this.maxTitleLength = l ; } ;
 	public void setIsImported() { this.importStatus = ImportStatus.PENDING ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
