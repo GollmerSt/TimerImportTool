@@ -62,6 +62,8 @@ public abstract class Provider implements DVBViewerProvider {
 	{
 		for ( Provider provider : Provider.providers )
 		{
+			if ( !isPlugin && provider.name.equals("TV-Browser"))
+				continue ;
 			provider.updateRecordings( entries ) ;
 		}
 	}
@@ -91,6 +93,7 @@ public abstract class Provider implements DVBViewerProvider {
 	protected boolean isSilent ;
 	private OutDatedInfo outDatedLimits = null ;
 	protected TimeZone timeZone = TimeZone.getDefault() ;
+ 
 	
 	public Provider( Control control,
 					 boolean hasAccount,
