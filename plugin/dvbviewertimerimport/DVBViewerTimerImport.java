@@ -17,17 +17,12 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
-import org.apache.commons.lang.StringUtils;
-
-import captureplugin.drivers.DeviceIf;
-
 import devplugin.ActionMenu;
 import devplugin.Date;
 import devplugin.Plugin;
 import devplugin.PluginInfo;
 import devplugin.PluginTreeNode;
 import devplugin.Program;
-import devplugin.ProgramReceiveIf;
 import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
 import devplugin.Version;
@@ -603,6 +598,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       @Override
       public void actionPerformed(ActionEvent e)
       {
+        control.getDVBViewer().updateDVBViewer( false ) ;
         new TimersDialog( null, control ).init() ;
       }};
 
