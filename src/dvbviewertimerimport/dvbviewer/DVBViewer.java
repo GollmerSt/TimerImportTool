@@ -275,7 +275,7 @@ public class DVBViewer {
 			DVBViewerCOM.disconnect() ;
 		isDVBViewerConnected = false ;
 	}
-	void readDVBViewerTimers()
+	private void readDVBViewerTimers()
 	{
 		this.recordEntries = null ;
 		if ( this.service != null && this.service.isEnabled() )
@@ -567,14 +567,14 @@ public class DVBViewer {
 	public void reworkMergeElements() { DVBViewerEntry.reworkMergeElements( this.recordEntries, this.separator, this.maxID, this.maxTitleLength ) ; } 
 	public void setDVBViewerTimers() throws InterruptedException
 	{
-		DVBViewerEntry.removeOutdatedProviderEntries( this.recordEntries );
+		//DVBViewerEntry.removeOutdatedProviderEntries( this.recordEntries );
 		
+    this.merge() ;
 		DVBViewerEntry.beforeRecordingSettingProcces(
 				this.recordEntries,
 				this.separator,
 				this.maxID,
 				this.maxTitleLength) ;
-		this.merge() ;
 			
 		int updatedEntries = 0 ;
 		int newEntries = 0 ;
