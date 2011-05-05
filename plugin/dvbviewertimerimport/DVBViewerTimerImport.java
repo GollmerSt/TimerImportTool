@@ -526,6 +526,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
       {
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
+        if ( program == null )
+          continue ;
         this.markProgram( program, true ) ;
         program.validateMarking() ;
       }
