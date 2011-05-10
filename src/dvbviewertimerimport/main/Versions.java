@@ -6,9 +6,10 @@ package dvbviewertimerimport.main;
 
 public class Versions {
 	private static final int MAJOR_VERSION					= 1 ;
-  private static final int MINOR_VERSION					= 2 ;
-  private static final int SUB_VERSION						= 1 ;
+	private static final int MINOR_VERSION					= 2 ;
+	private static final int SUB_VERSION					= 3 ;
 	private static final String DVBVIEWER_COM_DLL_VERSION	= "1.00.01" ;
+	private static final boolean DVBVIEWER_BETA_STATUS      = true ;
 	
 	public static String getVersion() { return Integer.toString( MAJOR_VERSION ) 
 	  + "." + Integer.toString( MINOR_VERSION )
@@ -20,7 +21,7 @@ public class Versions {
 	 */
 	public static int[] getIntVersion()
 	{
-	  int[] version = { MAJOR_VERSION, MINOR_VERSION, SUB_VERSION } ;
+	  int[] version = { MAJOR_VERSION, MINOR_VERSION, SUB_VERSION, DVBVIEWER_BETA_STATUS?1:0 } ;
 	  return version ;
 	}
 }
