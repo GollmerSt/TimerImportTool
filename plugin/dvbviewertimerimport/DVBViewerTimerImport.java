@@ -203,7 +203,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     if ( version == null )
     {
       int[] v = Versions.getIntVersion() ;
-      version = new Version(v[0], v[1], v[2], true ) ;
+      version = new Version(v[0], v[1], v[2], v[3]!=0 ) ;
     }
     return version ;
   }
