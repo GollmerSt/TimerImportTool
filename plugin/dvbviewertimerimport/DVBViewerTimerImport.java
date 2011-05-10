@@ -337,10 +337,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   
   public ActionMenu getContextMenuActions( final Program program)
   {
-    Action mainAction = new devplugin.ContextMenuAction() ;
-    mainAction.putValue(Action.NAME, mainMenue ) ;
-    mainAction.putValue(Action.SMALL_ICON, menuIcon ) ;
-    
     Action [] subActions = new AbstractAction[ 2 ] ;
     
     Command temp = Command.SET ;
@@ -365,8 +361,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     subActions[ 1 ] = chooseChannelAction ;
     chooseChannelAction.update( program ) ;
     
-    return new ActionMenu(mainAction, subActions );
-  }
+    return new ActionMenu( mainMenue, menuIcon, subActions ) ;
+    }
 
   private void markProgram( final Program program, boolean mark )
   {
