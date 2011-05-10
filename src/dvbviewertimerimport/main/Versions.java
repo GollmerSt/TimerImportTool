@@ -11,9 +11,21 @@ public class Versions {
 	private static final String DVBVIEWER_COM_DLL_VERSION	= "1.00.01" ;
 	private static final boolean DVBVIEWER_BETA_STATUS      = true ;
 	
-	public static String getVersion() { return Integer.toString( MAJOR_VERSION ) 
-	  + "." + Integer.toString( MINOR_VERSION )
-	  + "." + Integer.toString( SUB_VERSION ) ; } ;
+	public static String getVersion() { return getVersion( false ) ; } ;
+
+	
+	public static String getVersion( boolean betaStatus )
+	{
+		String last = null ;
+		if ( betaStatus && DVBVIEWER_BETA_STATUS )
+			last = " beta" ;
+		else
+			last = "" ;
+		return          Integer.toString( MAJOR_VERSION )
+				+ "." + Integer.toString( MINOR_VERSION )
+	            + "." + Integer.toString( SUB_VERSION ) 
+	            + last ;
+	} ;
 	public static String getDVBViewerCOMVersion() { return DVBVIEWER_COM_DLL_VERSION ; } ;
 	
 	/**
