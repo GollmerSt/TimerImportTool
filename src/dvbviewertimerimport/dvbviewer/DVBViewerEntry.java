@@ -455,13 +455,14 @@ public final class DVBViewerEntry  implements Cloneable
 			{
 				ArrayList<DVBViewerEntry> choices = new ArrayList< DVBViewerEntry >() ;
 			
-				for ( DVBViewerEntry s : service )
+				for ( DVBViewerEntry s : list )
 				{
 					CompStatus co = x.compareWithService( s ) ;
 					if ( co == CompStatus.EQUAL || co == CompStatus.IN_RANGE )
 						choices.add( s ) ;
 				}
-				list = choices ;
+				if ( choices.size() > 0 )
+					list = choices ;
 			}
 			
 			if ( list.size() > 1 )
