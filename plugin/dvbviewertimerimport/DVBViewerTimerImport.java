@@ -62,7 +62,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   private GUIPanel settingsPanel = null ;
 
   private Icon channelChooseIcon = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
-  private Icon timerIcon = ResourceManager.createImageIcon( "icons/dvbViewer Timer16.png", "Timer icon" ) ;
+  private Icon timerAddIcon = ResourceManager.createImageIcon( "icons/dvbViewer Timer16.png", "Timer icon" ) ;
+  private Icon timerDeleteIcon = ResourceManager.createImageIcon( "icons/dvbViewer TimerDisabled 16.png", "Timer delete icon" ) ;
 
   private Icon menuIcon = null ;
   private Icon[] markIcons = null ;
@@ -299,12 +300,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       if ( command == Command.SET )
       {
         putValue(Action.NAME, DVBViewerTimerImport.ADD_TIMER ) ;
-        putValue(Action.SMALL_ICON, timerIcon ) ;
+        putValue(Action.SMALL_ICON, timerAddIcon ) ;
       }
       else
       {
         putValue(Action.NAME, DVBViewerTimerImport.DELETE_TIMER ) ;
-        //putValue(Action.SMALL_ICON, menuIcon ) ;
+        putValue(Action.SMALL_ICON, timerDeleteIcon ) ;
       }
     }
 
