@@ -1185,7 +1185,10 @@ public final class DVBViewerEntry  implements Cloneable
 				}
 				entryBase.mergedEntries = null ;
 				entryBase.setMergeStatus( MergeStatus.DISABLED ) ;
-				entryBase.toDo = ToDo.DELETE ;
+				if ( entryBase.toDo != ToDo.NEW )
+					entryBase.toDo = ToDo.DELETE ;
+				else
+					dvbViewer.getRecordEntries().remove( entryBase ) ;
 			}
 			else
 			{
