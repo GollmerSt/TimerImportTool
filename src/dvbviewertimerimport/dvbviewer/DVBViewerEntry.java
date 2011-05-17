@@ -293,37 +293,229 @@ public final class DVBViewerEntry  implements Cloneable
 			}
 		}
 	}
+	private class PartialTitle
+	{
+		final static int MIN_LENGTH = 5 ;
+
+		private final StringBuilder part ;
+		private PartialTitle left = null ;
+		int prefixLength = 0 ;
+		boolean isPrefixSet = false ;
+		boolean isReduced = false ;
+		int lengthParenthesis = -1 ;
+		int startParenthesis = 0 ;
+		
+		public PartialTitle( String s )
+		{
+			part = new StringBuilder( s ) ;
+			getInparenthesis() ;
+			part.delete(startParenthesis, startParenthesis + lengthParenthesis ) ;
+			
+		}
+		public void deletePrefix( int n )
+		{
+			isReduced = true ;
+			setPrefixLength( n ) ;
+		}
+		private void setPrefixLength( int n )
+		{
+			if ( isReduced )
+			{
+				left.setPrefixLength( n ) ;
+				prefixLength = left.getPrefixLength( false ) ;
+				isPrefixSet = true ;
+			}
+			else if ( isPrefixSet )
+				Math.min(n, prefixLength) ;
+			else
+			{
+				prefixLength = n ;
+				isPrefixSet = true ;
+			}
+		}
+		public int getPrefixLength()
+		{
+			return getPrefixLength( true ) ;
+		}
+		public int getPrefixLength( boolean isOutput )
+		{
+			if ( isReduced && isOutput )
+				return 0 ;
+			if ( isReduced && ! isPrefixSet )
+			{
+				prefixLength = left.getPrefixLength( false ) ;
+				isPrefixSet = true ;
+			}
+			return prefixLength ;
+		}
+		public int mainPartLength()
+		{
+			return part.length() - getPrefixLength( false ) ;
+		}
+		public int length()
+		{
+			int length = part.length() ;
+			if ( isReduced )
+			{
+				length -= getPrefixLength( false ) ;
+			}
+			return length ;
+		}
+		public char charAt( int i )
+		{
+			return part.charAt( i ) ;
+		}
+		public String get( int i )
+		{
+			if ( isReduced )
+			{
+				int pl = getPrefixLength( false ) ;
+				return part.substring( pl, pl + i ) ;
+			}
+			else
+				return part.substring( 0, i ) ;
+		}
+		public String toString()
+		{
+			return part.toString() ;
+		}
+		public String getOriginal()
+		{
+			return part.toString() ;
+		}
+		public int lengthOrg()
+		{
+			return part.length() ;
+		}
+		public void searchAndSetPrefix( PartialTitle left )
+		{
+			this.left = left ;
+			for ( int c = 0 ; c < lengthOrg() && c < left.lengthOrg() ; ++c )
+			{
+				String leftOrg = left.getOriginal() ;
+				if ( ( leftOrg.charAt( c ) != charAt( c ) ) || ( length() - c <= MIN_LENGTH ) )
+				{
+					for ( --c ; c >= 0 ; --c )
+						if ( ! Character.isLetterOrDigit( (int) charAt(c) ) )
+							break ;
+					++c ;
+					
+					if ( c == 0 )
+						break ;
+
+					deletePrefix( c ) ;
+					break ;
+				}
+			}
+		}
+		public int getInparenthesis()
+		{
+			if ( lengthParenthesis < 0 )
+			{
+				int level = 0 ;
+				lengthParenthesis = 0 ;
+				
+				for ( int i = 0 ; i < part.length() ; ++i  )
+				{
+					if ( level > 0 )
+						++lengthParenthesis ;
+					char c = part.charAt( i ) ;
+					if ( c == '(')
+					{
+						++level ;
+						startParenthesis = i ;
+					}
+					else if ( c == ')' )
+					{
+						--level ;
+						if ( level <= 0 )
+						{
+							++lengthParenthesis ;
+							if ( level < 0 )
+								startParenthesis = i ;
+							break ;
+						}
+					}
+				}
+			}
+			return lengthParenthesis ;
+		}
+	}
+
 	private void createTitle( String separator, final int maxLength )
 	{
 		if ( ! this.isMergeElement() )
 			return ;
-
-		boolean first = true ;
-
-		String title = "" ;
-
-		int max_length = maxLength ;
-
-		max_length -= (this.mergedEntries.size()-1)*separator.length() ;
-
+		
 		int length = 0 ;
-		for ( DVBViewerEntry e : this.mergedEntries )
-			length += e.title.length() ;
-		if ( length < max_length || max_length < 0 )
-			max_length = length ;
+
+		StringBuilder title = new StringBuilder() ;
 
 		for ( DVBViewerEntry e : this.mergedEntries )
 		{
-			if ( first )
-				first = false ;
-			else
-				title += separator ;
-			int pLength = e.title.length() * max_length / length ;
-			length     -= e.title.length() ;
-			max_length -= pLength ;
-			title += e.title.substring(0, pLength) ;
+			title.append( separator ) ;
+			title.append( e.title ) ;
+			length += e.title.length() ;
 		}
-		this.title = title;
+				
+		if ( title.length() <= maxLength || maxLength < 0 )
+		{
+			this.title = title.substring( separator.length() ) ;
+			return ;
+		}
+
+		int lengthMax = maxLength - (this.mergedEntries.size()-1) * separator.length() ;
+		
+		ArrayList< PartialTitle > parts = new ArrayList< PartialTitle >() ;
+		
+		for ( DVBViewerEntry e : this.mergedEntries )
+			parts.add( new PartialTitle( e.title ) ) ;
+		
+		int prefixLength = 0 ;
+		
+		for ( int i = 1 ; i < parts.size() ; ++i )
+			parts.get(i).searchAndSetPrefix( parts.get(i-1) ) ;
+		
+		length = 0 ;
+//		int minMainPartLength = 99999 ;
+		
+		for ( PartialTitle part : parts )
+		{
+			prefixLength += part.getPrefixLength() ;
+			length += part.length() ;
+//			minMainPartLength = Math.min(minMainPartLength, part.mainPartLength() ) ;
+			
+		}
+		
+		title =  new StringBuilder() ;
+		
+		int prefixLenMax = prefixLength ;
+		
+		if ( prefixLenMax > lengthMax )
+			prefixLenMax = lengthMax ;
+				
+		if ( length < lengthMax )
+			lengthMax = length ;
+		
+		for ( PartialTitle p : parts )
+		{
+			title.append( separator ) ;
+			int pPrefixLength = 0 ;
+			if ( prefixLength != 0 )
+			{
+				pPrefixLength = p.getPrefixLength() * prefixLenMax / prefixLength ;
+				lengthMax  -= pPrefixLength ;
+				length     -= p.getPrefixLength() ;
+				prefixLenMax  -= pPrefixLength ;
+				prefixLength        -= p.getPrefixLength() ;
+			}
+			int pLength = p.mainPartLength() * lengthMax / length ;
+			length     -= p.mainPartLength() ;
+			lengthMax  -= pLength ;
+			title.append( p.get( pPrefixLength + pLength) ) ;
+		}
+
+		this.title = title.substring( separator.length() ) ;
 	}
 	public void calcStartEnd()
 	{
