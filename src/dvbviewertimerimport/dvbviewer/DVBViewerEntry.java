@@ -444,6 +444,9 @@ public final class DVBViewerEntry  implements Cloneable
 
 	private void createTitle( String separator, final int maxLength )
 	{
+		final int WEIGHT_PREFIX = 2 ;
+		final int WEIGHT_MAIN = 1 ;
+		
 		if ( ! this.isMergeElement() )
 			return ;
 		
@@ -471,32 +474,41 @@ public final class DVBViewerEntry  implements Cloneable
 		for ( DVBViewerEntry e : this.mergedEntries )
 			parts.add( new PartialTitle( e.title ) ) ;
 		
-		int prefixLength = 0 ;
 		
 		for ( int i = 1 ; i < parts.size() ; ++i )
 			parts.get(i).searchAndSetPrefix( parts.get(i-1) ) ;
 		
-		length = 0 ;
-//		int minMainPartLength = 99999 ;
+		int prefixLength = 0 ;
+		int mainLength = 0 ;
 		
 		for ( PartialTitle part : parts )
 		{
 			prefixLength += part.getPrefixLength() ;
-			length += part.length() ;
-//			minMainPartLength = Math.min(minMainPartLength, part.mainPartLength() ) ;
+			mainLength += part.mainPartLength() ;
 			
 		}
 		
-		title =  new StringBuilder() ;
+		length = mainLength + prefixLength ;
+		int mainLenMax = mainLength ;
 		
 		int prefixLenMax = prefixLength ;
 		
+		if ( length > lengthMax )
+		{
+			int weight = WEIGHT_PREFIX * prefixLength + WEIGHT_MAIN * mainLength ;
+			prefixLenMax = ( WEIGHT_PREFIX * prefixLength * lengthMax / weight + 1 ) / WEIGHT_PREFIX ;
+			mainLenMax = lengthMax - prefixLenMax ;
+		}
+		
+		
+/*		if ( mainLength < lengthMax )
+			lengthMax = mainLength ;
+		
 		if ( prefixLenMax > lengthMax )
 			prefixLenMax = lengthMax ;
-				
-		if ( length < lengthMax )
-			lengthMax = length ;
-		
+*/				
+		title =  new StringBuilder() ;
+
 		for ( PartialTitle p : parts )
 		{
 			title.append( separator ) ;
@@ -504,15 +516,15 @@ public final class DVBViewerEntry  implements Cloneable
 			if ( prefixLength != 0 )
 			{
 				pPrefixLength = p.getPrefixLength() * prefixLenMax / prefixLength ;
-				lengthMax  -= pPrefixLength ;
-				length     -= p.getPrefixLength() ;
+
 				prefixLenMax  -= pPrefixLength ;
-				prefixLength        -= p.getPrefixLength() ;
+				prefixLength  -= p.getPrefixLength() ;
 			}
-			int pLength = p.mainPartLength() * lengthMax / length ;
-			length     -= p.mainPartLength() ;
-			lengthMax  -= pLength ;
+			int pLength = p.mainPartLength() * mainLenMax / mainLength ;
 			title.append( p.get( pPrefixLength + pLength) ) ;
+
+			mainLength     -= p.mainPartLength() ;
+			mainLenMax  -= pLength ;
 		}
 
 		this.title = title.substring( separator.length() ) ;
@@ -587,13 +599,84 @@ public final class DVBViewerEntry  implements Cloneable
 			return true ;
 		return false ;
 	}
+	
+	static ArrayList<DVBViewerEntry> searchSurroundedEntries( final DVBViewerEntry entry,  final ArrayList<DVBViewerEntry> list )
+	{
+		ArrayList<DVBViewerEntry> result = new ArrayList< DVBViewerEntry >() ;
+
+		String channelID = entry.getChannelID() ;
+		long start = entry.startOrg - DVBViewerEntry.searchIntervall ;
+		long end = entry.endOrg + DVBViewerEntry.searchIntervall ;
+		String days = entry.days ;
+
+
+		for ( DVBViewerEntry e : list )
+		{
+			if ( e.inRange( channelID, start, end, days) )
+				result.add( e ) ;
+		}
+		return result ;
+	}
+	
+	private static interface SearchAlgorithm
+	{
+		public ArrayList< DVBViewerEntry > execute( final DVBViewerEntry entry,
+											  final ArrayList< DVBViewerEntry > entries ) ;
+	}
+	
+	private class SearchBiDirectional
+	{
+		HashMap< DVBViewerEntry, ArrayList < DVBViewerEntry > > choicesInRangeLists = new HashMap< DVBViewerEntry, ArrayList < DVBViewerEntry > >() ;
+
+		public ArrayList< DVBViewerEntry > searchBiDirectional( final DVBViewerEntry xEntry,
+											  final ArrayList< DVBViewerEntry > choices,
+											  final ArrayList< DVBViewerEntry > xml,
+											  final SearchAlgorithm algo )
+		{
+			ArrayList<DVBViewerEntry> result = algo.execute( xEntry, choices ) ;
+	
+			for ( Iterator< DVBViewerEntry > it = result.iterator() ; it.hasNext() ; )
+			{
+				ArrayList<DVBViewerEntry> cList = null ;
+					
+				DVBViewerEntry cS = it.next() ;
+					
+				if ( !choicesInRangeLists.containsKey( cS ))
+				{
+					cList = searchSurroundedEntries( cS, xml ) ;
+	
+					choicesInRangeLists.put(cS, cList ) ;
+				}
+				else
+					cList = choicesInRangeLists.get( cS ) ;
+					
+				ArrayList<DVBViewerEntry> cChoices = algo.execute( cS, cList ) ;
+	
+				boolean found = false ;
+				
+				for ( DVBViewerEntry e : cChoices )
+				{
+					if ( xEntry == e )
+					{
+						found = true ;
+						break ;
+					}
+				}
+				if ( ! found )
+					it.remove() ;
+			}
+			return result ;
+		}
+	}
 
 	public static void updateXMLDataByServiceDataFuzzy(
 	          final ArrayList<DVBViewerEntry> xml,
 	          final ArrayList<DVBViewerEntry> service,
 	          boolean allElements)
 	{
+		SearchBiDirectional searchBi = new DVBViewerEntry().new SearchBiDirectional() ;
 
+		
 		// Find and assign all easy to assign service entries, remove the entries from
 		// the merge elements if entry is enabled
 		for ( DVBViewerEntry x : xml )
@@ -606,42 +689,32 @@ public final class DVBViewerEntry  implements Cloneable
 
 			// Find all programs in the range of searchIntervall
 
-			ArrayList<DVBViewerEntry> list = new ArrayList< DVBViewerEntry >() ;
-
-			long start = x.startOrg - DVBViewerEntry.searchIntervall ;
-			long end = x.endOrg + DVBViewerEntry.searchIntervall ;
-			String days = x.days ;
-			String channelID = x.getChannelID() ;
-
-
-			for ( DVBViewerEntry s : service )
-			{
-				if ( s.inRange( channelID, start, end, days) )
-					list.add( s ) ;
-			}
+			ArrayList<DVBViewerEntry> list = searchSurroundedEntries( x, service ) ;
 
 			if ( list.size() == 0 )
 				continue ;
 
 			// find the best match of title
-
-			if ( list.size() > 1 )
 			{
-				ArrayList<DVBViewerEntry> choices = Conversions.getTheBestChoices(
-						x.getTitle(),
-						list,
-						2, 3,
-						new Function(),
-						new Function()
-						{
-							@Override
-							public int arrayIntToInt( final ArrayList< Integer > list, final int integer, final String search, final String array )
-							{
-								return this.arrayIntToInt3( list, integer, search, array ) ;
-							}
-						});
-				list = choices ;
+				list = searchBi.searchBiDirectional(x, list, xml, new SearchAlgorithm(){
+
+					@Override
+					public ArrayList<DVBViewerEntry> execute(
+							DVBViewerEntry entry,
+							ArrayList<DVBViewerEntry> entries) {
+						return Conversions.getTheBestChoices( entry.getTitle(), entries, 2, 3, new Function(), 
+							new Function(){
+								@Override
+								public int arrayIntToInt( final ArrayList< Integer > list, final int integer, final String search, final String array )
+								{
+									return this.arrayIntToInt3( list, integer, search, array ) ;
+								}
+						} ) ;
+					}} ) ;
+				if ( list.size() == 0 )
+					continue ;
 			}
+
 
 			if ( list.size() > 1 )
 			{
@@ -657,26 +730,36 @@ public final class DVBViewerEntry  implements Cloneable
 					list = choices ;
 			}
 
-			if ( list.size() > 1 )
 			{
-				ArrayList<DVBViewerEntry> choices = new ArrayList<DVBViewerEntry>() ;
-				long minDiff = 999999999999999L ;
+				list = searchBi.searchBiDirectional(x, list, xml, new SearchAlgorithm(){
 
-				for ( DVBViewerEntry s : list )
-				{
-					long diff = s.start - x.start ;
-					diff = diff < -diff ? -diff : diff ;
-					long diff1 = x.end - s.end ;
-					diff1 = diff1 < 0 ? -diff1 : diff1 ;
-					diff += diff1/2 ;			// the weight of the post offset is lower than the pre offset
-					if ( diff < minDiff )
-					{
-						choices.clear() ;
-						choices.add( s ) ;
-						minDiff = diff ;
-					}
-				}
-				list = choices ;
+					@Override
+					public ArrayList<DVBViewerEntry> execute(
+							DVBViewerEntry entry,
+							ArrayList<DVBViewerEntry> entries) {
+						// TODO Auto-generated method stub
+						ArrayList<DVBViewerEntry> choices = new ArrayList<DVBViewerEntry>() ;
+						long minDiff = 999999999999999L ;
+
+						for ( DVBViewerEntry e : entries )
+						{
+							long diff = e.start - entry.start ;
+							diff = diff < -diff ? -diff : diff ;
+							long diff1 = entry.end - e.end ;
+							diff1 = diff1 < 0 ? -diff1 : diff1 ;
+							diff += diff1/2 ;			// the weight of the post offset is lower than the pre offset
+							if ( diff < minDiff )
+							{
+								choices.clear() ;
+								choices.add( e ) ;
+								minDiff = diff ;
+							}
+						}
+						return choices ;
+					}} ) ;
+
+				if ( list.size() == 0 )
+					continue ;
 			}
 			if ( list.size() > 1 )
 			{
