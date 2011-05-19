@@ -239,11 +239,21 @@ public class DVBViewerService {
 		{
 			command = "timeredit" ;
 			query += "&id=" + Long.toString( e.getServiceID() ) ;
+			if ( e.getServiceID() < 0 )
+			{
+				Log.out( "Unexpected serviceID on editing an entry. Query: " + query ) ;
+				return ;
+			}
 		}
 		else if ( e.mustDVBViewerDeleted() )
 		{
 			command = "timerdelete" ;
 			query += "&id=" + Long.toString( e.getServiceID() ) ;
+			if ( e.getServiceID() < 0 )
+			{
+				Log.out( "Unexpected serviceID on deleting an entry. Query: " + query ) ;
+				return ;
+			}
 		}
 		else
 			command = "timeradd" ;
