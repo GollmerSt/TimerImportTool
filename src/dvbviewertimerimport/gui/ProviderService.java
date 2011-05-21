@@ -969,10 +969,12 @@ public class ProviderService extends MyTabPanel {
 	public void update( boolean active )
 	{
 		if ( active )
+		{
 			this.updateLockBox() ;
+/*		}
 		else
 		{
-			this.updateProvider() ;
+*/			this.updateProvider() ;
 			this.updateService() ;
 		}
 	}
