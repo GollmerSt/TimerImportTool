@@ -606,20 +606,22 @@ public class Miscellaneous extends MyTabPanel
 		this.updateDVBViewerActions() ;
 		dvbViewerPanel.add( this.actionTimerBox, c ) ;
 
+		JPanel titleLengthPanel = new JPanel( new GridBagLayout() ) ;
 		
-
+		
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
 		c.gridy      = 6 ;
-		c.weightx    = 1.0 ;
+		c.weightx    = 0.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
+		c.anchor     = GridBagConstraints.EAST ;
 		
 		this.maxTitleLengthBox.setText( ResourceManager.msg( "LIMIT_TITLE_LENGTH" ) ) ;
 		this.maxTitleLengthBox.addActionListener( new CheckBoxAction() ) ;
 		this.maxTitleLengthBox.setSelected( control.getMaxTitleLength() >= 0 ) ;
-		dvbViewerPanel.add( this.maxTitleLengthBox, c ) ;
+		titleLengthPanel.add( this.maxTitleLengthBox, c ) ;
 		
 		
 
@@ -637,8 +639,15 @@ public class Miscellaneous extends MyTabPanel
                 20, 256, 1 ) ;
 		this.maxTitleLengthSpinner.setModel( lengthModel );
 		this.maxTitleLengthSpinner.setEnabled( control.getMaxTitleLength() >= 0 ) ;
-		dvbViewerPanel.add( this.maxTitleLengthSpinner, c ) ;		
+		titleLengthPanel.add( this.maxTitleLengthSpinner, c ) ;		
 
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 6 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = new Insets( 0, 0, 0, 0 ); ;
+		dvbViewerPanel.add( titleLengthPanel, c ) ;
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
