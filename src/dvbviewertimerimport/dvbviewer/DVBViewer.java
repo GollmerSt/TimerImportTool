@@ -108,6 +108,9 @@ public class DVBViewer {
 	private int maxTitleLength = -1 ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
+	
+	private boolean isThreadListening = false ;
+	private String selectedChannel = null ;
 
 	static
 	{
@@ -821,9 +824,20 @@ public class DVBViewer {
 		} catch (IOException e) {
 			return false ;
 		}
+		
+		synchronized( this )
+		{
+			if ( this.isThreadListening == true )
+			{
+				this.selectedChannel = parts[0] ;
+				return true ;
+			}
+		}
+		
+		final DVBViewer dvbViewer = this ;
+		
 		Thread thread = new Thread()
 		{
-			String channel = parts[0] ;
 			public void run()
 			{
 				long timeOutTime = System.currentTimeMillis() + 120 * 1000 ;
@@ -841,13 +855,21 @@ public class DVBViewer {
 						break ;
 					}
 				}
-				if ( timeOutTime < 0 )
-					return ;
 				
-				DVBViewerCOM.setCurrentChannel(channel ) ;
-				DVBViewerCOM.disconnect() ;				
+				synchronized( dvbViewer )
+				{
+					dvbViewer.isThreadListening = false ;
+				
+					if ( timeOutTime < 0 )
+						return ;
+				
+					DVBViewerCOM.setCurrentChannel( dvbViewer.selectedChannel ) ;
+					DVBViewerCOM.disconnect() ;
+				}
 			}
 		} ;
+
+		this.isThreadListening = true ;
 		thread.start() ;
 		return true ;
 	}
