@@ -802,40 +802,27 @@ public class DVBViewer {
 		}
 		return true ;
 	}
-	public boolean startDVBViewerAndSelectChannel( String channelID )
+	
+	public boolean selectChannel( String channelID )
 	{
 		if ( channelID == null )
 			return false ;
+
+		final DVBViewer dvbViewer = this ;
+		
 		final String [] parts = channelID.split( "\\|" ) ;
 		if ( parts.length != 2 )
 			return false ;
-		if ( DVBViewerCOM.connect() )		// actual running
-		{
-			DVBViewerCOM.setCurrentChannel( parts[0] ) ;
-			DVBViewerCOM.disconnect() ;
-			return true ;
-		}
-		File f = new File( this.getDVBExePath() ) ;
-		if ( ! f.canExecute() )
-			return false ;
-		try {
-			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
-			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() ) ;
-		} catch (IOException e) {
-			return false ;
-		}
-		
+
 		synchronized( this )
 		{
+			this.selectedChannel = parts[0] ;
 			if ( this.isThreadListening == true )
 			{
-				this.selectedChannel = parts[0] ;
 				return true ;
 			}
 		}
-		
-		final DVBViewer dvbViewer = this ;
-		
+
 		Thread thread = new Thread()
 		{
 			public void run()
@@ -872,6 +859,26 @@ public class DVBViewer {
 		this.isThreadListening = true ;
 		thread.start() ;
 		return true ;
+	}
+	
+	public boolean startDVBViewerAndSelectChannel( String channelID )
+	{
+		if ( DVBViewerCOM.connect() )		// actual running
+		{
+			DVBViewerCOM.disconnect() ;
+			return selectChannel( channelID ) ;
+		}
+		File f = new File( this.getDVBExePath() ) ;
+		if ( ! f.canExecute() )
+			return false ;
+		try {
+			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
+			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() ) ;
+		} catch (IOException e) {
+			return false ;
+		}
+		
+		return selectChannel( channelID ) ;
 	}
 	public boolean startDVBViewerIfRecording()
 	{
