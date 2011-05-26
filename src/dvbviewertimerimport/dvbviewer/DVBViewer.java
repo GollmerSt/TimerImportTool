@@ -803,7 +803,7 @@ public class DVBViewer {
 	{
 		if ( channelID == null )
 			return false ;
-		String [] parts = channelID.split( "\\|" ) ;
+		final String [] parts = channelID.split( "\\|" ) ;
 		if ( parts.length != 2 )
 			return false ;
 		if ( DVBViewerCOM.connect() )		// actual running
@@ -817,10 +817,38 @@ public class DVBViewer {
 			return false ;
 		try {
 			//Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" + parts[1] + ":" + parts[0] + "\"" ) ;
-			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() + " -c:" + parts[0] ) ;
+			Runtime.getRuntime().exec( f.getAbsolutePath() + " " + this.getViewParameters() ) ;
 		} catch (IOException e) {
 			return false ;
 		}
+		Thread thread = new Thread()
+		{
+			String channel = parts[0] ;
+			public void run()
+			{
+				long timeOutTime = System.currentTimeMillis() + 120 * 1000 ;
+				while ( ! DVBViewerCOM.connect()  )
+				{
+					try {
+						Thread.sleep( 100 ) ;
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if ( System.currentTimeMillis() > timeOutTime )
+					{
+						timeOutTime = -1 ;
+						break ;
+					}
+				}
+				if ( timeOutTime < 0 )
+					return ;
+				
+				DVBViewerCOM.setCurrentChannel(channel ) ;
+				DVBViewerCOM.disconnect() ;				
+			}
+		} ;
+		thread.start() ;
 		return true ;
 	}
 	public boolean startDVBViewerIfRecording()
