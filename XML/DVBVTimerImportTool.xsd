@@ -59,6 +59,9 @@
     				</xsd:attribute>
     				<xsd:attribute name="timeZone" type="xsd:string">
     				</xsd:attribute>
+    				<xsd:attribute name="dvbExePath"
+    					type="xsd:string">
+    				</xsd:attribute>
     			</xsd:complexType>
     		</xsd:element>
     		<xsd:element name="DVBService" minOccurs="0">
