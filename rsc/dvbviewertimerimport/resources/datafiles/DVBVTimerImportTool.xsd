@@ -21,12 +21,13 @@
     				<xsd:sequence>
     					<xsd:element name="Channels">
     						<xsd:complexType>
-    							<xsd:sequence maxOccurs="unbounded" minOccurs="0">
+    							<xsd:sequence maxOccurs="unbounded"
+    								minOccurs="0">
 
     								<xsd:element name="Entry">
     									<xsd:complexType>
-    										<xsd:attribute
-    											name="id" type="myDVBViewerChannelType">
+    										<xsd:attribute name="id"
+    											type="myDVBViewerChannelType">
     										</xsd:attribute>
     									</xsd:complexType>
     								</xsd:element>
@@ -57,6 +58,9 @@
     					</xsd:simpleType>
     				</xsd:attribute>
     				<xsd:attribute name="timeZone" type="xsd:string">
+    				</xsd:attribute>
+    				<xsd:attribute name="dvbExePath"
+    					type="xsd:string">
     				</xsd:attribute>
     			</xsd:complexType>
     		</xsd:element>
@@ -98,8 +102,13 @@
     					</xsd:element>
     					<xsd:element name="Language" minOccurs="0">
     						<xsd:simpleType>
-    							<xsd:restriction base="xsd:string">
-    								<xsd:pattern value="[^_]+_[^_]*_[^_]*"></xsd:pattern>
+    							<xsd:restriction base="xsd:string">
+
+
+
+    								<xsd:pattern
+    									value="[^_]+_[^_]*_[^_]*">
+    								</xsd:pattern>
     							</xsd:restriction>
     						</xsd:simpleType>
     					</xsd:element>
@@ -115,6 +124,7 @@
     		<xsd:element name="Separator" type="xsd:string"
     			minOccurs="0" />
 
+    		<xsd:element name="MaxTitleLength" type="xsd:int" minOccurs="0" maxOccurs="1"></xsd:element>
     		<xsd:element name="Channels" minOccurs="1">
     			<xsd:complexType>
     				<xsd:sequence>
