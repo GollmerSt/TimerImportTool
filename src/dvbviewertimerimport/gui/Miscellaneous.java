@@ -51,6 +51,8 @@ public class Miscellaneous extends MyTabPanel
 	
 	private final JTextField directoryPathText = new JTextField() ;
 	private final JButton fileSelectorButton = new JButton() ;
+	private final JTextField executablePathText = new JTextField() ;
+	private final JButton exeSelectorButton = new JButton() ;
 	private final JTextField viewParameters = new JTextField() ;
 	private final JTextField recordingParameters = new JTextField() ;
 	private final JCheckBox startRecording = new JCheckBox() ;
@@ -183,6 +185,14 @@ public class Miscellaneous extends MyTabPanel
 				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
 				directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
 			}
+			else if ( source == exeSelectorButton )
+			{
+				boolean aborted = ! ( new ExePathSelector( control.getDVBViewer() , guiPanel.getWindow())).show() ;
+				if ( aborted )
+					return ;
+				setInfoText( ResourceManager.msg( "CHANGE_EFFECT" ) ) ;
+				executablePathText.setText( control.getDVBViewer().getDVBExePath() ) ;
+			}
 			else if ( source == exportButton )
 			{
 				File file = chooseImExportFile( false ) ;
@@ -254,17 +264,16 @@ public class Miscellaneous extends MyTabPanel
 
 		JPanel pathPanel = new JPanel( new GridBagLayout() ) ;
 		
-		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.anchor     = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		JLabel pathLabel = new JLabel( ResourceManager.msg( "PATH" ) ) ;
-		parameterPanel.add( pathLabel, c ) ;
+		pathPanel.add( pathLabel, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -272,6 +281,7 @@ public class Miscellaneous extends MyTabPanel
 		c.gridy      = 0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		this.directoryPathText.setText( control.getDVBViewer().getDVBViewerPath() ) ;
@@ -285,7 +295,7 @@ public class Miscellaneous extends MyTabPanel
 		c.gridx      = 2 ;
 		c.gridy      = 0 ;
 		c.gridwidth  = GridBagConstraints.REMAINDER ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
@@ -298,10 +308,54 @@ public class Miscellaneous extends MyTabPanel
 
 
 		c = new GridBagConstraints();
-		c.gridx      = 1 ;
-		c.gridy      = 0 ;
-		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.gridx      = 0 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.EAST ;
+		c.insets     = i ;
+
+		JLabel exePathLabel = new JLabel( ResourceManager.msg( "EXEC_PATH" ) ) ;
+		pathPanel.add( exePathLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 1 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.EAST ;
+		c.insets     = i ;
+
+		this.executablePathText.setText( control.getDVBViewer().getDVBExePath() ) ;
+		this.executablePathText.setPreferredSize( new Dimension( 400, this.directoryPathText.getPreferredSize().height ) ) ;
+		this.executablePathText.setMinimumSize( new Dimension( 400, this.directoryPathText.getPreferredSize().height ) ) ;
+		this.executablePathText.setEditable( false ) ;
+		pathPanel.add( executablePathText, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 2 ;
+		c.gridy      = 1 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.anchor     = GridBagConstraints.EAST ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+
+		directoryIcon = UIManager.getIcon("FileView.directoryIcon") ;
+		if ( directoryIcon == null )
+			directoryIcon = ResourceManager.createImageIcon( "icons/directoryIcon.png", "directoryIcon" ) ;
+		this.exeSelectorButton.setIcon( directoryIcon ) ;
+		this.exeSelectorButton.addActionListener( new ButtonsPressed() ) ;
+		pathPanel.add( exeSelectorButton, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 0 ;
+		c.gridy      = 0 ;
+		c.weightx    = 1.0 ;
+		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = new Insets( 0, 0, 0, 0 ) ;
 		
@@ -310,11 +364,11 @@ public class Miscellaneous extends MyTabPanel
 		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
-		c.gridy      = 1 ;
+		c.gridy      = 2 ;
 		//c.weightx    = 0.25 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.anchor     = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		JLabel viewParaLabel = new JLabel( ResourceManager.msg( "VIEW_PARAS" ) ) ;
@@ -323,7 +377,7 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 1 ;
-		c.gridy      = 1 ;
+		c.gridy      = 2 ;
 		c.weightx    = 1.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
@@ -338,11 +392,11 @@ public class Miscellaneous extends MyTabPanel
 		
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
-		c.gridy      = 1 ;
+		c.gridy      = 2 ;
 		//c.weightx    = 0.25 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.anchor     = GridBagConstraints.NORTHEAST ;
+		c.anchor     = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		JLabel recordingParaLabel = new JLabel( ResourceManager.msg( "RECORDING_PARAS" ) ) ;
@@ -351,11 +405,11 @@ public class Miscellaneous extends MyTabPanel
 
 		c = new GridBagConstraints();
 		c.gridx      = 3 ;
-		c.gridy      = 1 ;
+		c.gridy      = 2 ;
 		c.weightx    = 1.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.anchor	 = GridBagConstraints.NORTHEAST ;
+		c.anchor	 = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		this.recordingParameters.setText( control.getDVBViewer().getRecordingParameters() ) ;
@@ -365,11 +419,11 @@ public class Miscellaneous extends MyTabPanel
 		
 		c = new GridBagConstraints();
 		c.gridx      = 4 ;
-		c.gridy      = 1 ;
+		c.gridy      = 2 ;
 		//c.weightx    = 1.0 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.fill       = GridBagConstraints.HORIZONTAL ;
-		c.anchor	 = GridBagConstraints.NORTHEAST ;
+		c.anchor	 = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
 		

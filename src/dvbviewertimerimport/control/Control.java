@@ -167,6 +167,7 @@ public class Control
 		int     dvbServiceWaitTimeAfterWOL = 15 ;
 		
 		String dvbViewerPath = null ;
+		String dvbExePath = null ;
 		String viewParameters = null ;
 		String recordingParameters = null ;
 		boolean startIfRecording = false ;
@@ -343,6 +344,8 @@ public class Control
 						
 						if      ( attributeName.equals( "dvbViewerPath" ) )
 							dvbViewerPath = value ;
+						if      ( attributeName.equals( "dvbExePath" ) )
+							dvbExePath = value ;
 						else if ( attributeName.equals( "viewParameters" ) )
 							viewParameters = value ;
 						else if ( attributeName.equals( "recordingParameters" ) )
@@ -443,6 +446,8 @@ public class Control
 		{
 			if ( dvbViewerPath != null )
 				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
+			if ( dvbExePath != null )
+				this.dvbViewer.setDVBExePath( dvbExePath ) ;
 			if ( viewParameters != null )
 				this.dvbViewer.setViewParameters( viewParameters ) ;
 			if ( recordingParameters != null )
@@ -520,6 +525,8 @@ public class Control
 			  sw.writeStartElement( "DVBViewer" ) ;
 		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
 			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
+		        if ( dvbViewer.isDVBExePathSetExternal() )
+			    	sw.writeAttribute( "dvbExePath", dvbViewer.getDVBExePath() ) ;
 				if ( ! dvbViewer.getViewParameters().equals("") )
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )

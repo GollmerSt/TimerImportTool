@@ -43,6 +43,7 @@ public class DVBViewer {
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
 	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
+	private static final String NAME_DVBVIEWER_EXE 			  = "dvbviewer.exe" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL         = "DVBViewerTimerImport" ;
 	private static String PATH_PLUGIN_DATA ;
@@ -92,6 +93,7 @@ public class DVBViewer {
 
 	private final String exePath ;
 	private String dvbViewerPath = null ;
+	private String dvbExePath = null ;
 	private boolean isDVBViewerPathSetExternal = false ;
 	private String dvbViewerDataPath = null ;
 	private String dvbViewerPluginDataPath = null ;
@@ -484,20 +486,32 @@ public class DVBViewer {
 	public String getDVBViewerPath() { return this.dvbViewerPath ; } ;
 	public void setDVBViewerPath( final String dvbViewerPath )
 	{
-	  this.isDVBViewerPathSetExternal = true ;
+		this.isDVBViewerPathSetExternal = true ;
 		this.dvbViewerPath = dvbViewerPath ;
 		if ( dvbViewerPath != null )
 			this.determineDataPath() ;
 		else
 			dvbViewerDataPath = null ;
 	} ;
+	public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
+	public String getDVBExePath()
+	{ 
+		if ( this.dvbExePath != null )
+			return this.dvbExePath ;
+		else
+			return this.dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE ;
+	} ;
+	public void setDVBExePath( final String dvbExePath )
+	{
+		this.dvbExePath = dvbExePath ;
+	} ;
+	public boolean isDVBExePathSetExternal() { return this.dvbExePath != null ; } ;
 	public String getViewParameters() { return this.viewParameters ; } ;
 	public void setViewParameters( final String viewParameters ) { this.viewParameters = viewParameters ; } ;
 	public String getRecordingParameters() { return this.recordingParameters ; } ;
 	public void setRecordingParameters( final String recordingParameters ) { this.recordingParameters = recordingParameters ; } ;
 	public boolean getStartIfRecording() { return this.startIfRecording ; } ;
 	public void setStartIfRecording( boolean startIfRecording ) { this.startIfRecording = startIfRecording ; } ;
-	public boolean isDVBViewerPathSetExternal() { return this.isDVBViewerPathSetExternal ; } ;
 
 	public void setService( DVBViewerService s ) { this.service = s ; }
 	public DVBViewerService getService() { return this.service ; } ;
@@ -775,7 +789,7 @@ public class DVBViewer {
 	{
 		if ( isDVBViewerExecuting() )
 			return true ;
-		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		File f = new File( this.getDVBExePath() ) ;
 		if ( ! f.canExecute() )
 			return false ;
 		try {
@@ -792,12 +806,13 @@ public class DVBViewer {
 		String [] parts = channelID.split( "\\|" ) ;
 		if ( parts.length != 2 )
 			return false ;
-/*		if ( DVBViewerCOM.connect() )		// actual running
+		if ( DVBViewerCOM.connect() )		// actual running
 		{
 			DVBViewerCOM.setCurrentChannel( parts[0] ) ;
+			DVBViewerCOM.disconnect() ;
 			return true ;
 		}
-*/		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		File f = new File( this.getDVBExePath() ) ;
 		if ( ! f.canExecute() )
 			return false ;
 		try {
@@ -825,7 +840,7 @@ public class DVBViewer {
 		if ( !isRecording )
 			return true;
 
-		File f = new File( this.dvbViewerPath + File.separator + "dvbviewer.exe" ) ;
+		File f = new File( this.getDVBExePath() ) ;
 		if ( ! f.canExecute() )
 			return false ;
 		try {
