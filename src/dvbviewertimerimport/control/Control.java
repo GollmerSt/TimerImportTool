@@ -50,11 +50,11 @@ public class Control
 	private static final String NAME_XML_CONTROLFILE_BACKUP   = "DVBVTimerImportTool.bak" ;
 	private static final String NAME_XML_CONTROLFILE_IMPORTED = "DVBVTimerImportTool.imp" ;
 	
-	private enum BlockType { INVALID , IMPORTER, CHANNEL_PROVIDER, DVBSERVICE,
+	private enum BlockType { INVALID, CHANNEL_PROVIDER, DVBSERVICE,
 							 DVBVIEWER, OFFSETS, OFFSET_ENTRY, CHANNEL, WOL } ;
 
 	private final DVBViewer dvbViewer ;
-	private final StackXML<String> pathImporter   		  = new StackXML<String>( "Importer" ) ;
+	private final StackXML<String> pathProgramVersion	  = new StackXML<String>( "Importer", "ProgramVersion" ) ;
 	private final StackXML<String> pathProviders		  = new StackXML<String>( "Importer", "Providers" ) ;
 	private final StackXML<String> pathService			  = new StackXML<String>( "Importer", "DVBService" ) ;
 	private final StackXML<String> pathGlobalOffsetEntry  = new StackXML<String>( "Importer", "Offsets", "Offset" ) ;
@@ -173,6 +173,7 @@ public class Control
 		boolean startIfRecording = false ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
+		int dvbViewerWaitTimeBeforeCOM = 0 ;
 		boolean inActiveIfMerged = true ;
 		
 
@@ -188,9 +189,7 @@ public class Control
 			{
 				stack.push(  ev.asStartElement().getName().getLocalPart() ) ;
 				BlockType type = BlockType.INVALID ;
-				if ( stack.equals( this.pathImporter ) )
-					type = BlockType.IMPORTER ;
-				else if ( stack.equals( this.pathDVBViewerChannels ) )
+				if ( stack.equals( this.pathDVBViewerChannels ) )
 				{
 					if ( this.dvbViewer != null )
 					{
@@ -257,13 +256,6 @@ public class Control
 					String value = a.getValue() ;
 					switch ( type )
 					{
-					case IMPORTER :
-						if      ( attributeName.equals( "programVersion" ) )
-						{
-							if ( Versions.getVersion().equals( value ) )
-								versionChanged = false ;
-						}
-						break ;
 					case CHANNEL_PROVIDER :
 						if      ( attributeName.equals( "name" ) )
 						{
@@ -387,6 +379,12 @@ public class Control
 						}
 						else if ( attributeName.equals( "timeZone" ) )
 							DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
+						else if ( attributeName.equals( "waitTimeBeforeCOM" ) )
+						{
+							if ( ! value.matches("\\d+"))
+								throw new ErrorClass ( ev, "Wrong waitTimeBeforeCOM format in file \"" + name + "\"" ) ;
+							dvbViewerWaitTimeBeforeCOM = Integer.valueOf( value ) ;
+						}
 					}
 				}
 				if (    type == BlockType.OFFSET_ENTRY )
@@ -429,6 +427,11 @@ public class Control
 					}
 					else if ( stack.equals( this.pathLookAndFeel) )
 						this.lookAndFeelName = data ;
+					else if ( stack.equals( this.pathProgramVersion ) )
+					{
+						if ( Versions.getVersion().equals( data ) )
+							versionChanged = false ;
+					}
 				}					
 			}					
 			if( ev.isEndElement() )
@@ -448,6 +451,7 @@ public class Control
 				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
 			if ( dvbExePath != null )
 				this.dvbViewer.setDVBExePath( dvbExePath ) ;
+			this.dvbViewer.setWaitTimeBeforeCOM( dvbViewerWaitTimeBeforeCOM ) ;
 			if ( viewParameters != null )
 				this.dvbViewer.setViewParameters( viewParameters ) ;
 			if ( recordingParameters != null )
@@ -520,14 +524,21 @@ public class Control
 			sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
 			sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportTool.xsd");
 			if ( xmlFile == null )
-			  sw.writeAttribute( "programVersion", Versions.getVersion() ) ;
+			  if ( xmlFile == null )
+			  {
+			    sw.writeStartElement( "ProgramVersion" ) ;
+				sw.writeCharacters( Versions.getVersion() ) ;
+			    sw.writeEndElement();
+
+			  }
 			  Provider.writeXML( sw ) ;
 			  sw.writeStartElement( "DVBViewer" ) ;
 		        if ( dvbViewer.getDVBViewerPath() != null && dvbViewer.isDVBViewerPathSetExternal() )
 			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 		        if ( dvbViewer.isDVBExePathSetExternal() )
 			    	sw.writeAttribute( "dvbExePath", dvbViewer.getDVBExePath() ) ;
-				if ( ! dvbViewer.getViewParameters().equals("") )
+			    sw.writeAttribute( "waitTimeBeforeCOM", Integer.toString( dvbViewer.getWaitTimeBeforeCOM() ) ) ;
+		        if ( ! dvbViewer.getViewParameters().equals("") )
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )
 					sw.writeAttribute( "recordingParameters", dvbViewer.getRecordingParameters() ) ;

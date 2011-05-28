@@ -53,6 +53,7 @@ public class Miscellaneous extends MyTabPanel
 	private final JButton fileSelectorButton = new JButton() ;
 	private final JTextField executablePathText = new JTextField() ;
 	private final JButton exeSelectorButton = new JButton() ;
+	private final JSpinner waitBeforeCOMSpinner = new JSpinner() ;
 	private final JTextField viewParameters = new JTextField() ;
 	private final JTextField recordingParameters = new JTextField() ;
 	private final JCheckBox startRecording = new JCheckBox() ;
@@ -294,7 +295,7 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
 		c.gridy      = 0 ;
-		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -337,7 +338,7 @@ public class Miscellaneous extends MyTabPanel
 		c = new GridBagConstraints();
 		c.gridx      = 2 ;
 		c.gridy      = 1 ;
-		c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
 		c.anchor     = GridBagConstraints.EAST ;
 		//c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
@@ -350,6 +351,32 @@ public class Miscellaneous extends MyTabPanel
 		pathPanel.add( exeSelectorButton, c ) ;
 
 
+		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.EAST ;
+		c.insets     = i ;
+
+		JLabel waitCOMLabel = new JLabel( ResourceManager.msg( "WAIT_COM" ) ) ;
+		pathPanel.add( waitCOMLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 4 ;
+		c.gridy      = 1 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		SpinnerModel lengthModel = new SpinnerNumberModel(
+                control.getDVBViewer().getWaitTimeBeforeCOM(), //initial value
+                0, 300, 1 ) ;
+		this.waitBeforeCOMSpinner.setModel( lengthModel );
+		pathPanel.add( this.waitBeforeCOMSpinner, c ) ;		
+
+		
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 0 ;
@@ -688,7 +715,7 @@ public class Miscellaneous extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		SpinnerModel lengthModel = new SpinnerNumberModel(
+		lengthModel = new SpinnerNumberModel(
                 control.getMaxTitleLength()< 20?20:control.getMaxTitleLength(), //initial value
                 20, 256, 1 ) ;
 		this.maxTitleLengthSpinner.setModel( lengthModel );
@@ -887,6 +914,9 @@ public class Miscellaneous extends MyTabPanel
 				DVBViewerEntry.setInActiveIfMerged( this.inActiveIfMerged.isSelected() ) ;
 				this.guiPanel.setChanged() ;
 			}
+			int wait = (Integer) this.waitBeforeCOMSpinner.getModel().getValue() ;
+			if ( this.control.getDVBViewer().getWaitTimeBeforeCOM() != wait )
+				this.control.getDVBViewer().setWaitTimeBeforeCOM( wait ) ;
 		}
 		this.updateDVBViewerActions() ;
 		this.updateText() ;

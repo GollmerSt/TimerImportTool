@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd" programVersion="1.0.0">
+<Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
+<ProgramVersion>0.0.0</ProgramVersion>
     <Providers>
         <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
             <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
@@ -9,7 +10,7 @@
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="TV-Browser" merge="false" message="false" verbose="false" filter="false"></Provider>
     </Providers>
-    <DVBViewer dvbExePath="C:\Program Files (x86)\AudioVideo\DVBViewer\dvbviewer.exe" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
+    <DVBViewer dvbExePath="C:\Programme\AudioVideo\DVBViewer\dvbviewer.exe" waitTimeBeforeCOM="120" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
         <Channels>
             <Entry id="551382375|3sat (2ch)"></Entry>
             <Entry id="551644519|3sat (AC3,deu)"></Entry>

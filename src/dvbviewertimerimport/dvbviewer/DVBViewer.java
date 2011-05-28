@@ -94,6 +94,7 @@ public class DVBViewer {
 	private final String exePath ;
 	private String dvbViewerPath = null ;
 	private String dvbExePath = null ;
+	private int waitTimeBeforeCOM = 0 ;		// seconds
 	private boolean isDVBViewerPathSetExternal = false ;
 	private String dvbViewerDataPath = null ;
 	private String dvbViewerPluginDataPath = null ;
@@ -504,6 +505,14 @@ public class DVBViewer {
 		else
 			return this.dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE ;
 	} ;
+	public void setWaitTimeBeforeCOM( final int waitTime )
+	{
+		this.waitTimeBeforeCOM = waitTime ;
+	} ;
+	public int getWaitTimeBeforeCOM()
+	{ 
+		return this.waitTimeBeforeCOM ;
+	} ;
 	public void setDVBExePath( final String dvbExePath )
 	{
 		this.dvbExePath = dvbExePath ;
@@ -803,7 +812,7 @@ public class DVBViewer {
 		return true ;
 	}
 	
-	public boolean selectChannel( String channelID )
+	public boolean selectChannel( String channelID, final boolean wait )
 	{
 		if ( channelID == null )
 			return false ;
@@ -823,18 +832,24 @@ public class DVBViewer {
 			}
 		}
 
-		Thread thread = new Thread()
+		Thread thread = new Thread( "DVBViewer select channel")
 		{
 			public void run()
 			{
+				if ( wait )
+				{
+					try {
+						Thread.sleep( dvbViewer.waitTimeBeforeCOM * 1000 ) ;
+					} catch (InterruptedException e) {
+					}
+					
+				}
 				long timeOutTime = System.currentTimeMillis() + 120 * 1000 ;
 				while ( ! DVBViewerCOM.connect()  )
 				{
 					try {
 						Thread.sleep( 100 ) ;
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
 					}
 					if ( System.currentTimeMillis() > timeOutTime )
 					{
@@ -848,7 +863,10 @@ public class DVBViewer {
 					dvbViewer.isThreadListening = false ;
 				
 					if ( timeOutTime < 0 )
+					{
+						Log.out( "Timeout error occured while DVBViewer channel selection") ;
 						return ;
+					}
 				
 					DVBViewerCOM.setCurrentChannel( dvbViewer.selectedChannel ) ;
 					DVBViewerCOM.disconnect() ;
@@ -866,7 +884,7 @@ public class DVBViewer {
 		if ( DVBViewerCOM.connect() )		// actual running
 		{
 			DVBViewerCOM.disconnect() ;
-			return selectChannel( channelID ) ;
+			return selectChannel( channelID, false ) ;
 		}
 		File f = new File( this.getDVBExePath() ) ;
 		if ( ! f.canExecute() )
@@ -878,7 +896,7 @@ public class DVBViewer {
 			return false ;
 		}
 		
-		return selectChannel( channelID ) ;
+		return selectChannel( channelID, true ) ;
 	}
 	public boolean startDVBViewerIfRecording()
 	{
