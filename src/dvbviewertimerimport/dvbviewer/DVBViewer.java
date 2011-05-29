@@ -838,6 +838,8 @@ public class DVBViewer {
 
 		Thread thread = new Thread( "DVBViewer select channel")
 		{
+			private final boolean repeatChannelSelection = false ;
+			
 			public void run()
 			{
 				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;  
@@ -867,33 +869,46 @@ public class DVBViewer {
 				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
 				                                         + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
 				
+				boolean waitingFinished = ! wait ; 
+				
 				while ( true )
 				{
-					synchronized( dvbViewer )
+					if ( waitingFinished || repeatChannelSelection )
 					{
-						if ( selectedChannel.equals(dvbViewer.selectedChannel) )
-							if ( ! wait || timeOutTime < System.currentTimeMillis() )
+						
+						if ( ! DVBViewerCOM.connect() )
+						{
+							dvbViewer.isThreadListening = false ;
+							break ;
+						}
+					
+						selectedChannel = dvbViewer.selectedChannel ;
+
+						DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
+						DVBViewerCOM.disconnect() ;
+					}
+					if ( waitingFinished || ! wait )
+					{
+						synchronized( dvbViewer )
+						{
+							if ( selectedChannel.equals(dvbViewer.selectedChannel) )
 							{
 								dvbViewer.isThreadListening = false ;
-								return ;
+								break ;
 							}
+						}
 					}
-					selectedChannel = dvbViewer.selectedChannel ;
-						
-					if ( ! DVBViewerCOM.connect() )
-					{
-						dvbViewer.isThreadListening = false ;
-						return ;
-					}
-					
-					DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
-					DVBViewerCOM.disconnect() ;
-					
 					if ( wait && timeOutTime >= System.currentTimeMillis() )
+					{
 						try {
 							Thread.sleep( DVBVIEWER_CHANNEL_TIME_MS ) ;
 						} catch (InterruptedException e) {
 						}
+					}
+					else
+					{
+						waitingFinished = true ;
+					}
 				}	
 			}
 		} ;
