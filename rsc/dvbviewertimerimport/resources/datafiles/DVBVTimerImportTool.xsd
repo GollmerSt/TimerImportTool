@@ -62,7 +62,7 @@
     				<xsd:attribute name="dvbExePath"
     					type="xsd:string">
     				</xsd:attribute>
-    				<xsd:attribute name="waitTimeBeforeCOM">
+    				<xsd:attribute name="channelChangeTime">
     					<xsd:simpleType>
     						<xsd:restriction base="xsd:int">
 

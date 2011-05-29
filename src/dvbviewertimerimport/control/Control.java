@@ -173,7 +173,7 @@ public class Control
 		boolean startIfRecording = false ;
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
-		int dvbViewerWaitTimeBeforeCOM = 0 ;
+		int dvbChannelChangeTime = 0 ;
 		boolean inActiveIfMerged = true ;
 		
 
@@ -379,11 +379,11 @@ public class Control
 						}
 						else if ( attributeName.equals( "timeZone" ) )
 							DVBViewer.setTimeZone( TimeZone.getTimeZone( value )) ;
-						else if ( attributeName.equals( "waitTimeBeforeCOM" ) )
+						else if ( attributeName.equals( "channelChangeTime" ) )
 						{
 							if ( ! value.matches("\\d+"))
-								throw new ErrorClass ( ev, "Wrong waitTimeBeforeCOM format in file \"" + name + "\"" ) ;
-							dvbViewerWaitTimeBeforeCOM = Integer.valueOf( value ) ;
+								throw new ErrorClass ( ev, "Wrong channelChangeTime format in file \"" + name + "\"" ) ;
+							dvbChannelChangeTime = Integer.valueOf( value ) ;
 						}
 					}
 				}
@@ -451,7 +451,7 @@ public class Control
 				this.dvbViewer.setDVBViewerPath( dvbViewerPath ) ;
 			if ( dvbExePath != null )
 				this.dvbViewer.setDVBExePath( dvbExePath ) ;
-			this.dvbViewer.setWaitTimeBeforeCOM( dvbViewerWaitTimeBeforeCOM ) ;
+			this.dvbViewer.setChannelChangeTime( dvbChannelChangeTime ) ;
 			if ( viewParameters != null )
 				this.dvbViewer.setViewParameters( viewParameters ) ;
 			if ( recordingParameters != null )
@@ -537,7 +537,7 @@ public class Control
 			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 		        if ( dvbViewer.isDVBExePathSetExternal() )
 			    	sw.writeAttribute( "dvbExePath", dvbViewer.getDVBExePath() ) ;
-			    sw.writeAttribute( "waitTimeBeforeCOM", Integer.toString( dvbViewer.getWaitTimeBeforeCOM() ) ) ;
+			    sw.writeAttribute( "waitTimeBeforeCOM", Integer.toString( dvbViewer.getChannelChangeTime() ) ) ;
 		        if ( ! dvbViewer.getViewParameters().equals("") )
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )

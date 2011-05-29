@@ -10,7 +10,7 @@
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="TV-Browser" merge="false" message="false" verbose="false" filter="false"></Provider>
     </Providers>
-    <DVBViewer dvbExePath="C:\Programme\AudioVideo\DVBViewer\dvbviewer.exe" waitTimeBeforeCOM="120" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
+    <DVBViewer dvbExePath="C:\Programme\AudioVideo\DVBViewer\dvbviewer.exe" channelChangeTime="120" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
         <Channels>
             <Entry id="551382375|3sat (2ch)"></Entry>
             <Entry id="551644519|3sat (AC3,deu)"></Entry>

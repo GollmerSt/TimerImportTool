@@ -38,6 +38,10 @@ public class DVBViewer {
 	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 
 	public static enum Command { SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER } ;
+	
+	private static final int TIMEOUT_S						  = 120 ; // DVBViewer waiting time
+	private static final int DVBVIEWER_SCAN_TIME_MS			  = 100 ; // Scan time for waiting DVBViewer
+	private static final int DVBVIEWER_CHANNEL_TIME_MS		  = 200 ; // Selecting channel period time
 
 	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH              = "Plugins" ;
@@ -94,7 +98,6 @@ public class DVBViewer {
 	private final String exePath ;
 	private String dvbViewerPath = null ;
 	private String dvbExePath = null ;
-	private int waitTimeBeforeCOM = 0 ;		// seconds
 	private boolean isDVBViewerPathSetExternal = false ;
 	private String dvbViewerDataPath = null ;
 	private String dvbViewerPluginDataPath = null ;
@@ -112,6 +115,7 @@ public class DVBViewer {
 	
 	private boolean isThreadListening = false ;
 	private String selectedChannel = null ;
+	private int channelChangeTime = 0 ;		// seconds
 
 	static
 	{
@@ -505,13 +509,13 @@ public class DVBViewer {
 		else
 			return this.dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE ;
 	} ;
-	public void setWaitTimeBeforeCOM( final int waitTime )
+	public void setChannelChangeTime( final int waitTime )
 	{
-		this.waitTimeBeforeCOM = waitTime ;
+		this.channelChangeTime = waitTime ;
 	} ;
-	public int getWaitTimeBeforeCOM()
+	public int getChannelChangeTime()
 	{ 
-		return this.waitTimeBeforeCOM ;
+		return this.channelChangeTime ;
 	} ;
 	public void setDVBExePath( final String dvbExePath )
 	{
@@ -836,19 +840,11 @@ public class DVBViewer {
 		{
 			public void run()
 			{
-				if ( wait )
-				{
-					try {
-						Thread.sleep( dvbViewer.waitTimeBeforeCOM * 1000 ) ;
-					} catch (InterruptedException e) {
-					}
-					
-				}
-				long timeOutTime = System.currentTimeMillis() + 120 * 1000 ;
+				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;  
 				while ( ! DVBViewerCOM.connect()  )
 				{
 					try {
-						Thread.sleep( 100 ) ;
+						Thread.sleep( DVBVIEWER_SCAN_TIME_MS ) ;
 					} catch (InterruptedException e) {
 					}
 					if ( System.currentTimeMillis() > timeOutTime )
@@ -858,19 +854,47 @@ public class DVBViewer {
 					}
 				}
 				
-				synchronized( dvbViewer )
+				if ( timeOutTime < 0 )
 				{
-					dvbViewer.isThreadListening = false ;
+					Log.out( "Timeout error occured while DVBViewer channel selection") ;
+					return ;
+				}
+
+				DVBViewerCOM.disconnect() ;
 				
-					if ( timeOutTime < 0 )
+
+				String selectedChannel = "" ;
+				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
+				                                         + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
+				
+				while ( true )
+				{
+					synchronized( dvbViewer )
 					{
-						Log.out( "Timeout error occured while DVBViewer channel selection") ;
+						if ( selectedChannel.equals(dvbViewer.selectedChannel) )
+							if ( ! wait || timeOutTime < System.currentTimeMillis() )
+							{
+								dvbViewer.isThreadListening = false ;
+								return ;
+							}
+					}
+					selectedChannel = dvbViewer.selectedChannel ;
+						
+					if ( ! DVBViewerCOM.connect() )
+					{
+						dvbViewer.isThreadListening = false ;
 						return ;
 					}
-				
-					DVBViewerCOM.setCurrentChannel( dvbViewer.selectedChannel ) ;
+					
+					DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
 					DVBViewerCOM.disconnect() ;
-				}
+					
+					if ( wait && timeOutTime >= System.currentTimeMillis() )
+						try {
+							Thread.sleep( DVBVIEWER_CHANNEL_TIME_MS ) ;
+						} catch (InterruptedException e) {
+						}
+				}	
 			}
 		} ;
 
