@@ -14,6 +14,7 @@ public class Versions {
 	public static String getVersion() { return getVersion( false ) ; } ;
 
 	
+	@SuppressWarnings("unused")
 	public static String getVersion( boolean betaStatus )
 	{
 		String last = null ;
