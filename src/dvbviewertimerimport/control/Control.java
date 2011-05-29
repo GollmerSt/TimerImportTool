@@ -537,7 +537,7 @@ public class Control
 			    	sw.writeAttribute( "dvbViewerPath", dvbViewer.getDVBViewerPath() ) ;
 		        if ( dvbViewer.isDVBExePathSetExternal() )
 			    	sw.writeAttribute( "dvbExePath", dvbViewer.getDVBExePath() ) ;
-			    sw.writeAttribute( "waitTimeBeforeCOM", Integer.toString( dvbViewer.getChannelChangeTime() ) ) ;
+			    sw.writeAttribute( "channelChangeTime", Integer.toString( dvbViewer.getChannelChangeTime() ) ) ;
 		        if ( ! dvbViewer.getViewParameters().equals("") )
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )
