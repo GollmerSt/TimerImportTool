@@ -16,7 +16,8 @@ public class DVBViewerCOM
 	public static native DVBViewerEntryCOM[] getItems() ;
 	public static native void setItems( DVBViewerEntryCOM[] entries ) ;
 	public static native String getSetupValue( String section, String name, String deflt ) ;
-	public static native void setCurrentChannel( String channelID ) ;
+	public static native int setCurrentChannel( String channelID ) ;
+	public static native int getCurrentChannelNo() ;
 	public static native void initLog() ;
 
 	

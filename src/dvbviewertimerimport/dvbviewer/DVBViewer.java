@@ -864,8 +864,8 @@ public class DVBViewer {
 
 				DVBViewerCOM.disconnect() ;
 				
-
 				String selectedChannel = "" ;
+				int channelNo = -1 ;
 				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
 				                                         + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
 				
@@ -881,10 +881,17 @@ public class DVBViewer {
 							dvbViewer.isThreadListening = false ;
 							break ;
 						}
-					
+						
 						selectedChannel = dvbViewer.selectedChannel ;
 
-						DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
+						if ( channelNo != DVBViewerCOM.getCurrentChannelNo() )
+						{
+							channelNo = DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
+						}
+						
+
+						System.err.println( channelNo ) ;
+						
 						DVBViewerCOM.disconnect() ;
 					}
 					if ( waitingFinished || ! wait )
