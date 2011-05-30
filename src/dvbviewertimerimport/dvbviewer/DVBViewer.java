@@ -890,7 +890,7 @@ public class DVBViewer {
 						}
 						
 
-						System.err.println( channelNo ) ;
+						//System.err.println( channelNo ) ;
 						
 						DVBViewerCOM.disconnect() ;
 					}
