@@ -838,7 +838,7 @@ public class DVBViewer {
 
 		Thread thread = new Thread( "DVBViewer select channel")
 		{
-			private final boolean repeatChannelSelection = false ;
+			private final boolean repeatChannelSelection = true ;
 			
 			public void run()
 			{
@@ -865,7 +865,7 @@ public class DVBViewer {
 				DVBViewerCOM.disconnect() ;
 				
 				String selectedChannel = "" ;
-				int channelNo = -1 ;
+				int channelNo = -99 ;
 				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
 				                                         + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
 				
