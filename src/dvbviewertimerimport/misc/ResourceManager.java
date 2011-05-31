@@ -146,7 +146,7 @@ public class ResourceManager {
 		try {
 			ostream = new FileOutputStream( file );
 		} catch (FileNotFoundException e1) {
-			throw new ErrorClass(   "Unexpected error on writing file \""
+			throw new ErrorClass( e1, "Unexpected error on writing file \""
 		              + file.getAbsolutePath()
 		              + "\"." ) ;
 		}
