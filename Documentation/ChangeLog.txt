@@ -1,3 +1,11 @@
 ChangeLog:
 
 21.05.2011:	Fehlerhaftes Update der Provider/Service-Maske bereinigt
+26.05.2011:	Kanal wählen kann nun auch ein externes auswählbares Programm starten
+
+26.05.2011:	V01.02.005 beta
+------------------------------------------------------------------------------
+
+30.05.2011:	New channel change algorithm
+31.05.2011:	V01.02.006
+------------------------------------------------------------------------------
