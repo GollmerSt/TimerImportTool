@@ -51,9 +51,12 @@ public class Miscellaneous extends MyTabPanel
 	
 	private final JTextField directoryPathText = new JTextField() ;
 	private final JButton fileSelectorButton = new JButton() ;
+
 	private final JTextField executablePathText = new JTextField() ;
 	private final JButton exeSelectorButton = new JButton() ;
+	private final JSpinner channelChangeTimeSpinner = new JSpinner() ;
 	private final JSpinner channelWaitTimeSpinner = new JSpinner() ;
+
 	private final JTextField viewParameters = new JTextField() ;
 	private final JTextField recordingParameters = new JTextField() ;
 	private final JCheckBox startRecording = new JCheckBox() ;
@@ -309,6 +312,32 @@ public class Miscellaneous extends MyTabPanel
 
 
 		c = new GridBagConstraints();
+		c.gridx      = 3 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		//c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.anchor     = GridBagConstraints.EAST ;
+		c.insets     = i ;
+
+		JLabel waitCOMLabel = new JLabel( ResourceManager.msg( "WAIT_TIME_COM" ) ) ;
+		pathPanel.add( waitCOMLabel, c ) ;
+
+
+		c = new GridBagConstraints();
+		c.gridx      = 4 ;
+		c.gridy      = 0 ;
+		//c.gridwidth  = GridBagConstraints.REMAINDER ;
+		c.fill       = GridBagConstraints.HORIZONTAL ;
+		c.insets     = i ;
+		
+		SpinnerModel lengthModel = new SpinnerNumberModel(
+                control.getDVBViewer().getWaitCOMTime(), //initial value
+                0, 300, 1 ) ;
+		this.channelWaitTimeSpinner.setModel( lengthModel );
+		pathPanel.add( this.channelWaitTimeSpinner, c ) ;		
+
+		
+		c = new GridBagConstraints();
 		c.gridx      = 0 ;
 		c.gridy      = 1 ;
 		//c.gridwidth  = GridBagConstraints.REMAINDER ;
@@ -359,8 +388,8 @@ public class Miscellaneous extends MyTabPanel
 		c.anchor     = GridBagConstraints.EAST ;
 		c.insets     = i ;
 
-		JLabel waitCOMLabel = new JLabel( ResourceManager.msg( "CHANNEL_WAIT_TIME" ) ) ;
-		pathPanel.add( waitCOMLabel, c ) ;
+		JLabel waitChannelLabel = new JLabel( ResourceManager.msg( "CHANNEL_WAIT_TIME" ) ) ;
+		pathPanel.add( waitChannelLabel, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -370,11 +399,11 @@ public class Miscellaneous extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		SpinnerModel lengthModel = new SpinnerNumberModel(
+		lengthModel = new SpinnerNumberModel(
                 control.getDVBViewer().getChannelChangeTime(), //initial value
                 0, 300, 1 ) ;
-		this.channelWaitTimeSpinner.setModel( lengthModel );
-		pathPanel.add( this.channelWaitTimeSpinner, c ) ;		
+		this.channelChangeTimeSpinner.setModel( lengthModel );
+		pathPanel.add( this.channelChangeTimeSpinner, c ) ;		
 
 		
 		c = new GridBagConstraints();
@@ -914,9 +943,14 @@ public class Miscellaneous extends MyTabPanel
 				DVBViewerEntry.setInActiveIfMerged( this.inActiveIfMerged.isSelected() ) ;
 				this.guiPanel.setChanged() ;
 			}
-			int channelWaitTime = (Integer) this.channelWaitTimeSpinner.getModel().getValue() ;
+			
+			int channelWaitTime = (Integer) this.channelChangeTimeSpinner.getModel().getValue() ;
 			if ( this.control.getDVBViewer().getChannelChangeTime() != channelWaitTime )
 				this.control.getDVBViewer().setChannelChangeTime( channelWaitTime ) ;
+			
+			int waitCOMTime = (Integer) this.channelWaitTimeSpinner.getModel().getValue() ;
+			if ( this.control.getDVBViewer().getWaitCOMTime() != waitCOMTime )
+				this.control.getDVBViewer().setWaitCOMTime( waitCOMTime ) ;
 		}
 		this.updateDVBViewerActions() ;
 		this.updateText() ;

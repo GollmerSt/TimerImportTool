@@ -115,7 +115,9 @@ public class DVBViewer {
 	
 	private boolean isThreadListening = false ;
 	private String selectedChannel = null ;
+	
 	private int channelChangeTime = 0 ;		// seconds
+	private int waitCOMTime = 0 ;			// seconds
 
 	static
 	{
@@ -517,6 +519,15 @@ public class DVBViewer {
 	{ 
 		return this.channelChangeTime ;
 	} ;
+
+	public void setWaitCOMTime( final int waitTime )
+	{
+		this.waitCOMTime = waitTime ;
+	} ;
+	public int getWaitCOMTime()
+	{ 
+		return this.waitCOMTime ;
+	} ;
 	public void setDVBExePath( final String dvbExePath )
 	{
 		this.dvbExePath = dvbExePath ;
@@ -842,7 +853,14 @@ public class DVBViewer {
 			
 			public void run()
 			{
-				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;  
+				if ( wait )
+				{
+					try {
+						Thread.sleep( waitCOMTime * 1000 ) ;
+					} catch (InterruptedException e) {
+					}
+				}
+				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;
 				while ( ! DVBViewerCOM.connect()  )
 				{
 					try {
@@ -882,10 +900,10 @@ public class DVBViewer {
 							break ;
 						}
 						
-						selectedChannel = dvbViewer.selectedChannel ;
 
-						if ( channelNo != DVBViewerCOM.getCurrentChannelNo() )
+						if ( channelNo != DVBViewerCOM.getCurrentChannelNo() || selectedChannel != dvbViewer.selectedChannel )
 						{
+							selectedChannel = dvbViewer.selectedChannel ;
 							channelNo = DVBViewerCOM.setCurrentChannel( selectedChannel ) ;
 						}
 						

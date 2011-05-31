@@ -174,6 +174,7 @@ public class Control
 		ActionAfterItems dvbViewerActionAfter = ActionAfterItems.NONE ;
 		TimerActionItems dvbViewerTimerAction = TimerActionItems.RECORD ;
 		int dvbChannelChangeTime = 0 ;
+		int dvbWaitCOMTime = 2 ;
 		boolean inActiveIfMerged = true ;
 		
 
@@ -385,6 +386,12 @@ public class Control
 								throw new ErrorClass ( ev, "Wrong channelChangeTime format in file \"" + name + "\"" ) ;
 							dvbChannelChangeTime = Integer.valueOf( value ) ;
 						}
+						else if ( attributeName.equals( "waitCOMTime" ) )
+						{
+							if ( ! value.matches("\\d+"))
+								throw new ErrorClass ( ev, "Wrong waitCOMTime format in file \"" + name + "\"" ) ;
+							dvbWaitCOMTime = Integer.valueOf( value ) ;
+						}
 					}
 				}
 				if (    type == BlockType.OFFSET_ENTRY )
@@ -452,6 +459,7 @@ public class Control
 			if ( dvbExePath != null )
 				this.dvbViewer.setDVBExePath( dvbExePath ) ;
 			this.dvbViewer.setChannelChangeTime( dvbChannelChangeTime ) ;
+			this.dvbViewer.setWaitCOMTime( dvbWaitCOMTime ) ;
 			if ( viewParameters != null )
 				this.dvbViewer.setViewParameters( viewParameters ) ;
 			if ( recordingParameters != null )
@@ -538,6 +546,7 @@ public class Control
 		        if ( dvbViewer.isDVBExePathSetExternal() )
 			    	sw.writeAttribute( "dvbExePath", dvbViewer.getDVBExePath() ) ;
 			    sw.writeAttribute( "channelChangeTime", Integer.toString( dvbViewer.getChannelChangeTime() ) ) ;
+			    sw.writeAttribute( "waitCOMTime", Integer.toString( dvbViewer.getWaitCOMTime() ) ) ;
 		        if ( ! dvbViewer.getViewParameters().equals("") )
 					sw.writeAttribute( "viewParameters", dvbViewer.getViewParameters() ) ;
 				if ( ! dvbViewer.getRecordingParameters().equals("" ) )
