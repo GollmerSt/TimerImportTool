@@ -40,7 +40,7 @@ import javax.swing.event.ListSelectionListener;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.TimeOffsets;
-import dvbviewertimerimport.misc.Conversions;
+import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.misc.Enums;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Function;
@@ -187,7 +187,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		{
 			String out = in.split( "\\(" )[0].trim() ;
 			out = out.toLowerCase() ;
-			out = Conversions.replaceDiacritical( out ) ;
+			out = Helper.replaceDiacritical( out ) ;
 			out = out.replaceAll("[-_\\.\\s]", "") ;
 			if ( out.equals( "rtl"))
 				out = "rtltelevision" ;
@@ -219,7 +219,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 	    	else
 	    	{
 	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
-				Object o = Conversions.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
+				Object o = Helper.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 						3, 2, new FunctionChannelChoice() ) ;
 	    	    if ( o == null )
 	    	    	ix = 0 ;
@@ -591,7 +591,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 			if ( channel == null || ! provider.containsChannel( channel, false ) )
 				continue ;
     		String name = channel.getName() ;
-			Object o = Conversions.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
+			Object o = Helper.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 					3, 2, new FunctionChannelChoice() ) ;
     	    if ( o == null )
     	    	continue ;
