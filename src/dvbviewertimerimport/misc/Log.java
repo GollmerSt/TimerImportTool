@@ -16,7 +16,9 @@ import dvbviewertimerimport.provider.Provider;
 
 
 public class Log {
-	private static final String NAME_LOG_FILE                 = "DVBVTimerImportTool" ;	
+	private static final String NAME_LOG_FILE                 = "DVBVTimerImportTool" ;
+	private static final int MAX_LOG_FILE_LENGTH              = 150000 ;
+	private static final int REDUCED_LOG_FILE_LENGTH          = 100000 ;
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); ;
 	private static String logFileName = NAME_LOG_FILE ;
@@ -47,6 +49,9 @@ public class Log {
 			System.err.println( "File \"" + Log.file.getPath() + "\" can't be created.") ;
 			return ;
 		}
+		
+		Log.downsize() ;
+		
 		Log.out( "Import started" ) ;
 	}
 	public static String out( boolean verbose, boolean error, String out, boolean toDisplay )
@@ -146,5 +151,9 @@ public class Log {
 			title = ResourceManager.msg( "INFO_BOX" ) ;
 		
 		JOptionPane.showMessageDialog(null, lines, title, JOptionPane.OK_OPTION);
+	}
+	private static void downsize()
+	{
+		Helper.downsize( Log.file, Log.MAX_LOG_FILE_LENGTH, Log.REDUCED_LOG_FILE_LENGTH ) ;
 	}
 }
