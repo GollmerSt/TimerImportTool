@@ -853,13 +853,6 @@ public class DVBViewer {
 			
 			public void run()
 			{
-				if ( wait )
-				{
-					try {
-						Thread.sleep( waitCOMTime * 1000 ) ;
-					} catch (InterruptedException e) {
-					}
-				}
 				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;
 				while ( ! DVBViewerCOM.connect()  )
 				{
@@ -882,6 +875,14 @@ public class DVBViewer {
 
 				DVBViewerCOM.disconnect() ;
 				
+				if ( wait )
+				{
+					try {
+						Thread.sleep( waitCOMTime * 1000 ) ;
+					} catch (InterruptedException e) {
+					}
+				}
+
 				String selectedChannel = "" ;
 				int channelNo = -99 ;
 				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
