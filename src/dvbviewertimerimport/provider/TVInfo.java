@@ -82,7 +82,7 @@ public final class TVInfo extends Provider {
 			e.printStackTrace();
 		}
 		md.update( this.password.getBytes() ) ;
-		return Conversions.bytesToString(md.digest()) ;
+		return Helper.bytesToString(md.digest()) ;
 	}
 	public InputStream connect() throws DigestException, NoSuchAlgorithmException
 	{
@@ -424,7 +424,7 @@ public final class TVInfo extends Provider {
 			{
 				ArrayList< MyEntry > entries = hashMap.get( e.getKey() ) ;
 				
-				entries = dvbviewertimerimport.misc.Conversions.getTheBestChoices(
+				entries = dvbviewertimerimport.misc.Helper.getTheBestChoices(
 								e.toString(),
 								entries ,
 								0, 1, null ) ;
