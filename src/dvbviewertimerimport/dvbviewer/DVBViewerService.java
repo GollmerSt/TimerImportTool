@@ -221,7 +221,7 @@ public class DVBViewerService {
 			if ( e.getTimerAction() != TimerActionItems.DEFAULT )
 				query += "&action=" + e.getTimerAction().getServiceID() ;
 			if ( this.version <= 10500077 )
-				title = Conversions.replaceDiacritical( title ) ;
+				title = Helper.replaceDiacritical( title ) ;
 			
 			query += "&title=" + URLEncoder.encode( title , "UTF-8" ) ;
 		} catch (UnsupportedEncodingException e1) {

@@ -725,7 +725,7 @@ public final class DVBViewerEntry  implements Cloneable
 					public ArrayList<DVBViewerEntry> execute(
 							DVBViewerEntry entry,
 							ArrayList<DVBViewerEntry> entries) {
-						return Conversions.getTheBestChoices( entry.getTitle(), entries, 2, 3, new Function(), 
+						return Helper.getTheBestChoices( entry.getTitle(), entries, 2, 3, new Function(), 
 							new Function(){
 								@Override
 								public int arrayIntToInt( final ArrayList< Integer > list, final int integer, final String search, final String array )
