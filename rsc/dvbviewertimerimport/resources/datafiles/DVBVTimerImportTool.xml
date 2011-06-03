@@ -9,7 +9,7 @@
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="TV-Browser" merge="false" message="false" verbose="false" filter="false"></Provider>
     </Providers>
-    <DVBViewer afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
+    <DVBViewer channelChangeTime="0" waitCOMTime="2" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
         <Channels></Channels>
     </DVBViewer>
     <DVBService enable="false" url="localhost" username="admin" password="admin" timeZone="Europe/Berlin">
@@ -20,7 +20,7 @@
         <Language>de__</Language>
         <LookAndFeel>System</LookAndFeel>
     </GUI>
-    <Offsets>
+    <Offsets useGlobal="true">
         <Offset before="15" after="30"></Offset>
     </Offsets>
     <Separator>,,</Separator>
@@ -92,13 +92,10 @@
             <Provider name="TV-Browser">3sat</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">SR</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">Alpha</Provider>
             <Provider name="ClickFinder">BR Alpha</Provider>
             <Provider name="TVGenial" channelID="10028">alpha</Provider>
             <Provider name="TV-Browser">BR-alpha</Provider>
+            <Provider name="TVInfo">BR-alpha</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF2</Provider>
@@ -143,10 +140,10 @@
             <Provider name="TV-Browser">RTL2</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Super RTL</Provider>
             <Provider name="ClickFinder">S RTL</Provider>
             <Provider name="TVGenial" channelID="10031">SRTL</Provider>
             <Provider name="TV-Browser">Super RTL</Provider>
+            <Provider name="TVInfo">SRTL</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">VOX</Provider>
@@ -197,7 +194,6 @@
             <Provider name="TV-Browser">Comedy Central</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">DSF</Provider>
             <Provider name="ClickFinder">DSF</Provider>
             <Provider name="TVGenial" channelID="10012">DSF</Provider>
         </Channel>
@@ -275,13 +271,10 @@
             <Provider name="TV-Browser">Nick</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">RTLSHOP</Provider>
             <Provider name="ClickFinder">RTL Shop</Provider>
             <Provider name="TVGenial" channelID="10047">RTLShop</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">TRT</Provider>
-            <Provider name="ClickFinder">TRT</Provider>
             <Provider name="TVGenial" channelID="140001">TRT Türk</Provider>
         </Channel>
         <Channel>
@@ -297,16 +290,15 @@
             <Provider name="TV-Browser">ZDFinfokanal</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">ZDFtheaterkanal</Provider>
             <Provider name="ClickFinder">ZDF Theaterkanal</Provider>
             <Provider name="TVGenial" channelID="10703">theater</Provider>
             <Provider name="TV-Browser">ZDFtheaterkanal</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">ZDF_neo</Provider>
             <Provider name="ClickFinder">ZDFneo</Provider>
             <Provider name="TVGenial" channelID="10704">zdf_neo</Provider>
             <Provider name="TV-Browser">ZDFneo</Provider>
+            <Provider name="TVInfo">ZDFneo</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">13th Street</Provider>
@@ -331,14 +323,6 @@
             <Provider name="TVGenial" channelID="20003">ATV</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Bahn TV</Provider>
-            <Provider name="ClickFinder">Bahn TV</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">BBC Prime</Provider>
-            <Provider name="ClickFinder">BBC Prime</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">Beate Uhse TV</Provider>
             <Provider name="ClickFinder">Beate-Uhse-TV</Provider>
             <Provider name="TVGenial" channelID="10511">Uhse</Provider>
@@ -360,9 +344,6 @@
             <Provider name="TV-Browser">Cartoon Network</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">CityInfo</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">Classica</Provider>
             <Provider name="ClickFinder">Classica</Provider>
             <Provider name="TVGenial" channelID="10512">Classica</Provider>
@@ -375,7 +356,6 @@
             <Provider name="TV-Browser">Discovery Channel</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Discovery Geschichte</Provider>
             <Provider name="ClickFinder">Discovery Geschichte</Provider>
             <Provider name="TVGenial" channelID="10066">DC Ges</Provider>
         </Channel>
@@ -423,10 +403,6 @@
             <Provider name="TVGenial" channelID="40005">extreme</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">FAB</Provider>
-            <Provider name="ClickFinder">FAB</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">Focus Gesundheit</Provider>
             <Provider name="ClickFinder">FOCUS Gesundheit</Provider>
             <Provider name="TVGenial" channelID="10530">FoGes</Provider>
@@ -439,6 +415,7 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">gotv</Provider>
+            <Provider name="ClickFinder">gotv</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Heimatkanal</Provider>
@@ -452,15 +429,7 @@
             <Provider name="TVGenial" channelID="10058">HH1</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">hit24</Provider>
-            <Provider name="ClickFinder">Hit24</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">intv</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">Jetix</Provider>
-            <Provider name="ClickFinder">Fox Kids</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Junior</Provider>
@@ -469,18 +438,10 @@
             <Provider name="TV-Browser">Junior</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Kanal D</Provider>
-            <Provider name="ClickFinder">Kanal D</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">MGM</Provider>
             <Provider name="ClickFinder">MGM</Provider>
             <Provider name="TVGenial" channelID="10525">MGM</Provider>
             <Provider name="TV-Browser">MGM</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">NBC</Provider>
-            <Provider name="ClickFinder">NBC</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">NL 1</Provider>
@@ -495,7 +456,7 @@
         <Channel>
             <Provider name="ClickFinder">NL3</Provider>
             <Provider name="TVGenial" channelID="40003">NL 3</Provider>
-            <Provider name="TVInfo" channelID="40003">NL 3</Provider>
+            <Provider name="TVInfo">NL 3</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ORF1</Provider>
@@ -512,9 +473,6 @@
             <Provider name="TVGenial" channelID="10517">Planet</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Puls tv</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">QVC</Provider>
             <Provider name="ClickFinder">QVC</Provider>
             <Provider name="TVGenial" channelID="10057">QVC</Provider>
@@ -528,9 +486,6 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL Lux</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">SaarTV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sci Fi</Provider>
@@ -643,15 +598,8 @@
             <Provider name="TV-Browser">Sky Sport HD</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Spi.ka tv</Provider>
-            <Provider name="ClickFinder">Spi.Ka TV</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">Spreekanal</Provider>
             <Provider name="TVGenial" channelID="10026">Spreekanal</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="TVInfo">Steiermark 1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TIDE</Provider>
@@ -686,8 +634,8 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">TVBerlin</Provider>
-            <Provider name="ClickFinder">TV Berlin</Provider>
             <Provider name="TVGenial" channelID="10024">tvB</Provider>
+            <Provider name="ClickFinder">TV Berlin</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">TW1</Provider>
@@ -703,6 +651,8 @@
         <Channel>
             <Provider name="TVInfo">Motor Vision TV</Provider>
             <Provider name="TVGenial" channelID="10557">Motorvis</Provider>
+            <Provider name="ClickFinder">MOTORVISION TV</Provider>
+            <Provider name="TV-Browser">Motorvision TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Spiegel Geschichte</Provider>
@@ -799,9 +749,11 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">Blue Movie 3</Provider>
+            <Provider name="ClickFinder">Blue Movie 2</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Blue Movie2</Provider>
+            <Provider name="ClickFinder">Blue Movie 3</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Deutsches Wetterfernsehen</Provider>
@@ -832,7 +784,6 @@
             <Provider name="TVInfo">Motors TV</Provider>
             <Provider name="ClickFinder">Motors TV</Provider>
             <Provider name="TVGenial" channelID="70011">Motors</Provider>
-            <Provider name="TV-Browser">Motorvision TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">MTV Dance</Provider>
@@ -846,6 +797,7 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">NRW TV</Provider>
+            <Provider name="ClickFinder">NRW.TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Playboy TV</Provider>
@@ -878,17 +830,12 @@
         <Channel>
             <Provider name="TVInfo">TIMM TV</Provider>
             <Provider name="ClickFinder">TIMM</Provider>
-            <Provider name="TVGenial" channelID="10108">TIMM</Provider>
             <Provider name="TV-Browser">Timm</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Toon Disney</Provider>
-            <Provider name="ClickFinder">Toon Disney</Provider>
             <Provider name="TVGenial" channelID="10080">Toon</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">Toon Disney +1</Provider>
-            <Provider name="ClickFinder">Toon Disney +1</Provider>
             <Provider name="TVGenial" channelID="10081">Toon 2</Provider>
         </Channel>
         <Channel>
@@ -897,13 +844,8 @@
             <Provider name="TVGenial" channelID="70012">Trace</Provider>
         </Channel>
         <Channel>
-            <Provider name="TVInfo">TV gusto</Provider>
-            <Provider name="ClickFinder">tv.gusto</Provider>
-            <Provider name="TVGenial" channelID="10079">Gusto</Provider>
-            <Provider name="TV-Browser">tv.gusto</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVInfo">Blue Movie 1</Provider>
+            <Provider name="ClickFinder">Blue Movie 1</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">DMC.TV</Provider>
@@ -920,6 +862,7 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">Okto.TV</Provider>
+            <Provider name="ClickFinder">OKTO TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">RTL TVI</Provider>
@@ -934,7 +877,7 @@
             <Provider name="ClickFinder">TV5</Provider>
             <Provider name="TVGenial" channelID="70006">TV5</Provider>
             <Provider name="TV-Browser">TV5</Provider>
-            <Provider name="TVInfo" channelID="70006">TV5</Provider>
+            <Provider name="TVInfo">TV5</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Kinowelt TV</Provider>
@@ -945,6 +888,7 @@
             <Provider name="ClickFinder">National Geographic</Provider>
             <Provider name="TVGenial" channelID="90008">Nat.Geo</Provider>
             <Provider name="TV-Browser">National Geographic Channel</Provider>
+            <Provider name="TVInfo">National Geographic Channel</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">tv.gusto premium</Provider>
@@ -953,11 +897,11 @@
             <Provider name="ClickFinder">RTL Crime</Provider>
             <Provider name="TVGenial" channelID="10094">Crime</Provider>
             <Provider name="TV-Browser">RTL Crime</Provider>
-            <Provider name="TVInfo" channelID="10094">RTL Crime</Provider>
+            <Provider name="TVInfo">RTL Crime</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">MEZZO</Provider>
             <Provider name="TVGenial" channelID="70014">MEZZO</Provider>
+            <Provider name="ClickFinder">MEZZO</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Animax</Provider>
@@ -968,7 +912,6 @@
             <Provider name="ClickFinder">MTV Base</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">e.clips</Provider>
             <Provider name="TVGenial" channelID="10101">e.clips</Provider>
         </Channel>
         <Channel>
@@ -979,9 +922,6 @@
         </Channel>
         <Channel>
             <Provider name="ClickFinder">MCM Top</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">Zone Club</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Baby TV</Provider>
@@ -1003,12 +943,6 @@
         </Channel>
         <Channel>
             <Provider name="ClickFinder">Euro Star</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">Fox Turk</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">iTVN</Provider>
         </Channel>
         <Channel>
             <Provider name="ClickFinder">RTR-Planeta</Provider>
@@ -1059,18 +993,6 @@
             <Provider name="ClickFinder">B.TV</Provider>
         </Channel>
         <Channel>
-            <Provider name="ClickFinder">VIVAPlus</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">MTV2</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">fashion tv men</Provider>
-        </Channel>
-        <Channel>
-            <Provider name="ClickFinder">Anixe HD2</Provider>
-        </Channel>
-        <Channel>
             <Provider name="TVGenial" channelID="110002">BBCe</Provider>
         </Channel>
         <Channel>
@@ -1117,7 +1039,7 @@
             <Provider name="TVGenial" channelID="10519">DisnXD</Provider>
             <Provider name="ClickFinder">Disney XD</Provider>
             <Provider name="TV-Browser">Disney XD</Provider>
-            <Provider name="TVInfo" channelID="10519">Disney XD</Provider>
+            <Provider name="TVInfo">Disney XD</Provider>
         </Channel>
         <Channel>
             <Provider name="TVGenial" channelID="10550">skynews</Provider>
@@ -1129,6 +1051,7 @@
             <Provider name="TVGenial" channelID="10553">NGW</Provider>
             <Provider name="ClickFinder">National Geographic Wild</Provider>
             <Provider name="TV-Browser">NatGeo Wild</Provider>
+            <Provider name="TVInfo">NAT GEO WILD</Provider>
         </Channel>
         <Channel>
             <Provider name="TVGenial" channelID="10556">DCM HD</Provider>
@@ -1139,10 +1062,12 @@
             <Provider name="TVGenial" channelID="10558">NGHD</Provider>
             <Provider name="ClickFinder">National Geographic HD</Provider>
             <Provider name="TV-Browser">National Geographic HD</Provider>
+            <Provider name="TVInfo">National Geographic HD</Provider>
         </Channel>
         <Channel>
             <Provider name="TVGenial" channelID="10559">Hist.HD</Provider>
-            <Provider name="TVInfo" channelID="10559">History HD</Provider>
+            <Provider name="TVInfo">History HD</Provider>
+            <Provider name="ClickFinder">HISTORY HD</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">ERF</Provider>
@@ -1170,6 +1095,7 @@
         </Channel>
         <Channel>
             <Provider name="TV-Browser">Nicktoons</Provider>
+            <Provider name="TVInfo">nicktoons</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">Offener Kanal Landau</Provider>
@@ -1192,6 +1118,8 @@
         <Channel>
             <Provider name="TV-Browser">sixx</Provider>
             <Provider name="TVInfo">sixx</Provider>
+            <Provider name="TVGenial" channelID="10110">sixx</Provider>
+            <Provider name="ClickFinder">Sixx</Provider>
         </Channel>
         <Channel>
             <Provider name="TV-Browser">Sky Select+</Provider>
@@ -1217,15 +1145,100 @@
         </Channel>
         <Channel>
             <Provider name="TVInfo">PULS4</Provider>
+            <Provider name="TVGenial" channelID="10055">Puls4</Provider>
+            <Provider name="ClickFinder">PULS 4</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">Sonnenklar TV</Provider>
+            <Provider name="ClickFinder">Sonnenklar.TV</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">HD Suisse</Provider>
         </Channel>
         <Channel>
             <Provider name="TVInfo">ServusTV</Provider>
+            <Provider name="ClickFinder">ServusTV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">ZDF Kultur</Provider>
+            <Provider name="ClickFinder">ZDF Kultur</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">BBC entertainment</Provider>
+            <Provider name="ClickFinder">BBC Entertainment</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">BonGusto</Provider>
+            <Provider name="TVGenial" channelID="10079">Gusto</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">FOX Sky</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVInfo">SKY SPORT HD 2</Provider>
+            <Provider name="TVGenial" channelID="10563">SportHD2</Provider>
+            <Provider name="ClickFinder">SKY Sport HD 2</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10054">Austr9</Provider>
+            <Provider name="ClickFinder">Austria9</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10561">ActionHD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="TVGenial" channelID="10562">CineHitsHD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Alpengluehen TVX</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Astro TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">AutoMotorSportChannel</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Deluxe Lounge HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Hustler TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">KidsCo</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">LUST PUR</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">LUXE.TV</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MTVN HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">MezzoLive HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">Nick jr.</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">RNF</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">SKY Action HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">SKY Cinema Hits HD</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">iMusic1</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">iTVN</Provider>
+        </Channel>
+        <Channel>
+            <Provider name="ClickFinder">yourfamilyentertainment</Provider>
         </Channel>
     </Channels>
 </Importer>
