@@ -6,7 +6,9 @@ package dvbviewertimerimport.provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.Stack;
 import java.util.TimeZone;
 
@@ -27,6 +29,7 @@ import dvbviewertimerimport.xml.Conversions;
 import dvbviewertimerimport.xml.StackXML;
 
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Log;
 
 public abstract class Provider implements DVBViewerProvider {
 
@@ -170,6 +173,7 @@ public abstract class Provider implements DVBViewerProvider {
 	
 	public int importChannels( boolean check ) { return -1 ; } ;
 	public int importChannels() { return this.importChannels( false ) ; } ;
+	public boolean isAllChannelsImport() { return false ; } ;
 	protected ArrayList< Channel > readChannels() { return null ; } ;
 	
 	public void updateRecordings( ArrayList< DVBViewerEntry > entries ) {} ;
@@ -410,19 +414,36 @@ public abstract class Provider implements DVBViewerProvider {
 		
 		int count = 0 ;
 		
-			
+		Set< Object > assignedSetByID = new HashSet< Object >() ;			
 
 		for ( Channel c : channels )
 		{
-			if ( ! mapByID.containsKey( c.getIDKey() ) )
+			Object key = c.getIDKey() ;
+			if ( ! mapByID.containsKey( key ) )
 			{
+				if ( assignedSetByID.contains( key ) )
+				{
+					Log.out( "Channel \"" + c.getName() + "\" of provider \"" + this.getName() + "\" isn't unique. Ignored." ) ;
+					continue ;
+				}
 				ChannelSet cs = new ChannelSet() ;
 				cs.add( c ) ;
 				control.getChannelSets().add( cs ) ;
+				Log.out( "Channel \"" + c.getName() + "\" added to provider \"" + this.getName() + "\"" ) ;
 				count++ ;
 			}
+			mapByID.remove( key ) ;
+			assignedSetByID.add( key ) ;
 		}
-	return count ;
+		if ( isAllChannelsImport() )
+		{
+			for ( ChannelSet cs : mapByID.values() )
+			{
+				Log.out( "Channel \"" + cs.getChannel( getID() ).getName() + "\" removed from provider \"" + this.getName() + "\"" ) ;
+				cs.remove( getID() ) ;
+			}
+		}
+		return count ;
 	} ;
 
 	 public TimeZone getTimeZone() { return this.timeZone ; } ;
