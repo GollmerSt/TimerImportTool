@@ -207,8 +207,6 @@ public class Control
 					} catch (XMLStreamException e1) {
 						throw new ErrorClass( e1, "XML syntax error in file \"" + name + "\"" );
 					}
-				else if ( stack.equals( this.pathChannelProvider ) )
-					type = BlockType.CHANNEL_PROVIDER ;
 				else if ( stack.equals( this.pathService ) )
 					type = BlockType.DVBSERVICE ;
 				else if ( stack.equals( this.pathChannelOffsets ) )
@@ -229,10 +227,14 @@ public class Control
 				else if ( stack.equals( this.pathChannel ) )
 				{
 					type = BlockType.CHANNEL ;
-					provider = null ;
-					channelID = -1L ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
+				}
+				else if ( stack.equals( this.pathChannelProvider ) )
+				{
+					type = BlockType.CHANNEL_PROVIDER ;
+					provider = null ;
+					channelID = -1L ;
 				}
 				else if ( stack.equals( this.pathWOL ) )
 					type = BlockType.WOL ;
