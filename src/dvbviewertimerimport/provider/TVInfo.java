@@ -315,7 +315,9 @@ public final class TVInfo extends Provider {
 	    }
 		public void handleEndTag(HTML.Tag t, int pos)
 		{
-			if ( t == HTML.Tag.DIV )
+			if (t == HTML.Tag.TITLE )
+				this.isTitle = false ;
+			else if ( t == HTML.Tag.DIV )
 			{
 				if ( this.tableDiv > 0 )
 					this.tableDiv-- ;
@@ -350,7 +352,7 @@ public final class TVInfo extends Provider {
 			if ( isTitle )
 			{
 				String title = new String( data ) ;
-				if ( ! title.contains( "myTVinfo Merkzettel" ))
+				if ( ! title.contains( "Merkzettel" ))
 					this.isOK = false ;
 			}
 			if ( this.isTableRead || this.ignore )
@@ -389,13 +391,14 @@ public final class TVInfo extends Provider {
 	
 	public void readMerklisteAndAddUnresolverEntries()
 	{
-		String completeURL = TVInfo.merkzettelURL + "&user=" + this.username + "&pass=" + this.getMD5() ;
+		String md5 = this.getMD5() ;
+		String completeURL = TVInfo.merkzettelURL + "&user=" + this.username + "&pass=" + md5 ;
 		
 		InputStream stream = null ;
 		
 		try
 		{
-			stream = Html.getStream( completeURL, "TVInfo Merkzettel" ) ;
+			stream = Html.getStream( completeURL, "TVInfo Merkzettel", "tvusername=" + this.username + "; tvuserpass=" + md5 ) ;
 		} catch ( ErrorClass e ) {
 			Log.out( e.getErrorString() ) ;
 			return ;
@@ -470,38 +473,24 @@ public final class TVInfo extends Provider {
 	}
 	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback
 	{
-		private boolean isListUserSenderStarted = false ;
-		private boolean isUserSenderRead = false ;
 		private boolean isAllSenderRead = false ;
 		private boolean isOK = true ;
 		
 		private boolean isH1 = false ;
-		private boolean isH3 = false ;
-		private boolean isLI = false ;
-		private boolean isSender = false ;
 		private boolean isSenderAuswahl = false ;
-		private String channel = null ;
 		private boolean isTitle = false ;
+		private boolean isChecked = false ;
 		
 		public boolean isOK() { return this.isOK ; } ;
 				
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos)
 		{
-			if ( this.isUserSenderRead && this.isAllSenderRead )
+			if ( this.isAllSenderRead )
 				return ;
 			if ( t == HTML.Tag.H1 )
 				this.isH1 = true ;
-			else if ( t == HTML.Tag.H3 )
-				this.isH3 = true ;
 			else if (t == HTML.Tag.TITLE )
 				this.isTitle = true ;
-			else if ( t == HTML.Tag.UL && this.isSender )
-			{
-				this.isSender = false ;
-				this.isListUserSenderStarted = true ;
-			}
-			else if ( t == HTML.Tag.LI && this.isListUserSenderStarted )
-				this.isLI = true ;
 		}
 	    public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
 	    {
@@ -509,8 +498,8 @@ public final class TVInfo extends Provider {
 				return ;
 			if ( t == HTML.Tag.IMG )
 			{
-				
-				Channel c = new Channel( getID(), (String) a.getAttribute( HTML.Attribute.ALT ), -1  )
+				String channelName = (String) a.getAttribute( HTML.Attribute.ALT ) ;
+				Channel c = new Channel( getID(), channelName, -1  )
 				{
 					@Override
 					public Object getIDKey()
@@ -521,6 +510,8 @@ public final class TVInfo extends Provider {
 					public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
 				};
 				allSender.add( c ) ;
+				if ( this.isChecked )
+					userSender.add( channelName ) ;
 			}
 			if ( t == HTML.Tag.INPUT )
 			{
@@ -529,30 +520,23 @@ public final class TVInfo extends Provider {
 					this.isSenderAuswahl = false ;
 					this.isAllSenderRead = true ;
 				}
+				else if ( this.isSenderAuswahl && a.containsAttribute( HTML.Attribute.TYPE, "checkbox" ) )
+				{
+					if ( a.isDefined( HTML.Attribute.CHECKED))
+						this.isChecked = true ;
+					else
+						this.isChecked = false ;
+				}
 			}
 		}
 		public void handleEndTag(HTML.Tag t, int pos)
 		{
-			if ( this.isUserSenderRead && this.isAllSenderRead )
+			if ( this.isAllSenderRead )
 				return ;
 			if ( t == HTML.Tag.H1 )
 				this.isH1 = false ;
-			else if ( t == HTML.Tag.H3 )
-				this.isH3 = false ;
 			else if ( t == HTML.Tag.TITLE )
 				this.isTitle = false ;
-			if ( t == HTML.Tag.UL && this.isListUserSenderStarted )
-			{
-				this.isListUserSenderStarted = false ;
-				this.isUserSenderRead = true ;
-			}
-			if ( t == HTML.Tag.LI && this.isListUserSenderStarted )
-			{
-				if ( this.channel != null )
-					userSender.add( channel ) ;
-				this.isLI = false ;
-				this.channel = null ;
-			}
 		}
 		public void handleText(char[] data, int pos)
 		{
@@ -562,23 +546,10 @@ public final class TVInfo extends Provider {
 				if ( ! title.contains( "Sender konfigurieren" ))
 					this.isOK = false ;
 			}
-			if ( this.isUserSenderRead && this.isAllSenderRead )
-				return ;
-			if ( this.isH3 )
-			{
-				if ( new String(data).equals( "Sender:") )
-					this.isSender = true ;
-			}
-			else if ( this.isH1 )
+			if ( this.isH1 )
 			{
 				if ( new String(data).equals( "Senderauswahl") )
 					this.isSenderAuswahl = true ;
-			}
-			else if ( this.isListUserSenderStarted && this.isLI )
-			{
-				this.channel = new String( data ) ;
-				if ( this.channel.equals( ">>") )
-					this.channel = null ;
 			}
 		}
 	}
@@ -587,13 +558,15 @@ public final class TVInfo extends Provider {
 		this.userSender = new HashSet< String >() ;
 		this.allSender = new ArrayList< Channel >() ;
 		
+		String md5 = this.getMD5() ;
+		
 		String completeURL = TVInfo.senderURL + "?user=" + this.username + "&pass=" + this.getMD5() ;
 		
 		InputStream stream = null ;
 		
 		try
 		{
-			stream = Html.getStream( completeURL, "TVInfo Sender/Bearbeiten" ) ;
+			stream = Html.getStream( completeURL, "TVInfo Sender/Bearbeiten", "tvusername=" + this.username + "; tvuserpass=" + md5 ) ;
 		} catch ( ErrorClass e ) {
 			Log.out( e.getErrorString() ) ;
 			return ;
@@ -622,6 +595,8 @@ public final class TVInfo extends Provider {
 		
 		return this.assignChannels() ;
 	}
+	@Override
+	public boolean isAllChannelsImport() { return true ; } ;
 	@Override
 	protected ArrayList< Channel > readChannels()
 	{
