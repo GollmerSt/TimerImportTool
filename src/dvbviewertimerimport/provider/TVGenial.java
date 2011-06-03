@@ -280,7 +280,8 @@ public class TVGenial extends Provider {
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
 	}
-	
+	@Override
+	public boolean isAllChannelsImport() { return true ; } ;
 	@Override
 	public boolean containsChannel( final Channel channel, boolean ifList )
 	{
