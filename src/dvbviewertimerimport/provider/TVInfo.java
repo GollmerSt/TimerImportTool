@@ -166,7 +166,7 @@ public final class TVInfo extends Provider {
 			if ( ( start & end ) == 0 )
 				throw new ErrorClass( ev, "Error in  TVinfo data, start or end time not given" ) ; 
 		}
-		public long getKey() { return start ; } ;
+		public long getKey() { return end ; } ;	// Changed from start to end in case of a started recording
 		@Override
 		public String toString() { return this.title ; } ;
 	}
