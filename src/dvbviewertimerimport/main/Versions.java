@@ -9,16 +9,19 @@ public class Versions {
 	private static final int MINOR_VERSION                  = 2 ;
 	private static final int SUB_VERSION                    = 9 ;
 	private static final String DVBVIEWER_COM_DLL_VERSION   = "1.00.04" ;
-	private static final boolean DVBVIEWER_BETA_STATUS      = true ;
+	private static final boolean DVBVIEWER_BETA_STATUS      = false ;
 
-	public static String getVersion() { return getVersion( false ) ; } ;
+	public static String getVersion() { return getVersion( false, false ) ; } ;
 
-
-	@SuppressWarnings("unused")
 	public static String getVersion( boolean betaStatus )
 	{
+		return getVersion( betaStatus, false ) ;
+	} ;
+
+	public static String getVersion( boolean betaStatus, boolean isEverFalse )
+	{
 		String last = null ;
-		if ( betaStatus && DVBVIEWER_BETA_STATUS )
+		if ( betaStatus && DVBVIEWER_BETA_STATUS || isEverFalse )
 			last = " beta" ;
 		else
 			last = "" ;
