@@ -490,9 +490,11 @@ public class Control
 		}
 		if ( versionChanged )
 		{
-			DVBViewer.getDVBViewerCOMDllAndCheckVersion() ;
+			DVBViewer.getDVBViewerCOMDllAndCheckVersion( true ) ;
 			this.write( null ) ;
 		}
+		else
+			DVBViewer.getDVBViewerCOMDllAndCheckVersion( false ) ;			
 	}
 	public boolean write( final File xmlFile )
 	{

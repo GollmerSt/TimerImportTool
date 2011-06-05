@@ -786,12 +786,13 @@ public class DVBViewer {
 		return true ;
 
 	}
-	public static void getDVBViewerCOMDllAndCheckVersion()
+	public static void getDVBViewerCOMDllAndCheckVersion( boolean load )
 	{
 		if ( ! Constants.IS_WINDOWS )
 			return ;
-
-		DVBViewer.checkAndGetDVBViewerCOMDllIfNecessary( true ) ;
+		
+		if ( load )
+			DVBViewer.checkAndGetDVBViewerCOMDllIfNecessary( true ) ;
 		if ( ! DVBViewerCOM.getVersion().equals( Versions.getDVBViewerCOMVersion() ) )
 		{
 			Log.error( ResourceManager.msg( "PACKAGE" ) ) ;
