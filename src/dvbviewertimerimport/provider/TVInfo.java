@@ -462,14 +462,13 @@ public final class TVInfo extends Provider {
 	public long htmlTimeToLong( String date, String time ) throws ParseException
 	{
 		int year = new GregorianCalendar( this.timeZone ).get( Calendar.YEAR ) ;
-		Date now = new Date() ;
-		Date d1 = new Date( htmlDateFormat.parse(date+Integer.toString( year )+" "+time).getTime() ) ;
-		Date d2 = htmlDateFormat.parse(date+Integer.toString( year+1 )+" "+time) ;
+		long now = new Date().getTime() ;
+		long d1 = htmlDateFormat.parse(date+Integer.toString( year )+" "+time).getTime() ;
 		
-		if ( d1.before( now ))
-			return d2.getTime() ;
+		if ( d1 < now )
+			return d1 ;
 		else
-			return d1.getTime() ;
+			return new Date( htmlDateFormat.parse(date+Integer.toString( year+1 )+" "+time).getTime() ).getTime() ;
 	}
 	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback
 	{

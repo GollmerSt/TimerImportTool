@@ -7,9 +7,9 @@ package dvbviewertimerimport.main;
 public class Versions {
 	private static final int MAJOR_VERSION                  = 1 ;
 	private static final int MINOR_VERSION                  = 2 ;
-	private static final int SUB_VERSION                    = 8 ;
+	private static final int SUB_VERSION                    = 9 ;
 	private static final String DVBVIEWER_COM_DLL_VERSION   = "1.00.04" ;
-	private static final boolean DVBVIEWER_BETA_STATUS      = false ;
+	private static final boolean DVBVIEWER_BETA_STATUS      = true ;
 
 	public static String getVersion() { return getVersion( false ) ; } ;
 
