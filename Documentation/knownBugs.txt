@@ -1,2 +1,1 @@
-Laufende Aufnahmen werden aktuell vom Service ignoriert.
-Warum?
+Laufende Aufnahmen werden aktuell vom Service ignoriert.  FIXED
