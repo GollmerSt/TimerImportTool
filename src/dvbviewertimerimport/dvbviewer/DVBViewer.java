@@ -335,29 +335,11 @@ public class DVBViewer {
 
 	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
 	{
-		boolean result = true ;
-		if ( command == Command.FIND && this.recordEntries != null )
-		{
-			result  = provider.process(getAll, command ); ;
-			result &= provider.processEntry( args, command ) ;
-			return result ;
-		}
-		this.connectDVBViewerIfNecessary();
-		try
-		{
-			this.readDVBViewerTimers() ;
-			this.mergeXMLWithDVBViewerData( null ) ;
-			result  = provider.process(getAll, command ); ;
-			result &= provider.processEntry( args, command ) ;
-		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
-		this.setDVBViewerTimers();
-		} catch ( Exception e ) {
-			this.disconnectDVBViewer();
-			throw e ;
-		}
-		this.disconnectDVBViewer();
-		return result ;
-	}
+	  Object [] argArray = new Object[1] ;
+	  argArray[0] = args ;
+	  
+	  return process( provider, getAll, argArray, command ) ;
+	}	  
 	public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
 	{
 		boolean result = true ;
