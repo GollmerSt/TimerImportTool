@@ -335,11 +335,11 @@ public class DVBViewer {
 
 	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
 	{
-	  Object [] argArray = new Object[1] ;
-	  argArray[0] = args ;
-	  
-	  return process( provider, getAll, argArray, command ) ;
-	}	  
+		Object [] argArray = new Object[1] ;
+		argArray[0] = args ;
+		
+		return process( provider, getAll, argArray, command ) ;
+	}
 	public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
 	{
 		boolean result = true ;
