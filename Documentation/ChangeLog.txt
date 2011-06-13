@@ -21,4 +21,6 @@ ChangeLog:
 05.06.2011: TVInfo-Bug gefixed. Wenn Aufnahme schon läuft, kann geparste
             Sendung nicht mehr programmiert werden
 13.06.2011: Laufende Aufnahme wird jetzt von dem Tool richtig unterstützt
+13.06.2011: TV-Browser-Bug gefixt. Sendungen von anderen Plugins wurden nicht programmiert
+
  
