@@ -124,10 +124,10 @@ public class TimersDialog extends JDialog {
 			 */
 			private static final long serialVersionUID = 2282592846369354672L;
 			
-			private ImageIcon activeTimerIcon  = ResourceManager.createImageIcon( "icons/dvbViewer Timer14.png", "Timer icon" ) ;
+			private ImageIcon activeTimerIcon   = ResourceManager.createImageIcon("icons/dvbViewer Timer14.png", "Timer icon" ) ;
 			private ImageIcon disabledTimerIcon = ResourceManager.createImageIcon("icons/dvbViewer TimerDisabled 14.png", "Timer icon deleted" ) ;
-			private ImageIcon filterTimerIcon = ResourceManager.createImageIcon("icons/dvbViewer TimerFilter 14.png", "Timer icon deleted" ) ;
-			
+			private ImageIcon filterTimerIcon   = ResourceManager.createImageIcon("icons/dvbViewer TimerFilter 14.png", "Filter icon" ) ;
+			private ImageIcon recordingIcon     = ResourceManager.createImageIcon("icons/dvbViewer Recording 14.png", "Recording icon" ) ;
 			public MyTreeRenderer()
 			{
 				super() ;
@@ -152,7 +152,11 @@ public class TimersDialog extends JDialog {
 		    	DVBViewerEntry entry = (DVBViewerEntry)value ;
 		    	setText("") ;
 		    	if ( ! leaf )
+		    	{
+		    		if ( entry.isRecording())
+			    		setIcon( recordingIcon );
 		    		return this ;
+		    	}
 		    	if (entry.isRemoved() && ! entry.isMerged() )
 		    		setIcon(filterTimerIcon) ;
 		    	else if ( entry.isDisabled() )
@@ -160,11 +164,13 @@ public class TimersDialog extends JDialog {
 		    		if ( entry.isMerged() )
 		    		{
 		    			if ( entry.getMergeEntry().isDisabled() )
-		    				setIcon(disabledTimerIcon);
+		    				setIcon( disabledTimerIcon );
 		    		}
 		    		else 
-	    				setIcon(disabledTimerIcon);
+	    				setIcon( disabledTimerIcon );
 		    	}
+		    	else if ( entry.isRecording() )
+		    		setIcon( recordingIcon );
 			    return this;
 		    } 
 		}

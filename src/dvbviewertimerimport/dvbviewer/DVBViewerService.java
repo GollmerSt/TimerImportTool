@@ -32,6 +32,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry.StatusTimer;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.misc.* ;
@@ -238,8 +239,8 @@ public class DVBViewerService {
 		if ( e.mustUpdated() )
 		{
 			command = "timeredit" ;
-			query += "&id=" + Long.toString( e.getServiceID() ) ;
-			if ( e.getServiceID() < 0 )
+			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
+			if ( e.getDVBViewerID() < 0 )
 			{
 				Log.out( "Unexpected serviceID on editing an entry. Query: " + query ) ;
 				return ;
@@ -248,8 +249,8 @@ public class DVBViewerService {
 		else if ( e.mustDVBViewerDeleted() )
 		{
 			command = "timerdelete" ;
-			query += "&id=" + Long.toString( e.getServiceID() ) ;
-			if ( e.getServiceID() < 0 )
+			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
+			if ( e.getDVBViewerID() < 0 )
 			{
 				Log.out( "Unexpected serviceID on deleting an entry. Query: " + query ) ;
 				return ;
@@ -298,7 +299,8 @@ public class DVBViewerService {
 			XMLEventReader  reader = inputFactory.createXMLEventReader( iS );
 			StackXML<String>   stack = new StackXML<String>() ;
 			
-			boolean enable      = true ;
+			boolean enable     = true ;
+			boolean recording  = false ;
 			String channel     = null;
 			String dateString  = null ;
 			String startString = null ;
@@ -307,7 +309,6 @@ public class DVBViewerService {
 			String title       = null ;
 			ActionAfterItems actionAfter = ActionAfterItems.NONE ;
 			TimerActionItems timerAction = TimerActionItems.RECORD ;
-			boolean ignore     = false ;
 			long id            = -1 ;
 			
 			while( reader.hasNext() ) {
@@ -319,6 +320,7 @@ public class DVBViewerService {
 					if ( stack.equals( this.pathTimer ) )
 					{
 						enable      = true ;
+						recording   = false ;
 						channel     = null;
 						dateString  = null ;
 						startString = null ;
@@ -328,7 +330,6 @@ public class DVBViewerService {
 						title       = "" ;
 						id          = -1 ;
 						type        = 1 ;
-						ignore      = false ;
 					}
 					else if ( stack.equals( this.pathChannel ) )
 						type = 2 ;
@@ -396,14 +397,14 @@ public class DVBViewerService {
 					else if ( stack.equals( this.pathRecording ) )
 					{
 						if ( value.equals( "-1" ) )
-							ignore = true ;
+							recording = true ;
 						else if ( ! value.equals( "0" ) )
 							throw new ErrorClass( ev, "Format error: Unexpected recording bit format from service" ) ;
 					}
 				}					
 				if( ev.isEndElement() )
 				{
-					if ( !ignore && stack.equals( this.pathTimer ) )
+					if ( !recording && stack.equals( this.pathTimer ) )
 					{
 						if ( id < 0 || channel == null || dateString == null || startString == null || endString == null || title == null )
 							throw new ErrorClass( ev, "Incomplete timer entry from service" ) ;
@@ -417,7 +418,12 @@ public class DVBViewerService {
 						}
 						if ( start > end )
 							end += Constants.DAYMILLSEC ;
-						DVBViewerEntry entry = new DVBViewerEntry( enable, id, channel, start, end, days, title, timerAction, actionAfter ) ;
+						StatusTimer status = StatusTimer.ENABLED ;
+						if ( recording )
+							status = StatusTimer.RECORDING ;
+						else if ( !enable )
+							status = StatusTimer.DISABLED ;
+						DVBViewerEntry entry = new DVBViewerEntry( status, id, channel, start, end, days, title, timerAction, actionAfter ) ;
 						result.add(entry) ;
 					}
 					stack.pop() ;

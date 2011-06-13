@@ -314,11 +314,11 @@ public class DVBViewer {
 		{
 			previousXML = this.recordEntries ;
 			for ( DVBViewerEntry entry : previousXML )
-				entry.clearServiceID() ;
+				entry.clearDVBViewerID() ;
 		}
 		this.connectDVBViewerIfNecessary();
 		readDVBViewerTimers() ;
-		this.mergeXMLWithServiceData( previousXML ) ;
+		this.mergeXMLWithDVBViewerData( previousXML ) ;
 		try {
 			this.setDVBViewerTimers() ;
 		} catch (InterruptedException e) {
@@ -346,7 +346,7 @@ public class DVBViewer {
 		try
 		{
 			this.readDVBViewerTimers() ;
-			this.mergeXMLWithServiceData( null ) ;
+			this.mergeXMLWithDVBViewerData( null ) ;
 			result  = provider.process(getAll, command ); ;
 			result &= provider.processEntry( args, command ) ;
 		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
@@ -405,7 +405,7 @@ public class DVBViewer {
 		return c ;
 	}
 
-	public void addNewEntry( Provider provider,
+	public boolean addNewEntry( Provider provider,
 							 String providerID,
 							 String channel,
 							 long start,
@@ -418,6 +418,9 @@ public class DVBViewer {
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
 		end  += o.getPostOffset(end)*60000 ;
+		
+		if ( end < System.currentTimeMillis() )
+			return false ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
 											   providerID,
@@ -438,7 +441,7 @@ public class DVBViewer {
 			{
 				co.resetMissing() ;
 				if ( provider.isFilterEnabled() )
-					return ;
+					return false;
 				else
 				{
 					co.setToDelete() ;
@@ -447,6 +450,7 @@ public class DVBViewer {
 			}
 		}
 		this.addRecordingEntry( e ) ;
+		return true ;
 	}
 	public void deleteEntry( Provider provider,
 			 String channel,
@@ -737,12 +741,12 @@ public class DVBViewer {
 			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getAbsolutePath() ) ;
 		}
 	}
-	public void mergeXMLWithServiceData( ArrayList<DVBViewerEntry> lastTimers )
+	public void mergeXMLWithDVBViewerData( ArrayList<DVBViewerEntry> lastTimers )
 	{
 		if ( lastTimers == null )
 			lastTimers = readXML() ;
 
-		DVBViewerEntry.updateXMLDataByServiceData( lastTimers, this.recordEntries, this.separator, this.maxID, this.maxTitleLength ) ;
+		DVBViewerEntry.updateXMLDataByDVBViewerData( lastTimers, this.recordEntries, this.separator, this.maxID, this.maxTitleLength ) ;
 		this.recordEntries = lastTimers ;
 	}
 	public static boolean loadDVBViewerCOMDll()

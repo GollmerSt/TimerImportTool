@@ -27,6 +27,7 @@ import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry.StatusTimer;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ErrorClass;
@@ -94,8 +95,13 @@ public class DVBViewerTimerXML {
 		else if ( ix > maxRecordingNo + 1 )
 			maxRecordingNo = ix + 1 ;
 		
+		StatusTimer status = StatusTimer.DISABLED ;
+		
+		if ( field[ FIELD_ENABLED ].equalsIgnoreCase( "true" ) )
+			status = StatusTimer.ENABLED ;
+		
 		DVBViewerEntry entry = new DVBViewerEntry(
-				field[ FIELD_ENABLED ].equalsIgnoreCase( "true" ) ,
+				status ,
 				ix,
 				DVBViewer.reworkChannelID( field[ FIELD_CHANNELID ] ) ,
 				start ,
@@ -262,12 +268,12 @@ public class DVBViewerTimerXML {
 		{
 			if ( d.mustDVBViewerDeleted() )
 			{
-				this.entries.remove( d.getServiceID() ) ;
+				this.entries.remove( d.getDVBViewerID() ) ;
 				Log.out( true, "Entry \"" + DVBViewerTimerXML.createString( d ) +"\" removed." ) ;
 			}
 			else if ( d.mustUpdated() )
 			{
-				this.entries.put( d.getServiceID(), d ) ;
+				this.entries.put( d.getDVBViewerID(), d ) ;
 				Log.out( true, "Entry \"" + DVBViewerTimerXML.createString( d ) +"\" updated." ) ;
 
 			}

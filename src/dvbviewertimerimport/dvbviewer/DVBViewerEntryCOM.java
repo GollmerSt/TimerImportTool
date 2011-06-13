@@ -8,6 +8,7 @@ import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.Calendar;
 
+import dvbviewertimerimport.dvbviewer.DVBViewerEntry.StatusTimer;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 
@@ -24,6 +25,7 @@ public class DVBViewerEntryCOM {
 	final String days ;
 	final String description ;
 	final boolean enabled ;
+	final boolean recording ;
 	final int recAction ;
 	final int afterRec ;
 	final boolean mustDelete ;
@@ -42,6 +44,7 @@ public class DVBViewerEntryCOM {
 		this.days        = e.getDays() ;
 		this.description = e.getTitle() ;
 		this.enabled     = e.isEnabled() ;
+		this.recording   = false ;
 		this.recAction   = e.getTimerAction().getID() ;
 		this.afterRec    = e.getActionAfter().getID() ;
 		switch ( e.getToDo() )
@@ -49,7 +52,7 @@ public class DVBViewerEntryCOM {
 			case DELETE :
 			case DELETE_BY_PROVIDER :
 			case DELETE_DVBVIEWER :
-				this.id = (int) e.getServiceID() ;
+				this.id = (int) e.getDVBViewerID() ;
 				this.mustDelete = true ;
 				break ;
 			case NEW :
@@ -57,7 +60,7 @@ public class DVBViewerEntryCOM {
 				this.mustDelete = false ;
 				break ;
 			default :
-				this.id = (int) e.getServiceID() ;
+				this.id = (int) e.getDVBViewerID() ;
 				this.mustDelete = false ;
 		}
 	}
@@ -69,6 +72,7 @@ public class DVBViewerEntryCOM {
 			String days ,
 			String description ,
 			boolean enabled ,
+			boolean recording ,
 			int recAction ,
 			int afterRec ,
 			boolean mustDelete )
@@ -80,6 +84,7 @@ public class DVBViewerEntryCOM {
 		this.days        = days ;
 		this.description = description ;
 		this.enabled     = enabled ;
+		this.recording   = recording ;
 		this.recAction   = recAction ;
 		this.afterRec    = afterRec ;
 		this.mustDelete = mustDelete ;
@@ -96,8 +101,15 @@ public class DVBViewerEntryCOM {
 	}*/
 	public DVBViewerEntry createDVBViewerEntry() {
 		
+		StatusTimer status = StatusTimer.ENABLED ;
+		
+		if ( this.recording )
+			status = StatusTimer.RECORDING ;
+		else if ( ! this.enabled )
+			status = StatusTimer.DISABLED ;
+		
 		return new DVBViewerEntry(
-				this.enabled,
+				status,
 				this.id,
 				DVBViewer.reworkChannelID( this.channelID ) ,
 				toJavaDate( this.startTime ),
