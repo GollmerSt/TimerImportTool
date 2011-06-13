@@ -113,7 +113,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   public void handleTvDataUpdateFinished()
   {
     try {
-      this.control.getDVBViewer().process( this.dvbViewerProvider, false, null, Command.UPDATE_TVBROWSER ) ;
+      this.control.getDVBViewer().process( this.dvbViewerProvider, false, (Object) null, Command.UPDATE_TVBROWSER ) ;
     } catch ( ErrorClass e ) {
       this.errorMessage(  e ) ;
     } catch (Exception e) {
@@ -465,7 +465,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     {
       long [] times = calcRecordTimes( program ) ;
       String channel = program.getChannel().getName() ;
-      control.getDVBViewer().addNewEntry( provider, program.getUniqueID(), channel, times[0], times[1], program.getTitle() ) ;
+      dvbViewer.addNewEntry( provider, program.getUniqueID(), channel, times[0], times[1], program.getTitle() ) ;
       break ;
     }
     case FIND:
@@ -476,7 +476,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
        DVBViewerEntry entry = findProgram( program ) ;
        if ( entry == null )
          return false ;
-       control.getDVBViewer().deleteEntry( entry ) ;
+       dvbViewer.deleteEntry( entry ) ;
        break ;
      }
     }
@@ -626,22 +626,29 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
       String id = receiveTarget.getTargetId();
       
-     if ( id.equals( "RECORD" ) )
-     {
-       for ( Program pgm : programArr )
-         processEntry( pgm, DVBViewer.Command.SET ) ;
+       try {
+         if ( id.equals( "RECORD" ) )
+           dvbViewer.process( dvbViewerProvider, false, programArr, DVBViewer.Command.SET ) ;
+         else if ( id.equals( "REMOVE" ) )
+           dvbViewer.process( dvbViewerProvider, false, programArr, DVBViewer.Command.DELETE ) ;
+         else
+           return false ;
+      } catch ( ErrorClass e ) {
+         errorMessage( e ) ;
+         return false ;
+       }
+       catch (Exception e ) {
+         errorMessage( e ) ;
+         e.printStackTrace();
+         return false ;
+       } catch (TerminateClass e) {
+         return false ;
+       }
        updateMarks() ;
+       if ( dvbViewer != null )
+         dvbViewer.writeXML() ;
        return true ;
-     }
-     else if ( id.equals( "REMOVE" ) )
-     {
-      for ( Program pgm : programArr )
-         processEntry( pgm, DVBViewer.Command.DELETE ) ;
-      updateMarks() ;
-      return true ;
-     }
-     return false ;
-  }
+}
 
   @Override
   public ProgramReceiveTarget[] getProgramReceiveTargets()
