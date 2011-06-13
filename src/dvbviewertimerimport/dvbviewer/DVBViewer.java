@@ -358,6 +358,33 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		return result ;
 	}
+	public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
+	{
+		boolean result = true ;
+		if ( command == Command.FIND && this.recordEntries != null )
+		{
+			result  = provider.process(getAll, command );
+			for ( Object o : args )
+				result &= provider.processEntry( o, command ) ;
+			return result ;
+		}
+		this.connectDVBViewerIfNecessary();
+		try
+		{
+			this.readDVBViewerTimers() ;
+			this.mergeXMLWithDVBViewerData( null ) ;
+			result  = provider.process(getAll, command ); ;
+			for ( Object o : args )
+				result &= provider.processEntry( o, command ) ;
+		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
+		this.setDVBViewerTimers();
+		} catch ( Exception e ) {
+			this.disconnectDVBViewer();
+			throw e ;
+		}
+		this.disconnectDVBViewer();
+		return result ;
+	}
 	public void addRecordingEntry( DVBViewerEntry entry )
 	{
 		if ( entry.getID() < 0L )
