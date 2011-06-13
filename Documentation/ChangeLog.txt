@@ -2,12 +2,23 @@ ChangeLog:
 
 21.05.2011:	Fehlerhaftes Update der Provider/Service-Maske bereinigt
 26.05.2011:	Kanal wählen kann nun auch ein externes auswählbares Programm starten
-
 26.05.2011:	V01.02.005 beta
 ------------------------------------------------------------------------------
 
 30.05.2011:	Neuer Kanal-Wechsel-Algorithmus
 02.06.2011: Log-File-Größenbegrenzung eingeführt
-
 31.05.2011:	V01.02.006
 ------------------------------------------------------------------------------
+
+03.06.2011: Geänderten TVInfo-Seiten werden wieder Unterstützt
+03.06.2011:	V01.02.007
+------------------------------------------------------------------------------
+
+05.06.2011: DLL nun wieder mit Visual 2008 generiert
+05.06.2011:	V01.02.007
+------------------------------------------------------------------------------
+
+05.06.2011: TVInfo-Bug gefixed. Wenn Aufnahme schon läuft, kann geparste
+            Sendung nicht mehr programmiert werden
+13.06.2011: Laufende Aufnahme wird jetzt von dem Tool richtig unterstützt
+ 
