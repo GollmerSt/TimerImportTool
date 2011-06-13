@@ -1,0 +1,2 @@
+Laufende Aufnahmen werden aktuell vom Service ignoriert.
+Warum?
