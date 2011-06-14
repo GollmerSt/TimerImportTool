@@ -404,7 +404,7 @@ public class DVBViewerService {
 				}					
 				if( ev.isEndElement() )
 				{
-					if ( !recording && stack.equals( this.pathTimer ) )
+					if ( stack.equals( this.pathTimer ) )
 					{
 						if ( id < 0 || channel == null || dateString == null || startString == null || endString == null || title == null )
 							throw new ErrorClass( ev, "Incomplete timer entry from service" ) ;
