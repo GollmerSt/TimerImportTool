@@ -93,7 +93,7 @@ public class DVBViewer {
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
 	private ArrayList< HashMap< String, Channel> > channelsLists
-	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() + 1 ) ;
 
 	private final String exePath ;
 	private String dvbViewerPath = null ;
@@ -162,7 +162,7 @@ public class DVBViewer {
 	public void setProvider()
 	{
 		if ( this.channelsLists.size() == 0)
-			for ( int ix = 0 ; ix < dvbviewertimerimport.provider.Provider.getProviders().size() ; ix++ )
+			for ( int ix = 0 ; ix < dvbviewertimerimport.provider.Provider.getProviders().size() + 1 ; ix++ ) 
 				channelsLists.add( new HashMap< String, Channel>() ) ;
 	}
 	public static String determineExePath()
@@ -395,21 +395,21 @@ public class DVBViewer {
 			}
 		}
 	}
-	public Channel getDVBViewerChannel( final Provider provider, final String providerChannel )
+	public Channel getDVBViewerChannel( final Provider provider, final String channel )
 	{
 		this.prepareProvider() ;
 		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
-		if ( ! channelMap.containsKey( providerChannel ) )
+		if ( ! channelMap.containsKey( channel ) )
 		{
 			ErrorClass.setWarníng() ;
-			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
+			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", channel ) ) ;
 		}
-		Channel c =  channelMap.get( providerChannel ) ;
+		Channel c =  channelMap.get( channel ) ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 		{
 			ErrorClass.setWarníng() ;
-			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel ) ) ;
+			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", channel ) ) ;
 		}
 		return c ;
 	}
@@ -576,13 +576,13 @@ public class DVBViewer {
 	{
 		if ( channelName == null )
 			return ;
-		if ( channels.containsKey( channelName ) )
+		if ( channels.containsKey( channelName ) && ! channelGroupName.equals("DVBViewer"))		//TODO workarround, solution: TimerEntry must contain the channelSetID
 			throw new ErrorClass( "The " + channelGroupName + " channel \"" + channelName + "\" is not unique") ;
 		channels.put( new String( channelName ), channel ) ;
 	}
 	public void addChannel( ChannelSet channelSet )
 	{
-		Channel c = new Channel( channelSet.getDVBViewerChannel(),
+		Channel c = new Channel( channelSet,
 				                 channelSet.getTimeOffsets(),
 				                 channelSet.getMerge() ) ;
 		for ( dvbviewertimerimport.control.Channel cC : channelSet.getChannels() )
@@ -590,6 +590,7 @@ public class DVBViewer {
 			int type = cC.getType() ;
 			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}
+		this.addChannel( this.channelsLists.get( Provider.size() ), c.getDVBViewer(), c, "DVBViewer" ) ;
 	}
 	public void merge()
 	{

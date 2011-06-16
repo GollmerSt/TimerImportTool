@@ -1,1 +1,4 @@
-Laufende Aufnahmen werden aktuell vom Service ignoriert.  FIXED
+1. DVBViewerChannelName:
+Bei nicht eindeutigen DVBViewer-Kanälen kann die Zuordnung Timer->ProviderSendung nicht funktionieren
+Abhilfe: Es wird bei den Timern nicht der DVBViewer-Channel-Name gespeichert, sondern eine ChannelSet-ID.
+Auf diese Weise ist die Zuordnung immer eindeutig.

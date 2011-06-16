@@ -4,23 +4,24 @@
 
 package dvbviewertimerimport.dvbviewer ;
 
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.TimeOffsets;
 import dvbviewertimerimport.misc.Enums.Merge;
 
 public class Channel {
-	private final String dvbViewer ;
+	private final ChannelSet channelSet ;
 	private final TimeOffsets offsets ;
 	private final Merge merge ;
 
-	public Channel( String dvbViewer,
+	public Channel( ChannelSet channelSet,
 			        TimeOffsets offsets,
 			        Merge merge )
 	{
-		this.dvbViewer   = dvbViewer ;
+		this.channelSet  = channelSet ;
 		this.offsets     = offsets ;
 		this.merge       = merge ;
 	}
-	public String getDVBViewer()     { return this.dvbViewer ; } ;
+	public String getDVBViewer()     { return this.channelSet.getDVBViewerChannel() ; } ;
 	public TimeOffsets  getOffsets() { return this.offsets ; } ;
 	public boolean getMerge( boolean generalMerge)
 	{

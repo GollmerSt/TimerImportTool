@@ -60,6 +60,7 @@ public abstract class Provider implements DVBViewerProvider {
 	
 	public static void setIsPlugin() { isPlugin = true ; } ;
 	public static boolean isPlugin() { return isPlugin ; } ;
+	public static int size()         { return Provider.providers.size(); } ;
 	public static Provider processingProvider = null ;
 	public static void updateRecordingsAllProviders( ArrayList< DVBViewerEntry > entries )
 	{
