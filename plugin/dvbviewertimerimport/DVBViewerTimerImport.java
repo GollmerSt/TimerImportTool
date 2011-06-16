@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -18,6 +20,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 import devplugin.ActionMenu;
+import devplugin.Channel;
 import devplugin.Date;
 import devplugin.Plugin;
 import devplugin.PluginInfo;
@@ -278,7 +281,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       dvbviewertimerimport.dvbviewer.Channel dvbChannel = null ;
       
       try {
-        dvbChannel = dvbViewer.getDVBViewerChannel( provider, tvBChannel.getName() ) ;
+        dvbChannel = dvbViewer.getDVBViewerChannel( provider.getID(), tvBChannel.getName() ) ;
       } catch ( ErrorClass e1 ) {
         errorMessage( e1 ) ;
         return;
@@ -417,8 +420,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     @Override
     public Icon getIcon() {
       ImageIcon pluginIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
-
-      // TODO Auto-generated method stub
       return pluginIcon;
     }
 
@@ -513,13 +514,20 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     {
       this.markProgram( program, false ) ;
     }
+    Map< dvbviewertimerimport.dvbviewer.Channel, Map< String, DVBViewerEntry > > unresolvedEntries= new HashMap< dvbviewertimerimport.dvbviewer.Channel, Map< String, DVBViewerEntry > >() ;
     for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
     {
       if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
       {
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
         if ( program == null )
+        {
+          dvbviewertimerimport.dvbviewer.Channel channel = dvbViewer.getDVBViewerChannel(Provider.size(), co.getChannel() ) ;  //TODO hier muss der Provider hin
+          if ( ! unresolvedEntries.containsKey( channel ))
+            unresolvedEntries.put( channel, new TreeMap< String, DVBViewerEntry >() ) ;
+          unresolvedEntries.get( channel ).put( co.getTitle(), co ) ;
           continue ;
+        }
         this.markProgram( program, true ) ;
         program.validateMarking() ;
       }
