@@ -22,6 +22,7 @@ public class Channel {
 		this.merge       = merge ;
 	}
 	public String getDVBViewer()     { return this.channelSet.getDVBViewerChannel() ; } ;
+	public ChannelSet getChannelset() { return this.channelSet ; } ;
 	public TimeOffsets  getOffsets() { return this.offsets ; } ;
 	public boolean getMerge( boolean generalMerge)
 	{

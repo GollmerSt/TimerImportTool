@@ -395,10 +395,10 @@ public class DVBViewer {
 			}
 		}
 	}
-	public Channel getDVBViewerChannel( final Provider provider, final String channel )
+	public Channel getDVBViewerChannel( final int id, final String channel )
 	{
 		this.prepareProvider() ;
-		HashMap< String, Channel > channelMap = this.channelsLists.get( provider.getID() ) ;
+		HashMap< String, Channel > channelMap = this.channelsLists.get( id ) ;
 		if ( ! channelMap.containsKey( channel ) )
 		{
 			ErrorClass.setWarníng() ;
@@ -421,7 +421,7 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		Channel c =  this.getDVBViewerChannel( provider, channel) ;
+		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
 		TimeOffsets o = c.getOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
@@ -467,7 +467,7 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-		Channel c =  this.getDVBViewerChannel( provider, channel) ;
+		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
 											   null,
