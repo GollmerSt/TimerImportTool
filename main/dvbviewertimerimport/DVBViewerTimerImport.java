@@ -3,6 +3,8 @@ package dvbviewertimerimport;
 import java.util.ArrayList;
 
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
+import dvbviewertimerimport.misc.Helper;
+import dvbviewertimerimport.provider.ProviderChannel;
 
 /**
  * @author Stefan Gollmer
@@ -10,7 +12,7 @@ import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
  */
 public class DVBViewerTimerImport 
 {
-  public static String[] getTVBChannelNames()
+  public static ProviderChannel< String >[] getTVBChannelNames()
   {
 	  return null ;
   }

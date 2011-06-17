@@ -133,11 +133,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
    */
   public static String[] getTVBChannelNames()
   {
-    ArrayList< String > res = new ArrayList< String >() ;
     devplugin.Channel[] channels = devplugin.Plugin.getPluginManager().getSubscribedChannels();
+    String[] res = new String[ channels.length ] ;
+    int idx = -1 ;
     for ( devplugin.Channel c : channels )
-      res.add( c.getName() ) ;
-    return res.toArray( new String[0] ) ;
+      res[ ++idx ] = c.getName() ;
+    return res ;
   }
 
 
