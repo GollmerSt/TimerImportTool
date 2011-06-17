@@ -12,6 +12,7 @@ import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
+import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.provider.Provider;
 
 public class TVBrowser extends Provider
@@ -31,21 +32,21 @@ public class TVBrowser extends Provider
 	@Override
 	protected ArrayList< Channel > readChannels()
 	{
-		String [] channels = DVBViewerTimerImport.getTVBChannelNames() ;
+		ProviderChannel< String > [] channels = DVBViewerTimerImport.getTVBChannelNames() ;
 		
 		ArrayList< Channel > result = new ArrayList< Channel >() ;
 		
-		for ( String cS : channels )
+		for ( ProviderChannel< String > cP : channels )
 		{
-			Channel c = new Channel( getID(), (String) cS, -1  )
+			Channel c = new Channel( getID(), cP.getName() , cP.getKey()  )
 			{
 				@Override
 				public Object getIDKey()
 				{
-					return this.getName() ;
+					return this.getTextID() ;
 				}
 				@Override
-				public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
+				public Object getIDKey( final Channel c ) { return c.getTextID() ; } ;  // ID of the provider, type is provider dependent
 			};
 			result.add( c ) ;
 		}
@@ -71,11 +72,11 @@ public class TVBrowser extends Provider
 		if (this.channelSet == null)
 		{
 			this.channelSet = new HashSet<String>();
-			String[] channels = DVBViewerTimerImport.getTVBChannelNames();
-			for (String name : channels)
-				this.channelSet.add(name);
+			ProviderChannel< String >[] channels = DVBViewerTimerImport.getTVBChannelNames();
+			for (ProviderChannel< String > pair : channels)
+				this.channelSet.add( pair.getKey() );
 		}
-		return this.channelSet.contains( channel.getName() ) ;
+		return this.channelSet.contains( channel.getIDKey() ) ;
 	}		
 	@Override
 	public void updateChannelMap()

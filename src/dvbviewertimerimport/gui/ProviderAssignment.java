@@ -202,7 +202,7 @@ public class ProviderAssignment  extends MyTabPanel
 						if ( ix >= 0 )
 						{
 							ChannelSet cs = control.getChannelSets().get( ix ) ;
-							long id = cs.getChannel( p.getID() ).getID() ;
+							long id = cs.getChannel( p.getID() ).getNumID() ;
 							cs.remove( p.getID() ) ;
 							cs.add( p.getID(), channel, id ) ;
 							map.remove( lastSelectedChannel ) ;
@@ -728,7 +728,7 @@ public class ProviderAssignment  extends MyTabPanel
 
             	if ( channelMap.containsKey( channel ) )
             	{
-            		channelID = channelMap.get( channel ).getChannel().getID() ;
+            		channelID = channelMap.get( channel ).getChannel().getNumID() ;
             	}
 
             	Channel c = cs.add( pid, channel, channelID ) ;

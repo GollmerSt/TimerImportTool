@@ -20,23 +20,20 @@ public class ChannelSet {
 	
 	public static void createIDs( Collection< ChannelSet >  channelSets )
 	{
-		boolean isUndefined = false ;
+		Collection< ChannelSet > unresolvedEntries = new ArrayList< ChannelSet >() ;
 		long maxID = -1L ;
 		for ( Iterator< ChannelSet > it = channelSets.iterator() ; it.hasNext() ; )
 		{
 			ChannelSet cs = it.next() ;
 			if ( cs.id < 0 )
-				isUndefined = true ;
+				unresolvedEntries.add( cs ) ;
 			else
 				maxID = Math.max( maxID, cs.id ) ;
 		}
-		if ( ! isUndefined )
-			return ;
-		for ( Iterator< ChannelSet > it = channelSets.iterator() ; it.hasNext() ; )
+		for ( Iterator< ChannelSet > it = unresolvedEntries.iterator() ; it.hasNext() ; )
 		{
 			ChannelSet cs = it.next() ;
-			if ( cs.id < 0 )
-				cs.id = maxID++ ;
+			cs.id = ++maxID ;
 		}
 	}
 	
@@ -84,6 +81,7 @@ public class ChannelSet {
 	public Merge getMerge() { return this.merge ; } ;
 	public void setDVBViewerChannel( String channelName ) { this.dvbViewerChannel = channelName ; } ;
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
+	public void setID( final long id ) { this.id = id ; } ;
 	public long getID() { return this.id ; } ;
 	public ArrayList< Channel > getChannels() { return channels ; } ;
 	public Channel getChannel( int providerID )

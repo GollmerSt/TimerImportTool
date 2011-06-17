@@ -140,7 +140,7 @@ public class TVGenial extends Provider {
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
 				continue ;
-			nameMap.put( c.getName(), c.getID() ) ;
+			nameMap.put( c.getName(), c.getNumID() ) ;
 		}
 			
 		try {
@@ -171,10 +171,10 @@ public class TVGenial extends Provider {
 					@Override
 					public Object getIDKey()
 					{
-						return Long.valueOf( getID() ) ;
+						return Long.valueOf( getNumID() ) ;
 					}
 					@Override
-					public Object getIDKey( final Channel c ) { return Long.valueOf( c.getID() ) ; } ;  // ID of the provider, type is provider dependent
+					public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
 				};
 				list.add( c ) ; ;
 				nameMap.put( nameLong, tvuid ) ;
@@ -262,7 +262,7 @@ public class TVGenial extends Provider {
 			Channel c = cs.getChannel( this.getID() ) ;
 			if ( c == null )
 				continue ;
-			if ( tvuid == c.getID() )
+			if ( tvuid == c.getNumID() )
 			{
 				channel = c.getName() ;
 				break ;
@@ -293,9 +293,9 @@ public class TVGenial extends Provider {
 			this.channelSet = new HashSet< Long >();
 			ArrayList< Channel > channels = readChannels() ;
 			for ( Channel c : channels)
-				this.channelSet.add( c.getID() );
+				this.channelSet.add( c.getNumID() );
 		}
-		return this.channelSet.contains( channel.getID() ) ;
+		return this.channelSet.contains( channel.getNumID() ) ;
 	}		
 	@Override
 	public void updateChannelMap()

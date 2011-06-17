@@ -11,12 +11,16 @@ import javax.xml.stream.XMLStreamException;
 public class Channel {
 	private final int type ;
 	private final String name ;
-	private final long id ;
-	public Channel( int type, String name, long id )
+	private final String id ;
+	public Channel( int type, String name, String id )
 	{
 		this.type = type ;
 		this.name = name ;
 		this.id = id ;
+	}
+	public Channel( int type, String name, long id )
+	{
+		this( type, name, id >= 0 ? Long.toString( id ) : null ) ;
 	}
 	public Channel( final Channel channel )
 	{
@@ -24,14 +28,15 @@ public class Channel {
 	}
 	public int  getType() { return this.type ; } ;
 	public String getName() { return this.name ; } ;
-	public long getID() { return this.id ; } ;
+	public String getTextID() { return this.id ; } ;
+	public long getNumID() { return Long.valueOf( this.id ) ; } ;
 	public String getTypeName(){ return dvbviewertimerimport.provider.Provider.getProviderName( this.type) ; } ;
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException
 	{
 		sw.writeStartElement( "Provider" ) ;
 		sw.writeAttribute( "name", this.getTypeName() ) ;
-		if ( this.id >= 0 )
-			sw.writeAttribute( "channelID", Long.toString( id ) ) ;
+		if ( this.id != null )
+			sw.writeAttribute( "channelID",id ) ;
 		sw.writeCharacters( name ) ;
 		sw.writeEndElement() ;
 	}
@@ -39,7 +44,7 @@ public class Channel {
 	public String toString()
 	{
 		String out = this.getTypeName() + " channel: Name = \"" + name + "\"" ;
-		if ( id >= 0L )
+		if ( id != null )
 			out += "  Id = \"" + id + "\"" ;
 		return out ;
 	}

@@ -144,7 +144,6 @@ public class Control
 		}
 		StackXML<String>   stack = new StackXML<String>();
 		
-		long channelSetID = -1L ;
 		TimeOffsets offsets = null ;
 		TimeOffsets channelOffsets = null ; 
 		String offsetAfter  = null ;
@@ -229,7 +228,6 @@ public class Control
 				else if ( stack.equals( this.pathChannel ) )
 				{
 					type = BlockType.CHANNEL ;
-					channelSetID = -1L ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
 				}
@@ -267,8 +265,9 @@ public class Control
 						{
 							if ( ! value.matches("-*\\d+"))
 								throw new ErrorClass ( ev, "Wrong channel set id format in file \"" + name + "\"" ) ;
-							channelSetID = Long.valueOf( value ) ;
+							channelSet.setID( Long.valueOf( value ) ) ;
 						}
+						break ;
 					case CHANNEL_PROVIDER :
 						if      ( attributeName.equals( "name" ) )
 						{
