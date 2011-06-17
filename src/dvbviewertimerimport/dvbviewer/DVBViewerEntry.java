@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.swing.tree.TreePath;
@@ -20,6 +21,8 @@ import javax.xml.stream.events.XMLEvent;
 
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
+import dvbviewertimerimport.control.ChannelSet;
+import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.OutDatedInfo;
@@ -93,6 +96,7 @@ public final class DVBViewerEntry  implements Cloneable
 	private final String channel ;
 	private String program = null ;
 	private String channelID = null ;
+	private ChannelSet channelSet = null ;
 	private long start ;
 	private long end ;
 	private long startOrg ;
@@ -120,6 +124,7 @@ public final class DVBViewerEntry  implements Cloneable
 							long dvbViewerID ,
 							String providerID,
 							String channel ,
+							ChannelSet channelSet ,
 							long start ,
 							long end ,
 							long startOrg ,
@@ -141,6 +146,7 @@ public final class DVBViewerEntry  implements Cloneable
 		this.dvbViewerID = dvbViewerID ;
 		this.providerID = providerID ;
 		this.channel = channel ;
+		this.channelSet = channelSet ;
 		this.start = start ;
 		this.end = end ;
 		this.startOrg = startOrg ;
@@ -164,6 +170,7 @@ public final class DVBViewerEntry  implements Cloneable
 		this.dvbViewerID = -1 ;
 		this.providerID = null ;
 		this.channel = null ;
+		this.channelSet = null ;
 		this.start = -1 ;
 		this.end = -1 ;
 		this.startOrg = -1 ;
@@ -183,13 +190,14 @@ public final class DVBViewerEntry  implements Cloneable
 	public DVBViewerEntry( StatusTimer status, long dvbViewerID, String channel, long start, long end, String days,
 						   String title, TimerActionItems timerAction, ActionAfterItems actionAfter )
 	{
-		this( -1, false, status , dvbViewerID, null, channel, start ,end ,
+		this( -1, false, status , dvbViewerID, null, channel, null, start ,end ,
 				         start, end, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				         -1, null, new OutDatedInfo(), false, ToDo.NONE ) ;
 
 		this.setMergeStatus( this.mergeStatus ) ;
 	}
 	public DVBViewerEntry( String channel,
+			   			   ChannelSet channelSet,
 						   String providerID,
 			               long start,
 			               long end,
@@ -202,7 +210,7 @@ public final class DVBViewerEntry  implements Cloneable
 			               boolean merge,
 			               Provider provider  )
 	{
-		this( -1, false, StatusTimer.ENABLED , -1, providerID, channel, start ,end ,
+		this( -1, false, StatusTimer.ENABLED , -1, providerID, channel, channelSet, start ,end ,
 				  startOrg, endOrg, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
 				  -1, provider, new OutDatedInfo(), false, ToDo.NEW ) ;
 
@@ -219,7 +227,7 @@ public final class DVBViewerEntry  implements Cloneable
 	public DVBViewerEntry clone()
 	{
 		DVBViewerEntry entry = new DVBViewerEntry( 	-1, this.isFilterElement, this.statusTimer,
-													this.dvbViewerID, this.providerID, this.channel ,
+													this.dvbViewerID, this.providerID, this.channel , this.channelSet,
 													this.start, this.end, this.startOrg,
 													this.endOrg, this.days, this.title,
 													this.timerAction, this.actionAfter,
@@ -1597,7 +1605,7 @@ public final class DVBViewerEntry  implements Cloneable
 			}
 		}
 	}
-	public static DVBViewerEntry readXML( final XMLEventReader  reader, XMLEvent ev, String name )
+	public static DVBViewerEntry readXML( final XMLEventReader  reader, XMLEvent ev, String name, Map< Long, ChannelSet> channelSets )
 	{
 		Stack< String > stack = new Stack< String >() ;
 		DVBViewerEntry entry = null ;
@@ -1612,6 +1620,7 @@ public final class DVBViewerEntry  implements Cloneable
 					boolean isFilterElement = false ;
 					StatusTimer statusDVBViewer = null ;
 					String channel = null ;
+					long channelSetID = -1 ;
 					long start = -1 ;
 					long end = -1 ;
 					long startOrg = -1 ;
@@ -1644,6 +1653,8 @@ public final class DVBViewerEntry  implements Cloneable
 							statusDVBViewer = StatusTimer.valueOf( value ) ;
 						else if ( attributeName.equals( "channel" ) )
 							channel =value ;
+						else if ( attributeName.equals( "channelSetID" ) )
+							channelSetID = Long.valueOf( value ) ;
 						else if ( attributeName.equals( "start" ) )
 							start = Long.valueOf( value ) ;
 						else if ( attributeName.equals( "end" ) )
@@ -1669,8 +1680,11 @@ public final class DVBViewerEntry  implements Cloneable
 						else
 							outDatedInfo.readXML( attributeName, value) ;
 					}
+					ChannelSet channelSet = channelSets.get(channelSetID ) ;
+					if ( channelSet != null )
+						channel = channelSet.getDVBViewerChannel() ;
 			        entry = new DVBViewerEntry( id, isFilterElement, statusDVBViewer,
-												-1, providerID, channel,
+												-1, providerID, channel, channelSet,
 												start, end, startOrg, endOrg,
 												days, "", timerAction, actionAfter,
 												mergeStatus, mergeID, provider,
@@ -1724,7 +1738,10 @@ public final class DVBViewerEntry  implements Cloneable
 			  else
 				  sw.writeAttribute( "statusTimer",    	 this.statusTimer.toString() ) ;
 
-			  sw.writeAttribute( "channel",          this.channel ) ;
+			  if ( channelSet != null )
+				sw.writeAttribute( "channelSetID", Long.toString( channelSet.getID() ) ) ;
+			  else
+			  	sw.writeAttribute( "channel",          this.channel ) ;
 			  sw.writeAttribute( "start",            Long.toString( this.start ) ) ;
 			  sw.writeAttribute( "end",              Long.toString( this.end ) ) ;
 			  sw.writeAttribute( "startOrg",         Long.toString( this.startOrg ) ) ;

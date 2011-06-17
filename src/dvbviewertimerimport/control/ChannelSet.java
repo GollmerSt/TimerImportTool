@@ -4,8 +4,10 @@
 
 package dvbviewertimerimport.control ;
 
+import java.awt.Container;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
@@ -15,11 +17,36 @@ import javax.xml.stream.XMLStreamException;
 import dvbviewertimerimport.misc.Enums.Merge;
 
 public class ChannelSet {
+	
+	public static void createIDs( Collection< ChannelSet >  channelSets )
+	{
+		boolean isUndefined = false ;
+		long maxID = -1L ;
+		for ( Iterator< ChannelSet > it = channelSets.iterator() ; it.hasNext() ; )
+		{
+			ChannelSet cs = it.next() ;
+			if ( cs.id < 0 )
+				isUndefined = true ;
+			else
+				maxID = Math.max( maxID, cs.id ) ;
+		}
+		if ( ! isUndefined )
+			return ;
+		for ( Iterator< ChannelSet > it = channelSets.iterator() ; it.hasNext() ; )
+		{
+			ChannelSet cs = it.next() ;
+			if ( cs.id < 0 )
+				cs.id = maxID++ ;
+		}
+	}
+	
 	private ArrayList< Channel > channels = new ArrayList< Channel >() ;
 	private String dvbViewerChannel = null ;
 	private TimeOffsets timeOffsets = new TimeOffsets() ;
 	private Merge merge = Merge.INVALID ;
 	private boolean isAutomaticAssigned = false ;
+	private long id = -1 ;
+
 	
 	public Channel add( int type, String name, long id )
 	{
@@ -57,6 +84,7 @@ public class ChannelSet {
 	public Merge getMerge() { return this.merge ; } ;
 	public void setDVBViewerChannel( String channelName ) { this.dvbViewerChannel = channelName ; } ;
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
+	public long getID() { return this.id ; } ;
 	public ArrayList< Channel > getChannels() { return channels ; } ;
 	public Channel getChannel( int providerID )
 	{
@@ -70,6 +98,8 @@ public class ChannelSet {
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
 	{
 		sw.writeStartElement( "Channel" ) ;
+		  if ( this.id >= 0 )
+			  sw.writeAttribute( "id", Long.toString( id ) ) ;
 		  for ( Channel c : this.channels )
 			  c.writeXML( sw ) ;
 		

@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
@@ -93,7 +94,8 @@ public class DVBViewer {
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
 	private ArrayList< HashMap< String, Channel> > channelsLists
-	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() + 1 ) ;
+	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+	private Map< Long, ChannelSet > channelSetMap = new HashMap< Long, ChannelSet >() ;
 
 	private final String exePath ;
 	private String dvbViewerPath = null ;
@@ -162,7 +164,7 @@ public class DVBViewer {
 	public void setProvider()
 	{
 		if ( this.channelsLists.size() == 0)
-			for ( int ix = 0 ; ix < dvbviewertimerimport.provider.Provider.getProviders().size() + 1 ; ix++ ) 
+			for ( int ix = 0 ; ix < dvbviewertimerimport.provider.Provider.getProviders().size() ; ix++ ) 
 				channelsLists.add( new HashMap< String, Channel>() ) ;
 	}
 	public static String determineExePath()
@@ -395,21 +397,21 @@ public class DVBViewer {
 			}
 		}
 	}
-	public Channel getDVBViewerChannel( final int id, final String channel )
+	public Channel getDVBViewerChannel( final int providerID, final String providerChannel )
 	{
 		this.prepareProvider() ;
-		HashMap< String, Channel > channelMap = this.channelsLists.get( id ) ;
-		if ( ! channelMap.containsKey( channel ) )
+		HashMap< String, Channel > channelMap = this.channelsLists.get( providerID ) ;
+		if ( ! channelMap.containsKey( providerChannel ) )
 		{
 			ErrorClass.setWarníng() ;
-			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", channel ) ) ;
+			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
 		}
-		Channel c =  channelMap.get( channel ) ;
+		Channel c =  channelMap.get( providerChannel ) ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 		{
 			ErrorClass.setWarníng() ;
-			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", channel ) ) ;
+			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel ) ) ;
 		}
 		return c ;
 	}
@@ -432,6 +434,7 @@ public class DVBViewer {
 			return false ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+				                               c.getChannelSet(),
 											   providerID,
 											   start,
 											   end,
@@ -470,6 +473,7 @@ public class DVBViewer {
 		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+				                               c.getChannelSet(), 
 											   null,
 											   start,
 											   end,
@@ -567,6 +571,7 @@ public class DVBViewer {
 	{
 		this.channelsLists
 		  	= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+		this.channelSetMap = new HashMap< Long, ChannelSet >() ;
 		this.setProvider() ;
 	}
 	private void addChannel( HashMap< String, Channel> channels,
@@ -590,7 +595,7 @@ public class DVBViewer {
 			int type = cC.getType() ;
 			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}
-		this.addChannel( this.channelsLists.get( Provider.size() ), c.getDVBViewer(), c, "DVBViewer" ) ;
+		this.channelSetMap.put( channelSet.getID(), channelSet ) ;
 	}
 	public void merge()
 	{
@@ -688,7 +693,7 @@ public class DVBViewer {
 					stack.push( ev.asStartElement().getName().getLocalPart() );
 					if ( ! stack.equals( DVBViewer.xmlPath ) )
 						continue ;
-					DVBViewerEntry entry = DVBViewerEntry.readXML( reader, ev, f.getName() ) ;
+					DVBViewerEntry entry = DVBViewerEntry.readXML( reader, ev, f.getName(), this.channelSetMap ) ;
 					idMap.put( entry.getID(), entry ) ;
 					entry.setID( this.maxID.increment() ) ;
 					result.add( entry ) ;

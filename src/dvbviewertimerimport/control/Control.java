@@ -144,6 +144,7 @@ public class Control
 		}
 		StackXML<String>   stack = new StackXML<String>();
 		
+		long channelSetID = -1L ;
 		TimeOffsets offsets = null ;
 		TimeOffsets channelOffsets = null ; 
 		String offsetAfter  = null ;
@@ -154,6 +155,7 @@ public class Control
 		
 		Provider provider = null ;
 		long channelID    = -1L ;
+
 		
 		ChannelSet channelSet = null ;
 		
@@ -227,6 +229,7 @@ public class Control
 				else if ( stack.equals( this.pathChannel ) )
 				{
 					type = BlockType.CHANNEL ;
+					channelSetID = -1L ;
 					channelSet = new ChannelSet() ;
 					channelOffsets = channelSet.getTimeOffsets() ;
 				}
@@ -259,6 +262,13 @@ public class Control
 					String value = a.getValue() ;
 					switch ( type )
 					{
+					case CHANNEL :
+						if      ( attributeName.equals( "id" ) )
+						{
+							if ( ! value.matches("-*\\d+"))
+								throw new ErrorClass ( ev, "Wrong channel set id format in file \"" + name + "\"" ) ;
+							channelSetID = Long.valueOf( value ) ;
+						}
 					case CHANNEL_PROVIDER :
 						if      ( attributeName.equals( "name" ) )
 						{
@@ -269,7 +279,7 @@ public class Control
 						else if ( attributeName.equals( "channelID" ) )
 						{
 							if ( ! value.matches("\\d+"))
-								throw new ErrorClass ( ev, "Wrong cahnne id format in file \"" + name + "\"" ) ;
+								throw new ErrorClass ( ev, "Wrong channel id format in file \"" + name + "\"" ) ;
 							channelID = Long.valueOf( value ) ;
 						}
 						break ;
@@ -713,6 +723,7 @@ public class Control
 		this.dvbViewer.clearChannelLists() ;
 		this.dvbViewer.setSeparator( this.separator ) ;
 		this.dvbViewer.setMaxTitleLength( this.maxTitleLength ) ;
+		ChannelSet.createIDs( this.channelSets ) ;
 		for ( ChannelSet cs : this.channelSets )
 		{
 			this.dvbViewer.addChannel( cs ) ;
