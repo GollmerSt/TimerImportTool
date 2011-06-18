@@ -26,8 +26,8 @@ public class ProviderChannel< T >
 	{
 		return this.key ;
 	}
-  public String toString()
-  {
-    return "Name: " + this.name + ", Key: " + this.key.toString() ;
-  }
+	public String toString()
+	{
+		return "Name: " + this.name + ", Key: " + this.key.toString() ;
+	}
 }

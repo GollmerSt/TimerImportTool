@@ -276,42 +276,42 @@ public abstract class Provider implements DVBViewerProvider {
 					
 				while ( iter.hasNext() )
 				{
-		            Attribute a = iter.next();
-		            String attributeName = a.getName().getLocalPart() ;
-		            String value = a.getValue().trim() ;
-		            
-		            switch ( xmlStatus)
-		            {
-		            	case  PROVIDER :
-		            		if      ( attributeName.equals( "name") )
-		            			name = value ;
-		            		else if ( attributeName.equals( "username") )
-		            			username = value ;
-		            		else if ( attributeName.equals( "password") )
-		            			password = value ;
-		            		else if ( attributeName.equals( "triggeraction") )
-			            	{
-			            		if ( !value.matches("\\d+") )
-			            			throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + fileName + "\"" ) ;
-			            		triggerAction = Integer.valueOf( value ) ;
-			            	}
-		            		else if ( attributeName.equals( "merge") )
-		            			merge = Conversions.getBoolean( value, ev, fileName ) ;
-		            		else if ( attributeName.equals( "verbose") )
-		            			verbose = Conversions.getBoolean( value, ev, fileName ) ;
-			            	else if ( attributeName.equals( "message") )
-		            			message = Conversions.getBoolean( value, ev, fileName ) ;
-			            	else if ( attributeName.equals( "filter") )
-		            			filter = Conversions.getBoolean( value, ev, fileName ) ;
-		            		break ;
-		            	
-		            	case MISSING :
-		            		try {
-		            			info.readXML( attributeName, value ) ;
-		            		} catch ( ErrorClass e ) {
-		            			throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + fileName + "\"" ) ;
-		            		}
-		            		break ;
+					Attribute a = iter.next();
+					String attributeName = a.getName().getLocalPart() ;
+					String value = a.getValue().trim() ;
+
+					switch ( xmlStatus)
+					{
+						case  PROVIDER :
+							if      ( attributeName.equals( "name") )
+						name = value ;
+					else if ( attributeName.equals( "username") )
+						username = value ;
+					else if ( attributeName.equals( "password") )
+						password = value ;
+					else if ( attributeName.equals( "triggeraction") )
+					{
+						if ( !value.matches("\\d+") )
+					throw new ErrorClass ( ev, "Wrong triggeraction format in file \"" + fileName + "\"" ) ;
+						triggerAction = Integer.valueOf( value ) ;
+					}
+					else if ( attributeName.equals( "merge") )
+						merge = Conversions.getBoolean( value, ev, fileName ) ;
+					else if ( attributeName.equals( "verbose") )
+						verbose = Conversions.getBoolean( value, ev, fileName ) ;
+					else if ( attributeName.equals( "message") )
+						message = Conversions.getBoolean( value, ev, fileName ) ;
+					else if ( attributeName.equals( "filter") )
+							filter = Conversions.getBoolean( value, ev, fileName ) ;
+						break ;
+
+					case MISSING :
+						try {
+							info.readXML( attributeName, value ) ;
+						} catch ( ErrorClass e ) {
+							throw new ErrorClass ( ev, e.getErrorString() + " in file \"" + fileName + "\"" ) ;
+							}
+							break ;
 					}
 				}
 			}
@@ -326,7 +326,7 @@ public abstract class Provider implements DVBViewerProvider {
 				{
 					provider = Provider.getProvider( name ) ;
 					if ( provider == null )
-            			throw new ErrorClass ( ev, "Unknown provider name in file \"" + fileName + "\"" ) ;
+						throw new ErrorClass ( ev, "Unknown provider name in file \"" + fileName + "\"" ) ;
 					provider.username = username ;
 					provider.password = password ;
 					provider.triggerAction = triggerAction ;
@@ -462,6 +462,6 @@ public abstract class Provider implements DVBViewerProvider {
 		return count ;
 	} ;
 
-	 public TimeZone getTimeZone() { return this.timeZone ; } ;
-   public void setTimeZone( TimeZone timeZone) { this.timeZone = timeZone; } ;
+	public TimeZone getTimeZone() { return this.timeZone ; } ;
+	public void setTimeZone( TimeZone timeZone) { this.timeZone = timeZone; } ;
 }

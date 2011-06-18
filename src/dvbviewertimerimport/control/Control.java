@@ -511,13 +511,12 @@ public class Control
 		if ( xmlFile == null  )
 		{
 			File toFile = new File(   this.dvbViewer.getXMLFilePath()
-	                         + File.separator
-	                         + NAME_XML_CONTROLFILE_BACKUP ) ;
+			                 + File.separator
+			                 + NAME_XML_CONTROLFILE_BACKUP ) ;
 
 			file = new File(   this.dvbViewer.getXMLFilePath()
-                    + File.separator
-                    + NAME_XML_CONTROLFILE ) ;
-			
+			                 + File.separator
+			                 + NAME_XML_CONTROLFILE ) ;
 			toFile.delete() ;
 			file.renameTo( toFile ) ;
 		}
@@ -525,8 +524,8 @@ public class Control
 			file = xmlFile ;
 		
 
-		XMLOutputFactory output = XMLOutputFactory.newInstance ();        
-        
+		XMLOutputFactory output = XMLOutputFactory.newInstance ();
+
 		XMLStreamWriter  writer = null ;
 		FileOutputStream  fos = null ;
 		try {
