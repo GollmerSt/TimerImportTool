@@ -5,10 +5,12 @@
 package dvbviewertimerimport;
 
 import java.awt.event.ActionEvent;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
@@ -44,6 +46,7 @@ import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.provider.ProviderChannel;
 
 /**
  * @author Stefan Gollmer
@@ -74,6 +77,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   
   private DVBViewerChannelChooseAction chooseChannelAction = new DVBViewerChannelChooseAction() ;
   private DVBViewerTimerAction timerAction = new DVBViewerTimerAction() ;
+  
 
   private DVBViewerProvider dvbViewerProvider = this ;
   private int providerID ;
@@ -81,10 +85,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
   private GregorianCalendar calendar ;
 
-  private HashMap< String, String > channelAssignmentDvbVToTvB = null ;
+  private Map< String, String > channelAssignmentDvbVToTvB = null ;
+
+  private ProviderChannel< String >[] tvbChannelNames = null ;
+  private Map< String, Channel > uniqueAssignment = null ;
 
   private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
-
   
   /**
    * 
@@ -115,6 +121,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   @Override
   public void handleTvDataUpdateFinished()
   {
+    DVBViewerTimerImport.plugin.tvbChannelNames = null ;
     try {
       this.control.getDVBViewer().process( this.dvbViewerProvider, false, (Object) null, Command.UPDATE_TVBROWSER ) ;
     } catch ( ErrorClass e ) {
@@ -131,14 +138,44 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   /**
    * @return Array containing the channel names of the TV-Browser
    */
-  public static String[] getTVBChannelNames()
+  public static ProviderChannel<String>[] getTVBChannelNames()
   {
+    if ( DVBViewerTimerImport.plugin == null )
+      return null ;
+    
+    if ( DVBViewerTimerImport.plugin.tvbChannelNames != null )
+      return DVBViewerTimerImport.plugin.tvbChannelNames ;
+
     devplugin.Channel[] channels = devplugin.Plugin.getPluginManager().getSubscribedChannels();
-    String[] res = new String[ channels.length ] ;
+    
+    DVBViewerTimerImport.plugin.uniqueAssignment = new HashMap< String, Channel >() ;
+
+    @SuppressWarnings("unchecked")
+    ProviderChannel<String>[] newInstance = (ProviderChannel<String>[]) Array.newInstance( new ProviderChannel< String >("","").getClass(), channels.length );
+    DVBViewerTimerImport.plugin.tvbChannelNames = newInstance ;
+
     int idx = -1 ;
+    Map< String, List< String > > checkMap = new HashMap< String, List< String > >() ;
     for ( devplugin.Channel c : channels )
-      res[ ++idx ] = c.getName() ;
-    return res ;
+    {
+      String key = c.getName() ;
+      if ( ! checkMap.containsKey( key ) )
+        checkMap.put( key, new ArrayList< String >() ) ;
+      checkMap.get( key ).add( c.getUniqueId() ) ;
+      DVBViewerTimerImport.plugin.uniqueAssignment.put( c.getUniqueId(), c ) ;
+    }
+    for ( Map.Entry< String, List< String > > mapEntry : checkMap.entrySet() )
+    {
+      List<String> list = mapEntry.getValue() ;
+      DVBViewerTimerImport.plugin.tvbChannelNames[ ++idx ] = new ProviderChannel< String >( mapEntry.getKey(), mapEntry.getValue().get(0) ) ;
+      if ( list.size() > 1 )
+      {
+        int cnt = 1 ;
+        for ( cnt = 1 ; cnt < list.size() ; ++cnt )
+          DVBViewerTimerImport.plugin.tvbChannelNames[ ++idx ] = new ProviderChannel< String >( mapEntry.getKey() + "(" + Integer.toString( cnt ) + ")", list.get( cnt ) ) ;
+      }
+    }
+    return DVBViewerTimerImport.plugin.tvbChannelNames ;
   }
 
 
@@ -233,29 +270,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     return this.markIcons ;
   }
 
-  /**
-   * @param dvbVChannelName   DVBViewer channel name
-   * @return  assigned TV-Browser name, null if not assigned
-   */
-  public String getTvBChannelName( String dvbVChannelName )
-  {
-    if ( channelAssignmentDvbVToTvB == null )
-    {
-      channelAssignmentDvbVToTvB = new HashMap< String, String >() ;
-      for ( ChannelSet cs : this.control.getChannelSets() )
-      {
-        dvbviewertimerimport.control.Channel providerChannel = cs.getChannel( this.providerID ) ;
-        String dvbViewerChannel = cs.getDVBViewerChannel() ;
-        if ( providerChannel != null && dvbViewerChannel != null )
-          channelAssignmentDvbVToTvB.put( cs.getDVBViewerChannel().split("[|]")[0], providerChannel.getName() ) ;
-      }
-    }
-    if ( ! channelAssignmentDvbVToTvB.containsKey( dvbVChannelName.split("[|]") ) )
-      return null ;
-    return channelAssignmentDvbVToTvB.get( dvbVChannelName ) ;
-  }
-  
-  
   private class DVBViewerChannelChooseAction extends AbstractAction
   {
     private Program program = null ;
