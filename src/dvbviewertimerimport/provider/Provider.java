@@ -398,6 +398,7 @@ public abstract class Provider implements DVBViewerProvider {
 			return -1 ;
 		
 		HashMap< Object, ChannelSet > mapByID = new HashMap< Object, ChannelSet >() ;
+    HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
 
 		int pid = this.getID() ;
 		
@@ -410,7 +411,10 @@ public abstract class Provider implements DVBViewerProvider {
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
 				continue ;
-			mapByID.put( channelProv.getIDKey( c ), cs ) ;
+			mapByName.put(c.getName(), cs ) ;
+			Object key = channelProv.getIDKey( c ) ;
+			if ( key != null )
+      mapByID.put( key, cs ) ;
 		}
 		
 		int count = 0 ;
@@ -419,8 +423,19 @@ public abstract class Provider implements DVBViewerProvider {
 
 		for ( Channel c : channels )
 		{
+		  boolean found = true ;
 			Object key = c.getIDKey() ;
-			if ( ! mapByID.containsKey( key ) )
+			if ( mapByID.containsKey( key ) ) ;
+			else if ( mapByName.containsKey( c.getName() ) )
+			{
+			  String name = c.getName() ;
+			  Channel pc = mapByName.get( name ).getChannel( pid ) ;
+			  pc.setID( key ) ;
+			}
+			else
+			  found = false ;
+			  
+			if ( ! found )
 			{
 				if ( assignedSetByID.contains( key ) )
 				{

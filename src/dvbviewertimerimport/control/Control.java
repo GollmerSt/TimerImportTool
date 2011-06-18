@@ -153,7 +153,7 @@ public class Control
 		String offsetEnd    = null ;
 		
 		Provider provider = null ;
-		long channelID    = -1L ;
+		String channelID    = null ;
 
 		
 		ChannelSet channelSet = null ;
@@ -235,7 +235,7 @@ public class Control
 				{
 					type = BlockType.CHANNEL_PROVIDER ;
 					provider = null ;
-					channelID = -1L ;
+					channelID = null ;
 				}
 				else if ( stack.equals( this.pathWOL ) )
 					type = BlockType.WOL ;
@@ -277,9 +277,7 @@ public class Control
 						}
 						else if ( attributeName.equals( "channelID" ) )
 						{
-							if ( ! value.matches("\\d+"))
-								throw new ErrorClass ( ev, "Wrong channel id format in file \"" + name + "\"" ) ;
-							channelID = Long.valueOf( value ) ;
+							channelID = value ;
 						}
 						break ;
 					case DVBSERVICE :

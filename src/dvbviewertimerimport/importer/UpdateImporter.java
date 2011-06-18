@@ -130,7 +130,7 @@ public class UpdateImporter
 	    				map.remove( resC.getName() ) ;
 	    				resultCS.remove( id ) ;
 	    			}
-	    			resultCS.add( id, c.getName(), c.getNumID() ) ;
+	    			resultCS.add( id, c.getName(), c.getTextID() ) ;
 	    			map.put( new String( c.getName() ), resultCS ) ;
 	    		}
 	    	}

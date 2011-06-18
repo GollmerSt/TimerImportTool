@@ -73,8 +73,8 @@ public class TVBrowser extends Provider
 		{
 			this.channelSet = new HashSet<String>();
 			ProviderChannel< String >[] channels = DVBViewerTimerImport.getTVBChannelNames();
-			for (ProviderChannel< String > pair : channels)
-				this.channelSet.add( pair.getKey() );
+			for (ProviderChannel< String > c : channels)
+				this.channelSet.add( c.getKey() );
 		}
 		return this.channelSet.contains( channel.getIDKey() ) ;
 	}		

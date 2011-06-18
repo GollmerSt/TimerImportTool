@@ -11,7 +11,7 @@ import javax.xml.stream.XMLStreamException;
 public class Channel {
 	private final int type ;
 	private final String name ;
-	private final String id ;
+	private String id ;
 	public Channel( int type, String name, String id )
 	{
 		this.type = type ;
@@ -26,6 +26,15 @@ public class Channel {
 	{
 		this( channel.type, channel.name, channel.id ) ;
 	}
+	public void setID( long id ) { this.id = id >= 0 ? Long.toString( id ) : null ; }
+  public void setID( String id ) { this.id = id ; }
+  public void setID( Object id )
+  { 
+    if ( id.getClass() == long.class )
+      this.setID( (Long)id ) ;
+    else
+      this.setID( (String)id ) ;
+  }
 	public int  getType() { return this.type ; } ;
 	public String getName() { return this.name ; } ;
 	public String getTextID() { return this.id ; } ;

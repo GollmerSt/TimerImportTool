@@ -4,7 +4,6 @@
 
 package dvbviewertimerimport.control ;
 
-import java.awt.Container;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -45,7 +44,7 @@ public class ChannelSet {
 	private long id = -1 ;
 
 	
-	public Channel add( int type, String name, long id )
+	public Channel add( int type, String name, String id )
 	{
 		Channel channel = new Channel( type, name, id ) ;
 		channels.add( channel ) ;
