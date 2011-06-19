@@ -840,6 +840,10 @@ public final class DVBViewerEntry  implements Cloneable
 			DVBViewerEntry s = list.get().get( 0 ) ;  // get first choice
 
 			x.dvbViewerID = s.dvbViewerID ;
+			
+			if ( x.mergeElement != null )
+				if ( x.start != s.start || x.end != s.end )
+					x.mergeElement.mergingChanged = true ;
 
 			x.start = s.start ;
 			x.end   = s.end ;
@@ -1262,7 +1266,16 @@ public final class DVBViewerEntry  implements Cloneable
 	}
 	public boolean isDisabled() { return this.statusTimer == StatusTimer.DISABLED || this.statusTimer == StatusTimer.REMOVED ; } ;
 	public boolean isEnabled() { return this.statusTimer == StatusTimer.ENABLED || this.statusTimer == StatusTimer.RECORDING ; }
-	public boolean isRecording() { return this.statusTimer == StatusTimer.RECORDING ; }
+
+	public boolean isRecording() { return this.statusTimer == StatusTimer.RECORDING ; } ;
+	public boolean isRecording( boolean recursive )
+	{
+		if ( this.statusTimer == StatusTimer.RECORDING )
+			return true ;
+		if ( this.mergeElement != null && recursive )
+			return this.mergeElement.isRecording( true ) ;
+		return false ;
+	}
 
 	public boolean isRemoved() { return this.statusTimer == StatusTimer.REMOVED ; }
 	public boolean isDeleted() { return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER ; } ;

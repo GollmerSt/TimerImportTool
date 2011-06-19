@@ -644,8 +644,8 @@ public class Control
 		File source, destination ;
 		
 		File controlFile = new File(   this.dvbViewer.getXMLFilePath()
-                + File.separator
-                + NAME_XML_CONTROLFILE_IMPORTED ) ;
+									 + File.separator
+									 + NAME_XML_CONTROLFILE_IMPORTED ) ;
 		
 		if ( from )
 		{
@@ -663,8 +663,8 @@ public class Control
 			istream = new FileInputStream( source );
 		} catch (FileNotFoundException e2) {
 			throw new ErrorClass(   "Unexpected error on reading file \""
-		              + source.getAbsolutePath()
-		              + "\"." ) ;
+								  + source.getAbsolutePath()
+								  + "\"." ) ;
 		}
 
 		FileOutputStream ostream = null ;
@@ -672,8 +672,8 @@ public class Control
 			ostream = new FileOutputStream( destination );
 		} catch (FileNotFoundException e1) {
 			throw new ErrorClass(   "Unexpected error on writing file \""
-		              + destination.getAbsolutePath()
-		              + "\"." ) ;
+								  + destination.getAbsolutePath()
+								  + "\"." ) ;
 		}
 		try {
 			byte [] buffer = new byte[2048] ;
@@ -701,12 +701,12 @@ public class Control
 		this.importStatus = ImportStatus.IMPORTED ;
 
 		File controlFile = new File(   this.dvbViewer.getXMLFilePath()
-                + File.separator
-                + NAME_XML_CONTROLFILE ) ;
+									 + File.separator
+									 + NAME_XML_CONTROLFILE ) ;
 		
 		File importedFile = new File(   this.dvbViewer.getXMLFilePath()
-                + File.separator
-                + NAME_XML_CONTROLFILE_IMPORTED ) ;
+									  + File.separator
+									  + NAME_XML_CONTROLFILE_IMPORTED ) ;
 		
 		controlFile.delete() ;
 		importedFile.renameTo( controlFile ) ;
