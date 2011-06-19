@@ -18,11 +18,11 @@ public class Channel {
 		this.name = name ;
 		this.id = id ;
 	}
-	public Channel( int type, String name, long id )
+/*	public Channel( int type, String name, long id )
 	{
 		this( type, name, id >= 0 ? Long.toString( id ) : null ) ;
 	}
-	public Channel( final Channel channel )
+*/	public Channel( final Channel channel )
 	{
 		this( channel.type, channel.name, channel.id ) ;
 	}

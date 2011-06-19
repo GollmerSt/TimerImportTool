@@ -38,7 +38,7 @@ public class DVBViewer {
 
 	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 
-	public static enum Command { SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER } ;
+	public static enum Command { SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER, UPDATE_UNRESOLVED_ENTRIES } ;
 	
 	private static final int TIMEOUT_S						  = 120 ; // DVBViewer waiting time
 	private static final int DVBVIEWER_SCAN_TIME_MS			  = 100 ; // Scan time for waiting DVBViewer
@@ -342,7 +342,11 @@ public class DVBViewer {
 		
 		return process( provider, getAll, argArray, command ) ;
 	}
-	public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
+  public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command  ) throws Exception
+  {
+    return process( null, provider, getAll, args, command ) ;
+  }
+	public boolean  process( DVBViewerEntry updateEntry, DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
 	{
 		boolean result = true ;
 		if ( command == Command.FIND && this.recordEntries != null )
@@ -356,10 +360,14 @@ public class DVBViewer {
 		try
 		{
 			this.readDVBViewerTimers() ;
-			this.mergeXMLWithDVBViewerData( null ) ;
+	    this.mergeXMLWithDVBViewerData( null ) ;
+
 			result  = provider.process(getAll, command ); ;
-			for ( Object o : args )
-				result &= provider.processEntry( o, command ) ;
+      if ( command == Command.UPDATE_UNRESOLVED_ENTRIES )
+        result &= provider.processEntry( null, command ) ;
+      else
+			  for ( Object o : args )
+		      result &= provider.processEntry( o, command ) ;
 		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
 		this.setDVBViewerTimers();
 		} catch ( Exception e ) {
@@ -464,6 +472,42 @@ public class DVBViewer {
 		this.addRecordingEntry( e ) ;
 		return true ;
 	}
+
+  public boolean updateEntry( DVBViewerEntry updateEntry,
+               Provider provider,
+               String providerID,
+               String channel,
+               long start,
+               long end,
+               String title )
+  {
+    Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
+    TimeOffsets o = c.getOffsets() ;
+    long startOrg = start ;
+    start -= o.getPreOffset(start)*60000 ;
+    long endOrg = end ;
+    end  += o.getPostOffset(end)*60000 ;
+    
+    if ( end < System.currentTimeMillis() )
+      return false ;
+
+    DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
+                                       c.getChannelSet(),
+                         providerID,
+                         start,
+                         end,
+                         startOrg,
+                         endOrg,
+                         "-------",
+                         title,
+                         this.timerAction ,
+                         this.afterRecordingAction ,
+                         c.getMerge( provider.getMerge() ),
+                         provider ) ;
+
+    updateEntry.update ( e ) ;
+    return true ;
+  }
 	public void deleteEntry( Provider provider,
 			 String channel,
 			 long start,

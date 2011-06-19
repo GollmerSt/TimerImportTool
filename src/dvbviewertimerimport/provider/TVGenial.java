@@ -40,7 +40,8 @@ public class TVGenial extends Provider {
 	
 	private HashSet< Long > channelSet = null ;
 	
-	public TVGenial( Control control ) {
+
+ public TVGenial( Control control ) {
 		super( control, false, false, "TVGenial", false, false, false, true, false, false);
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
@@ -50,6 +51,23 @@ public class TVGenial extends Provider {
 		
 		this.isFunctional = null != Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
 	}
+
+ @Override
+ public Channel createChannel( String name, String id )
+ {
+   return new Channel( this.getID(), name, id )
+   {
+     @Override
+     public Object getIDKey()
+     {
+       return Long.valueOf( getNumID() ) ;
+     }
+     @Override
+     public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
+     } ;
+   };
+
+	
 	@Override
 	public boolean install()
 	{
@@ -166,16 +184,7 @@ public class TVGenial extends Provider {
 						break ;
 					nameLong = name + Integer.valueOf( countR++ ) ;
 				}
-				Channel c = new Channel( pid, nameLong, tvuid ) 
-				{
-					@Override
-					public Object getIDKey()
-					{
-						return Long.valueOf( getNumID() ) ;
-					}
-					@Override
-					public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
-				};
+				Channel c = this.createChannel( nameLong, Long.toString( tvuid ) ) ;
 				list.add( c ) ; ;
 				nameMap.put( nameLong, tvuid ) ;
 			}

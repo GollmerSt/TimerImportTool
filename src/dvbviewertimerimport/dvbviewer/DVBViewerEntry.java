@@ -22,7 +22,6 @@ import javax.xml.stream.events.XMLEvent;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
 import dvbviewertimerimport.control.ChannelSet;
-import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import dvbviewertimerimport.misc.* ;
 import dvbviewertimerimport.provider.OutDatedInfo;
@@ -245,6 +244,34 @@ public final class DVBViewerEntry  implements Cloneable
 		entry.program = this.program ;
 
 		return entry ;
+	}
+	public boolean update( DVBViewerEntry entry )
+	{
+    this.providerID = entry.providerID ;
+    if ( ! this.channel.equals( entry.channel ) )
+      return false ;;
+    if ( this.channelSet != entry.channelSet )
+      return false ;
+    if ( ! this.isRecording() )
+    {
+      this.start = entry.start ;
+    }
+    this.startOrg = entry.startOrg ;
+    this.end = entry.end ;
+    this.endOrg = entry.endOrg ;
+    this.days = entry.days ;
+    this.title =  entry.title ;
+    this.timerAction = entry.timerAction ;
+    this.actionAfter = entry.actionAfter ;
+    this.mergeStatus = entry.mergeStatus ;
+    this.mergeID = entry.mergeID ;      //TODO
+    this.provider = entry.provider ;
+    this.outDatedInfo = entry.outDatedInfo.clone() ;
+    this.isCollapsed = entry.isCollapsed ;
+    this.toDo = ToDo.UPDATE ;
+    if ( this.mergeElement != null )
+      this.mergeElement.mergingChanged = true ;
+    return true ;
 	}
 	private void splitChannel()
 	{
@@ -856,8 +883,8 @@ public final class DVBViewerEntry  implements Cloneable
 			if ( ! x.mergingChanged || x.isDeleted() )
 				continue ;
 			
-			if ( x.isRecording() )
-				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
+//			if ( x.isRecording() )
+//				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
 
 			long nStart = -1 ;
 			long nEnd = -1 ;
@@ -1782,4 +1809,5 @@ public final class DVBViewerEntry  implements Cloneable
 			throw new ErrorClass( e, "Unexpected error on writing the file \"" + f.getName() + "\"" );
 		}
 	}
+	public ChannelSet getChannelSet() { return channelSet ; } ; 
 }

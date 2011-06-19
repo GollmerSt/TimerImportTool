@@ -57,14 +57,14 @@ public class ProviderAssignment  extends MyTabPanel
 			this.channel = channel ;
 			this.listIndex = ix ;
 		}
-		ChannelAssignment( int pid, String name, long id, int ix )
+		ChannelAssignment( int pid, String name, String id, int ix )
 		{
-			this.channel = new Channel( pid, name, id ) ;
+		  this.channel = Provider.getProvider( pid ).createChannel( name, id ) ;
 			this.listIndex = ix ;
 		}
 		ChannelAssignment( int pid, String name, int ix )
 		{
-			this( pid, name, -1L, ix ) ;
+			this( pid, name, "", ix ) ;
 		}
 		public String toString() { return this.channel.getName() ; } ;
 		public Channel getChannel() { return this.channel ; } ;

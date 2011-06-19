@@ -72,6 +72,21 @@ public final class TVInfo extends Provider {
 		this.htmlDateFormat = new SimpleDateFormat("EE d.M.y H:m") ;
 		this.htmlDateFormat.setTimeZone( timeZone ) ;
 	}
+	 @Override
+	 public Channel createChannel( String name, String id )
+	 {
+	   return new Channel( this.getID(), name, id )
+     {
+       @Override
+       public Object getIDKey()
+       {
+         return this.getName() ;
+       }
+       @Override
+       public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
+     };
+	 }
+	  
 	private String getMD5()
 	{
 		MessageDigest md = null ;
@@ -498,16 +513,7 @@ public final class TVInfo extends Provider {
 			if ( t == HTML.Tag.IMG )
 			{
 				String channelName = (String) a.getAttribute( HTML.Attribute.ALT ) ;
-				Channel c = new Channel( getID(), channelName, -1  )
-				{
-					@Override
-					public Object getIDKey()
-					{
-						return this.getName() ;
-					}
-					@Override
-					public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
-				};
+				Channel c = createChannel( channelName, ""  ) ;
 				allSender.add( c ) ;
 				if ( this.isChecked )
 					userSender.add( channelName ) ;

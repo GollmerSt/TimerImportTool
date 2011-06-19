@@ -45,6 +45,10 @@ public abstract class Provider implements DVBViewerProvider {
 	private static Stack< ArrayList< String > >  nameStack = new Stack< ArrayList< String > >() ;
 	private static Stack< ArrayList< Provider > > providerStack = new Stack< ArrayList< Provider > >() ;
 	
+	public Channel createChannel( String name, String id )
+	{
+	  return new Channel( this.id, name, id ) ;
+	}
 	public static void push()
 	{
 		Provider.nameStack.push( Provider.names ) ;
@@ -209,6 +213,10 @@ public abstract class Provider implements DVBViewerProvider {
 			return null ;
 		return Provider.providers.get( pos ) ;
 	}
+  public static Provider getProvider( int id )
+  {
+    return Provider.providers.get( id ) ;
+  }
 	public static String getProviderName( int id)
 	{
 		return Provider.names.get( id ) ;

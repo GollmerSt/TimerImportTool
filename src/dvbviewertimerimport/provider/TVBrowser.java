@@ -30,6 +30,21 @@ public class TVBrowser extends Provider
 	}
 	
 	@Override
+	public Channel createChannel( String name, String id )
+	{
+	  return new Channel( this.getID(), name, id )
+	  {
+      @Override
+      public Object getIDKey()
+      {
+        return this.getTextID() ;
+      }
+      @Override
+      public Object getIDKey( final Channel c ) { return c.getTextID() ; } ;  // ID of the provider, type is provider dependent
+	  } ;
+	}
+	
+	@Override
 	protected ArrayList< Channel > readChannels()
 	{
 		ProviderChannel< String > [] channels = DVBViewerTimerImport.getTVBChannelNames() ;
@@ -38,16 +53,7 @@ public class TVBrowser extends Provider
 		
 		for ( ProviderChannel< String > cP : channels )
 		{
-			Channel c = new Channel( getID(), cP.getName() , cP.getKey()  )
-			{
-				@Override
-				public Object getIDKey()
-				{
-					return this.getTextID() ;
-				}
-				@Override
-				public Object getIDKey( final Channel c ) { return c.getTextID() ; } ;  // ID of the provider, type is provider dependent
-			};
+			Channel c = this.createChannel( cP.getName() , cP.getKey()  ) ;
 			result.add( c ) ;
 		}
 		return result ;

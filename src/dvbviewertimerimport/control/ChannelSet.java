@@ -14,6 +14,7 @@ import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
 import javax.xml.stream.XMLStreamException;
 
 import dvbviewertimerimport.misc.Enums.Merge;
+import dvbviewertimerimport.provider.Provider;
 
 public class ChannelSet {
 	
@@ -46,7 +47,7 @@ public class ChannelSet {
 	
 	public Channel add( int type, String name, String id )
 	{
-		Channel channel = new Channel( type, name, id ) ;
+		Channel channel = Provider.getProvider( type).createChannel( name, id ) ;
 		channels.add( channel ) ;
 		return channel ;
 	}
