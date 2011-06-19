@@ -7,6 +7,7 @@ package dvbviewertimerimport;
 import java.awt.event.ActionEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -85,8 +86,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
   private GregorianCalendar calendar ;
 
-  private Map< String, String > channelAssignmentDvbVToTvB = null ;
-
   private ProviderChannel< String >[] tvbChannelNames = null ;
   private Map< String, Channel > uniqueAssignment = null ;
 
@@ -131,8 +130,17 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       e.printStackTrace();
     } catch (TerminateClass e) {
     }
- }
-
+  }
+  
+  private static Map< String, Channel > getUniqueAssignmentMap()
+  {
+    if ( DVBViewerTimerImport.plugin == null )
+      return null ;
+    if ( DVBViewerTimerImport.plugin.uniqueAssignment == null )
+      getTVBChannelNames() ;
+    return DVBViewerTimerImport.plugin.uniqueAssignment ;
+  }
+  
 
 
   /**
@@ -453,7 +461,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       control.renameImportedFile() ;
       settingsPanel.updateTab() ;
       control.write( null ) ;
-      channelAssignmentDvbVToTvB = null ;
     }
 
   }
@@ -470,6 +477,29 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     if ( command == Command.UPDATE_TVBROWSER )
     {
       this.updateMarks() ;
+      return true ;
+    }
+    
+    if ( command == Command.UPDATE_UNRESOLVED_ENTRIES )
+    {
+      for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
+      {
+        if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
+        {
+          Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
+          if ( program != null )
+            continue ;
+          Program pgm = this.searchBestFit( co ) ;
+          if ( pgm == null )
+            continue ;
+          long [] times = calcRecordTimes( pgm ) ;
+          String channel = pgm.getChannel().getName() ;
+          dvbViewer.updateEntry( co, provider, pgm.getUniqueID(), channel, times[0], times[1], pgm.getTitle() ) ;
+          this.markProgram( pgm, true ) ;
+          pgm.validateMarking() ;
+          continue ;
+        }
+      }
       return true ;
     }
 
@@ -529,7 +559,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     {
       this.markProgram( program, false ) ;
     }
-    Map< dvbviewertimerimport.dvbviewer.Channel, Map< String, DVBViewerEntry > > unresolvedEntries= new HashMap< dvbviewertimerimport.dvbviewer.Channel, Map< String, DVBViewerEntry > >() ;
+    
+    boolean unresolvedEntries = false ;
     for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
     {
       if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
@@ -537,17 +568,32 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
         Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
         if ( program == null )
         {
-          dvbviewertimerimport.dvbviewer.Channel channel = dvbViewer.getDVBViewerChannel(Provider.size(), co.getChannel() ) ;  //TODO hier muss der Provider hin
-          if ( ! unresolvedEntries.containsKey( channel ))
-            unresolvedEntries.put( channel, new TreeMap< String, DVBViewerEntry >() ) ;
-          unresolvedEntries.get( channel ).put( co.getTitle(), co ) ;
+          unresolvedEntries = true ;
           continue ;
         }
         this.markProgram( program, true ) ;
         program.validateMarking() ;
       }
     }
+    
+    if ( unresolvedEntries )
+    {
+      try {
+        control.getDVBViewer().process( dvbViewerProvider, false, null, Command.UPDATE_UNRESOLVED_ENTRIES ) ;
+      } catch ( ErrorClass err ) {
+        errorMessage( err ) ;
+        return;
+      } catch (Exception err ) {
+          errorMessage( err ) ;
+          err.printStackTrace();
+          return ;
+      } catch (TerminateClass err) {
+          return ;
+      }
+    }
     this.updateTreeNode() ;
+    if ( dvbViewer != null )
+      dvbViewer.writeXML() ;
   }
   private long [] calcRecordTimes( final Program program )
   {
@@ -684,4 +730,71 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       return targets ;
   }
 
+  public Program searchBestFit( DVBViewerEntry entry )
+  {
+    Program result = null ;
+    Date [] interval = new Date[ 2 ] ;
+    
+    long startTimeOrg = entry.getStartOrg() ;
+    
+    long startSearch = startTimeOrg - 1000 * 60 * 60 * 3 ;
+    long endSearch = startTimeOrg + 1000 * 60 * 60 * 3 ;
+    
+    calendar.clear() ;
+    calendar.setTimeInMillis( startSearch ) ;
+    interval[ 0 ] = new Date( calendar ) ;
+    
+    calendar.clear() ;
+    calendar.setTimeInMillis( endSearch ) ;
+    interval[ 1 ] = new Date( calendar ) ;
+        
+    int end = 2 ;
+    
+    if ( interval[ 0 ].getDayOfMonth() == interval[ 1 ].getDayOfMonth() )
+      end = 1 ;
+    
+    String uniqueName = (String) entry.getChannelSet().getChannel( this.providerID ).getIDKey() ;
+    Channel channel = DVBViewerTimerImport.getUniqueAssignmentMap().get(uniqueName) ;
+    
+    if ( channel == null )
+      return null ;
+    
+    Collection< Program > possibilities = new ArrayList< Program >() ;
+    
+    for ( int i = 0 ; i < end ; ++i )
+    {
+      Iterator<Program> it = Plugin.getPluginManager().getChannelDayProgram( interval[ i ], channel) ;
+      for ( ; it.hasNext() ; )
+      {
+        Program pgm = it.next() ;
+        if ( pgm.getTitle().equals( entry.getTitle() ) )
+          possibilities.add( pgm ) ;
+      }
+    }
+    if ( possibilities.size() == 0 )
+      return null ;
+    
+    long deltaMin = startTimeOrg ;
+    
+    for ( Iterator< Program > it = possibilities.iterator() ; it.hasNext() ; )
+    {
+      Program pgm = it.next() ;
+      Date dd = pgm.getDate() ;
+      calendar.clear() ;
+      calendar.set(
+          dd.getYear(),
+          dd.getMonth()-1,
+          dd.getDayOfMonth(),
+          pgm.getHours(),
+          pgm.getMinutes() ) ;
+
+      long delta  = Math.abs( calendar.getTimeInMillis() - startTimeOrg ) ;
+      if ( result == null || deltaMin > delta )
+      {
+        result = pgm ;
+        deltaMin = delta ;
+      }
+    }
+    return result ;
+  }
 }
