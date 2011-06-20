@@ -245,6 +245,16 @@ public final class DVBViewerEntry  implements Cloneable
 
 		return entry ;
 	}
+	private void updateStartEnd( long start, long end )
+	{
+	  if ( ! this.isRecording() || end - this.start >= Constants.DAYMILLSEC )
+	  {
+	    this.start = start ;
+	    this.end   = end ;
+	  }
+	  else
+	    this.end = end ;
+	}
 	public boolean update( DVBViewerEntry entry )
 	{
     this.providerID = entry.providerID ;
@@ -252,12 +262,8 @@ public final class DVBViewerEntry  implements Cloneable
       return false ;;
     if ( this.channelSet != entry.channelSet )
       return false ;
-    if ( ! this.isRecording() )
-    {
-      this.start = entry.start ;
-    }
+    this.updateStartEnd( start, end ) ;
     this.startOrg = entry.startOrg ;
-    this.end = entry.end ;
     this.endOrg = entry.endOrg ;
     this.days = entry.days ;
     this.title =  entry.title ;
