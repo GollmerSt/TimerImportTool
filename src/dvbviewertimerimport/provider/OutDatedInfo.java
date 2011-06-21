@@ -81,14 +81,14 @@ public class OutDatedInfo implements Cloneable
 	{
 		if ( key.equals( "missingSince" ) || key.equals( "missingSyncSince" ) )
 		{
-        	if ( !value.matches("-*\\d+") )
-        		throw new ErrorClass ( "Wrong " + key + " format" ) ;
-        	long l = Long.valueOf( value ) ;
-        	
-        	if ( key.equals( "missingSince" ) )
-        		missingSince = l ;
-        	else if ( key.equals( "missingSyncSince" ) )
-        		missingSyncSince = (int) l ;
+			if ( !value.matches("-*\\d+") )
+				throw new ErrorClass ( "Wrong " + key + " format" ) ;
+			long l = Long.valueOf( value ) ;
+			
+			if ( key.equals( "missingSince" ) )
+				missingSince = l ;
+			else if ( key.equals( "missingSyncSince" ) )
+				missingSyncSince = (int) l ;
 		}
 		else if ( key.equals( "enable" ) )
 		{

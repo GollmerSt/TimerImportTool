@@ -83,7 +83,7 @@ public class ProviderAssignment  extends MyTabPanel
 	private final JButton modifyChannelButton = new JButton() ;
 	private final JButton importButton = new JButton() ;
 	private final JTable table ;
-    private TableRowSorter<TableModel> sorter = null ;
+	private TableRowSorter<TableModel> sorter = null ;
 
 	private final JLabel messageLabel = new JLabel() ;
 
@@ -98,8 +98,8 @@ public class ProviderAssignment  extends MyTabPanel
 
 	public class LockBoxChanged implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e)
-	    {
+		public void actionPerformed(ActionEvent e)
+		{
 			messageLabel.setText( "") ;
 			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			boolean enable = unlockBox.isSelected() ;
@@ -109,12 +109,12 @@ public class ProviderAssignment  extends MyTabPanel
 			enableByProvider( enable ) ;
 			updateTable() ;
 			table.setEnabled( enable ) ;
-	    }
+		}
 	}
 	public class ProviderSelected implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e)
-	    {
+		public void actionPerformed(ActionEvent e)
+		{
 			messageLabel.setText( "") ;
 			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 
@@ -162,7 +162,7 @@ public class ProviderAssignment  extends MyTabPanel
 					}
 				}
 			}
-	    }
+		}
 	}
 	public class ChannelButtonsPressed implements ActionListener
 	{
@@ -463,8 +463,8 @@ public class ProviderAssignment  extends MyTabPanel
 		for ( Provider p : Provider.getProviders() )
 		{
 			int pid = p.getID() ;
-		    JComboBox comboBox = new JComboBox();
-		    comboBox.addPopupMenuListener( new PopupCellChanged() ) ;
+			JComboBox comboBox = new JComboBox();
+			comboBox.addPopupMenuListener( new PopupCellChanged() ) ;
 			column = this.table.getColumnModel().getColumn( pid + 1 ) ;
 			column.setPreferredWidth( 150 ) ;
 			DefaultCellEditor cellEditor = new DefaultCellEditor(comboBox)
@@ -476,17 +476,17 @@ public class ProviderAssignment  extends MyTabPanel
 
 
 				@Override
-		        public Component getTableCellEditorComponent(
-		              JTable table,
-		              Object value,
-		              boolean isSelected,
-		              int row,
-		              int col)
+				public Component getTableCellEditorComponent(
+					  JTable table,
+					  Object value,
+					  boolean isSelected,
+					  int row,
+					  int col)
 				{
 					String channel = value.toString() ;
 					((JComboBox)getComponent()).setSelectedItem( channel ) ;
 					return super.getTableCellEditorComponent(table, value,
-					                                         isSelected, row, col);
+															 isSelected, row, col);
 				}
 			} ;
 			column.setCellEditor( cellEditor ) ;
@@ -608,8 +608,8 @@ public class ProviderAssignment  extends MyTabPanel
 		 */
 		private static final long serialVersionUID = -4564280852966603471L;
 /*		private ImageIcon active   = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
-	    private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
-*/	    @Override
+		private ImageIcon inactive   = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
+*/		@Override
 		public int getColumnCount() {
 			return Provider.getProviders().size() + 1 ;
 		}
@@ -617,7 +617,7 @@ public class ProviderAssignment  extends MyTabPanel
 			return columnNames[col];
 		}
 		@Override
-	    public Class<MyTableObject> getColumnClass(int col)
+		public Class<MyTableObject> getColumnClass(int col)
 		{
 /*			if ( col == 0 )
 				return ImageIcon.class ;
@@ -701,12 +701,12 @@ public class ProviderAssignment  extends MyTabPanel
 					showTableLine( pcsid ) ;
 					int answer = JOptionPane.showConfirmDialog(
 							guiPanel.getWindow(),
-							        "\"" + channel + "\" " + ResourceManager.msg( "ASSIGNED_ERROR" ),
-							        Constants.PROGRAM_NAME,
-							        JOptionPane.OK_CANCEL_OPTION );
+									"\"" + channel + "\" " + ResourceManager.msg( "ASSIGNED_ERROR" ),
+									Constants.PROGRAM_NAME,
+									JOptionPane.OK_CANCEL_OPTION );
 					if ( answer == JOptionPane.CANCEL_OPTION )
 					{
-			        	showTableLine( csid ) ;
+						showTableLine( csid ) ;
 						return ;
 					}
 					ChannelSet pcs = control.getChannelSets().get( pcsid ) ;

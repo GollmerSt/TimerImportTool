@@ -690,8 +690,7 @@ public class Control
 					              + destination.getAbsolutePath()
 					              + "\"." ) ;
 		}
-
-    }
+	}
 	
 	public void renameImportedFile()
 	{

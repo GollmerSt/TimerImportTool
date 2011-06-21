@@ -33,11 +33,11 @@ public class GUIPanel extends JPanel
 	private MyTabPanel previousTab = null ;
 
 	private final JTabbedPane tabbedPane = new JTabbedPane() ;
-    
-    private DVBViewerAssignment dvbViewerAssignment = null ;
-    private ProviderAssignment providerAssignment = null ;
-    private Miscellaneous miscellaneous = null ;
-    
+	
+	private DVBViewerAssignment dvbViewerAssignment = null ;
+	private ProviderAssignment providerAssignment = null ;
+	private Miscellaneous miscellaneous = null ;
+	
 	public GUIPanel( Control control )
 	{
 		this( null, control ) ;
@@ -52,8 +52,8 @@ public class GUIPanel extends JPanel
 		this.isChanged = false ;
 	}
 	
-    private class TabChanged implements ChangeListener
-    {
+	private class TabChanged implements ChangeListener
+	{
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			updateExecuteButton() ;
@@ -65,13 +65,13 @@ public class GUIPanel extends JPanel
 				previousTab.update( false );
 			previousTab = source ;
 		}
-    	
-    }
+		
+	}
 
 	public Control getControl() { return this.control ; } ;
 	public Window getWindow()
 	{
-	  Window w = null ;
+		Window w = null ;
 		try
 		{
 			w = (Window) this.getRootPane().getParent() ;
@@ -86,28 +86,28 @@ public class GUIPanel extends JPanel
 	public void init()
 	{ 
 
-	    
-	    dvbViewerAssignment = new DVBViewerAssignment( this ) ;
-	    ProviderService tab2 = new ProviderService( this ) ;
-	    this.miscellaneous = new Miscellaneous( this ) ;
-	    this.providerAssignment = new ProviderAssignment( this ) ;
-	    	    
-	    this.tabbedPane.add( ResourceManager.msg( "DVBVIEWER_ASSIGNMENT" ), dvbViewerAssignment); 
-	    this.tabbedPane.add( ResourceManager.msg( "PROVIDER_SERVICE" ), tab2);
-	    this.tabbedPane.add( ResourceManager.msg( "MISCELLANEOUS" ), this.miscellaneous);
-	    this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), providerAssignment);
-	    
-	    this.tabbedPane.setSelectedComponent( miscellaneous ) ;
+		
+		dvbViewerAssignment = new DVBViewerAssignment( this ) ;
+		ProviderService tab2 = new ProviderService( this ) ;
+		this.miscellaneous = new Miscellaneous( this ) ;
+		this.providerAssignment = new ProviderAssignment( this ) ;
+				
+		this.tabbedPane.add( ResourceManager.msg( "DVBVIEWER_ASSIGNMENT" ), dvbViewerAssignment); 
+		this.tabbedPane.add( ResourceManager.msg( "PROVIDER_SERVICE" ), tab2);
+		this.tabbedPane.add( ResourceManager.msg( "MISCELLANEOUS" ), this.miscellaneous);
+		this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), providerAssignment);
+		
+		this.tabbedPane.setSelectedComponent( miscellaneous ) ;
 
-	    for ( Component tp : this.tabbedPane.getComponents() )
-	    	((MyTabPanel)tp).init() ;
-	    
-	    this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
-	    
+		for ( Component tp : this.tabbedPane.getComponents() )
+			((MyTabPanel)tp).init() ;
+		
+		this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
+		
 		this.add( this.tabbedPane, BorderLayout.CENTER ) ;
-	    this.tabbedPane.addChangeListener( new TabChanged() ) ;
+		this.tabbedPane.addChangeListener( new TabChanged() ) ;
 
-	    this.updateExecuteButton() ;
+		this.updateExecuteButton() ;
 }
 	public MyTabPanel getSelectedComponent()
 	{

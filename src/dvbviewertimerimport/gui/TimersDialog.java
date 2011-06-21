@@ -48,10 +48,10 @@ public class TimersDialog extends JDialog {
 	private MyTreeTable recordingTable = null ;
 	private TimersTreeTableModel treeTableModel = null ;
 		
-    private final JButton reloadButton = new JButton() ;
-    private final JButton okButton = new JButton() ;
-    private final JButton cancelButton = new JButton() ;
-    private final JButton applyButton = new JButton() ;
+	private final JButton reloadButton = new JButton() ;
+	private final JButton okButton = new JButton() ;
+	private final JButton cancelButton = new JButton() ;
+	private final JButton applyButton = new JButton() ;
 		
 	private TimerstablePopUpMenu tablePopUp = null ;
 	private static ImageIcon programIcon   = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewer icon" ) ;
@@ -136,43 +136,43 @@ public class TimersDialog extends JDialog {
 				
 				
 			}
-		    public Component getTreeCellRendererComponent(
-                    JTree tree,
-                    Object value,
-                    boolean sel,
-                    boolean expanded,
-                    boolean leaf,
-                    int row,
-                    boolean hasFocus)
-		    {
-		    	super.getTreeCellRendererComponent(
-                    tree, value, sel,
-                    expanded, leaf, row,
-                    hasFocus);
-		    	DVBViewerEntry entry = (DVBViewerEntry)value ;
-		    	setText("") ;
-		    	if ( ! leaf )
-		    	{
-		    		if ( entry.isRecording())
-			    		setIcon( recordingIcon );
-		    		return this ;
-		    	}
-		    	if (entry.isRemoved() && ! entry.isMerged() )
-		    		setIcon(filterTimerIcon) ;
-		    	else if ( entry.isDisabled() )
-		    	{
-		    		if ( entry.isMerged() )
-		    		{
-		    			if ( entry.getMergeEntry().isDisabled() )
-		    				setIcon( disabledTimerIcon );
-		    		}
-		    		else 
-	    				setIcon( disabledTimerIcon );
-		    	}
-		    	else if ( entry.isRecording() )
-		    		setIcon( recordingIcon );
-			    return this;
-		    } 
+			public Component getTreeCellRendererComponent(
+					JTree tree,
+					Object value,
+					boolean sel,
+					boolean expanded,
+					boolean leaf,
+					int row,
+					boolean hasFocus)
+			{
+				super.getTreeCellRendererComponent(
+					tree, value, sel,
+					expanded, leaf, row,
+					hasFocus);
+				DVBViewerEntry entry = (DVBViewerEntry)value ;
+				setText("") ;
+				if ( ! leaf )
+				{
+					if ( entry.isRecording())
+						setIcon( recordingIcon );
+					return this ;
+				}
+				if (entry.isRemoved() && ! entry.isMerged() )
+					setIcon(filterTimerIcon) ;
+				else if ( entry.isDisabled() )
+				{
+					if ( entry.isMerged() )
+					{
+						if ( entry.getMergeEntry().isDisabled() )
+							setIcon( disabledTimerIcon );
+					}
+					else 
+						setIcon( disabledTimerIcon );
+				}
+				else if ( entry.isRecording() )
+					setIcon( recordingIcon );
+				return this;
+			} 
 		}
 	}
 	
@@ -190,12 +190,12 @@ public class TimersDialog extends JDialog {
 		tree.setRootVisible( false ) ;
 
 		MyTreeTable.MyTreeRenderer renderer = 
-	    	new MyTreeTable.MyTreeRenderer();
-	        tree.setCellRenderer(renderer);
+			new MyTreeTable.MyTreeRenderer();
+			tree.setCellRenderer(renderer);
 
 		this.recordingTable.addMouseListener( new MyTableMouseListener() ) ;
 
-	    this.setTitle( ResourceManager.msg( "TIMER_TABLE" ) ) ;
+		this.setTitle( ResourceManager.msg( "TIMER_TABLE" ) ) ;
 		
 		Insets i = new Insets( 5, 5, 5, 5 );
 		GridBagConstraints c = null ;
@@ -288,7 +288,7 @@ public class TimersDialog extends JDialog {
 		this.updateButtons() ;
 		
 		this.pack(); 
-        this.setLocationRelativeTo(null);
+		this.setLocationRelativeTo(null);
 		this.setVisible( true );
 	}
 
@@ -371,15 +371,15 @@ public class TimersDialog extends JDialog {
 		}
 		private void mayShowTablePopUp( MouseEvent evt )
 		{
-            if (evt.getButton() == MouseEvent.BUTTON3 && evt.isPopupTrigger())
-            {
-                int row = recordingTable.rowAtPoint( evt.getPoint() );
-                if ( !recordingTable.isRowSelected( row ))
-                	recordingTable.changeSelection( row, 0, false, false );
-                this.rightButtonPressed = true ;
-                tablePopUp.show(evt.getComponent(), evt.getX(), evt.getY());
-                
-            }
+			if (evt.getButton() == MouseEvent.BUTTON3 && evt.isPopupTrigger())
+			{
+				int row = recordingTable.rowAtPoint( evt.getPoint() );
+				if ( !recordingTable.isRowSelected( row ))
+					recordingTable.changeSelection( row, 0, false, false );
+				this.rightButtonPressed = true ;
+				tablePopUp.show(evt.getComponent(), evt.getX(), evt.getY());
+				
+			}
 		}
 	}
 	private class ButtonsPressed implements ActionListener

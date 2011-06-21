@@ -24,11 +24,11 @@ public final class TimerImportTool {
 
 		DVBViewer dvbViewer = null ;
 		
-        try {
-        	//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-        	//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
-        	//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" ) ;
-        	UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
+		try {
+			//UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.motif.MotifLookAndFeel");
+			//UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" ) ;
+			UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
 		} catch (ClassNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

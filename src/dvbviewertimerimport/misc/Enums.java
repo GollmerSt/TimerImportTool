@@ -75,7 +75,7 @@ public class Enums {
 					list.add( i ) ;
 			ActionAfterItems.serviceValues = new ActionAfterItems []{ ActionAfterItems.NONE } ;
 			ActionAfterItems.serviceValues = list.toArray( ActionAfterItems.serviceValues ) ;
- 			return ActionAfterItems.serviceValues ;
+			return ActionAfterItems.serviceValues ;
 		}
 	}
 	public enum TimerActionItems
@@ -138,7 +138,7 @@ public class Enums {
 					list.add( i ) ;
 			TimerActionItems.serviceValues = new TimerActionItems []{ TimerActionItems.RECORD } ;
 			TimerActionItems.serviceValues = list.toArray( TimerActionItems.serviceValues ) ;
- 			return TimerActionItems.serviceValues ;
+			return TimerActionItems.serviceValues ;
 		}
 	}
 

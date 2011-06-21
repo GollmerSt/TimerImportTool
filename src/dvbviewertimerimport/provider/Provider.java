@@ -105,14 +105,14 @@ public abstract class Provider implements DVBViewerProvider {
 	
 	public Provider( Control control,
 					 boolean hasAccount,
-			         boolean hasURL,
-			         String name,
-			         boolean canExecute,
-			         boolean canTest,
-			         boolean filter,
-			         boolean mustInstall,
-			         boolean silent ,
-			         boolean isOutDatedLimitsEnabled )
+					 boolean hasURL,
+					 String name,
+					 boolean canExecute,
+					 boolean canTest,
+					 boolean filter,
+					 boolean mustInstall,
+					 boolean silent ,
+					 boolean isOutDatedLimitsEnabled )
 	{
 		this.control      = control ;
 		this.hasAccount   = hasAccount ;
@@ -213,10 +213,10 @@ public abstract class Provider implements DVBViewerProvider {
 			return null ;
 		return Provider.providers.get( pos ) ;
 	}
-  public static Provider getProvider( int id )
-  {
-    return Provider.providers.get( id ) ;
-  }
+	public static Provider getProvider( int id )
+	{
+		return Provider.providers.get( id ) ;
+	}
 	public static String getProviderName( int id)
 	{
 		return Provider.names.get( id ) ;
@@ -406,7 +406,7 @@ public abstract class Provider implements DVBViewerProvider {
 			return -1 ;
 		
 		HashMap< Object, ChannelSet > mapByID = new HashMap< Object, ChannelSet >() ;
-    HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
+		HashMap< String, ChannelSet > mapByName = new HashMap< String, ChannelSet >() ;
 
 		int pid = this.getID() ;
 		
@@ -422,7 +422,7 @@ public abstract class Provider implements DVBViewerProvider {
 			mapByName.put(c.getName(), cs ) ;
 			Object key = channelProv.getIDKey( c ) ;
 			if ( key != null )
-      mapByID.put( key, cs ) ;
+				mapByID.put( key, cs ) ;
 		}
 		
 		int count = 0 ;

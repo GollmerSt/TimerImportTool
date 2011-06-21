@@ -111,57 +111,57 @@ public class ProviderService extends MyTabPanel {
 
 	public class ProviderSelected implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e) {
-	    	lockBox.setSelected( false ) ;
-	        JComboBox cb = (JComboBox)e.getSource();
-	        Object o = cb.getSelectedItem() ;
-	        if ( o == null )
-	        	return ;
-	        setListenerProviderCheckBoxes( false ) ;
-	        updateProvider() ;
-	        Provider p = (Provider)cb.getSelectedItem() ;
-	        lastProvider = p ;
-	        boolean hasURL = p.hasURL() ;
-	        boolean hasAccount = p.hasAccount() ;
-	        lockBox.setEnabled( hasURL ) ;
-	        if ( lockBox.isSelected() )
-	        	urlBox.setEnabled( hasURL ) ;
-	        else
-	        	urlBox.setEnabled( false ) ;
-	        userNameLabel.setEnabled( hasAccount ) ;
-	        userNameBox.setEnabled( hasAccount ) ;
-	        passwordLabel.setEnabled( hasAccount ) ;
-	        passwordBox.setEnabled( hasAccount ) ;
-	        triggerBox.setValue( p.getTriggerAction() ) ;
-	        providerButton.setEnabled( p.canTest() ) ;
-	        providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
-	        if ( hasURL )
-	        	urlBox.setText( p.getURL() ) ;
-	        else
-	        	urlBox.setText( "" ) ;
-	        if ( hasAccount )
-	        {
-	        	userNameBox.setText( p.getUserName() ) ;
-	        	passwordBox.setText( p.getPassword() ) ;
-	        }
-	        else
-	        {
-	        	userNameBox.setText( "" ) ;
-	        	passwordBox.setText( "" ) ;
-	        	
-	        }
-	        setOutDated( p.getOutDatedLimits() ) ;
-	        verboseBox.setSelected( p.getVerbose() ) ;
-	        messageBox.setSelected( p.getMessage() ) ;
-	        mergeBox.setSelected( p.getMerge() ) ;
-	        filterBox.setSelected( p.isFiltered() ) ;
-    		installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
-    		uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
-	        installButton.setEnabled( p.mustInstall() ) ;
-	        uninstallButton.setEnabled( p.mustInstall() ) ;
-	        setListenerProviderCheckBoxes( true ) ;
+		public void actionPerformed(ActionEvent e) {
+			lockBox.setSelected( false ) ;
+			JComboBox cb = (JComboBox)e.getSource();
+			Object o = cb.getSelectedItem() ;
+			if ( o == null )
+				return ;
+			setListenerProviderCheckBoxes( false ) ;
+			updateProvider() ;
+			Provider p = (Provider)cb.getSelectedItem() ;
+			lastProvider = p ;
+			boolean hasURL = p.hasURL() ;
+			boolean hasAccount = p.hasAccount() ;
+			lockBox.setEnabled( hasURL ) ;
+			if ( lockBox.isSelected() )
+				urlBox.setEnabled( hasURL ) ;
+			else
+				urlBox.setEnabled( false ) ;
+			userNameLabel.setEnabled( hasAccount ) ;
+			userNameBox.setEnabled( hasAccount ) ;
+			passwordLabel.setEnabled( hasAccount ) ;
+			passwordBox.setEnabled( hasAccount ) ;
+			triggerBox.setValue( p.getTriggerAction() ) ;
+			providerButton.setEnabled( p.canTest() ) ;
+			providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
+			if ( hasURL )
+				urlBox.setText( p.getURL() ) ;
+			else
+				urlBox.setText( "" ) ;
+			if ( hasAccount )
+			{
+				userNameBox.setText( p.getUserName() ) ;
+				passwordBox.setText( p.getPassword() ) ;
+			}
+			else
+			{
+				userNameBox.setText( "" ) ;
+				passwordBox.setText( "" ) ;
+				
+			}
+			setOutDated( p.getOutDatedLimits() ) ;
+			verboseBox.setSelected( p.getVerbose() ) ;
+			messageBox.setSelected( p.getMessage() ) ;
+			mergeBox.setSelected( p.getMerge() ) ;
+			filterBox.setSelected( p.isFiltered() ) ;
+			installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
+			uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
+			installButton.setEnabled( p.mustInstall() ) ;
+			uninstallButton.setEnabled( p.mustInstall() ) ;
+			setListenerProviderCheckBoxes( true ) ;
 
-	    }
+		}
 	}
 	public class LockBoxChanged implements ItemListener
 	{
@@ -228,14 +228,14 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateProvider() ;
-	        Provider p = (Provider)providerCombo.getSelectedItem() ;
-	        if ( p.canTest() )
-	        {
+			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			if ( p.canTest() )
+			{
 				String buttonText = ResourceManager.msg( "FAILED" ) ;
-	        	if ( p.test() ) 
-	        		buttonText = ResourceManager.msg( "PASS" ) ;
-	        	providerButton.setText( buttonText ) ;
-	        }
+				if ( p.test() ) 
+					buttonText = ResourceManager.msg( "PASS" ) ;
+				providerButton.setText( buttonText ) ;
+			}
 		}
 	}
 	public class ProviderInstallButtons implements ActionListener
@@ -243,27 +243,27 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateProvider() ;
-	        Provider p = (Provider)providerCombo.getSelectedItem() ;
-	        if ( p.mustInstall() )
-	        {
-	        	JButton button = (JButton)e.getSource() ;
-	        	if ( button == installButton )
-	        	{
-	        		if ( p.install() )
-	        			installButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
-	        		else
-	        			installButton.setText( ResourceManager.msg( "FAILED" ) ) ;
-	        		uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
-	        	}
-	        	else if ( button == uninstallButton )
-	        	{
-	        		if ( p.uninstall() )
-	        			uninstallButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
-	        		else
-	        			uninstallButton.setText( ResourceManager.msg( "FAILED" ) ) ;
-	        		installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
-	        	}
-	        }
+			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			if ( p.mustInstall() )
+			{
+				JButton button = (JButton)e.getSource() ;
+				if ( button == installButton )
+				{
+					if ( p.install() )
+						installButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					else
+						installButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+					uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
+				}
+				else if ( button == uninstallButton )
+				{
+					if ( p.uninstall() )
+						uninstallButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					else
+						uninstallButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+					installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
+				}
+			}
 		}
 	}
 	public class ServiceCheckBoxesChanged implements ItemListener
@@ -333,9 +333,9 @@ public class ProviderService extends MyTabPanel {
 				long low = version / 1000 ;
 				version %= 1000 ;
 				buttonText = "Version: " + Long.toString( high ) + "."
-				                         + Long.toString( mid )  + "."
-				                         + Long.toString( low )  + "."
-				                         + Long.toString( version ) ;
+										 + Long.toString( mid )  + "."
+										 + Long.toString( low )  + "."
+										 + Long.toString( version ) ;
 			}
 			((JButton)e.getSource()).setText( buttonText ) ;
 		}
@@ -465,8 +465,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		SpinnerModel model = new SpinnerNumberModel(
-                defaultProvider.getTriggerAction(), //initial value
-                -1, 1 << 15, 1 ) ;
+				defaultProvider.getTriggerAction(), //initial value
+				-1, 1 << 15, 1 ) ;
 		this.triggerBox.setModel( model );
 		providerBox.add( triggerBox, c ) ;
 
@@ -506,8 +506,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		model = new SpinnerNumberModel(
-                0, //initial value
-                0, 99, 1 ) ;
+				0, //initial value
+				0, 99, 1 ) ;
 		this.sinceBox.setModel( model );
 		checkBoxPanel.add( this.sinceBox, c ) ;
 
@@ -532,8 +532,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		model = new SpinnerNumberModel(
-                0, //initial value
-                0, 99, 1 ) ;
+				0, //initial value
+				0, 99, 1 ) ;
 		this.sinceSyncBox.setModel( model );
 		checkBoxPanel.add( this.sinceSyncBox, c ) ;
 
@@ -662,7 +662,7 @@ public class ProviderService extends MyTabPanel {
 
 		//providerBox.setPreferredSize( new Dimension( 380, 350 ) ) ;
 		this.add( providerBox, c ) ;
-        this.setOutDated( defaultProvider.getOutDatedLimits() ) ;
+		this.setOutDated( defaultProvider.getOutDatedLimits() ) ;
 
 	
 	
@@ -798,8 +798,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = i ;
 		
 		SpinnerModel waitModel = new SpinnerNumberModel(
-                dvbs.getWaitTimeAfterWOL(), //initial value
-                -1, 60, 1 ) ;
+				dvbs.getWaitTimeAfterWOL(), //initial value
+				-1, 60, 1 ) ;
 		this.waitTimeBox.setModel( waitModel );
 		serviceBox.add( waitTimeBox, c ) ;
 

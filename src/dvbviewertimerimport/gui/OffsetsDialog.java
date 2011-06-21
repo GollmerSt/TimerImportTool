@@ -127,8 +127,8 @@ public class OffsetsDialog extends JDialog {
 	}
 	public void init()
 	{
-	    this.setTitle( ResourceManager.msg( "OFFSET_DIALOG" ) ) ;
-	    this.setLayout(  new GridBagLayout() ) ;
+		this.setTitle( ResourceManager.msg( "OFFSET_DIALOG" ) ) ;
+		this.setLayout(  new GridBagLayout() ) ;
 		
 		Insets i = new Insets( 5, 5, 5, 5 );
 		GridBagConstraints c = null ;
@@ -214,10 +214,10 @@ public class OffsetsDialog extends JDialog {
 		
 		
 		this.pack(); 
-        this.setLocationRelativeTo(null);
+		this.setLocationRelativeTo(null);
 		this.setVisible( true );
 		
- 	}
+	}
 	private void setupTable()
 	{
 		this.table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -249,7 +249,7 @@ public class OffsetsDialog extends JDialog {
 		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
 		column.setPreferredWidth( 65 ) ;
 		
-	    table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
+		table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
 	}
 	class WeekDayObject
 	{
@@ -278,7 +278,7 @@ public class OffsetsDialog extends JDialog {
 	}
 	private class MyTableModel extends AbstractTableModel
 	{
-	    /**
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -1024744241487034753L;
@@ -290,11 +290,11 @@ public class OffsetsDialog extends JDialog {
 			return 5 ;
 		}
 		@Override
-	    public String getColumnName(int col) {
-	        return columnNames[col];
-	    }
+		public String getColumnName(int col) {
+			return columnNames[col];
+		}
 		@Override
-	    public Class<?> getColumnClass(int col)
+		public Class<?> getColumnClass(int col)
 		{
 			if ( col == 2 )
 				return WeekDayObject.class ;
@@ -368,9 +368,9 @@ public class OffsetsDialog extends JDialog {
 			}
 		}
 	}
-    public class WeekDayRenderer extends JPanel implements TableCellRenderer
-    {
-    	/**
+	public class WeekDayRenderer extends JPanel implements TableCellRenderer
+	{
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 3374633243517567009L;
@@ -379,95 +379,95 @@ public class OffsetsDialog extends JDialog {
 		private Color selectedBackGround = new JTextField().getSelectionColor() ;
 		
 		public WeekDayRenderer() {
-    		((FlowLayout)this.getLayout()).setHgap( 0 ) ;
-    		((FlowLayout)this.getLayout()).setVgap( 0 ) ;
-    		for ( int ix = 0 ; ix < this.checkBoxes.length ; ix++ )
-    		{
-    			JCheckBox checkBox = new JCheckBox() ;
-    			this.checkBoxes[ ix ] = checkBox ;
-    			this.add( checkBox ) ;
-    			checkBox.setHorizontalAlignment(SwingConstants.CENTER);
-    		}
-    		this.originalBackGround = this.checkBoxes[ 0 ].getBackground() ;
-    	}
+			((FlowLayout)this.getLayout()).setHgap( 0 ) ;
+			((FlowLayout)this.getLayout()).setVgap( 0 ) ;
+			for ( int ix = 0 ; ix < this.checkBoxes.length ; ix++ )
+			{
+				JCheckBox checkBox = new JCheckBox() ;
+				this.checkBoxes[ ix ] = checkBox ;
+				this.add( checkBox ) ;
+				checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+			}
+			this.originalBackGround = this.checkBoxes[ 0 ].getBackground() ;
+		}
 		@Override
-    	public Component getTableCellRendererComponent(
-    				JTable table,
-    				Object object,
-    				boolean isSelected,
-    				boolean hasFocus,
-    				int row,
-    				int column)
-    	{
-    		boolean[] weekDays = ((WeekDayObject)object).getWeekDays() ;
-    		for ( int ix = 0 ; ix < weekDays.length ; ix++ )
-    		{
-    			JCheckBox checkBox = this.checkBoxes[ ix ] ;
-    			checkBox.setSelected( weekDays[ ix ] ) ;
-    			if ( isSelected )
-    				checkBox.setBackground( selectedBackGround ) ;
-    			else
-    				checkBox.setBackground( this.originalBackGround ) ;
-     		}
-    		return this ;
-    	}
-    }
-    public class WeekDayEditor extends AbstractCellEditor implements TableCellEditor
-    {
-    	/**
+		public Component getTableCellRendererComponent(
+					JTable table,
+					Object object,
+					boolean isSelected,
+					boolean hasFocus,
+					int row,
+					int column)
+		{
+			boolean[] weekDays = ((WeekDayObject)object).getWeekDays() ;
+			for ( int ix = 0 ; ix < weekDays.length ; ix++ )
+			{
+				JCheckBox checkBox = this.checkBoxes[ ix ] ;
+				checkBox.setSelected( weekDays[ ix ] ) ;
+				if ( isSelected )
+					checkBox.setBackground( selectedBackGround ) ;
+				else
+					checkBox.setBackground( this.originalBackGround ) ;
+	 		}
+			return this ;
+		}
+	}
+	public class WeekDayEditor extends AbstractCellEditor implements TableCellEditor
+	{
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 5188930711938065159L;
-    	private final JPanel panel = new JPanel() ;
+		private final JPanel panel = new JPanel() ;
 		private final JCheckBox[] checkBoxes = new JCheckBox[ 7 ] ;
 		private Color selectedBackGround = new JTextField().getSelectionColor() ;
 		
 		public WeekDayEditor() {
-    		((FlowLayout)panel.getLayout()).setHgap( 0 ) ;
-    		((FlowLayout)panel.getLayout()).setVgap( 0 ) ;
-    		for ( int ix = 0 ; ix < this.checkBoxes.length ; ix++ )
-    		{
-    			JCheckBox checkBox = new JCheckBox() ;
-    			checkBox.setBackground( selectedBackGround ) ;
-    			this.checkBoxes[ ix ] = checkBox ;
-    			panel.add( checkBox ) ;
-    		}
-    		this.checkBoxes[ 0 ].getBackground();
-    	}
+			((FlowLayout)panel.getLayout()).setHgap( 0 ) ;
+			((FlowLayout)panel.getLayout()).setVgap( 0 ) ;
+			for ( int ix = 0 ; ix < this.checkBoxes.length ; ix++ )
+			{
+				JCheckBox checkBox = new JCheckBox() ;
+				checkBox.setBackground( selectedBackGround ) ;
+				this.checkBoxes[ ix ] = checkBox ;
+				panel.add( checkBox ) ;
+			}
+			this.checkBoxes[ 0 ].getBackground();
+		}
 		@Override
-    	public Component getTableCellEditorComponent(
-    				JTable table,
-    				Object object,
-    				boolean isSelected,
-    				int row,
-    				int column)
-    	{
-    		boolean[] weekDays = ((WeekDayObject)object).getWeekDays() ;
-    		for ( int ix = 0 ; ix < weekDays.length ; ix++ )
-    		{
-    			JCheckBox checkBox = this.checkBoxes[ ix ] ;
-    			checkBox.setSelected( weekDays[ ix ] ) ;
-    		}
-    		return panel ;
-    	}
+		public Component getTableCellEditorComponent(
+					JTable table,
+					Object object,
+					boolean isSelected,
+					int row,
+					int column)
+		{
+			boolean[] weekDays = ((WeekDayObject)object).getWeekDays() ;
+			for ( int ix = 0 ; ix < weekDays.length ; ix++ )
+			{
+				JCheckBox checkBox = this.checkBoxes[ ix ] ;
+				checkBox.setSelected( weekDays[ ix ] ) ;
+			}
+			return panel ;
+		}
 		@Override
 		public Object getCellEditorValue() {
 			WeekDayObject result = new WeekDayObject() ;
 			boolean[] days = result.getWeekDays() ; 
-    		for ( int ix = 0 ; ix < days.length ; ix++ )
-    		{
-                days[ ix ] = this.checkBoxes[ ix ].isSelected() ;
-    		}
+			for ( int ix = 0 ; ix < days.length ; ix++ )
+			{
+				days[ ix ] = this.checkBoxes[ ix ].isSelected() ;
+			}
 			return result;
 		}
 		@Override
 		public boolean shouldSelectCell(EventObject arg0) {
 			return true;
 		}
-    }
-    public class SpinnerNumberEditor extends AbstractCellEditor implements TableCellEditor
-    {
-    	/**
+	}
+	public class SpinnerNumberEditor extends AbstractCellEditor implements TableCellEditor
+	{
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 8810972718831377646L;
@@ -476,19 +476,19 @@ public class OffsetsDialog extends JDialog {
 		public SpinnerNumberEditor( int start, int end, int step )
 		{
 			spinner = new JSpinner(new SpinnerNumberModel( start, start, end, step ) ) ;
-   	}
+		}
 		@Override
-    	public Component getTableCellEditorComponent(
-    				JTable table,
-    				Object object,
-    				boolean isSelected,
-    				int row,
-    				int column)
-    	{
-    		int value = ((Integer)object).intValue() ;
-    		spinner.setValue( value ) ;
-    		return spinner ;
-    	}
+		public Component getTableCellEditorComponent(
+					JTable table,
+					Object object,
+					boolean isSelected,
+					int row,
+					int column)
+		{
+			int value = ((Integer)object).intValue() ;
+			spinner.setValue( value ) ;
+			return spinner ;
+		}
 		@Override
 		public Object getCellEditorValue() {
 			return spinner.getValue() ;
@@ -497,7 +497,7 @@ public class OffsetsDialog extends JDialog {
 		public boolean shouldSelectCell(EventObject arg0) {
 			return true;
 		}
-    }
+	}
 	public static String longToDayTime( long d )
 	{
 		return dayTimeFormat.format( new Date( d ) ) ;

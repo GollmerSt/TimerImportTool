@@ -331,8 +331,8 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 		
 		SpinnerModel lengthModel = new SpinnerNumberModel(
-                control.getDVBViewer().getWaitCOMTime(), //initial value
-                0, 300, 1 ) ;
+				control.getDVBViewer().getWaitCOMTime(), //initial value
+				0, 300, 1 ) ;
 		this.channelWaitTimeSpinner.setModel( lengthModel );
 		pathPanel.add( this.channelWaitTimeSpinner, c ) ;		
 
@@ -400,8 +400,8 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 		
 		lengthModel = new SpinnerNumberModel(
-                control.getDVBViewer().getChannelChangeTime(), //initial value
-                0, 300, 1 ) ;
+				control.getDVBViewer().getChannelChangeTime(), //initial value
+				0, 300, 1 ) ;
 		this.channelChangeTimeSpinner.setModel( lengthModel );
 		pathPanel.add( this.channelChangeTimeSpinner, c ) ;		
 
@@ -745,8 +745,8 @@ public class Miscellaneous extends MyTabPanel
 		c.insets     = i ;
 		
 		lengthModel = new SpinnerNumberModel(
-                control.getMaxTitleLength()< 20?20:control.getMaxTitleLength(), //initial value
-                20, 256, 1 ) ;
+				control.getMaxTitleLength()< 20?20:control.getMaxTitleLength(), //initial value
+				20, 256, 1 ) ;
 		this.maxTitleLengthSpinner.setModel( lengthModel );
 		this.maxTitleLengthSpinner.setEnabled( control.getMaxTitleLength() >= 0 ) ;
 		titleLengthPanel.add( this.maxTitleLengthSpinner, c ) ;		
@@ -835,8 +835,8 @@ public class Miscellaneous extends MyTabPanel
 		
 		this.createCombosContent() ;	
 	}
-    public void createCombosContent()
-    {
+	public void createCombosContent()
+	{
 		MyComboBoxItem deflt = null ;
 		for ( Locale l : ResourceManager.getAvailableLocales( "lang" ) )
 		{
@@ -859,7 +859,7 @@ public class Miscellaneous extends MyTabPanel
 			timeZoneBox.addItem( o ) ;
 		}
 		timeZoneBox.setSelectedItem( oDefault ) ;
-    }
+	}
 	
 	public void updateDVBViewerActions()
 	{
@@ -900,7 +900,7 @@ public class Miscellaneous extends MyTabPanel
 	private void updateText()
 	{
 		this.tvinfoDVBVButton.setText(   ResourceManager.msg( "IMPORT_TV" )
-                + "\"" + TVInfoDVBV.NAME_IMPORTFILE + "\"" ) ;
+			    + "\"" + TVInfoDVBV.NAME_IMPORTFILE + "\"" ) ;
 		this.updateToNewVersionButton.setText(   ResourceManager.msg( "UPDATE_CHANNELS" ) ) ;
 		this.exportButton.setText( ResourceManager.msg( "EXPORT" ) ) ;
 		this.setInfoText( "" ) ;
@@ -967,28 +967,28 @@ public class Miscellaneous extends MyTabPanel
 		
 		chooser.setFileFilter(new FileFilter()
 		{
-            public boolean accept(File f)
-            {
-            	String parts[] = f.getName().split( "\\." ) ;
-            	if ( parts.length < 2 )
-            		return false ;
-            	return parts[ parts.length - 1 ].equals( "xml" ) ;
-            }
-            public String getDescription()
-            {
-                return ResourceManager.msg( "EXPORT_FILE_DESCRIPTION" ) ;
-            }
+			public boolean accept(File f)
+			{
+				String parts[] = f.getName().split( "\\." ) ;
+				if ( parts.length < 2 )
+					return false ;
+				return parts[ parts.length - 1 ].equals( "xml" ) ;
+			}
+			public String getDescription()
+			{
+				return ResourceManager.msg( "EXPORT_FILE_DESCRIPTION" ) ;
+			}
 		} ) ;
 
 		chooser.setDialogTitle( description ) ;
 		
 		int returnVal = chooser.showDialog( this.guiPanel.getWindow(), ResourceManager.msg( "SELECT" ) ) ;
-        if (returnVal == JFileChooser.APPROVE_OPTION)
-        {
-            File file = chooser.getSelectedFile() ;
-            return file ;
-        }
-        else
-        	return null ;
+		if (returnVal == JFileChooser.APPROVE_OPTION)
+		{
+			File file = chooser.getSelectedFile() ;
+			return file ;
+		}
+		else
+			return null ;
 	}
 }

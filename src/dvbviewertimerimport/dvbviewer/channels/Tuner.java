@@ -60,17 +60,17 @@ public class Tuner {
 										// 5 = 7/8
 										// 6 = 8/9
 										// 7 = 3/5
- 										// 8 = 4/5
+										// 8 = 4/5
 										// 9 = 9/10
 	private byte  audioChannel ;		// Byte
 	private short reserved3 ;			// Word
 	private byte  polarity ;			// DVB-S polarity
- 										//     0 = horizontal
+										//     0 = horizontal
 										//     1 = vertical
 										//     2 = circular left
 										//     3 = circular right
 										// or DVB-C modulation
- 										//     0 = Auto
+										//     0 = Auto
 										//     1 = 16QAM
 										//     2 = 32QAM
 										//     3 = 64QAM

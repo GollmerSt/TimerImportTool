@@ -257,32 +257,32 @@ public final class DVBViewerEntry  implements Cloneable
 	}
 	public boolean shift( DVBViewerEntry entry )
 	{
-	  if ( this.isRecording() )
-	  {
-	    if ( this.end < entry.end)
-	      return false ;   //shift not possible. Original entry must delete and an new one hat to be created
-	  }
-    this.providerID = entry.providerID ;
-    if ( ! this.channel.equals( entry.channel ) )
-      return false ;;
-    if ( this.channelSet != entry.channelSet )
-      return false ;
-    this.updateStartEnd( start, end ) ;
-    this.startOrg = entry.startOrg ;
-    this.endOrg = entry.endOrg ;
-    this.days = entry.days ;
-    this.title =  entry.title ;
-    this.timerAction = entry.timerAction ;
-    this.actionAfter = entry.actionAfter ;
-    this.mergeStatus = entry.mergeStatus ;
-    this.mergeID = entry.mergeID ;
-    this.provider = entry.provider ;
-    this.outDatedInfo = entry.outDatedInfo.clone() ;
-    this.isCollapsed = entry.isCollapsed ;
-    this.toDo = ToDo.UPDATE ;
-    if ( this.mergeElement != null )
-      this.mergeElement.mergingChanged = true ;
-    return true ;
+		if ( this.isRecording() )
+		{
+			if ( this.end < entry.end)
+				return false ;   //shift not possible. Original entry must delete and an new one hat to be created
+		}
+		this.providerID = entry.providerID ;
+		if ( ! this.channel.equals( entry.channel ) )
+			return false ;;
+		if ( this.channelSet != entry.channelSet )
+			return false ;
+		this.updateStartEnd( start, end ) ;
+		this.startOrg = entry.startOrg ;
+		this.endOrg = entry.endOrg ;
+		this.days = entry.days ;
+		this.title =  entry.title ;
+		this.timerAction = entry.timerAction ;
+		this.actionAfter = entry.actionAfter ;
+		this.mergeStatus = entry.mergeStatus ;
+		this.mergeID = entry.mergeID ;
+		this.provider = entry.provider ;
+		this.outDatedInfo = entry.outDatedInfo.clone() ;
+		this.isCollapsed = entry.isCollapsed ;
+		this.toDo = ToDo.UPDATE ;
+		if ( this.mergeElement != null )
+			this.mergeElement.mergingChanged = true ;
+		return true ;
 	}
 	private void splitChannel()
 	{

@@ -54,18 +54,18 @@ public class GUI extends JFrame{
 	private final GUI gui ;
 
 	private final JCheckBox forceBox ;
-    private final JButton executeButton ;
-    private final JButton updateButton ;
-    private final JButton modifyButton ;
-    private final JButton okButton ;
-    private final JButton cancelButton ;
-    private final JButton applyButton ;
-    
-    private ProviderAssignment providerAssignment = null ;
-    private Miscellaneous miscellaneous = null ;
-    
+	private final JButton executeButton ;
+	private final JButton updateButton ;
+	private final JButton modifyButton ;
+	private final JButton okButton ;
+	private final JButton cancelButton ;
+	private final JButton applyButton ;
+	
+	private ProviderAssignment providerAssignment = null ;
+	private Miscellaneous miscellaneous = null ;
+	
 	private final TreeMap< String, LookAndFeelInfo > lookAndFeelAssignment  
-    = new TreeMap< String, LookAndFeelInfo >() ;
+	= new TreeMap< String, LookAndFeelInfo >() ;
 	private final ArrayList< String > lookAndFeelNames = new ArrayList< String >() ;
 	
 	public GUI( Control control )
@@ -97,7 +97,7 @@ public class GUI extends JFrame{
 	}
 
 	private class MyWindowListener implements WindowListener
-    {
+	{
 
 		@Override
 		public void windowActivated(WindowEvent arg0) {
@@ -140,9 +140,9 @@ public class GUI extends JFrame{
 		public void windowOpened(WindowEvent arg0) {
 			// TODO Auto-generated method stub
 		}
-    	
-    }
-    
+		
+	}
+	
 	public class ButtonPressed implements ActionListener
 	{
 		@Override
@@ -199,22 +199,22 @@ public class GUI extends JFrame{
 	public void setChanged() { this.isChanged = true ; } ;
 	public void execute()
 	{ 
-        try {
+		try {
 			this.guiBusy.acquire() ;
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	    this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
-	    this.setIconImage( this.programIcon.getImage() ) ;
-	    this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME + " " + Versions.getVersion( true ) ) ;
-	    this.setLayout(  new GridBagLayout() ) ;
-        
+		this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
+		this.setIconImage( this.programIcon.getImage() ) ;
+		this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME + " " + Versions.getVersion( true ) ) ;
+		this.setLayout(  new GridBagLayout() ) ;
+		
 		GridBagConstraints c = null ;
 		Insets i = new Insets( 0, 0, 0, 0 );
 
-	    //TitledBorder b = BorderFactory.createTitledBorder("") ;
-	    //tabbedPane.setBorder( b ) ;
+		//TitledBorder b = BorderFactory.createTitledBorder("") ;
+		//tabbedPane.setBorder( b ) ;
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
@@ -223,15 +223,15 @@ public class GUI extends JFrame{
 		c.weighty    = 1.0 ;
 		c.fill       = GridBagConstraints.BOTH ;
 		//c.insets     = i ;
-	    
+		
 		this.getContentPane().add( this.guiPanel, c ) ;
 		
 		this.guiPanel.init() ;
 		
 
-	    
+		
 
-	 	    
+			
 
 		c = new GridBagConstraints();
 		i = new Insets( 5, 5, 5, 5 );
@@ -239,10 +239,10 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
-	    
-	    this.executeButton.setText( ResourceManager.msg( "EXECUTE" ) ) ;
-	    this.executeButton.addActionListener( new ButtonPressed() ) ;
-	    this.getContentPane().add( executeButton, c ) ;
+		
+		this.executeButton.setText( ResourceManager.msg( "EXECUTE" ) ) ;
+		this.executeButton.addActionListener( new ButtonPressed() ) ;
+		this.getContentPane().add( executeButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -250,10 +250,10 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
-	    
-	    this.forceBox.setText( ResourceManager.msg( "ALL_TIMERS" ) ) ;
-	    this.forceBox.addItemListener( new AllTimersChanged() ) ;
-	    this.getContentPane().add( forceBox, c ) ;
+		
+		this.forceBox.setText( ResourceManager.msg( "ALL_TIMERS" ) ) ;
+		this.forceBox.addItemListener( new AllTimersChanged() ) ;
+		this.getContentPane().add( forceBox, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -261,10 +261,10 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
-	    
-	    this.updateButton.setText( ResourceManager.msg( "UPDATE_LIST" ) ) ;
-	    this.updateButton.addActionListener( new ButtonPressed() ) ;
-	    this.getContentPane().add( this.updateButton, c ) ;
+		
+		this.updateButton.setText( ResourceManager.msg( "UPDATE_LIST" ) ) ;
+		this.updateButton.addActionListener( new ButtonPressed() ) ;
+		this.getContentPane().add( this.updateButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -272,10 +272,10 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHWEST ;
 		c.insets     = i ;
-	    
-	    this.modifyButton.setText( ResourceManager.msg( "TIMER_TABLE" ) ) ;
-	    this.modifyButton.addActionListener( new ButtonPressed() ) ;
-	    this.getContentPane().add( this.modifyButton, c ) ;
+		
+		this.modifyButton.setText( ResourceManager.msg( "TIMER_TABLE" ) ) ;
+		this.modifyButton.addActionListener( new ButtonPressed() ) ;
+		this.getContentPane().add( this.modifyButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -284,10 +284,10 @@ public class GUI extends JFrame{
 		c.weightx    = 1.0 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
-	    
-	    this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
-	    this.okButton.addActionListener( new ButtonPressed() ) ;
-	    this.getContentPane().add( this.okButton, c ) ;
+		
+		this.okButton.setText( ResourceManager.msg( "OK" ) ) ;
+		this.okButton.addActionListener( new ButtonPressed() ) ;
+		this.getContentPane().add( this.okButton, c ) ;
 
 		
 
@@ -296,7 +296,7 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
-	    
+		
 		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
 		this.cancelButton.addActionListener( new ButtonPressed() ) ;
 		this.getContentPane().add( cancelButton, c ) ;
@@ -307,21 +307,21 @@ public class GUI extends JFrame{
 		c.gridy      = 1 ;
 		c.anchor     = GridBagConstraints.NORTHEAST ;
 		c.insets     = i ;
-	    
+		
 		this.applyButton.setText( ResourceManager.msg( "APPLY" ) ) ;
 		this.applyButton.addActionListener( new ButtonPressed() ) ;
 		this.getContentPane().add( this.applyButton, c ) ;
 
-        //this.setPreferredSize( new Dimension( 800,500 ) ) ;
+		//this.setPreferredSize( new Dimension( 800,500 ) ) ;
 		this.pack(); 
-		this.setVisible( true );         
-        this.setLocationRelativeTo(null);
-        
-        this.addWindowListener( new MyWindowListener() ) ;
-        
-        
-        this.guiPanel.updateExecuteButton() ;
-        
+		this.setVisible( true );
+		this.setLocationRelativeTo(null);
+		
+		this.addWindowListener( new MyWindowListener() ) ;
+		
+		
+		this.guiPanel.updateExecuteButton() ;
+		
 	}
 	public void updateExecuteButton( boolean enableExecute )
 	{
@@ -369,9 +369,9 @@ public class GUI extends JFrame{
 			return true ;
 		
 		int answer = JOptionPane.showConfirmDialog(
-		        this, message, 
-		        Constants.PROGRAM_NAME, 
-		        JOptionPane.YES_NO_OPTION );
+				this, message, 
+				Constants.PROGRAM_NAME, 
+				JOptionPane.YES_NO_OPTION );
 		return( answer == JOptionPane.YES_OPTION ) ;
 	}
 	public ArrayList< String > getLookAndFeelNames() { return lookAndFeelNames ; } ;

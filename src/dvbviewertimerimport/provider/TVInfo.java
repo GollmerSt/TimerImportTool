@@ -72,21 +72,21 @@ public final class TVInfo extends Provider {
 		this.htmlDateFormat = new SimpleDateFormat("EE d.M.y H:m") ;
 		this.htmlDateFormat.setTimeZone( timeZone ) ;
 	}
-	 @Override
-	 public Channel createChannel( String name, String id )
-	 {
-	   return new Channel( this.getID(), name, id )
-     {
-       @Override
-       public Object getIDKey()
-       {
-         return this.getName() ;
-       }
-       @Override
-       public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
-     };
-	 }
-	  
+	@Override
+	public Channel createChannel( String name, String id )
+	{
+		return new Channel( this.getID(), name, id )
+		{
+			@Override
+			public Object getIDKey()
+			{
+				return this.getName() ;
+			}
+			@Override
+			public Object getIDKey( final Channel c ) { return c.getName() ; } ;  // ID of the provider, type is provider dependent
+		};
+	}
+	
 	private String getMD5()
 	{
 		MessageDigest md = null ;
@@ -306,8 +306,8 @@ public final class TVInfo extends Provider {
 					this.isA = true ;
 			}
 		}
-	    public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
-	    {
+		public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos)
+		{
 			if ( this.isTableRead )
 				return ;
 			if ( this.tableDiv >= 0 )
@@ -327,7 +327,7 @@ public final class TVInfo extends Provider {
 						this.columnTitel = this.column ;
 				}
 			}
-	    }
+		}
 		public void handleEndTag(HTML.Tag t, int pos)
 		{
 			if (t == HTML.Tag.TITLE )

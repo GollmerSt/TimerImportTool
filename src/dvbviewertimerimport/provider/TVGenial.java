@@ -57,15 +57,15 @@ public class TVGenial extends Provider {
  {
    return new Channel( this.getID(), name, id )
    {
-     @Override
-     public Object getIDKey()
-     {
-       return Long.valueOf( getNumID() ) ;
-     }
-     @Override
-     public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
-     } ;
-   };
+	   @Override
+	   public Object getIDKey()
+	   {
+		   return Long.valueOf( getNumID() ) ;
+	   }
+	   @Override
+	   public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
+		} ;
+	};
 
 	
 	@Override

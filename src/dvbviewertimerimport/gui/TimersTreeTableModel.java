@@ -179,7 +179,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 		return TimersTreeTableModel.cTypes[ column ];
 	}
 	@Override
-    public boolean isCellEditable(Object node, int column)
+	public boolean isCellEditable(Object node, int column)
 	{
 		return column == 0 || ( column >= 3 && column <= 5 && ! ((DVBViewerEntry)node).isMergeElement() ) ;
 	}

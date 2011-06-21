@@ -75,8 +75,8 @@ public final class Helper {
 		return result ;
 	}
 	public static <T> T getTheBestChoice( String search, Collection<T> list,
-            int weightOfFirstChar, int charCount,
-            Function rework )
+										  int weightOfFirstChar, int charCount,
+										  Function rework )
 	{
 		ArrayList< T > objects = getTheBestChoices( search, list, weightOfFirstChar, charCount, rework ) ;
 		
@@ -173,9 +173,9 @@ public final class Helper {
 		if ( maxStart > 0 && maxPos > 0 )
 		{
 			result.addAll( Helper.getSplitedLength( 
-					              left.substring( 0, maxStart ),
-					              right.substring( 0, maxPos ),
-					              minChar ) ) ;
+								left.substring( 0, maxStart ),
+								right.substring( 0, maxPos ),
+								minChar ) ) ;
 		}
 		if ( maxStart >= 0 )
 		{
@@ -183,9 +183,9 @@ public final class Helper {
 
 			if ( maxEnd < left.length() && maxPos + length < right.length() )
 				result.addAll( Helper.getSplitedLength(
-						          left.substring( maxEnd ), 
-						          right.substring( maxPos + length), 
-						          minChar ) ) ;
+									left.substring( maxEnd ), 
+									right.substring( maxPos + length), 
+									minChar ) ) ;
 		}
 		return result ;
 	}
@@ -244,8 +244,8 @@ public final class Helper {
 			bufW.close() ;
 		} catch (IOException e) {
 			throw new ErrorClass(   "Unexpected error on writing file \""
-					              + tempFile.getAbsolutePath()
-					              + "\"." ) ;
+								  + tempFile.getAbsolutePath()
+								  + "\"." ) ;
 		}
 		file.delete() ;
 		tempFile.renameTo( file ) ;

@@ -12,9 +12,9 @@ import dvbviewertimerimport.provider.ProviderChannel;
  */
 public class DVBViewerTimerImport 
 {
-  public static ProviderChannel< String >[] getTVBChannelNames()
-  {
-	  return null ;
-  }
-  public static void updateRecordings( ArrayList< DVBViewerEntry > entries ) { }
- }
+	public static ProviderChannel< String >[] getTVBChannelNames()
+	{
+		return null ;
+	}
+	public static void updateRecordings( ArrayList< DVBViewerEntry > entries ) { }
+}

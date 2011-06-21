@@ -31,11 +31,11 @@ public class ErrorClass extends Error
 	}
 	public ErrorClass( XMLEvent ev, String errorString )
 	{
-		super( errorString + " near line "
-                + Integer.toString( ev.getLocation().getLineNumber() ) + "." ) ;
+		super(   errorString + " near line "
+			   + Integer.toString( ev.getLocation().getLineNumber() ) + "." ) ;
 		mainError = null ;
-		this.errorString = errorString + " near line "
-                           + Integer.toString( ev.getLocation().getLineNumber() ) + "." ;
+		this.errorString =   errorString + " near line "
+						   + Integer.toString( ev.getLocation().getLineNumber() ) + "." ;
 	}
 	
 	public ErrorClass( XMLStreamException e, String errorString )

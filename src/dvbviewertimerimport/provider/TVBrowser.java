@@ -12,7 +12,6 @@ import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
-import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.provider.Provider;
 
 public class TVBrowser extends Provider
@@ -32,16 +31,16 @@ public class TVBrowser extends Provider
 	@Override
 	public Channel createChannel( String name, String id )
 	{
-	  return new Channel( this.getID(), name, id )
-	  {
-      @Override
-      public Object getIDKey()
-      {
-        return this.getTextID() ;
-      }
-      @Override
-      public Object getIDKey( final Channel c ) { return c.getTextID() ; } ;  // ID of the provider, type is provider dependent
-	  } ;
+		return new Channel( this.getID(), name, id )
+		{
+			@Override
+			public Object getIDKey()
+			{
+				return this.getTextID() ;
+			}
+			@Override
+			public Object getIDKey( final Channel c ) { return c.getTextID() ; } ;  // ID of the provider, type is provider dependent
+		} ;
 	}
 	
 	@Override

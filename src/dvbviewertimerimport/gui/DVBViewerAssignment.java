@@ -103,60 +103,60 @@ public class DVBViewerAssignment extends MyTabPanel{
 		private static final long serialVersionUID = -224601712240775345L;
 		private ImageIcon red      = ResourceManager.createImageIcon( "icons/dvbViewer Red16.png", "DVBViewer icon" ) ;
 		private ImageIcon active    = ResourceManager.createImageIcon( "icons/dvbViewer16.png", "DVBViewer icon" ) ;
-	    private ImageIcon inactive  = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
-	    private ImageIcon unknown   = ResourceManager.createImageIcon( "icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
-	    private ImageIcon automatic = ResourceManager.createImageIcon( "icons/dvbViewer Yellow16.png", "DVBViewer yellow icon" ) ;
-	    
-	    public SpecialCellRenderer()
-	    {
-	    	this.setOpaque( true) ;
-	    	this.setIconTextGap(5) ;
-	    }
+		private ImageIcon inactive  = ResourceManager.createImageIcon( "icons/dvbViewerEmpty16.png", "DVBViewer empty icon" ) ;
+		private ImageIcon unknown   = ResourceManager.createImageIcon( "icons/dvbViewer Grey16.png", "DVBViewer grey icon" ) ;
+		private ImageIcon automatic = ResourceManager.createImageIcon( "icons/dvbViewer Yellow16.png", "DVBViewer yellow icon" ) ;
+		
+		public SpecialCellRenderer()
+		{
+			this.setOpaque( true) ;
+			this.setIconTextGap(5) ;
+		}
 
-	    public Component getListCellRendererComponent( JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
-	        if (isSelected) {
-	            this.setBackground( list.getSelectionBackground() );
-	            this.setForeground( list.getSelectionForeground() );
-	        }
-	        else {
-	            this.setBackground( list.getBackground() );
-	            this.setForeground( list.getForeground() );
-	        }
-	        ChannelSet channelSet = ((ChannelSetAssignment)value).channelSet ;
-	        if ( channelSet.getDVBViewerChannel() != null )
-	        {
-	        	if ( dvbViewerLongChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
-	        		if ( channelSet.isAutomaticAssigned() )
-	        			this.setIcon( this.automatic ) ;
-	        		else if (    channelSet.getTimeOffsets().size() > 0
-	        				  ||  channelSet.getMerge() != Merge.INVALID )
-	        			this.setIcon( this.red ) ;
-	        		else
-	        			this.setIcon( this.active ) ;
-	        	else 
-        			this.setIcon( this.unknown ) ;
-	        }
-	        else
-	        	this.setIcon( this.inactive ) ;
-	        this.setText( ((ChannelSetAssignment)value).name );
-	        return this;
-	    }
+		public Component getListCellRendererComponent( JList list, Object value, int index, boolean isSelected, boolean hasFocus) {
+			if (isSelected) {
+				this.setBackground( list.getSelectionBackground() );
+				this.setForeground( list.getSelectionForeground() );
+			}
+			else {
+				this.setBackground( list.getBackground() );
+				this.setForeground( list.getForeground() );
+			}
+			ChannelSet channelSet = ((ChannelSetAssignment)value).channelSet ;
+			if ( channelSet.getDVBViewerChannel() != null )
+			{
+				if ( dvbViewerLongChannelAssignment.containsKey( channelSet.getDVBViewerChannel() ) )
+					if ( channelSet.isAutomaticAssigned() )
+						this.setIcon( this.automatic ) ;
+					else if (    channelSet.getTimeOffsets().size() > 0
+							  ||  channelSet.getMerge() != Merge.INVALID )
+						this.setIcon( this.red ) ;
+					else
+						this.setIcon( this.active ) ;
+				else 
+					this.setIcon( this.unknown ) ;
+			}
+			else
+				this.setIcon( this.inactive ) ;
+			this.setText( ((ChannelSetAssignment)value).name );
+			return this;
+		}
 	}
 	public class ProviderSelected implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) {
 			updateText() ;
-	        JComboBox cb = (JComboBox)e.getSource();
-	        Provider p = (Provider)cb.getSelectedItem() ;
-	        fillProviderChannelList( p.getName() ) ;
-	        automaticallyAssignButton.setEnabled( p.isChannelMapAvailable() ) ;
-	        if ( ! p.getName().equals( control.getDefaultProvider() ) )
-	        {
-	        	control.setDefaultProvider( p.getName() ) ;
-	        	getGUIPanel().setChanged() ;
-	        	getGUIPanel().updateExecuteButton() ;
-	        }
-	    }
+			JComboBox cb = (JComboBox)e.getSource();
+			Provider p = (Provider)cb.getSelectedItem() ;
+			fillProviderChannelList( p.getName() ) ;
+			automaticallyAssignButton.setEnabled( p.isChannelMapAvailable() ) ;
+			if ( ! p.getName().equals( control.getDefaultProvider() ) )
+			{
+				control.setDefaultProvider( p.getName() ) ;
+				getGUIPanel().setChanged() ;
+				getGUIPanel().updateExecuteButton() ;
+			}
+		}
 	}
 	public class DeleteAction extends AbstractAction
 	{
@@ -169,16 +169,16 @@ public class DVBViewerAssignment extends MyTabPanel{
 		public void actionPerformed(ActionEvent e)
 		{
 			updateText() ;
-	        int ix = providerChannelList.getSelectedIndex() ;
-	        if ( ix >= 0 )
-	        {
-	        	getGUIPanel().setChanged() ;
-	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
-	        	csa.channelSet.setDVBViewerChannel( null ) ;
-	        	csa.channelSet.setAutomaticAssigned( false ) ;
-	        	DefaultListModel model = (DefaultListModel) providerChannelList.getModel() ;
-	        	model.set( ix, csa) ;
-	        } 
+			int ix = providerChannelList.getSelectedIndex() ;
+			if ( ix >= 0 )
+			{
+				getGUIPanel().setChanged() ;
+				ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
+				csa.channelSet.setDVBViewerChannel( null ) ;
+				csa.channelSet.setAutomaticAssigned( false ) ;
+				DefaultListModel model = (DefaultListModel) providerChannelList.getModel() ;
+				model.set( ix, csa) ;
+			} 
 		}
 	}
 	private class FunctionChannelChoice extends Function
@@ -204,80 +204,80 @@ public class DVBViewerAssignment extends MyTabPanel{
 	}
 	public class ProviderChannelSelected implements ListSelectionListener {
 		public void valueChanged(ListSelectionEvent e)
-	    {
+		{
 			updateText() ;
-	    	ChannelSetAssignment csa = (ChannelSetAssignment)((JList)e.getSource()).getSelectedValue() ;
-	    	if ( csa == null )
-	    		return ;
-	    	ChannelSet cs = csa.channelSet ;
-	    	String dvbViewerChannel = cs.getDVBViewerChannel() ;
-	    	int ix = 0 ;
-	    	if ( dvbViewerChannel != null && dvbViewerLongChannelAssignment.containsKey( dvbViewerChannel ))
-	    	{
-	    		ix = dvbViewerLongChannelAssignment.get( dvbViewerChannel ) ;
-	    	}
-	    	else
-	    	{
-	    		String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
+			ChannelSetAssignment csa = (ChannelSetAssignment)((JList)e.getSource()).getSelectedValue() ;
+			if ( csa == null )
+				return ;
+			ChannelSet cs = csa.channelSet ;
+			String dvbViewerChannel = cs.getDVBViewerChannel() ;
+			int ix = 0 ;
+			if ( dvbViewerChannel != null && dvbViewerLongChannelAssignment.containsKey( dvbViewerChannel ))
+			{
+				ix = dvbViewerLongChannelAssignment.get( dvbViewerChannel ) ;
+			}
+			else
+			{
+				String name = cs.getChannel( providerCombo.getSelectedIndex() ).getName() ;
 				Object o = Helper.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 						3, 2, new FunctionChannelChoice() ) ;
-	    	    if ( o == null )
-	    	    	ix = 0 ;
-	    	    else
-	    	    	ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
-	    	}
-	    	ignoreNextDVBViewerChannelChange = true ;
-    		dvbViewerCombo.setSelectedIndex( ix ) ;
-	    	mergeCombo.setSelectedIndex( cs.getMerge().ordinal() ) ;
-	    }
+				if ( o == null )
+					ix = 0 ;
+				else
+					ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
+			}
+			ignoreNextDVBViewerChannelChange = true ;
+			dvbViewerCombo.setSelectedIndex( ix ) ;
+			mergeCombo.setSelectedIndex( cs.getMerge().ordinal() ) ;
+		}
 	}
 	public class DVBViewerChannelSelected implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) {
 			updateText() ;
-	    	if ( ignoreNextDVBViewerChannelChange )
-	    	{
-		    	ignoreNextDVBViewerChannelChange = false ;
-		    	return ;
-	    	}
+			if ( ignoreNextDVBViewerChannelChange )
+			{
+				ignoreNextDVBViewerChannelChange = false ;
+				return ;
+			}
 
-	        JComboBox cb = (JComboBox)e.getSource();
-	        dvbviewertimerimport.dvbviewer.channels.Channel c = (dvbviewertimerimport.dvbviewer.channels.Channel)cb.getSelectedItem() ;
-	        if ( c == null )
-	        	return ;
-	        int ix = providerChannelList.getSelectedIndex() ;
-	        if ( ix >= 0 )
-	        {
-	        	getGUIPanel().setChanged() ;
-	        	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
-	        	csa.channelSet.setDVBViewerChannel( c.getChannelID() ) ;
-	        	csa.channelSet.setAutomaticAssigned( false ) ;
-	        	providerChannelList.setSelectedValue(csa, false) ;
-	        }
-	    }
+			JComboBox cb = (JComboBox)e.getSource();
+			dvbviewertimerimport.dvbviewer.channels.Channel c = (dvbviewertimerimport.dvbviewer.channels.Channel)cb.getSelectedItem() ;
+			if ( c == null )
+				return ;
+			int ix = providerChannelList.getSelectedIndex() ;
+			if ( ix >= 0 )
+			{
+				getGUIPanel().setChanged() ;
+				ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
+				csa.channelSet.setDVBViewerChannel( c.getChannelID() ) ;
+				csa.channelSet.setAutomaticAssigned( false ) ;
+				providerChannelList.setSelectedValue(csa, false) ;
+			}
+		}
 	}
 	public class MergeChanged implements ActionListener
 	{
-	    public void actionPerformed(ActionEvent e) {
+		public void actionPerformed(ActionEvent e) {
 			updateText() ;
-	    	ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
-	    	if ( csa == null )
-	    		return ;
-	        JComboBox cb = (JComboBox)e.getSource();
-	        
-	        Enums.Merge res = Enums.Merge.values()[ cb.getSelectedIndex() ] ;
-	        
-	        if ( res != csa.channelSet.getMerge() )
-	        {
-	        	csa.channelSet.setMerge( res ) ;
-	        	getGUIPanel().setChanged() ;
+			ChannelSetAssignment csa = (ChannelSetAssignment)providerChannelList.getSelectedValue() ;
+			if ( csa == null )
+				return ;
+			JComboBox cb = (JComboBox)e.getSource();
+			
+			Enums.Merge res = Enums.Merge.values()[ cb.getSelectedIndex() ] ;
+			
+			if ( res != csa.channelSet.getMerge() )
+			{
+				csa.channelSet.setMerge( res ) ;
+				getGUIPanel().setChanged() ;
 				DefaultListModel model = (DefaultListModel)providerChannelList.getModel() ;
 				int line = providerChannelList.getSelectedIndex() ;
 				if ( line < 0 )
 					return ;
 				model.setElementAt( csa, line ) ;
-	        }
-	    }
+			}
+		}
 	}
 	public class ButtonsPressed implements ActionListener
 	{
@@ -374,7 +374,7 @@ public class DVBViewerAssignment extends MyTabPanel{
 		this.providerChannelList.getActionMap().put("Del pressed", new DeleteAction() ) ;
 
 		this.fillProviderChannelList( control.getDefaultProvider() ) ;
-	    JScrollPane listScroller = new JScrollPane( this.providerChannelList );
+		JScrollPane listScroller = new JScrollPane( this.providerChannelList );
 
 		provider.add( listScroller, c ) ;
 
@@ -587,22 +587,22 @@ public class DVBViewerAssignment extends MyTabPanel{
 		{
 			if ( cs.getDVBViewerChannel() != null )
 				continue ;
-    		Channel channel = cs.getChannel( providerID ) ;
+			Channel channel = cs.getChannel( providerID ) ;
 			if ( channel == null || ! provider.containsChannel( channel, false ) )
 				continue ;
-    		String name = channel.getName() ;
+			String name = channel.getName() ;
 			Object o = Helper.getTheBestChoice( name, (Collection<?>) control.getDVBViewer().getChannels().getChannels().values(),
 					3, 2, new FunctionChannelChoice() ) ;
-    	    if ( o == null )
-    	    	continue ;
-    	   
-    	    int ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
-    	    
-    	    cs.setDVBViewerChannel( ( (dvbviewertimerimport.dvbviewer.channels.Channel)this.dvbViewerCombo.getItemAt( ix )).getChannelID() ) ;
-    	    cs.setAutomaticAssigned( true ) ;
-    	}
+			if ( o == null )
+				continue ;
+			
+			int ix = dvbViewerShortChannelAssignment.get( o.toString() ) ;
+			
+			cs.setDVBViewerChannel( ( (dvbviewertimerimport.dvbviewer.channels.Channel)this.dvbViewerCombo.getItemAt( ix )).getChannelID() ) ;
+			cs.setAutomaticAssigned( true ) ;
+		}
 		this.update( true );
-    	this.getGUIPanel().setChanged() ;
+		this.getGUIPanel().setChanged() ;
 
 	}
 	@Override
