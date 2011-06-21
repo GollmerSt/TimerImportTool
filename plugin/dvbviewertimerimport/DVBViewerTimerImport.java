@@ -482,8 +482,10 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     
     if ( command == Command.UPDATE_UNRESOLVED_ENTRIES )
     {
-      for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
+      int end = this.control.getDVBViewer().getRecordEntries().size() ;
+      for ( int i = 0 ; i < end ; ++i )
       {
+        DVBViewerEntry co = this.control.getDVBViewer().getRecordEntries().get(i) ;
         if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
         {
           Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
@@ -494,7 +496,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
             continue ;
           long [] times = calcRecordTimes( pgm ) ;
           String channel = pgm.getChannel().getName() ;
-          dvbViewer.updateEntry( co, provider, pgm.getUniqueID(), channel, times[0], times[1], pgm.getTitle() ) ;
+          dvbViewer.shiftEntry( co, provider, pgm.getUniqueID(), channel, times[0], times[1], pgm.getTitle() ) ;
           this.markProgram( pgm, true ) ;
           pgm.validateMarking() ;
           continue ;
