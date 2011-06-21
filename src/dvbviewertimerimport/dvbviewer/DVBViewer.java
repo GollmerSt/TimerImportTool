@@ -473,7 +473,7 @@ public class DVBViewer {
 		return true ;
 	}
 
-  public boolean updateEntry( DVBViewerEntry updateEntry,
+  public boolean shiftEntry( DVBViewerEntry shiftEntry,
                Provider provider,
                String providerID,
                String channel,
@@ -489,8 +489,10 @@ public class DVBViewer {
     end  += o.getPostOffset(end)*60000 ;
     
     if ( end < System.currentTimeMillis() )
+    {
+      shiftEntry.setToDelete() ;
       return false ;
-
+    }
     DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
                                        c.getChannelSet(),
                          providerID,
@@ -505,7 +507,11 @@ public class DVBViewer {
                          c.getMerge( provider.getMerge() ),
                          provider ) ;
 
-    updateEntry.update ( e ) ;
+    if ( ! shiftEntry.shift ( e ) )
+    {
+      shiftEntry.setToDelete() ;
+      this.addRecordingEntry( e ) ;
+    }
     return true ;
   }
 	public void deleteEntry( Provider provider,

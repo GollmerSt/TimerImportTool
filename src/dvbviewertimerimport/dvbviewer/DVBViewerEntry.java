@@ -255,8 +255,13 @@ public final class DVBViewerEntry  implements Cloneable
 	  else
 	    this.end = end ;
 	}
-	public boolean update( DVBViewerEntry entry )
+	public boolean shift( DVBViewerEntry entry )
 	{
+	  if ( this.isRecording() )
+	  {
+	    if ( this.end < entry.end)
+	      return false ;   //shift not possible. Original entry must delete and an new one hat to be created
+	  }
     this.providerID = entry.providerID ;
     if ( ! this.channel.equals( entry.channel ) )
       return false ;;
@@ -270,7 +275,7 @@ public final class DVBViewerEntry  implements Cloneable
     this.timerAction = entry.timerAction ;
     this.actionAfter = entry.actionAfter ;
     this.mergeStatus = entry.mergeStatus ;
-    this.mergeID = entry.mergeID ;      //TODO
+    this.mergeID = entry.mergeID ;
     this.provider = entry.provider ;
     this.outDatedInfo = entry.outDatedInfo.clone() ;
     this.isCollapsed = entry.isCollapsed ;
@@ -315,7 +320,7 @@ public final class DVBViewerEntry  implements Cloneable
 	private void setStatusTimerToMerged()
 	{
 		if ( this.isRecording() )
-			throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
+			throw new ErrorClass( "Error: Try to merge a recording entry" ) ;  //TODO
 		
 		if ( this.statusTimer != timerStatusIfMerged )
 		{
@@ -890,7 +895,7 @@ public final class DVBViewerEntry  implements Cloneable
 		{
 			DVBViewerEntry x = itX.next() ;
 
-			if ( ! x.mergingChanged || x.isDeleted() )
+			if ( ! x.mergingChanged || x.isDeleted() )  //TODO nur Merge-Einträge bearbeiten
 				continue ;
 			
 //			if ( x.isRecording() )
