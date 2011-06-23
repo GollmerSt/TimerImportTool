@@ -136,7 +136,7 @@ public final class DVBViewerEntry  implements Cloneable
 							long mergeID,
 							Provider provider ,
 							OutDatedInfo outDatedInfo ,
-				            boolean isCollapsed,
+							boolean isCollapsed,
 							ToDo toDo )
 	{
 		this.id = id ;
@@ -196,18 +196,18 @@ public final class DVBViewerEntry  implements Cloneable
 		this.setMergeStatus( this.mergeStatus ) ;
 	}
 	public DVBViewerEntry( String channel,
-			   			   ChannelSet channelSet,
+						   ChannelSet channelSet,
 						   String providerID,
-			               long start,
-			               long end,
-			               long startOrg,
-			               long endOrg,
-			               String days,
-			               String title,
-			               TimerActionItems timerAction,
-			               ActionAfterItems actionAfter,
-			               boolean merge,
-			               Provider provider  )
+						   long start,
+						   long end,
+						   long startOrg,
+						   long endOrg,
+						   String days,
+						   String title,
+						   TimerActionItems timerAction,
+						   ActionAfterItems actionAfter,
+						   boolean merge,
+						   Provider provider  )
 	{
 		this( -1, false, StatusTimer.ENABLED , -1, providerID, channel, channelSet, start ,end ,
 				  startOrg, endOrg, days, title, timerAction, actionAfter, MergeStatus.UNKNOWN,
@@ -246,18 +246,18 @@ public final class DVBViewerEntry  implements Cloneable
 	}
 	private void updateStartEnd( long start, long end )
 	{
-	  if ( ! this.isRecording() || end - this.start >= Constants.DAYMILLSEC )
-	  {
-	    this.start = start ;
-	    this.end   = end ;
-	  }
-	  else
-	    this.end = end ;
+		if ( ! this.isRecording() || end - this.start >= Constants.DAYMILLSEC )
+		{
+			this.start = start ;
+			this.end   = end ;
+		}
+		else
+			this.end = end ;
 	}
 	private boolean isEntryRecording()
 	{
-	    long time = System.currentTimeMillis() ;
-	    return this.start <= time && time <= this.end ;
+		long time = System.currentTimeMillis() ;
+		return this.start <= time && time <= this.end ;
 	}
 	public DVBViewerEntry shift( DVBViewerEntry entry )
 	{
@@ -283,9 +283,9 @@ public final class DVBViewerEntry  implements Cloneable
 				DVBViewerEntry tempEntry = this.mergeElement.clone() ; // Untersuchen, ob geschiffteter Merge-Eintrag ebenfalls aufnimmt
 				tempEntry.mergedEntries.remove( this ) ;
 				if ( tempEntry.mustMerge( entry ) || entry.isEntryRecording() )
-				    tempEntry.addMergedEntry(entry) ;
+					tempEntry.addMergedEntry(entry) ;
 				else
-				    mergingRemove = true ;
+					mergingRemove = true ;
 				
 				tempEntry.calcStartEnd() ;
 				
@@ -308,9 +308,9 @@ public final class DVBViewerEntry  implements Cloneable
 					if ( ! mergingRemove )
 					  tempEntry.mergedEntries.remove( entry ) ;
 					tempEntry.mergedEntries.add( this ) ;
-          this.mergeElement.setToDelete() ;
-          for ( DVBViewerEntry entryMerged : tempEntry.mergedEntries )
-            entryMerged.mergeElement = tempEntry ;
+					this.mergeElement.setToDelete() ;
+					for ( DVBViewerEntry entryMerged : tempEntry.mergedEntries )
+						entryMerged.mergeElement = tempEntry ;
 					tempEntry.mergingChanged = true ;
 					tempEntry.toDo = ToDo.NEW ;
 					result = tempEntry ;
@@ -957,6 +957,7 @@ public final class DVBViewerEntry  implements Cloneable
 											final int maxTitleLength )
 	{
 		ArrayList< DVBViewerEntry > newMergeEntries = new ArrayList< DVBViewerEntry >() ;
+		ArrayList< DVBViewerEntry > toDeleteEntries = new ArrayList< DVBViewerEntry >() ;
 
 		for ( Iterator<DVBViewerEntry> itX = xml.iterator() ; itX.hasNext() ; )
 		{
@@ -1068,38 +1069,45 @@ public final class DVBViewerEntry  implements Cloneable
 				}
 				else
 				{
-					if ( nStart < 0 || nMergedEntries.size() <= 1 )
 					{
-						if ( nStart > 0 )
+						if ( nStart < 0 || nMergedEntries.size() == 0 )
 						{
-							DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
-							modify.statusTimer = StatusTimer.ENABLED ;
-							modify.mergeElement = null ;
-							modify.toDo = ToDo.UPDATE ; // evtl. anders wenn modify = merge elemenet, aber kommt das vor?
+							if ( x.dvbViewerID >= 0)
+								x.toDo = ToDo.DELETE ;
+							else
+								itX.remove() ;
+							break ;
 						}
-						if ( x.dvbViewerID >= 0)
-							x.toDo = ToDo.DELETE ;
-						else
-							itX.remove() ;
+						if ( nMergedEntries.size() == 1)
+						{
+							DVBViewerEntry toDelete = nMergedEntries.get( 0 ) ;
+							if ( toDelete.dvbViewerID >= 0)
+								toDelete.toDo = ToDo.DELETE ;
+							else
+								toDeleteEntries.add( toDelete ) ;
+							
+						}
+						x.mergedEntries = nMergedEntries ;
+						String titleOld = x.title ;
+						if ( ! x.isRecording() )
+							x.createTitle( separator, maxTitleLength ) ;
+						if (    x.toDo == ToDo.NONE  && x.dvbViewerID >= 0
+							 && ( x.start != nStart || x.end != nEnd || ! titleOld.equals( x.title ) ) )
+							x.toDo = ToDo.UPDATE ;
+						x.start = nStart ;
+						x.end   = nEnd ;
+						x.startOrg = nStartOrg ;
+						x.endOrg = nEndOrg ;
+						nStart = -1 ;
+						x.mergingChanged = false ;
 						break ;
 					}
-					x.mergedEntries = nMergedEntries ;
-					String titleOld = x.title ;
-					x.createTitle( separator, maxTitleLength ) ;
-					if (    x.toDo == ToDo.NONE  && x.dvbViewerID >= 0
-						 && ( x.start != nStart || x.end != nEnd || ! titleOld.equals( x.title ) ) )
-						x.toDo = ToDo.UPDATE ;
-					x.start = nStart ;
-					x.end   = nEnd ;
-					x.startOrg = nStartOrg ;
-					x.endOrg = nEndOrg ;
-					nStart = -1 ;
-					x.mergingChanged = false ;
-					break ;
 				}
 			}
 		}
 		xml.addAll( newMergeEntries ) ;
+		for ( DVBViewerEntry d : toDeleteEntries )
+			xml.remove( d ) ;
 	}
 	public static void setToRemovedOrDeleteUnassignedXMLEntries( final ArrayList<DVBViewerEntry> xml )
 	{
@@ -1651,11 +1659,11 @@ public final class DVBViewerEntry  implements Cloneable
 				mergeElement.mergedEntries.remove( entryBase ) ;
 				mergeElement.mergingChanged = true ;
 				if ( mergeElement.mergedEntries.size() == 0 )
-				    mergeElement.setToDelete() ;
+					mergeElement.setToDelete() ;
 				else
 				{
-	          if ( mergeElement.toDo != ToDo.NEW )
-	              mergeElement.toDo = ToDo.UPDATE ;
+					if ( mergeElement.toDo != ToDo.NEW )
+						mergeElement.toDo = ToDo.UPDATE ;
 				}
 				entryBase.setActiveAndClearMerge() ;
 				entryBase.setMergeStatus( MergeStatus.DISABLED ) ;
@@ -1811,7 +1819,7 @@ public final class DVBViewerEntry  implements Cloneable
 					ChannelSet channelSet = channelSets.get(channelSetID ) ;
 					if ( channelSet != null )
 						channel = channelSet.getDVBViewerChannel() ;
-			        entry = new DVBViewerEntry( id, isFilterElement, statusDVBViewer,
+					entry = new DVBViewerEntry( id, isFilterElement, statusDVBViewer,
 												-1, providerID, channel, channelSet,
 												start, end, startOrg, endOrg,
 												days, "", timerAction, actionAfter,
@@ -1834,14 +1842,14 @@ public final class DVBViewerEntry  implements Cloneable
 				}
 			}
 
-		    if ( ev.isEndElement() )
-		    {
-		    	stack.pop();
-			    if ( stack.size() == 0 )
-			    	break ;
-		    }
-		    if ( ! reader.hasNext() )
-		    	break ;
+			if ( ev.isEndElement() )
+			{
+				stack.pop();
+				if ( stack.size() == 0 )
+					break ;
+			}
+			if ( ! reader.hasNext() )
+				break ;
 			try {
 				ev = reader.nextEvent();
 			} catch (XMLStreamException e) {
