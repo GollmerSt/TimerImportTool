@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -255,19 +256,80 @@ public final class DVBViewerEntry  implements Cloneable
 	  else
 	    this.end = end ;
 	}
-	public boolean shift( DVBViewerEntry entry )
+	public DVBViewerEntry shift( DVBViewerEntry entry )
 	{
+		DVBViewerEntry result = null ;
+		if ( ! this.channel.equals( entry.channel ) || this.channelSet != entry.channelSet )
+			throw new ErrorClass( "Error: While trying to shift a record entry, channels aren't equal." ) ;
+
 		if ( this.isRecording() )
 		{
-			if ( this.end < entry.end)
-				return false ;   //shift not possible. Original entry must delete and an new one hat to be created
+			if ( entry.start > System.currentTimeMillis() || System.currentTimeMillis() > entry.end  )   // shifted nimmt nicht auf
+			{
+				this.setToDelete() ;
+				return entry ;		// neuen Eintrag generieren
+			}
 		}
+				
+		if ( this.mergeElement != null )
+		{
+			boolean mergingRemove = false ;
+			
+			if ( this.mergeElement.isRecording() )
+			{
+				DVBViewerEntry tempEntry = this.mergeElement.clone() ; // Untersuchen, ob geschiffteter Merge-Eintrag ebenfalls aufnimmt
+				tempEntry.mergedEntries.remove( this ) ;
+				tempEntry.addMergedEntry(entry) ;
+				tempEntry.calcStartEnd() ;
+				
+				if ( tempEntry.start <= System.currentTimeMillis() && System.currentTimeMillis() <= tempEntry.end  )   // nimmt auf
+				{
+					if ( tempEntry.end - tempEntry.end < Constants.DAYMILLSEC ) // wennn geschiffteter < 24 h merge eintrag bearbeiten
+					{
+						this.end = entry.end ;
+						this.mergeElement.calcStartEnd() ;
+						this.mergeElement.toDo = ToDo.UPDATE ;
+						mergingRemove = false ;
+					}
+					else
+					{
+						mergingRemove = true ;
+						this.mergeElement.toDo = ToDo.UPDATE ;
+					}
+				}
+				else
+				{
+					tempEntry.mergedEntries.remove( entry ) ;
+					tempEntry.mergedEntries.add( this ) ;
+					this.mergeElement.setToDelete() ;
+					for ( DVBViewerEntry entryMerged : this.mergeElement.mergedEntries )
+						entryMerged.mergeElement = tempEntry ;
+					tempEntry.mergingChanged = true ;
+					tempEntry.toDo = ToDo.NEW ;
+					result = tempEntry ;
+					mergingRemove = false ;
+				}
+			}
+			else
+			{
+				mergingRemove = true ;
+				this.mergeElement.mergingChanged = true ;
+			}
+			
+			if ( mergingRemove )
+			{
+				this.mergeElement.mergedEntries.remove( this ) ;
+				this.mergeElement.calcStartEnd() ;
+				this.mergeElement = null ;
+				this.mergeID = -1 ;
+				this.statusTimer = StatusTimer.ENABLED ;
+				this.updateStartEnd( start, end ) ;
+			}
+		}
+		else
+			this.updateStartEnd( start, end ) ;
+
 		this.providerID = entry.providerID ;
-		if ( ! this.channel.equals( entry.channel ) )
-			return false ;;
-		if ( this.channelSet != entry.channelSet )
-			return false ;
-		this.updateStartEnd( start, end ) ;
 		this.startOrg = entry.startOrg ;
 		this.endOrg = entry.endOrg ;
 		this.days = entry.days ;
@@ -275,14 +337,11 @@ public final class DVBViewerEntry  implements Cloneable
 		this.timerAction = entry.timerAction ;
 		this.actionAfter = entry.actionAfter ;
 		this.mergeStatus = entry.mergeStatus ;
-		this.mergeID = entry.mergeID ;
 		this.provider = entry.provider ;
 		this.outDatedInfo = entry.outDatedInfo.clone() ;
 		this.isCollapsed = entry.isCollapsed ;
 		this.toDo = ToDo.UPDATE ;
-		if ( this.mergeElement != null )
-			this.mergeElement.mergingChanged = true ;
-		return true ;
+		return result ;
 	}
 	private void splitChannel()
 	{
@@ -895,10 +954,10 @@ public final class DVBViewerEntry  implements Cloneable
 		{
 			DVBViewerEntry x = itX.next() ;
 
-			if ( ! x.mergingChanged || x.isDeleted() )  //TODO nur Merge-Einträge bearbeiten
+			if ( ! x.mergingChanged || x.isDeleted() || ! x.isMerged() )
 				continue ;
 			
-//			if ( x.isRecording() )
+//TODO			if ( x.isRecording() )
 //				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
 
 			long nStart = -1 ;
@@ -918,7 +977,10 @@ public final class DVBViewerEntry  implements Cloneable
 					DVBViewerEntry m = itM.next() ;
 
 					if ( m.isRecording() )
-						throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
+					{
+						itM.remove() ;
+						m.mergeElement = null ;
+					}
 
 					if ( nStart < 0 )
 					{

@@ -506,10 +506,9 @@ public class DVBViewer {
 											   this.afterRecordingAction ,
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
-		
-		if ( ! shiftEntry.shift ( e ) )
+		e = shiftEntry.shift ( e ) ;
+		if (  e != null )
 		{
-			shiftEntry.setToDelete() ;
 			this.addRecordingEntry( e ) ;
 		}
 		return true ;
