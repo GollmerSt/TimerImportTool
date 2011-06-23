@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -241,7 +240,6 @@ public final class DVBViewerEntry  implements Cloneable
 			entry.mergedEntries.addAll( this.mergedEntries ) ;
 		}
 
-		entry.mergedEntries = this.mergedEntries ;
 		entry.program = this.program ;
 
 		return entry ;
@@ -256,6 +254,11 @@ public final class DVBViewerEntry  implements Cloneable
 	  else
 	    this.end = end ;
 	}
+	private boolean isEntryRecording()
+	{
+	    long time = System.currentTimeMillis() ;
+	    return this.start <= time && time <= this.end ;
+	}
 	public DVBViewerEntry shift( DVBViewerEntry entry )
 	{
 		DVBViewerEntry result = null ;
@@ -264,7 +267,7 @@ public final class DVBViewerEntry  implements Cloneable
 
 		if ( this.isRecording() )
 		{
-			if ( entry.start > System.currentTimeMillis() || System.currentTimeMillis() > entry.end  )   // shifted nimmt nicht auf
+			if ( ! entry.isEntryRecording() )   // shifted nimmt nicht auf
 			{
 				this.setToDelete() ;
 				return entry ;		// neuen Eintrag generieren
@@ -279,17 +282,20 @@ public final class DVBViewerEntry  implements Cloneable
 			{
 				DVBViewerEntry tempEntry = this.mergeElement.clone() ; // Untersuchen, ob geschiffteter Merge-Eintrag ebenfalls aufnimmt
 				tempEntry.mergedEntries.remove( this ) ;
-				tempEntry.addMergedEntry(entry) ;
+				if ( tempEntry.mustMerge( entry ) || entry.isEntryRecording() )
+				    tempEntry.addMergedEntry(entry) ;
+				else
+				    mergingRemove = true ;
+				
 				tempEntry.calcStartEnd() ;
 				
-				if ( tempEntry.start <= System.currentTimeMillis() && System.currentTimeMillis() <= tempEntry.end  )   // nimmt auf
+				if ( tempEntry.isEntryRecording()  )   // nimmt auf
 				{
 					if ( tempEntry.end - tempEntry.end < Constants.DAYMILLSEC ) // wennn geschiffteter < 24 h merge eintrag bearbeiten
 					{
-						this.end = entry.end ;
-						this.mergeElement.calcStartEnd() ;
+						this.end = entry.end ;                // wenn mergingRemoved ist das unwirksam
+						this.mergeElement.calcStartEnd() ;    // wenn mergingRemoved ist das unwirksam
 						this.mergeElement.toDo = ToDo.UPDATE ;
-						mergingRemove = false ;
 					}
 					else
 					{
@@ -299,15 +305,17 @@ public final class DVBViewerEntry  implements Cloneable
 				}
 				else
 				{
-					tempEntry.mergedEntries.remove( entry ) ;
+					if ( ! mergingRemove )
+					  tempEntry.mergedEntries.remove( entry ) ;
 					tempEntry.mergedEntries.add( this ) ;
-					this.mergeElement.setToDelete() ;
-					for ( DVBViewerEntry entryMerged : this.mergeElement.mergedEntries )
-						entryMerged.mergeElement = tempEntry ;
+          this.mergeElement.setToDelete() ;
+          for ( DVBViewerEntry entryMerged : tempEntry.mergedEntries )
+            entryMerged.mergeElement = tempEntry ;
 					tempEntry.mergingChanged = true ;
 					tempEntry.toDo = ToDo.NEW ;
 					result = tempEntry ;
-					mergingRemove = false ;
+					this.start = entry.start ;
+					this.end = entry.end ;
 				}
 			}
 			else
@@ -323,11 +331,11 @@ public final class DVBViewerEntry  implements Cloneable
 				this.mergeElement = null ;
 				this.mergeID = -1 ;
 				this.statusTimer = StatusTimer.ENABLED ;
-				this.updateStartEnd( start, end ) ;
+				this.updateStartEnd( entry.start, entry.end ) ;
 			}
 		}
 		else
-			this.updateStartEnd( start, end ) ;
+			this.updateStartEnd( entry.start, entry.end ) ;
 
 		this.providerID = entry.providerID ;
 		this.startOrg = entry.startOrg ;
@@ -954,7 +962,7 @@ public final class DVBViewerEntry  implements Cloneable
 		{
 			DVBViewerEntry x = itX.next() ;
 
-			if ( ! x.mergingChanged || x.isDeleted() || ! x.isMerged() )
+			if ( ! x.mergingChanged || x.isDeleted() || ! x.isMergeElement() )
 				continue ;
 			
 //TODO			if ( x.isRecording() )
@@ -1060,7 +1068,7 @@ public final class DVBViewerEntry  implements Cloneable
 				}
 				else
 				{
-					if ( nStart < 0 || nMergedEntries.size() <= 1)
+					if ( nStart < 0 || nMergedEntries.size() <= 1 )
 					{
 						if ( nStart > 0 )
 						{
@@ -1444,6 +1452,8 @@ public final class DVBViewerEntry  implements Cloneable
 		{
 			this.mergeElement.mergedEntries.remove( this ) ;
 			this.mergeElement.mergingChanged = true ;
+			if ( this.mergeElement.mergedEntries.size() == 0 )
+			  this.mergeElement.setToDelete() ;
 		}
 		this.mergeElement = null ;
 	}
@@ -1640,8 +1650,13 @@ public final class DVBViewerEntry  implements Cloneable
 				DVBViewerEntry mergeElement = entryBase.mergeElement ;
 				mergeElement.mergedEntries.remove( entryBase ) ;
 				mergeElement.mergingChanged = true ;
-				if ( mergeElement.toDo != ToDo.NEW )
-					mergeElement.toDo = ToDo.UPDATE ;
+				if ( mergeElement.mergedEntries.size() == 0 )
+				    mergeElement.setToDelete() ;
+				else
+				{
+	          if ( mergeElement.toDo != ToDo.NEW )
+	              mergeElement.toDo = ToDo.UPDATE ;
+				}
 				entryBase.setActiveAndClearMerge() ;
 				entryBase.setMergeStatus( MergeStatus.DISABLED ) ;
 				entryBase.toDo = ToDo.UPDATE ;
