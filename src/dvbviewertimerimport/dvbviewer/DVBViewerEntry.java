@@ -1085,6 +1085,12 @@ public final class DVBViewerEntry  implements Cloneable
 								toDelete.toDo = ToDo.DELETE ;
 							else
 								toDeleteEntries.add( toDelete ) ;
+							x.providerID = toDelete.providerID ;
+							x.provider =   toDelete.provider ;
+							x.isFilterElement = toDelete.isFilterElement ;
+							x.mergeStatus = MergeStatus.ENABLED ;
+							x.outDatedInfo = toDelete.outDatedInfo ;
+							nMergedEntries = null ;
 							
 						}
 						x.mergedEntries = nMergedEntries ;
