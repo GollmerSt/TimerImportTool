@@ -1066,20 +1066,25 @@ public final class DVBViewerEntry implements Cloneable
 					{
 						if ( nStart < 0 || nMergedEntries.size() == 0 )
 						{
-							if ( x.dvbViewerID >= 0)
+              x.setToDelete() ;
+/*							if ( x.dvbViewerID >= 0)
 								x.toDo = ToDo.DELETE ;
 							else
 								itX.remove() ;
-							break ;
+*/
+              break ;
 						}
 						if ( nMergedEntries.size() == 1)
 						{
 							DVBViewerEntry toDelete = nMergedEntries.get( 0 ) ;
+							toDelete.setToDelete() ;
+							nMergedEntries = null ;
+/*							
 							if ( toDelete.dvbViewerID >= 0)
 								toDelete.toDo = ToDo.DELETE ;
 							else
 								toDeleteEntries.add( toDelete ) ;
-							
+*/							
 						}
 						x.mergedEntries = nMergedEntries ;
 						x.createTitle( separator, maxTitleLength ) ;
@@ -1437,7 +1442,9 @@ public final class DVBViewerEntry implements Cloneable
 	} ;
 	public boolean mustUpdated() { return this.toDo == ToDo.UPDATE ; } ;
 	public boolean mustDeleted() { return this.toDo == ToDo.DELETE ; } ;
-	public boolean mustDVBViewerDeleted() { return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER ; } ;
+	public boolean mustDVBViewerDeleted()
+	{
+	  return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER ; } ;
 	public boolean mustWrite()
 	{
 		if ( this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER )
@@ -1840,7 +1847,10 @@ public final class DVBViewerEntry implements Cloneable
 				if ( data.length() > 0 )
 				{
 					if      ( stack.equals( DVBViewerEntry.titleXML ) )
+					{
 						entry.preferedTitle += data ;
+						entry.realTitle = entry.preferedTitle ;
+					}
 					else if ( stack.equals( DVBViewerEntry.mergedXML ) )
 					{
 						entry.mergedIDs.add( Long.valueOf( data.trim() ) ) ;
