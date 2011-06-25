@@ -968,18 +968,25 @@ public final class DVBViewerEntry implements Cloneable
 			long nStartOrg = -1 ;
 			long nEndOrg = -1 ;
 			
-			if ( x.isRecording() )
-				for ( DVBViewerEntry m : x.mergedEntries )
+      ArrayList< DVBViewerEntry > nMergedEntries = null ;
+
+      if ( x.isRecording() )
+        for ( Iterator<DVBViewerEntry> itM = x.mergedEntries.iterator() ; itM.hasNext() ; )
+        {
+          DVBViewerEntry m = itM.next() ;
+
 					if ( m.isEntryRecording() && ! m.isRecording() )
 					{
 						nStart    = m.preferedStart ;
 						nEnd      = m.end ;
 						nStartOrg = m.startOrg ;
 						nEndOrg   = m.endOrg ;
+            nMergedEntries = new ArrayList< DVBViewerEntry >() ;
+            nMergedEntries.add( m ) ;
+            itM.remove() ;
 						break ;
 					}
-				
-			ArrayList< DVBViewerEntry > nMergedEntries = null ;
+        }
 
 			while ( true )
 			{
