@@ -119,6 +119,7 @@ public class DVBViewerTimerXML {
 	}
 	private static String createString( DVBViewerEntry e, String defRecAction, String defAfterRecord )
 	{
+		e.prepareTimerSetting() ;
 		StringBuilder out = new StringBuilder( e.getTitle().replace( ";", "") ) ;
 		out.append( ';' ) ;
 		out.append( e.getChannel() ) ;

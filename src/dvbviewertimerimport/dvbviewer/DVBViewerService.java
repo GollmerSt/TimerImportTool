@@ -205,6 +205,7 @@ public class DVBViewerService {
 	}
 	public void setTimerEntry( DVBViewerEntry e )
 	{
+		e.prepareTimerSetting() ;
 		if ( e.mustIgnored() )
 			return ;
 		String query = "" ;

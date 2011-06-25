@@ -22,5 +22,8 @@ ChangeLog:
             Sendung nicht mehr programmiert werden
 13.06.2011: Laufende Aufnahme wird jetzt von dem Tool richtig unterstützt
 13.06.2011: TV-Browser-Bug gefixt. Sendungen von anderen Plugins wurden nicht programmiert
-
+14.06.2011:	V01.02.009
+------------------------------------------------------------------------------
  
+23.06.2011: Timer-Verwaltung: Bei Trennen und Löschen verknüpfter Einträge wurde die
+                              verknüpfte Timer nicht gelöscht.

@@ -38,6 +38,7 @@ public class DVBViewerEntryCOM {
 	
 	DVBViewerEntryCOM( DVBViewerEntry e )
 	{
+		e.prepareTimerSetting() ;
 		this.channelID   = e.getChannel() ;
 		this.startTime   = fromJavaDate( e.getStart() ) ;
 		this.endTime     = fromJavaDate( e.getEnd() ) ;
