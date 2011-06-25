@@ -69,7 +69,7 @@ public final class DVBViewerEntry implements Cloneable
 		public MergeStatus post() { return post( this ) ; } ;
 	} ;
 	public enum StatusTimer	{ ENABLED, DISABLED, REMOVED, RECORDING } ;				    			// applied to Service
-	public enum ToDo       	{ NONE, NEW, UPDATE, DELETE, DELETE_DVBVIEWER, DELETE_BY_PROVIDER } ;	//toDo by Service
+	public enum ToDo       	{ NONE, NEW, UPDATE, DELETE, DELETE_DVBVIEWER } ;	//toDo by Service
 
 	private static final StackXML< String > entryXML  = new StackXML< String >( "Entry" ) ;
 	private static final StackXML< String > titleXML  = new StackXML< String >( "Entry", "Title") ;
@@ -967,7 +967,18 @@ public final class DVBViewerEntry implements Cloneable
 			long nEnd = -1 ;
 			long nStartOrg = -1 ;
 			long nEndOrg = -1 ;
-
+			
+			if ( x.isRecording() )
+				for ( DVBViewerEntry m : x.mergedEntries )
+					if ( m.isEntryRecording() && ! m.isRecording() )
+					{
+						nStart    = m.preferedStart ;
+						nEnd      = m.end ;
+						nStartOrg = m.startOrg ;
+						nEndOrg   = m.endOrg ;
+						break ;
+					}
+				
 			ArrayList< DVBViewerEntry > nMergedEntries = null ;
 
 			while ( true )
@@ -1374,7 +1385,7 @@ public final class DVBViewerEntry implements Cloneable
 	}
 
 	public boolean isRemoved() { return this.statusTimer == StatusTimer.REMOVED ; }
-	public boolean isDeleted() { return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER ; } ;
+	public boolean isDeleted() { return this.toDo == ToDo.DELETE ; } ;
 	public boolean isMerged() { return this.mergeElement != null ; } ;
 	public boolean isMergeElement()
 	{
@@ -1462,7 +1473,7 @@ public final class DVBViewerEntry implements Cloneable
 	}
 	public boolean mustWrite()
 	{
-		if ( this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER )
+		if ( this.toDo == ToDo.DELETE )
 			return false ;
 		else if ( this.statusTimer == StatusTimer.REMOVED )
 			return false ;

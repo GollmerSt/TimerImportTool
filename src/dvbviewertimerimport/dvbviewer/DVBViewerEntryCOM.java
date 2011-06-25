@@ -36,7 +36,7 @@ public class DVBViewerEntryCOM {
 		calendar = new GregorianCalendar( timeZone ) ;
 	}
 	
-	DVBViewerEntryCOM( DVBViewerEntry e )
+	DVBViewerEntryCOM( DVBViewerEntry e, boolean toDelete )
 	{
 		e.prepareTimerSetting() ;
 		this.channelID   = e.getChannel() ;
@@ -48,21 +48,21 @@ public class DVBViewerEntryCOM {
 		this.recording   = false ;
 		this.recAction   = e.getTimerAction().getID() ;
 		this.afterRec    = e.getActionAfter().getID() ;
-		switch ( e.getToDo() )
+		if ( toDelete )
 		{
-			case DELETE :
-			case DELETE_BY_PROVIDER :
-			case DELETE_DVBVIEWER :
-				this.id = (int) e.getDVBViewerID() ;
-				this.mustDelete = true ;
-				break ;
-			case NEW :
-				this.id = -1 ;
-				this.mustDelete = false ;
-				break ;
-			default :
-				this.id = (int) e.getDVBViewerID() ;
-				this.mustDelete = false ;
+			this.mustDelete = true ;
+			this.id = (int) e.getDVBViewerID() ;
+			return ;
+		}
+		if ( e.mustDVBViewerCreated() )
+		{
+			this.id = -1 ;
+			this.mustDelete = false ;
+		}
+		else
+		{
+			this.id = (int) e.getDVBViewerID() ;
+			this.mustDelete = false ;
 		}
 	}
 	DVBViewerEntryCOM(
