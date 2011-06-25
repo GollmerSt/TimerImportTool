@@ -1052,7 +1052,7 @@ public final class DVBViewerEntry implements Cloneable
 				}
 				else if ( ! isIn )
 				{
-					if ( nMergedEntries.size() == 1 )
+					if ( nMergedEntries.size() == 1 )      //TODO hier könnte noch ein Fehler sein
 					{
 						DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
 						modify.statusTimer = StatusTimer.ENABLED ;
@@ -1076,15 +1076,12 @@ public final class DVBViewerEntry implements Cloneable
 						}
 						if ( nMergedEntries.size() == 1)
 						{
-							DVBViewerEntry toDelete = nMergedEntries.get( 0 ) ;
-							toDelete.setToDelete() ;
-							nMergedEntries = null ;
-/*							
-							if ( toDelete.dvbViewerID >= 0)
-								toDelete.toDo = ToDo.DELETE ;
-							else
-								toDeleteEntries.add( toDelete ) ;
-*/							
+							DVBViewerEntry toDelete = nMergedEntries.get( 0 ) ;							
+							toDelete.mergeElement = null ;
+							toDelete.toDo = ToDo.DELETE ;
+              nMergedEntries = null ;
+              x.providerID = toDelete.providerID ;
+              x.preferedTitle = toDelete.preferedTitle ;
 						}
 						x.mergedEntries = nMergedEntries ;
 						x.createTitle( separator, maxTitleLength ) ;
@@ -1454,6 +1451,15 @@ public final class DVBViewerEntry implements Cloneable
 		else
 			return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER ;
 	} ;
+	public boolean mustDVBViewerCreated()
+	{
+	  if ( this.toDo == ToDo.NEW )
+	    return true ;
+	  else if ( this.toDo == ToDo.UPDATE && this.isRecording() && ! this.isEntryRecording() )
+	    return true ;
+	  else
+	    return false ;
+	}
 	public boolean mustWrite()
 	{
 		if ( this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER )

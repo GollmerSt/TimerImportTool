@@ -693,9 +693,9 @@ public class DVBViewer {
 		{
 			if ( d.mustDVBViewerDeleted() )
 				deletedEntries++ ;
-			else if ( d.mustUpdated() )
+			if ( d.mustUpdated() )
 				updatedEntries++ ;
-			else if ( ! d.mustIgnored() )
+			if ( d.mustDVBViewerCreated() )
 				newEntries++ ;
 		}
 

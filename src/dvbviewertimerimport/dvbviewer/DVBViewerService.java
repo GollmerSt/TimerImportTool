@@ -203,7 +203,7 @@ public class DVBViewerService {
 		
 		return result ;
 	}
-	public void setTimerEntry( DVBViewerEntry e )
+	public void setTimerEntry( DVBViewerEntry e, boolean toDelete  )
 	{
 		e.prepareTimerSetting() ;
 		if ( e.mustIgnored() )
@@ -237,7 +237,7 @@ public class DVBViewerService {
 		else
 			query += "&enable=0" ;
 		
-		if ( e.mustUpdated() )
+		if ( e.mustUpdated() && ! toDelete)
 		{
 			command = "timeredit" ;
 			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
@@ -247,7 +247,7 @@ public class DVBViewerService {
 				return ;
 			}
 		}
-		else if ( e.mustDVBViewerDeleted() )
+		if ( e.mustDVBViewerDeleted() && toDelete )
 		{
 			command = "timerdelete" ;
 			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
@@ -257,7 +257,7 @@ public class DVBViewerService {
 				return ;
 			}
 		}
-		else
+		if ( e.mustDVBViewerCreated() && ! toDelete )
 			command = "timeradd" ;
 
 		
@@ -283,11 +283,11 @@ public class DVBViewerService {
 	{
 		for ( DVBViewerEntry d : entries )
 			if ( d.mustDVBViewerDeleted() )
-				this.setTimerEntry( d  ) ;
+				this.setTimerEntry( d, true ) ;
 		
 		for ( DVBViewerEntry d : entries )
 			if ( ! d.mustIgnored() && ! d.mustDVBViewerDeleted() )
-				this.setTimerEntry( d ) ;
+				this.setTimerEntry( d, false ) ;
 	}
 	public ArrayList<DVBViewerEntry> readTimers()
 	{
