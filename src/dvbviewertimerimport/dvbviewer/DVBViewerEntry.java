@@ -1440,11 +1440,20 @@ public final class DVBViewerEntry implements Cloneable
 			return true ;
 		return false ;
 	} ;
-	public boolean mustUpdated() { return this.toDo == ToDo.UPDATE ; } ;
-	public boolean mustDeleted() { return this.toDo == ToDo.DELETE ; } ;
+	public boolean mustUpdated()
+	{
+		if ( ! ( this.toDo == ToDo.UPDATE ) )
+			return false ;
+		return ! this.isRecording() || this.isEntryRecording() ;
+	} ;
+	public boolean mustDeleted(){ return this.toDo == ToDo.DELETE ; } ;
 	public boolean mustDVBViewerDeleted()
 	{
-	  return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER ; } ;
+		if ( this.toDo == ToDo.UPDATE )
+			return this.isRecording() && ! this.isEntryRecording() ;
+		else
+			return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER ;
+	} ;
 	public boolean mustWrite()
 	{
 		if ( this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_BY_PROVIDER )
