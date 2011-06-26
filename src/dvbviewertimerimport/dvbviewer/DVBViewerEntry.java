@@ -970,9 +970,6 @@ public final class DVBViewerEntry implements Cloneable
 				
 				mustRepeat = true ;
 
-				//TODO			if ( x.isRecording() )
-				//				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
-
 				long nStart = -1;
 				long nEnd = -1;
 				long nStartOrg = -1;
@@ -1067,15 +1064,15 @@ public final class DVBViewerEntry implements Cloneable
 						n.mergingChanged = false;
 						x.id = maxID.increment();
 						x.dvbViewerID = -1;
-            n.toDo = ToDo.UPDATE ;
+						n.toDo = ToDo.UPDATE ;
 						x.toDo = ToDo.NEW;
 					}
 					else if (nMergedEntries.size() == 1)
 					{
 						DVBViewerEntry modify = nMergedEntries.get(0);
-            modify.mergeElement = null ;
+						modify.mergeElement = null ;
 						DVBViewerEntry n = modify.clone();
-            modify.setToDelete() ;
+						modify.setToDelete() ;
 						n.id = x.id ;
 						x.id = maxID.increment() ;
 						n.mergeStatus = MergeStatus.JUST_SEPARATED ;

@@ -44,13 +44,13 @@ public class DVBViewer {
 	private static final int DVBVIEWER_SCAN_TIME_MS			  = 100 ; // Scan time for waiting DVBViewer
 	private static final int DVBVIEWER_CHANNEL_TIME_MS		  = 200 ; // Selecting channel period time
 
-	private static final String NAME_USERMODE_FILE            = "usermode.ini" ;
-	private static final String NAME_CONFIG_PATH              = "Plugins" ;
-	private static final String NAME_PATH_REMOVE              = "\\Roaming" ;
+	private static final String NAME_USERMODE_FILE			  = "usermode.ini" ;
+	private static final String NAME_CONFIG_PATH			  = "Plugins" ;
+	private static final String NAME_PATH_REMOVE			  = "\\Roaming" ;
 	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
-	private static final String NAME_DVBVIEWER_EXE 			  = "dvbviewer.exe" ;
+	private static final String NAME_DVBVIEWER_EXE			  = "dvbviewer.exe" ;
 
-	public static final String NAME_DVBVIEWER_COM_DLL         = "DVBViewerTimerImport" ;
+	public static final String NAME_DVBVIEWER_COM_DLL		  = "DVBViewerTimerImport" ;
 	private static String PATH_PLUGIN_DATA ;
 
 	private static boolean isDLLloaded = false ;
@@ -94,7 +94,7 @@ public class DVBViewer {
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
 	private ArrayList< HashMap< String, Channel> > channelsLists
-	        = new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+			= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	private Map< Long, ChannelSet > channelSetMap = new HashMap< Long, ChannelSet >() ;
 
 	private final String exePath ;
@@ -110,7 +110,7 @@ public class DVBViewer {
 
 
 	private final String exeName ;
-	private String separator      = ",," ;
+	private String separator = ",," ;
 	private int maxTitleLength = -1 ;
 	private ActionAfterItems afterRecordingAction = ActionAfterItems.NONE ;
 	private TimerActionItems timerAction = TimerActionItems.RECORD ;
@@ -171,7 +171,7 @@ public class DVBViewer {
 	{
 		String exePath = System.getProperty("user.dir") ;
 
-		File jarFile = new File(  exePath + File.separator + Constants.PROGRAM_NAME + ".jar" ) ;
+		File jarFile = new File( exePath + File.separator + Constants.PROGRAM_NAME + ".jar" ) ;
 
 		if ( ! jarFile.exists() )
 		{
@@ -252,7 +252,7 @@ public class DVBViewer {
 								if ( temp.equalsIgnoreCase( DVBViewer.NAME_PATH_REMOVE ))
 									temp = "" ;
 								path =   System.getenv( "ALLUSERSPROFILE")
-								       + temp + path ;
+									   + temp + path ;
 								userMode = 2 ;
 							}
 							else
@@ -293,7 +293,7 @@ public class DVBViewer {
 	{
 		this.recordEntries = null ;
 		if ( this.service != null && this.service.isEnabled() )
-			this.recordEntries =  this.service.readTimers() ;
+			this.recordEntries = this.service.readTimers() ;
 		else
 		{
 			if ( DVBViewerCOM.connect() )
@@ -330,28 +330,28 @@ public class DVBViewer {
 		this.disconnectDVBViewer();
 		this.writeXML() ;
 	}
-	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args ) throws Exception
+	public boolean process( DVBViewerProvider provider, boolean getAll, Object args ) throws Exception
 	{
 		return process( provider, getAll, args, Command.SET ) ;
 	}
 
-	public boolean  process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
+	public boolean process( DVBViewerProvider provider, boolean getAll, Object args, Command command ) throws Exception
 	{
 		Object [] argArray = new Object[1] ;
 		argArray[0] = args ;
 		
 		return process( provider, getAll, argArray, command ) ;
 	}
-	public boolean  process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command  ) throws Exception
+	public boolean process( DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
 	{
 		return process( null, provider, getAll, args, command ) ;
 	}
-	public boolean  process( DVBViewerEntry updateEntry, DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
+	public boolean process( DVBViewerEntry updateEntry, DVBViewerProvider provider, boolean getAll, Object [] args, Command command ) throws Exception
 	{
 		boolean result = true ;
 		if ( command == Command.FIND && this.recordEntries != null )
 		{
-			result  = provider.process(getAll, command );
+			result = provider.process(getAll, command );
 			for ( Object o : args )
 				result &= provider.processEntry( o, command ) ;
 			return result ;
@@ -360,16 +360,16 @@ public class DVBViewer {
 		try
 		{
 			this.readDVBViewerTimers() ;
-	    this.mergeXMLWithDVBViewerData( null ) ;
+			this.mergeXMLWithDVBViewerData( null ) ;
 
-		result  = provider.process(getAll, command )	;
-		if ( command == Command.UPDATE_UNRESOLVED_ENTRIES )
-			result &= provider.processEntry( null, command ) ;
-		else
-			for ( Object o : args )
-				result &= provider.processEntry( o, command ) ;
-		if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
-		this.setDVBViewerTimers();
+			result = provider.process(getAll, command )	;
+			if ( command == Command.UPDATE_UNRESOLVED_ENTRIES )
+				result &= provider.processEntry( null, command ) ;
+			else
+				for ( Object o : args )
+					result &= provider.processEntry( o, command ) ;
+			if ( command != Command.FIND && command != Command.UPDATE_TVBROWSER )
+			this.setDVBViewerTimers();
 		} catch ( Exception e ) {
 			this.disconnectDVBViewer();
 			throw e ;
@@ -415,7 +415,7 @@ public class DVBViewer {
 			ErrorClass.setWarníng() ;
 			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
 		}
-		Channel c =  channelMap.get( providerChannel ) ;
+		Channel c = channelMap.get( providerChannel ) ;
 		String dvbViewerChannel = c.getDVBViewer() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 		{
@@ -432,18 +432,18 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
+		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
 		TimeOffsets o = c.getOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
-		end  += o.getPostOffset(end)*60000 ;
+		end += o.getPostOffset(end)*60000 ;
 		
 		if ( end < System.currentTimeMillis() )
 			return false ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
-				                               c.getChannelSet(),
+											   c.getChannelSet(),
 											   providerID,
 											   start,
 											   end,
@@ -482,12 +482,12 @@ public class DVBViewer {
 							   long end,
 							   String title )
 	{
-		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
+		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
 		TimeOffsets o = c.getOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
-		end  += o.getPostOffset(end)*60000 ;
+		end += o.getPostOffset(end)*60000 ;
 		
 		if ( end < System.currentTimeMillis() )
 		{
@@ -508,7 +508,7 @@ public class DVBViewer {
 											   c.getMerge( provider.getMerge() ),
 											   provider ) ;
 		e = shiftEntry.shift ( e ) ;
-		if (  e != null )
+		if ( e != null )
 		{
 			this.addRecordingEntry( e ) ;
 		}
@@ -520,10 +520,10 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-		Channel c =  this.getDVBViewerChannel( provider.getID(), channel) ;
+		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
 
 		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
-				                               c.getChannelSet(), 
+											   c.getChannelSet(), 
 											   null,
 											   start,
 											   end,
@@ -625,9 +625,9 @@ public class DVBViewer {
 		this.setProvider() ;
 	}
 	private void addChannel( HashMap< String, Channel> channels,
-			                 String channelName,
-			                 Channel channel,
-			                 String channelGroupName )
+							 String channelName,
+							 Channel channel,
+							 String channelGroupName )
 	{
 		if ( channelName == null )
 			return ;
@@ -638,8 +638,8 @@ public class DVBViewer {
 	public void addChannel( ChannelSet channelSet )
 	{
 		Channel c = new Channel( channelSet,
-				                 channelSet.getTimeOffsets(),
-				                 channelSet.getMerge() ) ;
+								 channelSet.getTimeOffsets(),
+								 channelSet.getMerge() ) ;
 		for ( dvbviewertimerimport.control.Channel cC : channelSet.getChannels() )
 		{
 			int type = cC.getType() ;
@@ -710,8 +710,8 @@ public class DVBViewer {
 		}
 
 		Log.out(false,     "Number of new entries:     " + Integer.toString( newEntries )
-			           + "\nNumber of deleted entries: " + Integer.toString( deletedEntries )
-				       + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
+					   + "\nNumber of deleted entries: " + Integer.toString( deletedEntries )
+					   + "\nNumber of updated entries: " + Integer.toString( updatedEntries ) ) ;
 
 		DVBViewerEntry.afterRecordingSettingProcces( this.recordEntries ) ;
 	}
@@ -733,8 +733,8 @@ public class DVBViewer {
 
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		try {
-			XMLEventReader  reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
-			StackXML<String>   stack = new StackXML<String>();
+			XMLEventReader reader = inputFactory.createXMLEventReader( new StreamSource( f ) );
+			StackXML<String> stack = new StackXML<String>();
 
 			while( reader.hasNext() ) {
 				XMLEvent ev = reader.nextEvent();
@@ -750,15 +750,15 @@ public class DVBViewer {
 					stack.pop();
 					continue ;
 				}
-			    if( ev.isEndElement() ) stack.pop();
+				if( ev.isEndElement() ) stack.pop();
 			}
 			reader.close();
 		} catch (XMLStreamException e) {
 			throw new ErrorClass( e,   "Error on readin XML file \"" + f.getName()
-					                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
-					                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+									 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
+									 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
 		}
-		catch (Exception  e) {
+		catch (Exception e) {
 			throw new ErrorClass( e, "Unexpected error on read XML file \"" + f.getName() ) ;
 		}
 
@@ -784,11 +784,11 @@ public class DVBViewer {
 				throw new ErrorClass( e, "Unexpecting error on writing to file \"" + file.getPath() + "\". Write protected?" ) ;
 			}
 			IndentingXMLStreamWriter sw = new IndentingXMLStreamWriter(writer);
-	        sw.setIndent( "    " );
+			sw.setIndent( "    " );
 			sw.writeStartDocument("ISO-8859-1","1.0");
 			sw.writeStartElement("Processed");
-		    sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
-		    sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportPrcd.xsd");
+			sw.writeNamespace("xsi","http://www.w3.org/2001/XMLSchema-instance") ;
+			sw.writeAttribute("xsi:noNamespaceSchemaLocation","DVBVTimerImportPrcd.xsd");
 			for ( DVBViewerEntry e : recordEntries )
 			{
 				e.writeXML( sw, file ) ;
@@ -800,10 +800,10 @@ public class DVBViewer {
 			os.close();
 		} catch (XMLStreamException e) {
 			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getAbsolutePath()
-	                 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
-	                 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
+									 + ". Position: Line = " + Integer.toString( e.getLocation().getLineNumber() )
+									 +         ", column = " + Integer.toString(e.getLocation().getColumnNumber()) ) ;
 		} catch (IOException e) {
-			throw new ErrorClass( e,   "Error on writing XML file \"" + file.getAbsolutePath() ) ;
+			throw new ErrorClass( e, "Error on writing XML file \"" + file.getAbsolutePath() ) ;
 		}
 	}
 	public void mergeXMLWithDVBViewerData( ArrayList<DVBViewerEntry> lastTimers )
@@ -822,8 +822,8 @@ public class DVBViewer {
 		if ( DVBViewer.isDLLloaded )
 			return true ;
 
-		File f = new File( DVBViewer.PATH_PLUGIN_DATA + File.separator
-		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
+		File f = new File(   DVBViewer.PATH_PLUGIN_DATA + File.separator
+						   + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 
 		System.load( f.getAbsolutePath() );
 		DVBViewer.setDLLisLoaded() ;
@@ -839,8 +839,8 @@ public class DVBViewer {
 
 		String exePath = DVBViewer.PATH_PLUGIN_DATA ;
 
-		File f = new File( exePath + File.separator
-		           + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
+		File f = new File(   exePath + File.separator
+						   + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 
 		if ( ! f.canExecute() || force )
 		{
@@ -849,8 +849,8 @@ public class DVBViewer {
 				Log.error( ResourceManager.msg( "ADMINISTRATOR" ) ) ;
 				throw new TerminateClass( 1 ) ;
 			}
-			ResourceManager.copyBinaryFile( exePath, "datafiles/"
-				                        + NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
+			ResourceManager.copyBinaryFile(   exePath, "datafiles/"
+											+ NAME_DVBVIEWER_COM_DLL + ".dll" ) ;
 		}
 		return true ;
 
@@ -924,7 +924,7 @@ public class DVBViewer {
 			public void run()
 			{
 				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000 ;
-				while ( ! DVBViewerCOM.connect()  )
+				while ( ! DVBViewerCOM.connect() )
 				{
 					try {
 						Thread.sleep( DVBVIEWER_SCAN_TIME_MS ) ;
@@ -956,7 +956,7 @@ public class DVBViewer {
 				String selectedChannel = "" ;
 				int channelNo = -99 ;
 				timeOutTime = System.currentTimeMillis() + dvbViewer.channelChangeTime * 1000
-				                                         + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
+														 + DVBVIEWER_CHANNEL_TIME_MS / 2 ;
 				
 				boolean waitingFinished = ! wait ; 
 				

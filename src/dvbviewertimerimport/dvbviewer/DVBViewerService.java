@@ -205,7 +205,7 @@ public class DVBViewerService {
 	}
 	public void setTimerEntry( DVBViewerEntry e, boolean toDelete  )
 	{
-	  e.prepareTimerSetting() ;
+		e.prepareTimerSetting() ;
 		String query = "" ;
 		try {
 			query = "ch=" + URLEncoder.encode( e.getChannel(), "UTF-8" );
