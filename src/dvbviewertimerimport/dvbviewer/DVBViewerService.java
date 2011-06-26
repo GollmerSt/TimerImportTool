@@ -205,9 +205,6 @@ public class DVBViewerService {
 	}
 	public void setTimerEntry( DVBViewerEntry e, boolean toDelete  )
 	{
-		e.prepareTimerSetting() ;
-		if ( e.mustIgnored() )
-			return ;
 		String query = "" ;
 		try {
 			query = "ch=" + URLEncoder.encode( e.getChannel(), "UTF-8" );
@@ -237,17 +234,7 @@ public class DVBViewerService {
 		else
 			query += "&enable=0" ;
 		
-		if ( e.mustUpdated() && ! toDelete)
-		{
-			command = "timeredit" ;
-			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
-			if ( e.getDVBViewerID() < 0 )
-			{
-				Log.out( "Unexpected serviceID on editing an entry. Query: " + query ) ;
-				return ;
-			}
-		}
-		if ( e.mustDVBViewerDeleted() && toDelete )
+		if ( toDelete )
 		{
 			command = "timerdelete" ;
 			query += "&id=" + Long.toString( e.getDVBViewerID() ) ;
@@ -257,9 +244,22 @@ public class DVBViewerService {
 				return ;
 			}
 		}
-		if ( e.mustDVBViewerCreated() && ! toDelete )
-			command = "timeradd" ;
-
+		else
+		{
+			if (e.mustUpdated() && !toDelete)
+			{
+				command = "timeredit";
+				query += "&id=" + Long.toString(e.getDVBViewerID());
+				if (e.getDVBViewerID() < 0)
+				{
+					Log.out("Unexpected serviceID on editing an entry. Query: "
+							+ query);
+					return;
+				}
+			}
+			if (e.mustDVBViewerCreated() && !toDelete)
+				command = "timeradd";
+		}
 		
 		InputStream input = connect( command, query) ;
 
@@ -286,7 +286,7 @@ public class DVBViewerService {
 				this.setTimerEntry( d, true ) ;
 		
 		for ( DVBViewerEntry d : entries )
-			if ( ! d.mustIgnored() && ! d.mustDVBViewerDeleted() )
+			if ( d.mustDVBViewerCreated() || d.mustUpdated() )
 				this.setTimerEntry( d, false ) ;
 	}
 	public ArrayList<DVBViewerEntry> readTimers()
