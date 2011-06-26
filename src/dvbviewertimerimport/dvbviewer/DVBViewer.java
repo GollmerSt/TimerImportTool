@@ -375,6 +375,7 @@ public class DVBViewer {
 			throw e ;
 		}
 		this.disconnectDVBViewer();
+		this.writeXML() ;
 		return result ;
 	}
 	public void addRecordingEntry( DVBViewerEntry entry )
