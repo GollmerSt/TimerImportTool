@@ -14,7 +14,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -351,8 +350,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       } catch (TerminateClass e) {
         return ;
       }
-      if ( dvbViewer != null )
-        dvbViewer.writeXML() ;
       markProgram( program, command == Command.SET ) ;
 
      program.validateMarking() ;
@@ -581,7 +578,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     if ( unresolvedEntries )
     {
       try {
-        control.getDVBViewer().process( dvbViewerProvider, false, null, Command.UPDATE_UNRESOLVED_ENTRIES ) ;
+        dvbViewer.process( dvbViewerProvider, false, null, Command.UPDATE_UNRESOLVED_ENTRIES ) ;
       } catch ( ErrorClass err ) {
         errorMessage( err ) ;
         return;
@@ -594,8 +591,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       }
     }
     this.updateTreeNode() ;
-    if ( dvbViewer != null )
-      dvbViewer.writeXML() ;
   }
   private long [] calcRecordTimes( final Program program )
   {
@@ -716,8 +711,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
          return false ;
        }
        updateMarks() ;
-       if ( dvbViewer != null )
-         dvbViewer.writeXML() ;
        return true ;
 }
 
