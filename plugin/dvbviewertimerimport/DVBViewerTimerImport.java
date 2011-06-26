@@ -31,7 +31,6 @@ import devplugin.Program;
 import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
 import devplugin.Version;
-import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
