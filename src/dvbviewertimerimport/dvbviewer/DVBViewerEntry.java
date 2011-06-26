@@ -260,6 +260,13 @@ public final class DVBViewerEntry implements Cloneable
 
 		return entry ;
 	}
+	public void connect()
+	{
+		for ( DVBViewerEntry e : this.mergedEntries )
+		{
+			e.mergeElement = this ;
+		}
+	}
 /*	private void updateStartEnd( long start, long end )
 	{
 		if ( ! this.isRecording() || end - this.preferedStart >= Constants.DAYMILLSEC )
@@ -950,176 +957,174 @@ public final class DVBViewerEntry implements Cloneable
 											final String separator, DVBViewer.MaxID maxID,
 											final int maxTitleLength )
 	{
-		ArrayList< DVBViewerEntry > newMergeEntries = new ArrayList< DVBViewerEntry >() ;
-		ArrayList< DVBViewerEntry > toDeleteEntries = new ArrayList< DVBViewerEntry >() ;
-
-		for ( Iterator<DVBViewerEntry> itX = xml.iterator() ; itX.hasNext() ; )
+		boolean mustRepeat = true ;
+		while ( mustRepeat )
 		{
-			DVBViewerEntry x = itX.next() ;
+			mustRepeat = false ;
+			ArrayList<DVBViewerEntry> newEntries = new ArrayList<DVBViewerEntry>();
+			for (Iterator<DVBViewerEntry> itX = xml.iterator(); itX.hasNext();) {
+				DVBViewerEntry x = itX.next();
 
-			if ( ! x.mergingChanged || x.isDeleted() || ! x.isMergeElement() )
-				continue ;
-			
-//TODO			if ( x.isRecording() )
-//				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
+				if (!x.mergingChanged || x.isDeleted() || !x.isMergeElement())
+					continue;
+				
+				mustRepeat = true ;
 
-			long nStart = -1 ;
-			long nEnd = -1 ;
-			long nStartOrg = -1 ;
-			long nEndOrg = -1 ;
-			
-      ArrayList< DVBViewerEntry > nMergedEntries = null ;
+				//TODO			if ( x.isRecording() )
+				//				throw new ErrorClass( "Error: Try to merge a recording entry" ) ;
 
-      if ( x.isRecording() )
-        for ( Iterator<DVBViewerEntry> itM = x.mergedEntries.iterator() ; itM.hasNext() ; )
-        {
-          DVBViewerEntry m = itM.next() ;
+				long nStart = -1;
+				long nEnd = -1;
+				long nStartOrg = -1;
+				long nEndOrg = -1;
 
-					if ( m.isEntryRecording() && ! m.isRecording() )
-					{
-						nStart    = m.preferedStart ;
-						nEnd      = m.end ;
-						nStartOrg = m.startOrg ;
-						nEndOrg   = m.endOrg ;
-            nMergedEntries = new ArrayList< DVBViewerEntry >() ;
-            nMergedEntries.add( m ) ;
-            itM.remove() ;
-						break ;
+				ArrayList<DVBViewerEntry> nMergedEntries = null;
+
+				if (x.isRecording())
+					for (Iterator<DVBViewerEntry> itM = x.mergedEntries
+							.iterator(); itM.hasNext();) {
+						DVBViewerEntry m = itM.next();
+
+						if (m.isEntryRecording() && !m.isRecording()) {
+							nStart = m.preferedStart;
+							nEnd = m.end;
+							nStartOrg = m.startOrg;
+							nEndOrg = m.endOrg;
+							nMergedEntries = new ArrayList<DVBViewerEntry>();
+							nMergedEntries.add(m);
+							itM.remove();
+							break;
+						}
 					}
-        }
 
-			while ( true )
-			{
-				boolean isIn = true ;
-				boolean isChanged = false ;
-
-				for ( Iterator<DVBViewerEntry> itM = x.mergedEntries.iterator() ; itM.hasNext() ; )
+				
+				boolean isChanged = true;
+				boolean isIn = false;
+				while ( isChanged )
 				{
-					DVBViewerEntry m = itM.next() ;
+					isChanged = false;
+					isIn = true;
 
-					if ( m.isRecording() )
-					{
-						itM.remove() ;
-						m.mergeElement = null ;
-					}
+					for (Iterator<DVBViewerEntry> itM = x.mergedEntries
+							.iterator(); itM.hasNext();) {
+						DVBViewerEntry m = itM.next();
 
-					if ( nStart < 0 )
-					{
-						nStart = m.preferedStart ;
-						nEnd = m.end ;
-						nStartOrg = m.startOrg ;
-						nEndOrg = m.endOrg ;
-						nMergedEntries = new ArrayList< DVBViewerEntry >() ;
-						nMergedEntries.add( m ) ;
-						itM.remove() ;
-						isChanged = true ;
-						continue ;
-					}
-					if ( nStart <= m.preferedStart && nEnd >= m.preferedStart || m.mergeStatus == MergeStatus.DISABLED )
-					{
-						if ( m.end > nEnd )
-						{
-							nEnd = m.end ;
-							isChanged = true ;
+						if (m.isRecording()) {
+							itM.remove();
+							m.mergeElement = null;
 						}
-					}
-					else if ( nStart <= m.end && nEnd >= m.end || m.mergeStatus == MergeStatus.DISABLED )
-					{
-						if ( m.preferedStart < nEnd )
-						{
-							nStart = m.preferedStart ;
-							isChanged = true ;
-						}
-					}
-					else if ( m.mergeStatus != MergeStatus.DISABLED )
-						isIn = false ;
 
-					if ( isIn )
-					{
-						nStartOrg = Math.min( m.startOrg, nStartOrg ) ;
-						nEndOrg = Math.max( m.endOrg, nEndOrg ) ;
-						nMergedEntries.add( m ) ;
-						itM.remove() ;
+						if (nStart < 0) {
+							nStart = m.preferedStart;
+							nEnd = m.end;
+							nStartOrg = m.startOrg;
+							nEndOrg = m.endOrg;
+							nMergedEntries = new ArrayList<DVBViewerEntry>();
+							nMergedEntries.add(m);
+							itM.remove();
+							isChanged = true;
+							continue;
+						}
+						if (nStart <= m.preferedStart
+								&& nEnd >= m.preferedStart
+								|| m.mergeStatus == MergeStatus.DISABLED) {
+							if (m.end > nEnd) {
+								nEnd = m.end;
+								isChanged = true;
+							}
+						} else if (nStart <= m.end && nEnd >= m.end
+								|| m.mergeStatus == MergeStatus.DISABLED) {
+							if (m.preferedStart < nEnd) {
+								nStart = m.preferedStart;
+								isChanged = true;
+							}
+						} else if (m.mergeStatus != MergeStatus.DISABLED)
+							isIn = false;
+
+						if (isIn) {
+							nStartOrg = Math.min(m.startOrg, nStartOrg);
+							nEndOrg = Math.max(m.endOrg, nEndOrg);
+							nMergedEntries.add(m);
+							itM.remove();
+						}
 					}
 				}
-				if ( isChanged )
-					continue ;
-				if ( ! isIn && nMergedEntries.size() > 1 )
+				if ( ! isIn )
 				{
-					DVBViewerEntry n = x.clone() ;
-					n.id = x.id ;
-					n.toDo = ToDo.UPDATE ;
-					n.preferedStart = nStart ;
-					n.end   = nEnd ;
-					n.startOrg = nStartOrg ;
-					n.endOrg = nEndOrg ;
-					n.mergedEntries = nMergedEntries ;
-					for ( DVBViewerEntry nE : n.mergedEntries )
-						nE.mergeElement = n ;
-					n.createTitle( separator, maxTitleLength ) ;
-					if ( n.mergeElement != null )
-						n.mergeElement.mergedEntries.add( n ) ;
-					if ( n.dvbViewerID >= 0 )
+					if ( nMergedEntries.size() > 1)
+					{
+						DVBViewerEntry n = x.clone();
+						n.id = x.id;
 						n.toDo = ToDo.UPDATE ;
-					newMergeEntries.add( n ) ;
-					n.mergingChanged = false ;
-					x.id = maxID.increment() ;
-					x.dvbViewerID = -1 ;
-					x.toDo = ToDo.NEW ;
-					nStart = -1 ;
-				}
-				else if ( ! isIn )
-				{
-					if ( nMergedEntries.size() == 1 )      //TODO hier könnte noch ein Fehler sein
-					{
-						DVBViewerEntry modify = nMergedEntries.get( 0 ) ;
-						modify.statusTimer = StatusTimer.ENABLED ;
-						modify.mergeElement = null ;
-						modify.toDo = ToDo.UPDATE ; // evtl. anders wenn modify = merge elemenet, aber kommt das vor?
+						n.preferedStart = nStart;
+						n.end = nEnd;
+						n.startOrg = nStartOrg;
+						n.endOrg = nEndOrg;
+						n.mergedEntries = nMergedEntries;
+						n.connect() ;
+						n.createTitle(separator, maxTitleLength);
+						n.mergeElement = null ;
+						newEntries.add(n);
+						n.mergingChanged = false;
+						x.id = maxID.increment();
+						x.dvbViewerID = -1;
+						x.toDo = ToDo.NEW;
 					}
-					nStart = -1 ;
+					else if (nMergedEntries.size() == 1) //TODO hier könnte noch ein Fehler sein
+					{
+						DVBViewerEntry modify = nMergedEntries.get(0);
+						DVBViewerEntry n = modify.clone();
+						n.id = x.id ;
+						x.id = maxID.increment() ;
+						n.mergeElement = null ;
+						n.mergeStatus = MergeStatus.JUST_SEPARATED ;
+						n.statusTimer = x.statusTimer ;
+						x.statusTimer = StatusTimer.ENABLED ;
+						n.dvbViewerID = x.dvbViewerID ;
+						n.realTitle = x.realTitle ;
+						n.realStart = x.realStart ;
+						n.toDo = ToDo.UPDATE ;
+						newEntries.add(n);
+						modify.setToDelete() ;
+					}
 				}
-				else
+				else // ( isIn == true )
 				{
 					{
-						if ( nStart < 0 || nMergedEntries.size() == 0 )
+						if (nStart < 0 || nMergedEntries.size() == 0)
+							x.setToDelete();
+						else
 						{
-              x.setToDelete() ;
-/*							if ( x.dvbViewerID >= 0)
-								x.toDo = ToDo.DELETE ;
+							if (nMergedEntries.size() == 1) {
+								DVBViewerEntry toDelete = nMergedEntries.get(0);
+								toDelete.mergeElement = null;
+								x.mergedEntries = null;
+								x.providerID = toDelete.providerID;
+								x.preferedTitle = toDelete.preferedTitle;
+								toDelete.setToDelete() ;
+							}
 							else
-								itX.remove() ;
-*/
-              break ;
+							{
+								x.mergedEntries = nMergedEntries;
+								x.createTitle(separator, maxTitleLength);
+							}
+							if (x.toDo == ToDo.NONE
+									&& x.dvbViewerID >= 0
+									&& (x.preferedStart != nStart
+											|| x.end != nEnd || !x.realTitle
+											.equals(x.preferedTitle)))
+								x.toDo = ToDo.UPDATE;
+							x.preferedStart = nStart;
+							x.end = nEnd;
+							x.startOrg = nStartOrg;
+							x.endOrg = nEndOrg;
+							x.mergingChanged = false;
 						}
-						if ( nMergedEntries.size() == 1)
-						{
-							DVBViewerEntry toDelete = nMergedEntries.get( 0 ) ;							
-							toDelete.mergeElement = null ;
-							toDelete.toDo = ToDo.DELETE ;
-              nMergedEntries = null ;
-              x.providerID = toDelete.providerID ;
-              x.preferedTitle = toDelete.preferedTitle ;
-						}
-						x.mergedEntries = nMergedEntries ;
-						x.createTitle( separator, maxTitleLength ) ;
-						if (    x.toDo == ToDo.NONE  && x.dvbViewerID >= 0
-							 && ( x.preferedStart != nStart || x.end != nEnd || ! x.realTitle.equals( x.preferedTitle ) ) )
-							x.toDo = ToDo.UPDATE ;
-						x.preferedStart = nStart ;
-						x.end   = nEnd ;
-						x.startOrg = nStartOrg ;
-						x.endOrg = nEndOrg ;
-						nStart = -1 ;
-						x.mergingChanged = false ;
-						break ;
 					}
 				}
 			}
+			xml.addAll(newEntries);
 		}
-		xml.addAll( newMergeEntries ) ;
-		for ( DVBViewerEntry d : toDeleteEntries )
-			xml.remove( d ) ;
 	}
 	public static void setToRemovedOrDeleteUnassignedXMLEntries( final ArrayList<DVBViewerEntry> xml )
 	{
@@ -1449,15 +1454,9 @@ public final class DVBViewerEntry implements Cloneable
 			}
 		}
 	}
-	public boolean mustIgnored()
-	{
-		if ( this.toDo == ToDo.NONE )
-			return true ;
-		return false ;
-	} ;
 	public boolean mustUpdated()
 	{
-		if ( ! ( this.toDo == ToDo.UPDATE ) )
+		if ( ! ( this.toDo == ToDo.UPDATE ) || this.dvbViewerID < 0 )
 			return false ;
 		return ! this.isRecording() || this.isEntryRecording() ;
 	} ;
@@ -1471,7 +1470,7 @@ public final class DVBViewerEntry implements Cloneable
 	} ;
 	public boolean mustDVBViewerCreated()
 	{
-	  if ( this.toDo == ToDo.NEW )
+	  if ( this.toDo == ToDo.NEW || ( this.toDo == ToDo.UPDATE && this.dvbViewerID < 0 ) )
 	    return true ;
 	  else if ( this.toDo == ToDo.UPDATE && this.isRecording() && ! this.isEntryRecording() )
 	    return true ;
