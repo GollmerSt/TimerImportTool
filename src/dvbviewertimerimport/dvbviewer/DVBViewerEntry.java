@@ -1055,7 +1055,6 @@ public final class DVBViewerEntry implements Cloneable
 					{
 						DVBViewerEntry n = x.clone();
 						n.id = x.id;
-						n.toDo = ToDo.UPDATE ;
 						n.preferedStart = nStart;
 						n.end = nEnd;
 						n.startOrg = nStartOrg;
@@ -1068,24 +1067,27 @@ public final class DVBViewerEntry implements Cloneable
 						n.mergingChanged = false;
 						x.id = maxID.increment();
 						x.dvbViewerID = -1;
+            n.toDo = ToDo.UPDATE ;
 						x.toDo = ToDo.NEW;
 					}
-					else if (nMergedEntries.size() == 1) //TODO hier könnte noch ein Fehler sein
+					else if (nMergedEntries.size() == 1)
 					{
 						DVBViewerEntry modify = nMergedEntries.get(0);
+            modify.mergeElement = null ;
 						DVBViewerEntry n = modify.clone();
+            modify.setToDelete() ;
 						n.id = x.id ;
 						x.id = maxID.increment() ;
-						n.mergeElement = null ;
 						n.mergeStatus = MergeStatus.JUST_SEPARATED ;
 						n.statusTimer = x.statusTimer ;
 						x.statusTimer = StatusTimer.ENABLED ;
 						n.dvbViewerID = x.dvbViewerID ;
+						x.dvbViewerID = -1 ;
 						n.realTitle = x.realTitle ;
 						n.realStart = x.realStart ;
 						n.toDo = ToDo.UPDATE ;
+						x.toDo = ToDo.NEW ;
 						newEntries.add(n);
-						modify.setToDelete() ;
 					}
 				}
 				else // ( isIn == true )
