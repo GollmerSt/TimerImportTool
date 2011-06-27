@@ -1,146 +1,88 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Importer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="DVBVTimerImportTool.xsd">
-<ProgramVersion>0.0.0</ProgramVersion>
+    <ProgramVersion>1.3.1</ProgramVersion>
     <Providers>
-        <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
-            <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
+        <Provider name="TVInfo" username="SGollmer" password="esamikro" triggeraction="16640" merge="true" message="false" verbose="true" filter="true">
+            <Missing enable="true" missingSince="0" missingSyncSince="0"></Missing>
             <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
         </Provider>
         <Provider name="TVGenial" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>
-        <Provider name="TV-Browser" merge="false" message="false" verbose="false" filter="false"></Provider>
+        <Provider name="TV-Browser" merge="true" message="false" verbose="false" filter="false"></Provider>
     </Providers>
-    <DVBViewer dvbExePath="C:\Programme\AudioVideo\DVBViewer\dvbviewer.exe" channelChangeTime="120" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
+    <DVBViewer dvbExePath="C:\Users\Stefan\Desktop\Zappi_4.12_Preview\Zappi.exe" channelChangeTime="5" waitCOMTime="15" afterRecordingAction="NONE" timerAction="RECORD" timeZone="Europe/Berlin">
         <Channels>
-            <Entry id="551382375|3sat (2ch)"></Entry>
             <Entry id="551644519|3sat (AC3,deu)"></Entry>
             <Entry id="551316839|3sat (deu)"></Entry>
-            <Entry id="620774496|9Live"></Entry>
-            <Entry id="576351805|ARD-TEST-1"></Entry>
+            <Entry id="551382375|3sat (mis)"></Entry>
+            <Entry id="563245108|arte (deu)"></Entry>
             <Entry id="563310644|arte (fra)"></Entry>
-            <Entry id="563245108|arte (ger)"></Entry>
-            <Entry id="550202830|Bayerisches FS Nord (2ch)"></Entry>
+            <Entry id="574636761|ARTE HD (AC3,deu)"></Entry>
+            <Entry id="574505689|ARTE HD (deu)"></Entry>
+            <Entry id="574571225|ARTE HD (fra)"></Entry>
             <Entry id="550399438|Bayerisches FS Nord (AC3,"></Entry>
             <Entry id="550137294|Bayerisches FS Nord (deu)"></Entry>
-            <Entry id="550202827|Bayerisches FS Süd (2ch)"></Entry>
+            <Entry id="550202830|Bayerisches FS Nord (mis)"></Entry>
             <Entry id="550399435|Bayerisches FS Süd (AC3,d"></Entry>
             <Entry id="550137291|Bayerisches FS Süd (deu)"></Entry>
-            <Entry id="542900425|BBC World - CV"></Entry>
-            <Entry id="623378533|Bloomberg European TV - C"></Entry>
-            <Entry id="628846407|BR-alpha (2ch)"></Entry>
-            <Entry id="629043015|BR-alpha (AC3,ger)"></Entry>
-            <Entry id="628780871|BR-alpha (ger)"></Entry>
-            <Entry id="582905296|BR-alpha*"></Entry>
-            <Entry id="545861439|Channel 21"></Entry>
-            <Entry id="557056202|CNBC Europe - CV"></Entry>
-            <Entry id="543424715|CNN Int. - CV"></Entry>
-            <Entry id="543649226|Das Erste (2ch)"></Entry>
+            <Entry id="550202827|Bayerisches FS Süd (mis)"></Entry>
+            <Entry id="629043015|BR-alpha (AC3,deu)"></Entry>
+            <Entry id="628780871|BR-alpha (deu)"></Entry>
+            <Entry id="628846407|BR-alpha (mis)"></Entry>
             <Entry id="543845834|Das Erste (AC3,deu)"></Entry>
             <Entry id="543583690|Das Erste (deu)"></Entry>
-            <Entry id="671088743|DAS VIERTE - CV"></Entry>
-            <Entry id="671285351|DAS VIERTE - CV (AC3)"></Entry>
+            <Entry id="543649226|Das Erste (mis)"></Entry>
+            <Entry id="931539804|Das Erste HD (AC3,deu)"></Entry>
+            <Entry id="931408732|Das Erste HD (deu)"></Entry>
+            <Entry id="931474268|Das Erste HD (mis)"></Entry>
             <Entry id="543584305|EinsExtra"></Entry>
             <Entry id="550137906|Einsfestival"></Entry>
             <Entry id="556691507|EinsPlus"></Entry>
-            <Entry id="696778956|EuroNews - CV (ara)"></Entry>
-            <Entry id="696385740|EuroNews - CV (eng)"></Entry>
-            <Entry id="696451276|EuroNews - CV (fra)"></Entry>
-            <Entry id="696320204|EuroNews - CV (ger)"></Entry>
-            <Entry id="696516812|EuroNews - CV (ita)"></Entry>
-            <Entry id="696647884|EuroNews - CV (por)"></Entry>
-            <Entry id="696713420|EuroNews - CV (rus)"></Entry>
-            <Entry id="696582348|EuroNews - CV (spa)"></Entry>
-            <Entry id="696844492|EuroNews - CV (tur)"></Entry>
-            <Entry id="543621325|Eurosport - CV"></Entry>
-            <Entry id="733612984|France 24"></Entry>
-            <Entry id="571095540|France 24 (en Arabe)"></Entry>
-            <Entry id="556756428|hr-fernsehen (2ch)"></Entry>
             <Entry id="556690892|hr-fernsehen (deu)"></Entry>
-            <Entry id="620757198|HSE - CV"></Entry>
-            <Entry id="615645804|iTVN"></Entry>
-            <Entry id="601242123|K2"></Entry>
-            <Entry id="587220062|kabel eins"></Entry>
-            <Entry id="610402916|KabelKiosk -  InfoKanal"></Entry>
+            <Entry id="556756428|hr-fernsehen (mis)"></Entry>
             <Entry id="557870440|KiKa"></Entry>
-            <Entry id="588316777|KMS-Infokanal - CV"></Entry>
-            <Entry id="727150149|MDR S-Anhalt (2ch)"></Entry>
-            <Entry id="727084613|MDR S-Anhalt (ger)"></Entry>
-            <Entry id="727150148|MDR Sachsen (2ch)"></Entry>
-            <Entry id="727084612|MDR Sachsen (ger)"></Entry>
-            <Entry id="727150150|MDR Thüringen (2ch)"></Entry>
-            <Entry id="727084614|MDR Thüringen (ger)"></Entry>
-            <Entry id="801112170|MTV Germany - CV"></Entry>
-            <Entry id="550109291|Muenchen2 - CV"></Entry>
-            <Entry id="539689068|MuenchenTV - CV"></Entry>
-            <Entry id="541667130|n-tv"></Entry>
-            <Entry id="603997279|N24"></Entry>
-            <Entry id="707489345|NDR FS HH (2ch)"></Entry>
-            <Entry id="707489344|NDR FS MV (2ch)"></Entry>
-            <Entry id="707423808|NDR FS MV (ger)"></Entry>
-            <Entry id="707489346|NDR FS NDS (2ch)"></Entry>
-            <Entry id="707423810|NDR FS NDS (ger)"></Entry>
-            <Entry id="707489347|NDR FS SH (2ch)"></Entry>
-            <Entry id="707423811|NDR FS SH (ger)"></Entry>
-            <Entry id="805699693|NICK/COMEDY - CV"></Entry>
-            <Entry id="748093550|ORF2 - CV (AC3)"></Entry>
-            <Entry id="748093550|ORF2 - CV (AC3,ger)"></Entry>
-            <Entry id="748028014|ORF2 - CV (eng)"></Entry>
-            <Entry id="747962478|ORF2 - CV (ger)"></Entry>
+            <Entry id="727084613|MDR S-Anhalt (deu)"></Entry>
+            <Entry id="727150149|MDR S-Anhalt (mis)"></Entry>
+            <Entry id="727084612|MDR Sachsen (deu)"></Entry>
+            <Entry id="727150148|MDR Sachsen (mis)"></Entry>
+            <Entry id="727084614|MDR Thüringen (deu)"></Entry>
+            <Entry id="727150150|MDR Thüringen (mis)"></Entry>
+            <Entry id="707423809|NDR FS HH (deu)"></Entry>
+            <Entry id="707489345|NDR FS HH (mis)"></Entry>
+            <Entry id="707423808|NDR FS MV (deu)"></Entry>
+            <Entry id="707489344|NDR FS MV (mis)"></Entry>
+            <Entry id="707423810|NDR FS NDS (deu)"></Entry>
+            <Entry id="707489346|NDR FS NDS (mis)"></Entry>
+            <Entry id="707423811|NDR FS SH (deu)"></Entry>
+            <Entry id="707489347|NDR FS SH (mis)"></Entry>
             <Entry id="569798709|Phoenix"></Entry>
-            <Entry id="570442845|ProSieben"></Entry>
-            <Entry id="570639453|ProSieben (AC3)"></Entry>
-            <Entry id="547750095|QVC Deutschland - CV"></Entry>
             <Entry id="576351790|rbb Berlin"></Entry>
             <Entry id="576351789|rbb Brandenburg"></Entry>
-            <Entry id="539099137|RIT-TV"></Entry>
-            <Entry id="543698662|RTL FS"></Entry>
-            <Entry id="543698661|RTL HB NDS"></Entry>
-            <Entry id="543698660|RTL HH SH"></Entry>
-            <Entry id="543698659|RTL Television"></Entry>
-            <Entry id="543829731|RTL Television (AC3)"></Entry>
-            <Entry id="545271540|RTL2"></Entry>
-            <Entry id="553665628|SAT.1"></Entry>
-            <Entry id="553862236|SAT.1 (AC3)"></Entry>
-            <Entry id="553665635|SAT.1 Bayern"></Entry>
-            <Entry id="553862243|SAT.1 Bayern (AC3)"></Entry>
-            <Entry id="553665636|SAT.1 NRW"></Entry>
-            <Entry id="553862244|SAT.1 NRW (AC3)"></Entry>
             <Entry id="721420306|Sky Select"></Entry>
             <Entry id="721485842|Sky Select (1)"></Entry>
             <Entry id="721616914|Sky Select (AC3)"></Entry>
-            <Entry id="687866064|Sonnenklar TV - CV"></Entry>
-            <Entry id="603979880|SPORT1 - CV"></Entry>
-            <Entry id="622227270|SR Fernsehen"></Entry>
-            <Entry id="544747272|Super RTL"></Entry>
-            <Entry id="546385673|Super RTL CH"></Entry>
-            <Entry id="589524433|SWR Fernsehen BW (2ch)"></Entry>
             <Entry id="589458897|SWR Fernsehen BW (deu)"></Entry>
-            <Entry id="740257351|SWR Fernsehen RP (2ch)"></Entry>
-            <Entry id="740191815|SWR Fernsehen RP (ger)"></Entry>
-            <Entry id="637534319|TELE 5 - CV"></Entry>
-            <Entry id="569798710|Test-R"></Entry>
-            <Entry id="583598289|TRT Int. - CV"></Entry>
-            <Entry id="540752343|TV ARM RU"></Entry>
-            <Entry id="580780242|TV POLONIA - CV"></Entry>
-            <Entry id="580845778|TV POLONIA - CV (AC3)"></Entry>
-            <Entry id="539885779|TV5MONDE EUROPE - CV"></Entry>
-            <Entry id="803078256|VIVA Germany - CV"></Entry>
-            <Entry id="545795868|VOX"></Entry>
-            <Entry id="546451229|VOX CH"></Entry>
-            <Entry id="576417231|WDR Köln (2ch)"></Entry>
+            <Entry id="589524433|SWR Fernsehen BW (mis)"></Entry>
+            <Entry id="740191815|SWR Fernsehen RP (deu)"></Entry>
+            <Entry id="740257351|SWR Fernsehen RP (mis)"></Entry>
+            <Entry id="574513677|Unitymedia Infokanal"></Entry>
             <Entry id="576351695|WDR Köln (deu)"></Entry>
-            <Entry id="541538780|World Fashion Channel"></Entry>
-            <Entry id="544828774|ZDF (2ch)"></Entry>
+            <Entry id="576417231|WDR Köln (mis)"></Entry>
             <Entry id="545090918|ZDF (AC3,deu)"></Entry>
             <Entry id="544763238|ZDF (deu)"></Entry>
-            <Entry id="580873582|zdf_neo (2ch)"></Entry>
+            <Entry id="544828774|ZDF (mis)"></Entry>
+            <Entry id="938093414|ZDF HD (AC3,deu)"></Entry>
+            <Entry id="937962342|ZDF HD (deu)"></Entry>
+            <Entry id="938027878|ZDF HD (mis)"></Entry>
+            <Entry id="938158950|ZDF HD (qaa)"></Entry>
             <Entry id="580808046|zdf_neo (deu)"></Entry>
+            <Entry id="580873582|zdf_neo (mis)"></Entry>
             <Entry id="577531243|ZDFinfokanal"></Entry>
-            <Entry id="610364784|ZDFtheaterkanal (2ch)"></Entry>
-            <Entry id="610299248|ZDFtheaterkanal (deu)"></Entry>
+            <Entry id="610299248|ZDFtheaterkanal"></Entry>
+            <Entry id="610364784|ZDFtheaterkanal (mis)"></Entry>
         </Channels>
     </DVBViewer>
-    <DVBService enable="false" url="localhost" username="admin" password="admin" timeZone="Europe/Berlin">
+    <DVBService enable="false" url="localhost:8089" username="admin" password="" timeZone="Europe/Berlin">
         <WakeOnLAN enable="false" broadCastAddress="192.168.43.255" macAddress="01:23:45:67:89:AB" waitTimeAfterWOL="14"></WakeOnLAN>
     </DVBService>
     <GUI>
@@ -148,1236 +90,1241 @@
         <Language>de__</Language>
         <LookAndFeel>System</LookAndFeel>
     </GUI>
-    <Offsets>
+    <Offsets useGlobal="true">
         <Offset before="15" after="30"></Offset>
     </Offsets>
     <Separator>,,</Separator>
+    <MaxTitleLength>200</MaxTitleLength>
     <Channels>
-        <Channel>
+        <Channel id="0">
             <Provider name="TVInfo">ARD</Provider>
             <Provider name="TVGenial" channelID="10001">ARD</Provider>
-            <Provider name="ClickFinder" channelID="10001">ARD</Provider>
-            <Provider name="TV-Browser" channelID="10001">Das Erste (ARD)</Provider>
-            <DVBViewer>543583690|Das Erste (deu)</DVBViewer>
-            <Merge>false</Merge>
+            <Provider name="ClickFinder">ARD</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_ard">Das Erste (ARD)</Provider>
+            <DVBViewer>931408732|Das Erste HD (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="1">
             <Provider name="TVInfo">ZDF</Provider>
             <Provider name="TVGenial" channelID="10002">ZDF</Provider>
-            <Provider name="ClickFinder" channelID="10002">ZDF</Provider>
-            <Provider name="TV-Browser" channelID="10002">ZDF</Provider>
-            <DVBViewer>544763238|ZDF (deu)</DVBViewer>
+            <Provider name="ClickFinder">ZDF</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_zdf">ZDF</Provider>
+            <DVBViewer>937962342|ZDF HD (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="2">
             <Provider name="TVInfo">Bayern</Provider>
             <Provider name="ClickFinder">B3</Provider>
             <Provider name="TVGenial" channelID="10018">BR</Provider>
-            <Provider name="TV-Browser" channelID="10018">BR</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_bfs">BR</Provider>
             <DVBViewer>550137291|Bayerisches FS Süd (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="3">
             <Provider name="TVInfo">HR</Provider>
             <Provider name="ClickFinder">H3</Provider>
             <Provider name="TVGenial" channelID="10020">hr</Provider>
-            <Provider name="TV-Browser" channelID="10020">HR</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_hr">HR</Provider>
             <DVBViewer>556690892|hr-fernsehen (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="4">
             <Provider name="TVInfo">WDR</Provider>
             <Provider name="ClickFinder">WDR</Provider>
             <Provider name="TVGenial" channelID="10014">WDR</Provider>
-            <Provider name="TV-Browser" channelID="10014">WDR</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_wdr">WDR</Provider>
             <DVBViewer>576351695|WDR Köln (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="5">
             <Provider name="TVInfo">SWR</Provider>
             <Provider name="ClickFinder">SWR</Provider>
             <Provider name="TVGenial" channelID="10017">SWR</Provider>
-            <Provider name="TV-Browser" channelID="10017">SWR RP</Provider>
-            <DVBViewer>740191815|SWR Fernsehen RP (ger)</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_swrrp">SWR RP</Provider>
+            <DVBViewer>740191815|SWR Fernsehen RP (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="6">
             <Provider name="TVInfo">MDR</Provider>
             <Provider name="ClickFinder">MDR</Provider>
             <Provider name="TVGenial" channelID="10013">mdr</Provider>
-            <Provider name="TV-Browser" channelID="10013">MDR Thüringen</Provider>
-            <DVBViewer>727084614|MDR Thüringen (ger)</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_mdr-th">MDR Thüringen</Provider>
+            <DVBViewer>727084614|MDR Thüringen (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="7">
             <Provider name="TVInfo">NDR</Provider>
             <Provider name="ClickFinder">NDR</Provider>
             <Provider name="TVGenial" channelID="10019">NDR</Provider>
-            <Provider name="TV-Browser" channelID="10019">NDR Hamburg</Provider>
-            <DVBViewer>707423810|NDR FS NDS (ger)</DVBViewer>
+            <Provider name="TV-Browser">NDR Hamburg</Provider>
         </Channel>
-        <Channel>
+        <Channel id="8">
             <Provider name="TVInfo">RBB</Provider>
             <Provider name="ClickFinder">RBB</Provider>
             <Provider name="TVGenial" channelID="10021">RBB</Provider>
-            <Provider name="TV-Browser" channelID="10021">RBB Berlin</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_rbbberlin">RBB Berlin</Provider>
             <DVBViewer>576351790|rbb Berlin</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="9">
             <Provider name="TVInfo">Ki.Ka</Provider>
             <Provider name="ClickFinder">Ki.Ka</Provider>
             <Provider name="TVGenial" channelID="10032">KI.KA</Provider>
-            <Provider name="TV-Browser" channelID="10032">KI.KA</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_kika">KI.KA</Provider>
             <DVBViewer>557870440|KiKa</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="10">
             <Provider name="TVInfo">3sat</Provider>
             <Provider name="ClickFinder">3SAT</Provider>
             <Provider name="TVGenial" channelID="10015">3sat</Provider>
-            <Provider name="TV-Browser" channelID="10015">3sat</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_at_3sat">3sat</Provider>
             <DVBViewer>551316839|3sat (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="11">
             <Provider name="TVInfo">SR</Provider>
-            <DVBViewer>622227270|SR Fernsehen</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="12">
             <Provider name="TVInfo">Alpha</Provider>
             <Provider name="ClickFinder">BR Alpha</Provider>
             <Provider name="TVGenial" channelID="10028">alpha</Provider>
-            <Provider name="TV-Browser" channelID="10028">BR-alpha</Provider>
-            <DVBViewer>628780871|BR-alpha (ger)</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_br">BR-alpha</Provider>
+            <DVBViewer>628780871|BR-alpha (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="13">
             <Provider name="TVInfo">ORF2</Provider>
             <Provider name="ClickFinder">ORF 2</Provider>
             <Provider name="TVGenial" channelID="20002">ORF2</Provider>
-            <Provider name="TV-Browser" channelID="20002">ORF 2</Provider>
-            <DVBViewer>747962478|ORF2 - CV (ger)</DVBViewer>
+            <Provider name="TV-Browser">ORF 2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="14">
             <Provider name="TVInfo">Tele 5</Provider>
             <Provider name="ClickFinder">Tele5</Provider>
             <Provider name="TVGenial" channelID="10063">Tele5</Provider>
-            <Provider name="TV-Browser" channelID="10063">Tele 5</Provider>
-            <DVBViewer>637534319|TELE 5 - CV</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_tele5">Tele 5</Provider>
         </Channel>
-        <Channel>
+        <Channel id="15">
             <Provider name="TVInfo">Sat1</Provider>
             <Provider name="ClickFinder">SAT1</Provider>
             <Provider name="TVGenial" channelID="10005">Sat.1</Provider>
-            <Provider name="TV-Browser" channelID="10005">Sat.1</Provider>
-            <DVBViewer>553665628|SAT.1</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_sat1">Sat.1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="16">
             <Provider name="TVInfo">Kabel1</Provider>
             <Provider name="ClickFinder">Kabel</Provider>
             <Provider name="TVGenial" channelID="10008">Kabel1</Provider>
-            <Provider name="TV-Browser" channelID="10008">kabel eins</Provider>
-            <DVBViewer>587220062|kabel eins</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_kabel1">kabel eins</Provider>
         </Channel>
-        <Channel>
+        <Channel id="17">
             <Provider name="TVInfo">Pro7</Provider>
             <Provider name="ClickFinder">PRO7</Provider>
             <Provider name="TVGenial" channelID="10006">Pro7</Provider>
-            <Provider name="TV-Browser" channelID="10006">ProSieben</Provider>
-            <DVBViewer>570442845|ProSieben</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_pro7">ProSieben</Provider>
+            <DVBViewer>580808046|zdf_neo (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="18">
             <Provider name="TVInfo">RTL</Provider>
             <Provider name="ClickFinder">RTL</Provider>
             <Provider name="TVGenial" channelID="10004">RTL</Provider>
-            <Provider name="TV-Browser" channelID="10004">RTL</Provider>
-            <DVBViewer>543698659|RTL Television</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_rtl">RTL</Provider>
         </Channel>
-        <Channel>
+        <Channel id="19">
             <Provider name="TVInfo">RTL2</Provider>
             <Provider name="ClickFinder">RTL II</Provider>
             <Provider name="TVGenial" channelID="10009">RTL II</Provider>
-            <Provider name="TV-Browser" channelID="10009">RTL2</Provider>
-            <DVBViewer>545271540|RTL2</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_rtl2">RTL2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="20">
             <Provider name="TVInfo">Super RTL</Provider>
             <Provider name="ClickFinder">S RTL</Provider>
             <Provider name="TVGenial" channelID="10031">SRTL</Provider>
-            <Provider name="TV-Browser" channelID="10031">Super RTL</Provider>
-            <DVBViewer>544747272|Super RTL</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_superrtl">Super RTL</Provider>
         </Channel>
-        <Channel>
+        <Channel id="21">
             <Provider name="TVInfo">VOX</Provider>
             <Provider name="TVGenial" channelID="10011">VOX</Provider>
-            <Provider name="ClickFinder" channelID="10011">VOX</Provider>
-            <Provider name="TV-Browser" channelID="10011">VOX</Provider>
-            <DVBViewer>545795868|VOX</DVBViewer>
+            <Provider name="ClickFinder">VOX</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_main_de_vox">VOX</Provider>
         </Channel>
-        <Channel>
+        <Channel id="22">
             <Provider name="TVInfo">arte</Provider>
             <Provider name="TVGenial" channelID="10010">arte</Provider>
-            <Provider name="ClickFinder" channelID="10010">Arte</Provider>
-            <Provider name="TV-Browser" channelID="10010">arte</Provider>
-            <DVBViewer>563245108|arte (ger)</DVBViewer>
+            <Provider name="ClickFinder">Arte</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_arte">arte</Provider>
+            <DVBViewer>574505689|ARTE HD (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="23">
             <Provider name="TVInfo">Das Vierte</Provider>
             <Provider name="ClickFinder">Das Vierte</Provider>
             <Provider name="TVGenial" channelID="10068">Vierte</Provider>
-            <Provider name="TV-Browser" channelID="10068">DAS VIERTE</Provider>
-            <DVBViewer>671088743|DAS VIERTE - CV</DVBViewer>
+            <Provider name="TV-Browser">DAS VIERTE</Provider>
         </Channel>
-        <Channel>
+        <Channel id="24">
             <Provider name="TVInfo">9 Live</Provider>
             <Provider name="ClickFinder">9Live</Provider>
             <Provider name="TVGenial" channelID="10049">9live</Provider>
-            <DVBViewer>620774496|9Live</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="25">
             <Provider name="TVInfo">BBC</Provider>
             <Provider name="ClickFinder">BBC</Provider>
             <Provider name="TVGenial" channelID="110001">BBC</Provider>
-            <DVBViewer>542900425|BBC World - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="26">
             <Provider name="TVInfo">BloombergTV</Provider>
             <Provider name="ClickFinder">BloombergTV</Provider>
             <Provider name="TVGenial" channelID="10045">bloom</Provider>
         </Channel>
-        <Channel>
+        <Channel id="27">
             <Provider name="TVInfo">CNBC</Provider>
             <Provider name="TVGenial" channelID="110009">CNBC</Provider>
-            <DVBViewer>557056202|CNBC Europe - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="28">
             <Provider name="TVInfo">CNN</Provider>
             <Provider name="ClickFinder">CNN</Provider>
             <Provider name="TVGenial" channelID="120001">CNN</Provider>
-            <DVBViewer>543424715|CNN Int. - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="29">
             <Provider name="TVInfo">Comedy Central</Provider>
             <Provider name="ClickFinder">Comedy Central</Provider>
             <Provider name="TVGenial" channelID="10073">Comedy</Provider>
-            <Provider name="TV-Browser" channelID="10073">Comedy Central</Provider>
-            <DVBViewer>805699693|NICK/COMEDY - CV</DVBViewer>
+            <Provider name="TV-Browser">Comedy Central</Provider>
         </Channel>
-        <Channel>
+        <Channel id="30">
             <Provider name="TVInfo">DSF</Provider>
             <Provider name="ClickFinder">DSF</Provider>
             <Provider name="TVGenial" channelID="10012">DSF</Provider>
         </Channel>
-        <Channel>
+        <Channel id="31">
             <Provider name="TVInfo">EinsExtra</Provider>
             <Provider name="ClickFinder">EinsExtra</Provider>
             <Provider name="TVGenial" channelID="10700">1extra</Provider>
-            <Provider name="TV-Browser" channelID="10700">EinsExtra</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_einsextra">EinsExtra</Provider>
             <DVBViewer>543584305|EinsExtra</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="32">
             <Provider name="TVInfo">EinsFestival</Provider>
             <Provider name="ClickFinder">EinsFestival</Provider>
             <Provider name="TVGenial" channelID="10702">1festival</Provider>
-            <Provider name="TV-Browser" channelID="10702">EinsFestival</Provider>
-            <DVBViewer>550137906|Einsfestival</DVBViewer>
+            <Provider name="TV-Browser">EinsFestival</Provider>
         </Channel>
-        <Channel>
+        <Channel id="33">
             <Provider name="TVInfo">EinsPlus</Provider>
             <Provider name="ClickFinder">EinsMuXx</Provider>
             <Provider name="TVGenial" channelID="10701">1plus</Provider>
-            <Provider name="TV-Browser" channelID="10701">EinsPlus</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_einsmuxx">EinsPlus</Provider>
             <DVBViewer>556691507|EinsPlus</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="34">
             <Provider name="TVInfo">N24</Provider>
             <Provider name="ClickFinder">N24</Provider>
             <Provider name="TVGenial" channelID="10040">N24</Provider>
-            <Provider name="TV-Browser" channelID="10040">N24</Provider>
-            <DVBViewer>603997279|N24</DVBViewer>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_n24">N24</Provider>
         </Channel>
-        <Channel>
+        <Channel id="35">
             <Provider name="TVInfo">n-tv</Provider>
             <Provider name="ClickFinder">NTV</Provider>
             <Provider name="TVGenial" channelID="10007">n-tv</Provider>
-            <Provider name="TV-Browser" channelID="10007">n-tv</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_NTV">n-tv</Provider>
         </Channel>
-        <Channel>
+        <Channel id="36">
             <Provider name="TVInfo">Phoenix</Provider>
             <Provider name="ClickFinder">Phoenix</Provider>
             <Provider name="TVGenial" channelID="10038">Phoenix</Provider>
-            <Provider name="TV-Browser" channelID="10038">PHOENIX</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_others_de_phoenix">PHOENIX</Provider>
             <DVBViewer>569798709|Phoenix</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="37">
             <Provider name="TVInfo">EuroNews</Provider>
             <Provider name="ClickFinder">EURONEWS</Provider>
             <Provider name="TVGenial" channelID="70001">Euronews</Provider>
-            <Provider name="TV-Browser" channelID="70001">EuroNews German</Provider>
-            <DVBViewer>696320204|EuroNews - CV (ger)</DVBViewer>
+            <Provider name="TV-Browser">EuroNews German</Provider>
         </Channel>
-        <Channel>
+        <Channel id="38">
             <Provider name="TVInfo">Eurosport</Provider>
             <Provider name="ClickFinder">EUROSPORT</Provider>
             <Provider name="TVGenial" channelID="10046">Eurosport</Provider>
-            <Provider name="TV-Browser" channelID="10046">Eurosport</Provider>
-            <DVBViewer>543621325|Eurosport - CV</DVBViewer>
+            <Provider name="TV-Browser">Eurosport</Provider>
         </Channel>
-        <Channel>
+        <Channel id="39">
             <Provider name="TVInfo">Home Shopping Europe</Provider>
             <Provider name="ClickFinder">Home Shopping Europe</Provider>
             <Provider name="TVGenial" channelID="10048">HSE</Provider>
-            <DVBViewer>620757198|HSE - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="40">
             <Provider name="TVInfo">MTV</Provider>
             <Provider name="ClickFinder">MTV</Provider>
             <Provider name="TVGenial" channelID="10033">MTV</Provider>
-            <Provider name="TV-Browser" channelID="10033">MTV</Provider>
-            <DVBViewer>801112170|MTV Germany - CV</DVBViewer>
+            <Provider name="TV-Browser">MTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="41">
             <Provider name="TVInfo">münchen 2</Provider>
             <Provider name="ClickFinder">münchen 2</Provider>
-            <DVBViewer>550109291|Muenchen2 - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="42">
             <Provider name="TVInfo">münchen.tv</Provider>
             <Provider name="TVGenial" channelID="10023">MünTV</Provider>
-            <DVBViewer>539689068|MuenchenTV - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="43">
             <Provider name="TVInfo">Nick</Provider>
             <Provider name="ClickFinder">Nick</Provider>
             <Provider name="TVGenial" channelID="10067">nick</Provider>
-            <Provider name="TV-Browser" channelID="10067">Nick</Provider>
-            <DVBViewer>805699693|NICK/COMEDY - CV</DVBViewer>
+            <Provider name="TV-Browser">Nick</Provider>
         </Channel>
-        <Channel>
+        <Channel id="44">
             <Provider name="TVInfo">RTLSHOP</Provider>
             <Provider name="ClickFinder">RTL Shop</Provider>
             <Provider name="TVGenial" channelID="10047">RTLShop</Provider>
         </Channel>
-        <Channel>
+        <Channel id="45">
             <Provider name="TVInfo">TRT</Provider>
             <Provider name="ClickFinder">TRT</Provider>
             <Provider name="TVGenial" channelID="140001">TRT Türk</Provider>
-            <DVBViewer>583598289|TRT Int. - CV</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="46">
             <Provider name="TVInfo">VIVA</Provider>
             <Provider name="ClickFinder">VIVA</Provider>
             <Provider name="TVGenial" channelID="10036">VIVA</Provider>
-            <Provider name="TV-Browser" channelID="10036">VIVA</Provider>
-            <DVBViewer>803078256|VIVA Germany - CV</DVBViewer>
+            <Provider name="TV-Browser">VIVA</Provider>
+            <DVBViewer>550137906|Einsfestival</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="47">
             <Provider name="TVInfo">ZDFinfokanal</Provider>
             <Provider name="ClickFinder">ZDFInfo</Provider>
             <Provider name="TVGenial" channelID="10705">Info</Provider>
-            <Provider name="TV-Browser" channelID="10705">ZDFinfokanal</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_zdfinfo">ZDFinfokanal</Provider>
             <DVBViewer>577531243|ZDFinfokanal</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="48">
             <Provider name="TVInfo">ZDFtheaterkanal</Provider>
             <Provider name="ClickFinder">ZDF Theaterkanal</Provider>
             <Provider name="TVGenial" channelID="10703">theater</Provider>
-            <Provider name="TV-Browser" channelID="10703">ZDFtheaterkanal</Provider>
-            <DVBViewer>610299248|ZDFtheaterkanal (deu)</DVBViewer>
+            <Provider name="TV-Browser">ZDFtheaterkanal</Provider>
+            <DVBViewer>610299248|ZDFtheaterkanal</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="49">
             <Provider name="TVInfo">ZDF_neo</Provider>
             <Provider name="ClickFinder">ZDFneo</Provider>
             <Provider name="TVGenial" channelID="10704">zdf_neo</Provider>
-            <Provider name="TV-Browser" channelID="10704">ZDFneo</Provider>
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_zdfneo">ZDFneo</Provider>
             <DVBViewer>580808046|zdf_neo (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="50">
             <Provider name="TVInfo">13th Street</Provider>
             <Provider name="ClickFinder">13th Street</Provider>
             <Provider name="TVGenial" channelID="10521">13th</Provider>
-            <Provider name="TV-Browser" channelID="10521">13th Street</Provider>
+            <Provider name="TV-Browser">13th Street</Provider>
         </Channel>
-        <Channel>
+        <Channel id="51">
             <Provider name="TVInfo">Animal Planet</Provider>
             <Provider name="ClickFinder">Animal Planet</Provider>
             <Provider name="TVGenial" channelID="110008">Animal</Provider>
         </Channel>
-        <Channel>
+        <Channel id="52">
             <Provider name="TVInfo">Anixe HD</Provider>
             <Provider name="ClickFinder">Anixe HD</Provider>
             <Provider name="TVGenial" channelID="10105">AnixeHD</Provider>
-            <Provider name="TV-Browser" channelID="10105">ANIXE HD</Provider>
+            <Provider name="TV-Browser">ANIXE HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="53">
             <Provider name="TVInfo">ATVplus</Provider>
             <Provider name="ClickFinder">ATV+</Provider>
             <Provider name="TVGenial" channelID="20003">ATV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="54">
             <Provider name="TVInfo">Bahn TV</Provider>
             <Provider name="ClickFinder">Bahn TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="55">
             <Provider name="TVInfo">BBC Prime</Provider>
             <Provider name="ClickFinder">BBC Prime</Provider>
         </Channel>
-        <Channel>
+        <Channel id="56">
             <Provider name="TVInfo">Beate Uhse TV</Provider>
             <Provider name="ClickFinder">Beate-Uhse-TV</Provider>
             <Provider name="TVGenial" channelID="10511">Uhse</Provider>
-            <Provider name="TV-Browser" channelID="10511">Beate-Uhse</Provider>
+            <Provider name="TV-Browser">Beate-Uhse</Provider>
         </Channel>
-        <Channel>
+        <Channel id="57">
             <Provider name="TVInfo">Belgien 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="58">
             <Provider name="TVInfo">Bibel TV</Provider>
             <Provider name="ClickFinder">Bibel-TV</Provider>
             <Provider name="TVGenial" channelID="10070">Bibel</Provider>
-            <Provider name="TV-Browser" channelID="10070">BibelTV</Provider>
+            <Provider name="TV-Browser">BibelTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="59">
             <Provider name="TVInfo">Cartoon Network</Provider>
             <Provider name="ClickFinder">Cartoon Network</Provider>
             <Provider name="TVGenial" channelID="120005">Cartoon</Provider>
-            <Provider name="TV-Browser" channelID="120005">Cartoon Network</Provider>
+            <Provider name="TV-Browser">Cartoon Network</Provider>
         </Channel>
-        <Channel>
+        <Channel id="60">
             <Provider name="TVInfo">CityInfo</Provider>
         </Channel>
-        <Channel>
+        <Channel id="61">
             <Provider name="TVInfo">Classica</Provider>
             <Provider name="ClickFinder">Classica</Provider>
             <Provider name="TVGenial" channelID="10512">Classica</Provider>
-            <Provider name="TV-Browser" channelID="10512">Classica</Provider>
+            <Provider name="TV-Browser">Classica</Provider>
         </Channel>
-        <Channel>
+        <Channel id="62">
             <Provider name="TVInfo">Discovery Channel</Provider>
             <Provider name="ClickFinder">Discovery Channel</Provider>
             <Provider name="TVGenial" channelID="10510">Discovery</Provider>
-            <Provider name="TV-Browser" channelID="10510">Discovery Channel</Provider>
+            <Provider name="TV-Browser">Discovery Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="63">
             <Provider name="TVInfo">Discovery Geschichte</Provider>
             <Provider name="ClickFinder">Discovery Geschichte</Provider>
             <Provider name="TVGenial" channelID="10066">DC Ges</Provider>
         </Channel>
-        <Channel>
+        <Channel id="64">
             <Provider name="TVInfo">Discovery HD</Provider>
             <Provider name="ClickFinder">Discovery HD</Provider>
             <Provider name="TVGenial" channelID="10533">Dis.HD</Provider>
-            <Provider name="TV-Browser" channelID="10533">Discovery HD</Provider>
+            <Provider name="TV-Browser">Discovery HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="65">
             <Provider name="TVInfo">Disney Channel</Provider>
             <Provider name="ClickFinder">Disney Channel</Provider>
             <Provider name="TVGenial" channelID="10508">Disney</Provider>
-            <Provider name="TV-Browser" channelID="10508">Disney Channel</Provider>
+            <Provider name="TV-Browser">Disney Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="66">
             <Provider name="TVInfo">DMAX</Provider>
             <Provider name="ClickFinder">XXP</Provider>
             <Provider name="TVGenial" channelID="10071">DMAX</Provider>
-            <Provider name="TV-Browser" channelID="10071">DMAX</Provider>
+            <Provider name="TV-Browser">DMAX</Provider>
         </Channel>
-        <Channel>
+        <Channel id="67">
             <Provider name="TVInfo">DR1</Provider>
             <Provider name="ClickFinder">DK1</Provider>
             <Provider name="TVGenial" channelID="60001">DR1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="68">
             <Provider name="TVInfo">DR2</Provider>
             <Provider name="ClickFinder">DK2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="69">
             <Provider name="TVInfo">DW-tv</Provider>
             <Provider name="TVGenial" channelID="10029">DW</Provider>
-            <Provider name="TV-Browser" channelID="10029">DW-TV</Provider>
+            <Provider name="TV-Browser">DW-TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="70">
             <Provider name="TVInfo">Eurosport 2</Provider>
             <Provider name="ClickFinder">Eurosport 2</Provider>
             <Provider name="TVGenial" channelID="70013">Eurosp2</Provider>
-            <Provider name="TV-Browser" channelID="70013">Eurosport2</Provider>
+            <Provider name="TV-Browser">Eurosport2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="71">
             <Provider name="TVInfo">Extreme Sports Channel</Provider>
             <Provider name="ClickFinder">Extreme Sports Channel</Provider>
             <Provider name="TVGenial" channelID="40005">extreme</Provider>
         </Channel>
-        <Channel>
+        <Channel id="72">
             <Provider name="TVInfo">FAB</Provider>
             <Provider name="ClickFinder">FAB</Provider>
         </Channel>
-        <Channel>
+        <Channel id="73">
             <Provider name="TVInfo">Focus Gesundheit</Provider>
             <Provider name="ClickFinder">FOCUS Gesundheit</Provider>
             <Provider name="TVGenial" channelID="10530">FoGes</Provider>
         </Channel>
-        <Channel>
+        <Channel id="74">
             <Provider name="TVInfo">Goldstar TV</Provider>
             <Provider name="ClickFinder">Goldstar TV</Provider>
             <Provider name="TVGenial" channelID="10524">Goldstar</Provider>
-            <Provider name="TV-Browser" channelID="10524">Goldstar TV</Provider>
+            <Provider name="TV-Browser">Goldstar TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="75">
             <Provider name="TVInfo">gotv</Provider>
         </Channel>
-        <Channel>
+        <Channel id="76">
             <Provider name="TVInfo">Heimatkanal</Provider>
             <Provider name="ClickFinder">Heimatkanal</Provider>
             <Provider name="TVGenial" channelID="10526">Heimat</Provider>
-            <Provider name="TV-Browser" channelID="10526">Heimatkanal</Provider>
+            <Provider name="TV-Browser">Heimatkanal</Provider>
         </Channel>
-        <Channel>
+        <Channel id="77">
             <Provider name="TVInfo">HH1</Provider>
             <Provider name="ClickFinder">HH1</Provider>
             <Provider name="TVGenial" channelID="10058">HH1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="78">
             <Provider name="TVInfo">hit24</Provider>
             <Provider name="ClickFinder">Hit24</Provider>
         </Channel>
-        <Channel>
+        <Channel id="79">
             <Provider name="TVInfo">intv</Provider>
         </Channel>
-        <Channel>
+        <Channel id="80">
             <Provider name="TVInfo">Jetix</Provider>
             <Provider name="ClickFinder">Fox Kids</Provider>
         </Channel>
-        <Channel>
+        <Channel id="81">
             <Provider name="TVInfo">Junior</Provider>
             <Provider name="ClickFinder">Junior</Provider>
             <Provider name="TVGenial" channelID="10515">Junior</Provider>
-            <Provider name="TV-Browser" channelID="10515">Junior</Provider>
+            <Provider name="TV-Browser">Junior</Provider>
         </Channel>
-        <Channel>
+        <Channel id="82">
             <Provider name="TVInfo">Kanal D</Provider>
             <Provider name="ClickFinder">Kanal D</Provider>
         </Channel>
-        <Channel>
+        <Channel id="83">
             <Provider name="TVInfo">MGM</Provider>
             <Provider name="ClickFinder">MGM</Provider>
             <Provider name="TVGenial" channelID="10525">MGM</Provider>
-            <Provider name="TV-Browser" channelID="10525">MGM</Provider>
+            <Provider name="TV-Browser">MGM</Provider>
         </Channel>
-        <Channel>
+        <Channel id="84">
             <Provider name="TVInfo">NBC</Provider>
             <Provider name="ClickFinder">NBC</Provider>
         </Channel>
-        <Channel>
+        <Channel id="85">
             <Provider name="TVInfo">NL 1</Provider>
             <Provider name="ClickFinder">NL1</Provider>
             <Provider name="TVGenial" channelID="40001">NL 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="86">
             <Provider name="TVInfo">NL 2</Provider>
             <Provider name="ClickFinder">NL2</Provider>
             <Provider name="TVGenial" channelID="40002">NL 2</Provider>
         </Channel>
-        <Channel>
-            <Provider name="TVInfo">NL3</Provider>
+        <Channel id="87">
             <Provider name="ClickFinder">NL3</Provider>
             <Provider name="TVGenial" channelID="40003">NL 3</Provider>
+            <Provider name="TVInfo" channelID="40003">NL 3</Provider>
         </Channel>
-        <Channel>
+        <Channel id="88">
             <Provider name="TVInfo">ORF1</Provider>
             <Provider name="ClickFinder">ORF 1</Provider>
             <Provider name="TVGenial" channelID="20001">ORF1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="89">
             <Provider name="TVInfo">OTV</Provider>
             <Provider name="TVGenial" channelID="10069">OTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="90">
             <Provider name="TVInfo">Planet</Provider>
             <Provider name="ClickFinder">Planet</Provider>
             <Provider name="TVGenial" channelID="10517">Planet</Provider>
         </Channel>
-        <Channel>
+        <Channel id="91">
             <Provider name="TVInfo">Puls tv</Provider>
         </Channel>
-        <Channel>
+        <Channel id="92">
             <Provider name="TVInfo">QVC</Provider>
             <Provider name="ClickFinder">QVC</Provider>
             <Provider name="TVGenial" channelID="10057">QVC</Provider>
         </Channel>
-        <Channel>
+        <Channel id="93">
             <Provider name="TVInfo">rheinmaintv</Provider>
             <Provider name="TVGenial" channelID="10074">rheinmTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="94">
             <Provider name="TVInfo">RNFplus</Provider>
         </Channel>
-        <Channel>
+        <Channel id="95">
             <Provider name="TVInfo">RTL Lux</Provider>
         </Channel>
-        <Channel>
+        <Channel id="96">
             <Provider name="TVInfo">SaarTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="97">
             <Provider name="TVInfo">Sci Fi</Provider>
             <Provider name="ClickFinder">SCI FI</Provider>
             <Provider name="TVGenial" channelID="10531">SciFi</Provider>
-            <Provider name="TV-Browser" channelID="10531">Sci Fi</Provider>
+            <Provider name="TV-Browser">Sci Fi</Provider>
         </Channel>
-        <Channel>
+        <Channel id="98">
             <Provider name="TVInfo">SF1</Provider>
             <Provider name="ClickFinder">SF 1</Provider>
             <Provider name="TVGenial" channelID="30001">SF1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="99">
             <Provider name="TVInfo">SF2</Provider>
             <Provider name="ClickFinder">SF 2</Provider>
             <Provider name="TVGenial" channelID="30002">SFzwei</Provider>
         </Channel>
-        <Channel>
+        <Channel id="100">
             <Provider name="TVInfo">Sky Action</Provider>
             <Provider name="ClickFinder">SKY Action</Provider>
             <Provider name="TVGenial" channelID="10538">Action</Provider>
-            <Provider name="TV-Browser" channelID="10538">Sky Action</Provider>
+            <Provider name="TV-Browser">Sky Action</Provider>
         </Channel>
-        <Channel>
+        <Channel id="101">
             <Provider name="TVInfo">Sky Cinema</Provider>
             <Provider name="ClickFinder">SKY Cinema</Provider>
             <Provider name="TVGenial" channelID="10539">Cinema</Provider>
-            <Provider name="TV-Browser" channelID="10539">Sky Cinema</Provider>
+            <Provider name="TV-Browser">Sky Cinema</Provider>
         </Channel>
-        <Channel>
+        <Channel id="102">
             <Provider name="ClickFinder">SKY Cinema HD</Provider>
             <Provider name="TVGenial" channelID="10554">CineHD</Provider>
-            <Provider name="TV-Browser" channelID="10554">Sky Cinema HD</Provider>
+            <Provider name="TV-Browser">Sky Cinema HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="103">
             <Provider name="TVInfo">Sky Cinema +1</Provider>
             <Provider name="ClickFinder">SKY Cinema +1</Provider>
             <Provider name="TVGenial" channelID="10540">Cine+1</Provider>
-            <Provider name="TV-Browser" channelID="10540">Sky Cinema +1</Provider>
+            <Provider name="TV-Browser">Sky Cinema +1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="104">
             <Provider name="TVInfo">Sky Cinema +24</Provider>
             <Provider name="ClickFinder">SKY Cinema +24</Provider>
             <Provider name="TVGenial" channelID="10552">Cine+24</Provider>
-            <Provider name="TV-Browser" channelID="10552">Sky Cinema +24</Provider>
+            <Provider name="TV-Browser">Sky Cinema +24</Provider>
         </Channel>
-        <Channel>
+        <Channel id="105">
             <Provider name="TVInfo">Sky Cinema Hits</Provider>
             <Provider name="ClickFinder">SKY Cinema Hits</Provider>
             <Provider name="TVGenial" channelID="10551">CineHits</Provider>
-            <Provider name="TV-Browser" channelID="10551">Sky Cinema Hits</Provider>
+            <Provider name="TV-Browser">Sky Cinema Hits</Provider>
         </Channel>
-        <Channel>
+        <Channel id="106">
             <Provider name="TVInfo">Sky Comedy</Provider>
             <Provider name="ClickFinder">SKY Comedy</Provider>
             <Provider name="TVGenial" channelID="10541">skyCom</Provider>
-            <Provider name="TV-Browser" channelID="10541">Sky Comedy</Provider>
+            <Provider name="TV-Browser">Sky Comedy</Provider>
         </Channel>
-        <Channel>
+        <Channel id="107">
             <Provider name="TVInfo">Sky Emotion</Provider>
             <Provider name="ClickFinder">SKY Emotion</Provider>
             <Provider name="TVGenial" channelID="10542">Emotion</Provider>
-            <Provider name="TV-Browser" channelID="10542">Sky Emotion</Provider>
+            <Provider name="TV-Browser">Sky Emotion</Provider>
         </Channel>
-        <Channel>
+        <Channel id="108">
             <Provider name="TVInfo">Sky Fussball Bundesliga</Provider>
             <Provider name="ClickFinder">SKY Fussball Bundesliga</Provider>
             <Provider name="TVGenial" channelID="10543">FBliga</Provider>
-            <Provider name="TV-Browser" channelID="10543">Sky Fußball Bundesliga</Provider>
+            <Provider name="TV-Browser">Sky Fußball Bundesliga</Provider>
         </Channel>
-        <Channel>
+        <Channel id="109">
             <Provider name="TVInfo">Sky Krimi</Provider>
             <Provider name="ClickFinder">SKY Krimi</Provider>
             <Provider name="TVGenial" channelID="10544">Krimi</Provider>
-            <Provider name="TV-Browser" channelID="10544">Sky Krimi</Provider>
+            <Provider name="TV-Browser">Sky Krimi</Provider>
         </Channel>
-        <Channel>
+        <Channel id="110">
             <Provider name="TVInfo">Sky Nostalgie</Provider>
             <Provider name="ClickFinder">SKY Nostalgie</Provider>
             <Provider name="TVGenial" channelID="10545">Nostalgie</Provider>
-            <Provider name="TV-Browser" channelID="10545">Sky Nostalgie</Provider>
+            <Provider name="TV-Browser">Sky Nostalgie</Provider>
         </Channel>
-        <Channel>
+        <Channel id="111">
             <Provider name="TVInfo">Sky Sport 1</Provider>
             <Provider name="ClickFinder">SKY Sport 1</Provider>
             <Provider name="TVGenial" channelID="10546">Sport1</Provider>
-            <Provider name="TV-Browser" channelID="10546">Sky Sport 1</Provider>
+            <Provider name="TV-Browser">Sky Sport 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="112">
             <Provider name="TVInfo">Sky Sport 2</Provider>
             <Provider name="ClickFinder">SKY Sport 2</Provider>
             <Provider name="TVGenial" channelID="10547">Sport2</Provider>
-            <Provider name="TV-Browser" channelID="10547">Sky Sport 2</Provider>
+            <Provider name="TV-Browser">Sky Sport 2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="113">
             <Provider name="TVInfo">Sky Sport Austria</Provider>
             <Provider name="ClickFinder">SKY Sport Austria</Provider>
             <Provider name="TVGenial" channelID="10548">SportAu</Provider>
         </Channel>
-        <Channel>
+        <Channel id="114">
             <Provider name="TVInfo">Sky Select</Provider>
             <Provider name="ClickFinder">SKY</Provider>
             <Provider name="TVGenial" channelID="10560">Select</Provider>
-            <Provider name="TV-Browser" channelID="10560">Sky Select</Provider>
+            <Provider name="TV-Browser">Sky Select</Provider>
         </Channel>
-        <Channel>
+        <Channel id="115">
             <Provider name="TVInfo">Sky Sport HD</Provider>
             <Provider name="ClickFinder">SKY Sport HD</Provider>
             <Provider name="TVGenial" channelID="10549">Sport HD</Provider>
-            <Provider name="TV-Browser" channelID="10549">Sky Sport HD</Provider>
+            <Provider name="TV-Browser">Sky Sport HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="116">
             <Provider name="TVInfo">Spi.ka tv</Provider>
             <Provider name="ClickFinder">Spi.Ka TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="117">
             <Provider name="TVInfo">Spreekanal</Provider>
             <Provider name="TVGenial" channelID="10026">Spreekanal</Provider>
         </Channel>
-        <Channel>
+        <Channel id="118">
             <Provider name="TVInfo">Steiermark 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="119">
             <Provider name="TVInfo">TIDE</Provider>
         </Channel>
-        <Channel>
+        <Channel id="120">
             <Provider name="TVInfo">TSI1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="121">
             <Provider name="TVInfo">TSI2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="122">
             <Provider name="TVInfo">TSR1</Provider>
             <Provider name="TVGenial" channelID="30012">TSR1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="123">
             <Provider name="TVInfo">TSR2</Provider>
             <Provider name="TVGenial" channelID="30013">TSR2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="124">
             <Provider name="TVInfo">TV 2</Provider>
             <Provider name="TVGenial" channelID="60003">TV2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="125">
             <Provider name="TVInfo">TV Franken</Provider>
             <Provider name="TVGenial" channelID="10025">FrankTV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="126">
             <Provider name="TVInfo">TV Slovenija 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="127">
             <Provider name="TVInfo">TV Slovenija 2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="128">
             <Provider name="TVInfo">TVBerlin</Provider>
             <Provider name="ClickFinder">TV Berlin</Provider>
             <Provider name="TVGenial" channelID="10024">tvB</Provider>
         </Channel>
-        <Channel>
+        <Channel id="129">
             <Provider name="TVInfo">TW1</Provider>
             <Provider name="ClickFinder">TW1</Provider>
             <Provider name="TVGenial" channelID="20004">TW1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="130">
             <Provider name="TVInfo">Disney Cinemagic</Provider>
             <Provider name="TVGenial" channelID="10555">DCM</Provider>
-            <Provider name="ClickFinder" channelID="10555">Disney Cinemagic</Provider>
-            <Provider name="TV-Browser" channelID="10555">Disney Cinemagic</Provider>
+            <Provider name="ClickFinder">Disney Cinemagic</Provider>
+            <Provider name="TV-Browser">Disney Cinemagic</Provider>
         </Channel>
-        <Channel>
+        <Channel id="131">
             <Provider name="TVInfo">Motor Vision TV</Provider>
             <Provider name="TVGenial" channelID="10557">Motorvis</Provider>
         </Channel>
-        <Channel>
+        <Channel id="132">
             <Provider name="TVInfo">Spiegel Geschichte</Provider>
             <Provider name="ClickFinder">Spiegel Geschichte</Provider>
             <Provider name="TVGenial" channelID="10087">SpGes</Provider>
-            <Provider name="TV-Browser" channelID="10087">Spiegel Geschichte</Provider>
+            <Provider name="TV-Browser">Spiegel Geschichte</Provider>
         </Channel>
-        <Channel>
+        <Channel id="133">
             <Provider name="TVInfo">Kabel1 Classics</Provider>
             <Provider name="ClickFinder">kabel eins classics</Provider>
             <Provider name="TVGenial" channelID="10092">K1 Class</Provider>
-            <Provider name="TV-Browser" channelID="10092">kabel eins classics</Provider>
+            <Provider name="TV-Browser">kabel eins classics</Provider>
         </Channel>
-        <Channel>
+        <Channel id="134">
             <Provider name="TVInfo">TNT Serie</Provider>
             <Provider name="ClickFinder">TNT Serie</Provider>
             <Provider name="TVGenial" channelID="10106">TNTser</Provider>
-            <Provider name="TV-Browser" channelID="10106">TNT SERIE</Provider>
+            <Provider name="TV-Browser">TNT SERIE</Provider>
         </Channel>
-        <Channel>
+        <Channel id="135">
             <Provider name="TVInfo">VH-1 Classic</Provider>
             <Provider name="ClickFinder">VH1 Classic</Provider>
             <Provider name="TVGenial" channelID="110010">VH1Class</Provider>
         </Channel>
-        <Channel>
+        <Channel id="136">
             <Provider name="TVInfo">AXN</Provider>
             <Provider name="ClickFinder">AXN</Provider>
             <Provider name="TVGenial" channelID="10085">AXN</Provider>
-            <Provider name="TV-Browser" channelID="10085">AXN</Provider>
+            <Provider name="TV-Browser">AXN</Provider>
         </Channel>
-        <Channel>
+        <Channel id="137">
             <Provider name="TVInfo">Boomerang</Provider>
             <Provider name="ClickFinder">Boomerang</Provider>
             <Provider name="TVGenial" channelID="10093">Boom</Provider>
-            <Provider name="TV-Browser" channelID="10093">Boomerang</Provider>
+            <Provider name="TV-Browser">Boomerang</Provider>
         </Channel>
-        <Channel>
+        <Channel id="138">
             <Provider name="TVInfo">MTV Entertainment</Provider>
             <Provider name="ClickFinder">MTV Entertainment</Provider>
             <Provider name="TVGenial" channelID="10099">MTVen</Provider>
-            <Provider name="TV-Browser" channelID="10099">MTV Entertainment</Provider>
+            <Provider name="TV-Browser">MTV Entertainment</Provider>
         </Channel>
-        <Channel>
+        <Channel id="139">
             <Provider name="TVInfo">Nick Premium</Provider>
             <Provider name="ClickFinder">Nick Premium</Provider>
             <Provider name="TVGenial" channelID="10102">NickPrm</Provider>
         </Channel>
-        <Channel>
+        <Channel id="140">
             <Provider name="TVInfo">RTL Living</Provider>
             <Provider name="ClickFinder">RTL Living</Provider>
             <Provider name="TVGenial" channelID="10095">Living</Provider>
-            <Provider name="TV-Browser" channelID="10095">RTL Living</Provider>
+            <Provider name="TV-Browser">RTL Living</Provider>
         </Channel>
-        <Channel>
+        <Channel id="141">
             <Provider name="TVInfo">Romance TV</Provider>
             <Provider name="ClickFinder">Romance TV</Provider>
             <Provider name="TVGenial" channelID="10103">Romance</Provider>
-            <Provider name="TV-Browser" channelID="10103">Romance TV</Provider>
+            <Provider name="TV-Browser">Romance TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="142">
             <Provider name="TVInfo">Sat.1 comedy</Provider>
             <Provider name="ClickFinder">Sat.1 Comedy</Provider>
             <Provider name="TVGenial" channelID="10091">Sat 1 Com</Provider>
-            <Provider name="TV-Browser" channelID="10091">Sat.1 Comedy</Provider>
+            <Provider name="TV-Browser">Sat.1 Comedy</Provider>
         </Channel>
-        <Channel>
+        <Channel id="143">
             <Provider name="TVInfo">Biography Channel</Provider>
             <Provider name="ClickFinder">The Biography Channel</Provider>
             <Provider name="TV-Browser">The Biography Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="144">
             <Provider name="TVInfo">TNT Film</Provider>
             <Provider name="ClickFinder">Turner Classic Movies</Provider>
             <Provider name="TVGenial" channelID="10107">TNTfilm</Provider>
-            <Provider name="TV-Browser" channelID="10107">TNT FILM</Provider>
+            <Provider name="TV-Browser">TNT FILM</Provider>
         </Channel>
-        <Channel>
+        <Channel id="145">
             <Provider name="TVInfo">PASSION</Provider>
             <Provider name="ClickFinder">RTL Passion</Provider>
             <Provider name="TVGenial" channelID="10096">Passion</Provider>
-            <Provider name="TV-Browser" channelID="10096">Passion</Provider>
+            <Provider name="TV-Browser">Passion</Provider>
         </Channel>
-        <Channel>
+        <Channel id="146">
             <Provider name="TVInfo">History Channel</Provider>
             <Provider name="ClickFinder">History Channel</Provider>
             <Provider name="TVGenial" channelID="10077">History</Provider>
-            <Provider name="TV-Browser" channelID="10077">History</Provider>
+            <Provider name="TV-Browser">History</Provider>
         </Channel>
-        <Channel>
+        <Channel id="147">
             <Provider name="TVInfo">FOX</Provider>
             <Provider name="ClickFinder">FOX Channel</Provider>
             <Provider name="TVGenial" channelID="10104">FOX</Provider>
-            <Provider name="TV-Browser" channelID="10104">FOX</Provider>
+            <Provider name="TV-Browser">FOX</Provider>
         </Channel>
-        <Channel>
+        <Channel id="148">
             <Provider name="TVInfo">Blue Movie 3</Provider>
         </Channel>
-        <Channel>
+        <Channel id="149">
             <Provider name="TVInfo">Blue Movie2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="150">
             <Provider name="TVInfo">Deutsches Wetterfernsehen</Provider>
             <Provider name="ClickFinder">Wetter Fernsehen</Provider>
             <Provider name="TVGenial" channelID="10082">Wetter</Provider>
         </Channel>
-        <Channel>
+        <Channel id="151">
             <Provider name="TVInfo">ESPN Amerika</Provider>
             <Provider name="ClickFinder">NASN</Provider>
             <Provider name="TVGenial" channelID="10084">ESPNa</Provider>
         </Channel>
-        <Channel>
+        <Channel id="152">
             <Provider name="TVInfo">ESPN Classic Sport</Provider>
             <Provider name="ClickFinder">ESPN Classic Sport</Provider>
             <Provider name="TVGenial" channelID="110014">ESPN</Provider>
         </Channel>
-        <Channel>
+        <Channel id="153">
             <Provider name="TVInfo">Fashion TV</Provider>
             <Provider name="ClickFinder">Fashion TV</Provider>
             <Provider name="TVGenial" channelID="70010">Fashion</Provider>
         </Channel>
-        <Channel>
+        <Channel id="154">
             <Provider name="TVInfo">Gute Laune TV</Provider>
             <Provider name="ClickFinder">Gute Laune TV</Provider>
             <Provider name="TVGenial" channelID="10088">Gute Lau</Provider>
         </Channel>
-        <Channel>
+        <Channel id="155">
             <Provider name="TVInfo">Motors TV</Provider>
             <Provider name="ClickFinder">Motors TV</Provider>
             <Provider name="TVGenial" channelID="70011">Motors</Provider>
-            <Provider name="TV-Browser" channelID="70011">Motorvision TV</Provider>
+            <Provider name="TV-Browser">Motorvision TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="156">
             <Provider name="TVInfo">MTV Dance</Provider>
             <Provider name="ClickFinder">MTV Dance</Provider>
             <Provider name="TVGenial" channelID="110011">Dance</Provider>
         </Channel>
-        <Channel>
+        <Channel id="157">
             <Provider name="TVInfo">MTV Hits</Provider>
             <Provider name="ClickFinder">MTV Hits</Provider>
             <Provider name="TVGenial" channelID="110012">HitsUK</Provider>
         </Channel>
-        <Channel>
+        <Channel id="158">
             <Provider name="TVInfo">NRW TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="159">
             <Provider name="TVInfo">Playboy TV</Provider>
             <Provider name="ClickFinder">Playboy TV</Provider>
             <Provider name="TVGenial" channelID="110013">Playboy</Provider>
         </Channel>
-        <Channel>
+        <Channel id="160">
             <Provider name="TVInfo">Playhouse Disney</Provider>
             <Provider name="ClickFinder">Playhouse Disney</Provider>
             <Provider name="TVGenial" channelID="10083">Play</Provider>
-            <Provider name="TV-Browser" channelID="10083">Playhouse Disney</Provider>
+            <Provider name="TV-Browser">Playhouse Disney</Provider>
         </Channel>
-        <Channel>
+        <Channel id="161">
             <Provider name="TVInfo">Sail TV</Provider>
             <Provider name="TVGenial" channelID="90009">Yacht</Provider>
-            <Provider name="ClickFinder" channelID="90009">Sailing Channel</Provider>
+            <Provider name="ClickFinder">Sailing Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="162">
             <Provider name="TVInfo">Silverline</Provider>
             <Provider name="ClickFinder">Silverline</Provider>
             <Provider name="TVGenial" channelID="10076">Silver</Provider>
-            <Provider name="TV-Browser" channelID="10076">Silverline Movie Channel</Provider>
+            <Provider name="TV-Browser">Silverline Movie Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="163">
             <Provider name="TVInfo">Spiegel TV</Provider>
             <Provider name="ClickFinder">SPIEGEL TV XXP DIGITAL</Provider>
             <Provider name="TVGenial" channelID="10087">Spiegel</Provider>
-            <Provider name="TV-Browser" channelID="10087">Spiegel TV Digital</Provider>
+            <Provider name="TV-Browser">Spiegel TV Digital</Provider>
         </Channel>
-        <Channel>
+        <Channel id="164">
             <Provider name="TVInfo">TIMM TV</Provider>
             <Provider name="ClickFinder">TIMM</Provider>
             <Provider name="TVGenial" channelID="10108">TIMM</Provider>
-            <Provider name="TV-Browser" channelID="10108">Timm</Provider>
+            <Provider name="TV-Browser">Timm</Provider>
         </Channel>
-        <Channel>
+        <Channel id="165">
             <Provider name="TVInfo">Toon Disney</Provider>
             <Provider name="ClickFinder">Toon Disney</Provider>
             <Provider name="TVGenial" channelID="10080">Toon</Provider>
         </Channel>
-        <Channel>
+        <Channel id="166">
             <Provider name="TVInfo">Toon Disney +1</Provider>
             <Provider name="ClickFinder">Toon Disney +1</Provider>
             <Provider name="TVGenial" channelID="10081">Toon 2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="167">
             <Provider name="TVInfo">Trace TV</Provider>
             <Provider name="ClickFinder">Trace.TV</Provider>
             <Provider name="TVGenial" channelID="70012">Trace</Provider>
         </Channel>
-        <Channel>
+        <Channel id="168">
             <Provider name="TVInfo">TV gusto</Provider>
             <Provider name="ClickFinder">tv.gusto</Provider>
             <Provider name="TVGenial" channelID="10079">Gusto</Provider>
-            <Provider name="TV-Browser" channelID="10079">tv.gusto</Provider>
+            <Provider name="TV-Browser">tv.gusto</Provider>
         </Channel>
-        <Channel>
+        <Channel id="169">
             <Provider name="TVInfo">Blue Movie 1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="170">
             <Provider name="TVInfo">DMC.TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="171">
             <Provider name="TVInfo">E! Entertainment</Provider>
             <Provider name="ClickFinder">E! Entertainment Television</Provider>
             <Provider name="TVGenial" channelID="120007">E! E.</Provider>
         </Channel>
-        <Channel>
+        <Channel id="172">
             <Provider name="TVInfo">K TV</Provider>
             <Provider name="TVGenial" channelID="20005">K-TV</Provider>
-            <Provider name="ClickFinder" channelID="20005">K-TV</Provider>
+            <Provider name="ClickFinder">K-TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="173">
             <Provider name="TVInfo">Okto.TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="174">
             <Provider name="TVInfo">RTL TVI</Provider>
         </Channel>
-        <Channel>
+        <Channel id="175">
             <Provider name="TVInfo">Super RTL CH</Provider>
         </Channel>
-        <Channel>
+        <Channel id="176">
             <Provider name="TVInfo">Channel 21</Provider>
         </Channel>
-        <Channel>
+        <Channel id="177">
             <Provider name="ClickFinder">TV5</Provider>
             <Provider name="TVGenial" channelID="70006">TV5</Provider>
-            <Provider name="TV-Browser" channelID="70006">TV5</Provider>
+            <Provider name="TV-Browser">TV5</Provider>
+            <Provider name="TVInfo" channelID="70006">TV5</Provider>
         </Channel>
-        <Channel>
+        <Channel id="178">
             <Provider name="ClickFinder">Kinowelt TV</Provider>
             <Provider name="TVGenial" channelID="10075">Kinowelt</Provider>
-            <Provider name="TV-Browser" channelID="10075">Kinowelt TV</Provider>
+            <Provider name="TV-Browser">Kinowelt TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="179">
             <Provider name="ClickFinder">National Geographic</Provider>
             <Provider name="TVGenial" channelID="90008">Nat.Geo</Provider>
-            <Provider name="TV-Browser" channelID="90008">National Geographic Channel</Provider>
+            <Provider name="TV-Browser">National Geographic Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="180">
             <Provider name="ClickFinder">tv.gusto premium</Provider>
         </Channel>
-        <Channel>
+        <Channel id="181">
             <Provider name="ClickFinder">RTL Crime</Provider>
             <Provider name="TVGenial" channelID="10094">Crime</Provider>
-            <Provider name="TV-Browser" channelID="10094">RTL Crime</Provider>
+            <Provider name="TV-Browser">RTL Crime</Provider>
+            <Provider name="TVInfo" channelID="10094">RTL Crime</Provider>
         </Channel>
-        <Channel>
+        <Channel id="182">
             <Provider name="ClickFinder">MEZZO</Provider>
             <Provider name="TVGenial" channelID="70014">MEZZO</Provider>
         </Channel>
-        <Channel>
+        <Channel id="183">
             <Provider name="ClickFinder">Animax</Provider>
             <Provider name="TVGenial" channelID="10100">Animax</Provider>
-            <Provider name="TV-Browser" channelID="10100">ANIMAX</Provider>
+            <Provider name="TV-Browser">ANIMAX</Provider>
         </Channel>
-        <Channel>
+        <Channel id="184">
             <Provider name="ClickFinder">MTV Base</Provider>
         </Channel>
-        <Channel>
+        <Channel id="185">
             <Provider name="ClickFinder">e.clips</Provider>
             <Provider name="TVGenial" channelID="10101">e.clips</Provider>
         </Channel>
-        <Channel>
+        <Channel id="186">
             <Provider name="ClickFinder">MTV Music</Provider>
         </Channel>
-        <Channel>
+        <Channel id="187">
             <Provider name="ClickFinder">Zone Reality Europe</Provider>
         </Channel>
-        <Channel>
+        <Channel id="188">
             <Provider name="ClickFinder">MCM Top</Provider>
         </Channel>
-        <Channel>
+        <Channel id="189">
             <Provider name="ClickFinder">Zone Club</Provider>
         </Channel>
-        <Channel>
+        <Channel id="190">
             <Provider name="ClickFinder">Baby TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="191">
             <Provider name="ClickFinder">The Karaoke Channel</Provider>
         </Channel>
-        <Channel>
+        <Channel id="192">
             <Provider name="ClickFinder">YAVIDO</Provider>
         </Channel>
-        <Channel>
+        <Channel id="193">
             <Provider name="ClickFinder">ATV Avrupa</Provider>
         </Channel>
-        <Channel>
+        <Channel id="194">
             <Provider name="ClickFinder">Detski Mir / Teleclub</Provider>
         </Channel>
-        <Channel>
+        <Channel id="195">
             <Provider name="ClickFinder">Euro D</Provider>
         </Channel>
-        <Channel>
+        <Channel id="196">
             <Provider name="ClickFinder">Euro Star</Provider>
         </Channel>
-        <Channel>
+        <Channel id="197">
             <Provider name="ClickFinder">Fox Turk</Provider>
         </Channel>
-        <Channel>
+        <Channel id="198">
             <Provider name="ClickFinder">iTVN</Provider>
         </Channel>
-        <Channel>
+        <Channel id="199">
             <Provider name="ClickFinder">RTR-Planeta</Provider>
         </Channel>
-        <Channel>
+        <Channel id="200">
             <Provider name="ClickFinder">TV Polonia</Provider>
         </Channel>
-        <Channel>
+        <Channel id="201">
             <Provider name="ClickFinder">LIG TV</Provider>
             <Provider name="TV-Browser">LIGA total!</Provider>
+            <Provider name="TVInfo">LIGATOTAL</Provider>
         </Channel>
-        <Channel>
+        <Channel id="202">
             <Provider name="ClickFinder">TVP Info</Provider>
         </Channel>
-        <Channel>
+        <Channel id="203">
             <Provider name="ClickFinder">TVP Kultura</Provider>
         </Channel>
-        <Channel>
+        <Channel id="204">
             <Provider name="ClickFinder">Nashe Kino</Provider>
         </Channel>
-        <Channel>
+        <Channel id="205">
             <Provider name="ClickFinder">Show Turk</Provider>
         </Channel>
-        <Channel>
+        <Channel id="206">
             <Provider name="ClickFinder">RTVi</Provider>
         </Channel>
-        <Channel>
+        <Channel id="207">
             <Provider name="ClickFinder">Türkmax</Provider>
         </Channel>
-        <Channel>
+        <Channel id="208">
             <Provider name="ClickFinder">Kanal 7 Int</Provider>
         </Channel>
-        <Channel>
+        <Channel id="209">
             <Provider name="ClickFinder">TGRT EU</Provider>
         </Channel>
-        <Channel>
+        <Channel id="210">
             <Provider name="ClickFinder">fashiontv HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="211">
             <Provider name="ClickFinder">sportdigital.tv</Provider>
         </Channel>
-        <Channel>
+        <Channel id="212">
             <Provider name="ClickFinder">Eurosport HD</Provider>
+            <Provider name="TVInfo">Eurosport HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="213">
             <Provider name="ClickFinder">B.TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="214">
             <Provider name="ClickFinder">VIVAPlus</Provider>
         </Channel>
-        <Channel>
+        <Channel id="215">
             <Provider name="ClickFinder">MTV2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="216">
             <Provider name="ClickFinder">fashion tv men</Provider>
         </Channel>
-        <Channel>
+        <Channel id="217">
             <Provider name="ClickFinder">Anixe HD2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="218">
             <Provider name="TVGenial" channelID="110002">BBCe</Provider>
         </Channel>
-        <Channel>
+        <Channel id="219">
             <Provider name="TVGenial" channelID="30014">RSI LA1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="220">
             <Provider name="TVGenial" channelID="30015">RSI LA2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="221">
             <Provider name="TVGenial" channelID="90005">Canale 5</Provider>
         </Channel>
-        <Channel>
+        <Channel id="222">
             <Provider name="TVGenial" channelID="90006">Italia1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="223">
             <Provider name="TVGenial" channelID="70004">France2</Provider>
         </Channel>
-        <Channel>
+        <Channel id="224">
             <Provider name="TVGenial" channelID="70005">France3</Provider>
         </Channel>
-        <Channel>
+        <Channel id="225">
             <Provider name="TVGenial" channelID="110003">ngc Eu</Provider>
         </Channel>
-        <Channel>
+        <Channel id="226">
             <Provider name="TVGenial" channelID="30011">TZüri</Provider>
         </Channel>
-        <Channel>
+        <Channel id="227">
             <Provider name="TVGenial" channelID="110015">BlueH</Provider>
         </Channel>
-        <Channel>
+        <Channel id="228">
             <Provider name="TVGenial" channelID="10097">Deluxe</Provider>
-            <Provider name="ClickFinder" channelID="10097">DELUXE MUSIC TV</Provider>
+            <Provider name="ClickFinder">DELUXE MUSIC TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="229">
             <Provider name="TVGenial" channelID="110016">TCM</Provider>
         </Channel>
-        <Channel>
+        <Channel id="230">
             <Provider name="TVGenial" channelID="90001">RAIuno</Provider>
         </Channel>
-        <Channel>
+        <Channel id="231">
             <Provider name="TVGenial" channelID="30010">3+</Provider>
         </Channel>
-        <Channel>
+        <Channel id="232">
             <Provider name="TVGenial" channelID="10519">DisnXD</Provider>
-            <Provider name="ClickFinder" channelID="10519">Disney XD</Provider>
-            <Provider name="TV-Browser" channelID="10519">Disney XD</Provider>
+            <Provider name="ClickFinder">Disney XD</Provider>
+            <Provider name="TV-Browser">Disney XD</Provider>
+            <Provider name="TVInfo" channelID="10519">Disney XD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="233">
             <Provider name="TVGenial" channelID="10550">skynews</Provider>
         </Channel>
-        <Channel>
+        <Channel id="234">
             <Provider name="TVGenial" channelID="90002">RAIdue</Provider>
         </Channel>
-        <Channel>
+        <Channel id="235">
             <Provider name="TVGenial" channelID="10553">NGW</Provider>
-            <Provider name="ClickFinder" channelID="10553">National Geographic Wild</Provider>
-            <Provider name="TV-Browser" channelID="10553">NatGeo Wild</Provider>
+            <Provider name="ClickFinder">National Geographic Wild</Provider>
+            <Provider name="TV-Browser">NatGeo Wild</Provider>
         </Channel>
-        <Channel>
+        <Channel id="236">
             <Provider name="TVGenial" channelID="10556">DCM HD</Provider>
-            <Provider name="ClickFinder" channelID="10556">Disney Cinemagic HD</Provider>
-            <Provider name="TV-Browser" channelID="10556">Disney Cinemagic HD</Provider>
+            <Provider name="ClickFinder">Disney Cinemagic HD</Provider>
+            <Provider name="TV-Browser">Disney Cinemagic HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="237">
             <Provider name="TVGenial" channelID="10558">NGHD</Provider>
-            <Provider name="ClickFinder" channelID="10558">National Geographic HD</Provider>
-            <Provider name="TV-Browser" channelID="10558">National Geographic HD</Provider>
+            <Provider name="ClickFinder">National Geographic HD</Provider>
+            <Provider name="TV-Browser">National Geographic HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="238">
             <Provider name="TVGenial" channelID="10559">Hist.HD</Provider>
+            <Provider name="TVInfo" channelID="10559">History HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="239">
             <Provider name="TV-Browser">ERF</Provider>
         </Channel>
-        <Channel>
+        <Channel id="240">
             <Provider name="TV-Browser">ESPN America</Provider>
         </Channel>
-        <Channel>
+        <Channel id="241">
             <Provider name="TV-Browser">History HD</Provider>
         </Channel>
-        <Channel>
+        <Channel id="242">
             <Provider name="TV-Browser">MDR Sachsen</Provider>
         </Channel>
-        <Channel>
+        <Channel id="243">
             <Provider name="TV-Browser">MDR Sachsen-Anhalt</Provider>
         </Channel>
-        <Channel>
+        <Channel id="244">
             <Provider name="TV-Browser">NDR Mecklenburg-Vorpommern</Provider>
         </Channel>
-        <Channel>
-            <Provider name="TV-Browser">NDR Niedersachsen</Provider>
+        <Channel id="245">
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_local_de_ndr">NDR Niedersachsen</Provider>
+            <DVBViewer>727084612|MDR Sachsen (deu)</DVBViewer>
         </Channel>
-        <Channel>
+        <Channel id="246">
             <Provider name="TV-Browser">NDR Schleswig-Holstein</Provider>
         </Channel>
-        <Channel>
+        <Channel id="247">
             <Provider name="TV-Browser">Nicktoons</Provider>
         </Channel>
-        <Channel>
+        <Channel id="248">
             <Provider name="TV-Browser">Offener Kanal Landau</Provider>
         </Channel>
-        <Channel>
+        <Channel id="249">
             <Provider name="TV-Browser">OK Haßloch/Böhl-Iggelheim</Provider>
         </Channel>
-        <Channel>
+        <Channel id="250">
             <Provider name="TV-Browser">OK Neustadt / Weinstraße</Provider>
         </Channel>
-        <Channel>
+        <Channel id="251">
             <Provider name="TV-Browser">OK-KL</Provider>
         </Channel>
-        <Channel>
+        <Channel id="252">
             <Provider name="TV-Browser">OK54 Bürgerrundfunk Trier</Provider>
         </Channel>
-        <Channel>
+        <Channel id="253">
             <Provider name="TV-Browser">RBB Brandenburg</Provider>
         </Channel>
-        <Channel>
+        <Channel id="254">
             <Provider name="TV-Browser">sixx</Provider>
+            <Provider name="TVInfo">sixx</Provider>
         </Channel>
-        <Channel>
+        <Channel id="255">
             <Provider name="TV-Browser">Sky Select+</Provider>
         </Channel>
-        <Channel>
+        <Channel id="256">
             <Provider name="TV-Browser">Sport1</Provider>
+            <Provider name="TVInfo">Sport1</Provider>
         </Channel>
-        <Channel>
+        <Channel id="257">
             <Provider name="TV-Browser">sportdigital TV</Provider>
         </Channel>
-        <Channel>
+        <Channel id="258">
             <Provider name="TV-Browser">SWR BW</Provider>
         </Channel>
-        <Channel>
+        <Channel id="259">
             <Provider name="TV-Browser">SWR SR</Provider>
         </Channel>
-        <Channel>
+        <Channel id="260">
             <Provider name="TV-Browser">TV-Lernsender.NRW</Provider>
+        </Channel>
+        <Channel id="261">
+            <Provider name="TVInfo">Big Brother</Provider>
+        </Channel>
+        <Channel id="262">
+            <Provider name="TVInfo">PULS4</Provider>
+        </Channel>
+        <Channel id="263">
+            <Provider name="TVInfo">Sonnenklar TV</Provider>
+        </Channel>
+        <Channel id="264">
+            <Provider name="TVInfo">HD Suisse</Provider>
+        </Channel>
+        <Channel id="265">
+            <Provider name="TVInfo">ServusTV</Provider>
+        </Channel>
+        <Channel id="266">
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_einstfestival">einsfestival</Provider>
+            <DVBViewer>550137906|Einsfestival</DVBViewer>
+        </Channel>
+        <Channel id="267">
+            <Provider name="TV-Browser" channelID="tvbrowserdataservice.TvBrowserDataService_digital_de_zdftheater">ZDFkultur</Provider>
         </Channel>
     </Channels>
 </Importer>

@@ -71,6 +71,15 @@
     						</xsd:restriction>
     					</xsd:simpleType>
     				</xsd:attribute>
+    				<xsd:attribute name="waitCOMTime">
+    					<xsd:simpleType>
+    						<xsd:restriction base="xsd:int">
+
+    							<xsd:minInclusive value="0"></xsd:minInclusive>
+    							<xsd:maxInclusive value="300"></xsd:maxInclusive>
+    						</xsd:restriction>
+    					</xsd:simpleType>
+    				</xsd:attribute>
     			</xsd:complexType>
     		</xsd:element>
     		<xsd:element name="DVBService" minOccurs="0">
@@ -154,7 +163,7 @@
     													name="name" type="providerName">
     												</xsd:attribute>
     												<xsd:attribute
-    													name="channelID" type="xsd:long">
+    													name="channelID" type="xsd:string">
     												</xsd:attribute>
     											</xsd:extension>
     										</xsd:simpleContent>
@@ -168,9 +177,17 @@
     								<xsd:element name="Merge"
     									type="xsd:boolean" minOccurs="0" />
     							</xsd:sequence>
+    							<xsd:attribute name="id">
+    								<xsd:simpleType>
+    									<xsd:restriction
+    										base="xsd:int">
+
+    									</xsd:restriction>
+    								</xsd:simpleType>
+    							</xsd:attribute>
     						</xsd:complexType>
     					</xsd:element>
-    				</xsd:sequence>
+    				</xsd:sequence>
     			</xsd:complexType>
     		</xsd:element>
 
@@ -206,17 +223,24 @@
     </xsd:restriction>
   </xsd:simpleType>
   <xsd:complexType name="myOffsetsType">
-        <xsd:sequence>
-      <xsd:element name="Offset" minOccurs="1" maxOccurs="unbounded">
-        <xsd:complexType>
-          <xsd:attribute name="before" type="xsd:integer" use="optional"/>
-          <xsd:attribute name="after" type="xsd:integer" use="optional"/>
-          <xsd:attribute name="days" type="myDaysType" use="optional"/>
-          <xsd:attribute name="begin" type="myTimeType" use="optional"/>
-          <xsd:attribute name="end" type="myTimeType" use="optional"/>
-        </xsd:complexType>
-      </xsd:element>
-    </xsd:sequence>
+  	<xsd:sequence>
+  		<xsd:element name="Offset" minOccurs="1"
+  			maxOccurs="unbounded">
+  			<xsd:complexType>
+  				<xsd:attribute name="before" type="xsd:integer"
+  					use="optional" />
+  				<xsd:attribute name="after" type="xsd:integer"
+  					use="optional" />
+  				<xsd:attribute name="days" type="myDaysType"
+  					use="optional" />
+  				<xsd:attribute name="begin" type="myTimeType"
+  					use="optional" />
+  				<xsd:attribute name="end" type="myTimeType"
+  					use="optional" />
+  			</xsd:complexType>
+  		</xsd:element>
+  	</xsd:sequence>
+  	<xsd:attribute name="useGlobal" type="xsd:boolean"></xsd:attribute>
   </xsd:complexType>
 
 
