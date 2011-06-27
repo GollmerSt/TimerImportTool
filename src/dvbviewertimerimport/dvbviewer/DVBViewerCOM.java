@@ -61,7 +61,7 @@ public class DVBViewerCOM
 				items.add( new DVBViewerEntryCOM( entry, true ) ) ;
 			if ( entry.mustUpdated() )
 				items.add( new DVBViewerEntryCOM( entry, false ) ) ;
-			if ( ! entry.mustDVBViewerCreated() )
+			if ( entry.mustDVBViewerCreated() )
 				items.add( new DVBViewerEntryCOM( entry, false ) ) ;
 		}
 		DVBViewerEntryCOM[] array = (DVBViewerEntryCOM[]) items.toArray( new DVBViewerEntryCOM[0] ) ;
