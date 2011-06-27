@@ -16,10 +16,12 @@ public interface Indentation {
     /**
      * Set the characters used for one level of indentation. The default is
      * {@link #DEFAULT_INDENT}. "\t" is a popular alternative.
+     * @param indent 
      */
     void setIndent(String indent);
 
-    /** The characters used for one level of indentation. */
+    /** The characters used for one level of indentation. 
+     * @return indent*/
     String getIndent();
 
     /**
@@ -33,10 +35,12 @@ public interface Indentation {
      * {@link #NORMAL_END_OF_LINE}.
      * {@link IndentingXMLStreamWriter#getLineSeparator}() is a popular
      * alternative.
+     * @param newLine 
      */
     public void setNewLine(String newLine);
 
-    /** The characters that introduce a new line. */
+    /** The characters that introduce a new line. 
+     * @return new line character*/
     String getNewLine();
 
 }
