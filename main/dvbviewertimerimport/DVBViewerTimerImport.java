@@ -3,7 +3,6 @@ package dvbviewertimerimport;
 import java.util.ArrayList;
 
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
-import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.provider.ProviderChannel;
 
 /**
