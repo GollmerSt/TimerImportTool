@@ -660,7 +660,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       @Override
       public void actionPerformed(ActionEvent e)
       {
-        control.getDVBViewer().updateDVBViewer( false ) ;
         new TimersDialog( null, control ).init() ;
       }};
 
