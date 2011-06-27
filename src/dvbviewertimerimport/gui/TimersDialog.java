@@ -178,8 +178,8 @@ public class TimersDialog extends JDialog {
 	
 	public void init()
 	{
-		if ( this.control.getDVBViewer().getRecordEntries() == null )
-			this.control.getDVBViewer().updateDVBViewer( true ) ;
+		this.control.getDVBViewer().updateDVBViewer( this.control.getDVBViewer().getRecordEntries() == null ) ;
+		Provider.updateRecordingsAllProviders( control.getDVBViewer().getRecordEntries() ) ;
 		
 		this.treeTableModel = new TimersTreeTableModel( this.control.getDVBViewer() ) ;
 		this.treeTableModel.setTimersDialog( this ) ;
