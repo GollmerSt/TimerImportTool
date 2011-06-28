@@ -837,6 +837,14 @@ public class DVBViewer {
 		if ( ! Constants.IS_WINDOWS )
 			return false ;
 
+		String jvmArch = System.getProperty( "os.arch" ) ;
+		
+		if ( jvmArch.equals( "x86" ))
+		{
+			Log.out(false, true, ResourceManager.msg( "64_JRE_NOT_SUPPORTED"), true ) ;
+			throw new Error(ResourceManager.msg( "64_JRE_NOT_SUPPORTED")) ;
+		}
+
 		String exePath = DVBViewer.PATH_PLUGIN_DATA ;
 
 		File f = new File(   exePath + File.separator
