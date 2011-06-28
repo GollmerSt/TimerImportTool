@@ -27,3 +27,7 @@ ChangeLog:
  
 23.06.2011: Timer-Verwaltung: Bei Trennen und Löschen verknüpfter Einträge wurde die
                               verknüpfte Timer nicht gelöscht.
+26.06.2011: Merging-Rework komplett überarbeitet und vereinfacht
+28.06.2011: Control-Files einer älteren Version werden nun automatisch gesichert
+28.06.2011:	V01.03.01 beta
+------------------------------------------------------------------------------
