@@ -5,6 +5,8 @@
 package dvbviewertimerimport.control ;
 
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLInputFactory;
@@ -48,6 +52,7 @@ public class Control
 {
 	private static final String NAME_XML_CONTROLFILE          = "DVBVTimerImportTool.xml" ;
 	private static final String NAME_XML_CONTROLFILE_BACKUP   = "DVBVTimerImportTool.bak" ;
+	private static final String NAME_ZIP_FILE                 = "DVBVTimerImportToolSave" ;
 	private static final String NAME_XML_CONTROLFILE_IMPORTED = "DVBVTimerImportTool.imp" ;
 	
 	private enum BlockType { INVALID, CHANNEL_PROVIDER, DVBSERVICE,
@@ -117,6 +122,7 @@ public class Control
 	public void read( InputStream inputStream, String name ) throws TerminateClass
 	{	
 		boolean versionChanged = true ;
+		String oldVersion = null ;
 		
 		StreamSource source = null ;
 		if ( inputStream == null )
@@ -447,6 +453,8 @@ public class Control
 					{
 						if ( Versions.getVersion().equals( data ) )
 							versionChanged = false ;
+						else
+							oldVersion = data ;
 					}
 				}					
 			}					
@@ -498,6 +506,7 @@ public class Control
 		if ( versionChanged )
 		{
 			DVBViewer.getDVBViewerCOMDllAndCheckVersion( true ) ;
+			this.compressAndSaveFiles( oldVersion ) ;
 			this.write( null ) ;
 		}
 		else
@@ -737,4 +746,59 @@ public class Control
 	public void setIsImported() { this.importStatus = ImportStatus.PENDING ; } ;
 	public ArrayList<ChannelSet> getChannelSets() { return this.channelSets ; } ;
 	public DVBViewer getDVBViewer() { return this.dvbViewer ; } ;
+	
+	static final int BUFFER = 2048;
+
+	private boolean compressAndSaveFiles( String oldVersion)
+	{
+		if ( this.dvbViewer == null || this.importStatus != ImportStatus.FALSE )
+			return false ;
+		
+		if ( oldVersion == null )
+			oldVersion = "unknown" ;
+		
+		String prefix = this.dvbViewer.getXMLFilePath() + File.separator ;
+
+		File [] sourceFiles = { new File( prefix + NAME_XML_CONTROLFILE ), new File( prefix + DVBViewer.NAME_XML_PROCESSED_RECORDINGS ) } ;
+
+		File destinFile = new File( prefix + NAME_ZIP_FILE + '_' + oldVersion + ".zip" ) ;
+
+		StringBuilder logOut  = new StringBuilder() ;
+		logOut.append("Following files were saved in \"" + destinFile.getName() + "\":") ;
+
+		try {
+			BufferedInputStream origin = null;
+			FileOutputStream dest = new 
+			FileOutputStream( destinFile );
+			ZipOutputStream out = new ZipOutputStream(new 
+					BufferedOutputStream(dest));
+			//out.setMethod(ZipOutputStream.DEFLATED);
+			byte data[] = new byte[BUFFER];
+			// get a list of files from current directory
+			
+			
+			for ( File file : sourceFiles )
+			{
+				logOut.append( "\n\tAdding: " + file.getAbsolutePath() + "\"" ) ;
+				FileInputStream fi = new 
+				FileInputStream( file );
+				origin = new 
+				BufferedInputStream(fi, BUFFER);
+				ZipEntry entry = new ZipEntry( file.getName() );
+				out.putNextEntry(entry);
+				int count;
+				while((count = origin.read(data, 0, 
+						BUFFER)) != -1) {
+						out.write(data, 0, count);
+				}
+				origin.close();
+			}
+			out.close();
+		} catch(Exception e) {
+			Log.out(false, true, "unexpected error on saving old versions of control files", true );
+			return false ;
+		}
+		Log.out( false, logOut.toString() );
+		return true ;
+	}
 }

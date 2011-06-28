@@ -47,7 +47,7 @@ public class DVBViewer {
 	private static final String NAME_USERMODE_FILE			  = "usermode.ini" ;
 	private static final String NAME_CONFIG_PATH			  = "Plugins" ;
 	private static final String NAME_PATH_REMOVE			  = "\\Roaming" ;
-	private static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
+	public static final String NAME_XML_PROCESSED_RECORDINGS = "DVBVTimerImportPrcd.xml" ;
 	private static final String NAME_DVBVIEWER_EXE			  = "dvbviewer.exe" ;
 
 	public static final String NAME_DVBVIEWER_COM_DLL		  = "DVBViewerTimerImport" ;
