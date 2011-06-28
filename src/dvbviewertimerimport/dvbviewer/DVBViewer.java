@@ -839,7 +839,7 @@ public class DVBViewer {
 
 		String jvmArch = System.getProperty( "os.arch" ) ;
 		
-		if ( jvmArch.equals( "x86" ))
+		if ( ! jvmArch.equals( "x86" ))
 		{
 			Log.out(false, true, ResourceManager.msg( "64_JRE_NOT_SUPPORTED"), true ) ;
 			throw new Error(ResourceManager.msg( "64_JRE_NOT_SUPPORTED")) ;
