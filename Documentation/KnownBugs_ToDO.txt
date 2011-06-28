@@ -1,0 +1,3 @@
+1.	64-Bit-Version der DLL
+2.	Nicht TV-Browser-Einträge anzeigen lassen, evtl. anderes Icon
+3.	Synchronisierung über Internet, evtl. HTML-Datei
