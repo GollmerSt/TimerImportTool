@@ -41,9 +41,12 @@ import dvbviewertimerimport.gui.TimersDialog;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Function;
+import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
+import dvbviewertimerimport.misc.Helper.SearchBiDirectional.Result;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.provider.ProviderChannel;
 
@@ -59,6 +62,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   
   private static String ADD_TIMER    = ResourceManager.msg( "ADD_TIMER" ) ;
   private static String DELETE_TIMER = ResourceManager.msg( "DELETE_TIMER" ) ;
+
+  private static final long searchIntervallOrg = 15 * 60 * 1000 ; // search Intervall of 1/4 hours before original start and after original end of programm
+  private static final long searchIntervallReal = 3 * 60 * 60 * 1000 ;  // search Intervall of 3 hours before start and after end of programm
 
   private PluginInfo pluginInfo = null ;
   private boolean isInitialized = false ;
@@ -79,10 +85,10 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
   
 
   private DVBViewerProvider dvbViewerProvider = this ;
-  private int providerID ;
+  private static int providerID ;
   private Provider provider ;
 
-  private GregorianCalendar calendar ;
+  private static GregorianCalendar calendar ;
 
   private ProviderChannel< String >[] tvbChannelNames = null ;
   private Map< String, Channel > uniqueAssignment = null ;
@@ -211,9 +217,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     }
     this.provider = Provider.getProvider( "TV-Browser" ) ;
     this.provider.setIsFunctional( true ) ;
-    this.providerID = provider.getID() ;
+    DVBViewerTimerImport.providerID = provider.getID() ;
 
-    this.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
+    DVBViewerTimerImport.calendar = new GregorianCalendar( this.provider.getTimeZone() ) ;
 
     this.menuIcon = ResourceManager.createImageIcon( "icons/dvbViewer Programm16.png", "DVBViewerTimer icon" ) ;
    
@@ -589,9 +595,10 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
           return ;
       }
     }
+    this.updateForeignEntries() ;
     this.updateTreeNode() ;
   }
-  private long [] calcRecordTimes( final Program program )
+  private static long [] calcRecordTimes( final Program program )
   {
     calendar.clear() ;
     Date d = program.getDate() ;
@@ -746,7 +753,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     if ( interval[ 0 ].getDayOfMonth() == interval[ 1 ].getDayOfMonth() )
       end = 1 ;
     
-    String uniqueName = (String) entry.getChannelSet().getChannel( this.providerID ).getIDKey() ;
+    String uniqueName = (String) entry.getChannelSet().getChannel( DVBViewerTimerImport.providerID ).getIDKey() ;
     Channel channel = DVBViewerTimerImport.getUniqueAssignmentMap().get(uniqueName) ;
     
     if ( channel == null )
@@ -790,4 +797,339 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     }
     return result ;
   }
+  
+  private static interface SearchEntryInterface
+  {
+    public long getStart() ;
+    public long getStartOrg() ;
+    public long getEnd() ;
+    public long getEndOrg() ;
+    public String  getChannelID() ;  // TV-Browser-ID
+    public String getTitle() ;
+  }
+  
+  public static class SearchEntry implements Helper.Entry< SearchEntry >, SearchEntryInterface
+  {
+
+    @Override
+    public long getStart() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public long getStartOrg() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public long getEnd() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public long getEndOrg() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
+
+    @Override
+    public String getChannelID() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+
+    @Override
+    public String getTitle() {
+      // TODO Auto-generated method stub
+      return null;
+    }
+    
+    private boolean inRange( String channelID, long start, long end )
+    {
+      if ( this.getChannelID() != null && ! this.getChannelID().equals(channelID))
+        return false ;
+      if ( this.getStartOrg() < start || end < this.getStartOrg() )
+        return false ;
+      if ( this.getEndOrg() > start || end > this.getEndOrg() )
+        return false ;
+      return true ;
+    }
+
+    @Override
+    public ArrayList<SearchEntry> searchSurroundedEntries(ArrayList<SearchEntry> list) {
+      ArrayList<SearchEntry> result = new ArrayList< SearchEntry >() ;
+
+      String channelID = this.getChannelID() ;
+      if ( channelID == null )
+        return result ;
+      long start, end ;
+      if ( this.getStart() == this.getStartOrg() )
+        start = this.getStartOrg() - DVBViewerTimerImport.searchIntervallOrg ;
+      else
+        start = this.getStartOrg() - DVBViewerTimerImport.searchIntervallReal ;
+      if ( this.getEnd() == this.getEndOrg() )
+        end = this.getEndOrg() + DVBViewerTimerImport.searchIntervallOrg ;
+      else
+        end = this.getStartOrg() + DVBViewerTimerImport.searchIntervallReal ;
+
+      for ( SearchEntry e : list )
+      {
+        if ( e.inRange( channelID, start, end ) )
+          result.add( e ) ;
+      }
+      return result ;
+    }
+  }
+  
+  private static class SearchEntryBrowser extends SearchEntry
+  {
+    final Program program ;
+    final long start ;
+    final long end ;
+    
+    public SearchEntryBrowser( Program pgm )
+    {
+      long [] times = DVBViewerTimerImport.calcRecordTimes( pgm ) ;
+      this.program = pgm ;
+      this.start = times[0] ;
+      this.end   = times[1] ;
+    }
+    
+    public Program getProgram()
+    {
+      return this.program ;
+    }
+
+    @Override
+    public long getStart() {
+      return -1 ;
+    }
+
+    @Override
+    public long getStartOrg() {
+      return this.start ;
+    }
+
+    @Override
+    public long getEnd() {
+      return -1 ;
+    }
+
+    @Override
+    public long getEndOrg() {
+      return this.end ;
+    }
+
+    @Override
+    public String getChannelID() {
+      return this.program.getChannel().getUniqueId() ;
+    }
+
+    @Override
+    public String getTitle() {
+      return this.program.getTitle() ;
+    }
+  }
+  public static class SearchEntryViewer extends DVBViewerTimerImport.SearchEntry
+  {
+    final DVBViewerEntry entry ;
+    
+    public SearchEntryViewer( DVBViewerEntry entry )
+    {
+      this.entry = entry ;
+    }
+
+    public SearchEntryViewer()
+    {
+      this.entry = null ;
+    }
+
+    @Override
+    public long getStart() {
+      return this.entry.getStart() ;
+    }
+
+    @Override
+    public long getStartOrg() {
+      return this.entry.getStartOrg() ;
+    }
+
+    @Override
+    public long getEnd() {
+      return this.entry.getEnd() ;
+    }
+
+    @Override
+    public long getEndOrg() {
+      return this.entry.getEndOrg() ;
+    }
+
+    @Override
+    public String getChannelID() {
+      return this.entry.getChannelSet().getChannel( DVBViewerTimerImport.providerID ).getTextID() ;
+    }
+
+    @Override
+    public String getTitle() {
+      return this.entry.getTitle() ;
+    }
+    public boolean inRange( SearchEntry e )
+    {
+      if ( this.getStart() > e.getStartOrg() && this.getStart() > e.getEndOrg() )
+        return false ;
+      if ( this.getEnd() < e.getEndOrg() && this.getEnd() < e.getStartOrg() )
+        return false ;
+      return true ;
+    }
+  }
+  void updateForeignEntries()
+  {
+    ArrayList< DVBViewerTimerImport.SearchEntry > dvbList = new ArrayList< DVBViewerTimerImport.SearchEntry >() ;
+    Map< String, SearchEntry > browserMap = new HashMap< String, SearchEntry >() ;
+    for ( DVBViewerEntry dE : dvbViewer.getRecordEntries() )
+    {
+      if ( dE.getProvider() != null && dE.getProvider().getID() == DVBViewerTimerImport.providerID )
+        continue ;
+      if ( dE.isMergeElement() )
+        continue ;
+      if ( dE.isRemoved() )
+        continue ;
+
+      dvbList.add( new SearchEntryViewer( dE ) ) ;
+
+      Date [] interval = new Date[ 2 ] ;
+      
+      long start, end  ;
+      
+      if ( dE.getStart() == dE.getStartOrg() )
+        start = dE.getStartOrg() - DVBViewerTimerImport.searchIntervallOrg ;
+      else
+        start = dE.getStartOrg() - DVBViewerTimerImport.searchIntervallReal ;
+      if ( dE.getEnd() == dE.getEndOrg() )
+        end = dE.getEndOrg() + DVBViewerTimerImport.searchIntervallOrg ;
+      else
+        end = dE.getStartOrg() + DVBViewerTimerImport.searchIntervallReal ;
+      
+      calendar.clear() ;
+      calendar.setTimeInMillis( start ) ;
+      interval[ 0 ] = new Date( calendar ) ;
+      
+      calendar.clear() ;
+      calendar.setTimeInMillis( end ) ;
+      interval[ 1 ] = new Date( calendar ) ;
+          
+      int endCnt = 2 ;
+      
+      if ( interval[ 0 ].getDayOfMonth() == interval[ 1 ].getDayOfMonth() )
+        endCnt = 1 ;
+      
+      String uniqueName = (String) dE.getChannelSet().getChannel( DVBViewerTimerImport.providerID ).getIDKey() ;
+      Channel channel = DVBViewerTimerImport.getUniqueAssignmentMap().get(uniqueName) ;
+      
+      if ( channel == null )
+        continue ;
+
+      for ( int i = 0 ; i < endCnt ; ++i )
+      {
+        Iterator<Program> it = Plugin.getPluginManager().getChannelDayProgram( interval[ i ], channel) ;
+        for ( ; it.hasNext() ; )
+        {
+          Program pgm = it.next() ;
+          if ( pgm.getTitle().equals( dE.getTitle() ) )
+            browserMap.put( pgm.getUniqueID(), new SearchEntryBrowser( pgm ) ) ;
+        }
+      }
+    }
+    
+    ArrayList< SearchEntry > browserList = new ArrayList< SearchEntry >( browserMap.values() ) ;
+    Helper.SearchBiDirectional<SearchEntry> searchBi = new Helper.SearchBiDirectional<SearchEntry>() ;
+
+    // Find and assign all easy to assign service entries, remove the entries from
+    // the merge elements if entry is enabled
+    for ( Iterator< SearchEntry > itD = dvbList.iterator() ; itD.hasNext() ; )
+    {
+      SearchEntry d = itD.next() ;
+      // Find all programs in the range of searchIntervall
+            
+      Helper.SearchBiDirectional<SearchEntry>.Result list = searchBi.new Result( true, d.searchSurroundedEntries( browserList ) ) ;
+
+      if ( list.size() == 0 )
+        continue ;
+
+      // find the best match of title
+      {
+        list = searchBi.searchBiDirectional(d, list.get(), dvbList, new Helper.SearchAlgorithm< SearchEntry >(){
+
+          @Override
+          public ArrayList<SearchEntry> execute(
+              SearchEntry entry,
+              ArrayList<SearchEntry> entries) {
+            return Helper.getTheBestChoices( entry.getTitle(), entries, 2, 3, new Function(), 
+              new Function(){
+                @Override
+                public int arrayIntToInt( final ArrayList< Integer > list, final int integer, final String search, final String array )
+                {
+                  return this.arrayIntToInt3( list, integer, search, array ) ;
+                }
+            } ) ;
+          }} ) ;
+        if ( list.size() == 0 )
+          continue ;
+      }
+
+
+      if ( ! list.isSure() )
+      {
+        ArrayList<SearchEntry> choices = new ArrayList< SearchEntry >() ;
+
+        for ( SearchEntry s : list.get() )
+        {
+          if ( ((SearchEntryViewer)d).inRange(s) )
+            choices.add( s ) ;
+        }
+        if ( choices.size() > 0 )
+          list = searchBi.new Result( choices.size() <= 1, choices ) ;
+      }
+
+      if ( ! list.isSure() )
+      {
+        list = searchBi.searchBiDirectional(d, list.get(), browserList, new Helper.SearchAlgorithm< SearchEntry >(){
+
+          @Override
+          public ArrayList<SearchEntry> execute(
+              SearchEntry entry,
+              ArrayList<SearchEntry> entries) {
+            // TODO Auto-generated method stub
+            ArrayList<SearchEntry> choices = new ArrayList<SearchEntry>() ;
+            long minDiff = 999999999999999L ;
+
+            for ( SearchEntry e : entries )
+            {
+              long diff = e.getStart() - entry.getStart() ;
+              diff = diff < -diff ? -diff : diff ;
+              long diff1 = entry.getEnd() - e.getEnd() ;
+              diff1 = diff1 < 0 ? -diff1 : diff1 ;
+              diff += diff1/2 ;     // the weight of the post offset is lower than the pre offset
+              if ( diff < minDiff )
+              {
+                choices.clear() ;
+                choices.add( e ) ;
+                minDiff = diff ;
+              }
+            }
+            return choices ;
+          }} ) ;
+
+        if ( list.size() == 0 )
+          continue ;
+      }
+      Program pgm = ((SearchEntryBrowser)list.get().get(0)).getProgram() ;
+      this.markProgram( pgm, true ) ;
+      pgm.validateMarking() ;
+    }
+  }
+  
 }
