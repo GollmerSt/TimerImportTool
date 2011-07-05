@@ -308,7 +308,7 @@ public final class Helper {
 				cChoices = algo.execute( cS, cList ) ;
 				
 				if ( cChoices == null )
-				  continue ;
+					continue ;
 	
 				boolean found = false ;
 				
@@ -325,7 +325,7 @@ public final class Helper {
 			}
 			boolean isSure = true ;
 			if ( cChoices != null )
-			  isSure = cChoices.size() <= 1 && result.size() <= 1 ;
+				isSure = cChoices.size() <= 1 && result.size() <= 1 ;
 			return new Result( isSure, result) ;
 		}
 	}
