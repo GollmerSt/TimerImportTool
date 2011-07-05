@@ -306,6 +306,9 @@ public final class Helper {
 					cList = choicesInRangeLists.get( cS ) ;
 					
 				cChoices = algo.execute( cS, cList ) ;
+				
+				if ( cChoices == null )
+				  continue ;
 	
 				boolean found = false ;
 				
@@ -320,7 +323,10 @@ public final class Helper {
 				if ( ! found )
 					it.remove() ;
 			}
-			return new Result( cChoices.size() <= 1 && result.size() <= 1, result) ;
+			boolean isSure = true ;
+			if ( cChoices != null )
+			  isSure = cChoices.size() <= 1 && result.size() <= 1 ;
+			return new Result( isSure, result) ;
 		}
 	}
 
