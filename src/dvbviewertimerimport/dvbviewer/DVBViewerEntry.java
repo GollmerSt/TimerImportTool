@@ -88,7 +88,8 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 	public static boolean getInActiveIfMerged() { return timerStatusIfMerged == StatusTimer.DISABLED ; } ;
 
 	private long id ;
-	private String providerID ;
+	private String providerID = null ;
+	private String tvBrowserID = null ;
 	private boolean isFilterElement ;
 	private StatusTimer statusTimer ;
 	private long dvbViewerID ;
@@ -161,6 +162,8 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		this.mergeStatus = mergeStatus ;
 		this.mergeID = mergeID ;
 		this.provider = provider ;
+		if ( provider.isTVBrowser() )
+			this.tvBrowserID = providerID ;
 		this.outDatedInfo = outDatedInfo.clone() ;
 		this.isCollapsed = isCollapsed ;
 		this.toDo = toDo ;
@@ -256,6 +259,8 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 			entry.mergedEntries.addAll( this.mergedEntries ) ;
 		}
 
+		entry.tvBrowserID = this.tvBrowserID ;
+		
 		entry.program = this.program ;
 
 		return entry ;
@@ -334,6 +339,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		this.end =  entry.end ;
 
 		this.providerID = entry.providerID ;
+		this.tvBrowserID = entry.tvBrowserID ;
 		this.startOrg = entry.startOrg ;
 		this.endOrg = entry.endOrg ;
 		this.days = entry.days ;
@@ -1029,7 +1035,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 								toDelete.mergeElement = null;
 								x.mergedEntries = null;
 								x.providerID = toDelete.providerID;
-								x.preferedTitle = toDelete.preferedTitle;
+								x.tvBrowserID = toDelete.tvBrowserID ;
 								toDelete.setToDelete() ;
 							}
 							else
@@ -1192,6 +1198,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 			this.addMergedEntry( result ) ;
 			this.isFilterElement = false ;
 			this.providerID = null ;
+			this.tvBrowserID = null ;
 			this.toDo = ToDo.NEW ;
 		}
 		if ( this.addMergedEntry( dE ) )
@@ -1242,6 +1249,9 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 	public long getStartOrg() { return this.startOrg ; } ;
 	public long getEndOrg() { return this.endOrg ; } ;
 	public String getDays() { return this.days ; } ;
+	public String getTvBrowserID() { return tvBrowserID; }
+	public void setTvBrowserID(String tvBrowserID) { this.tvBrowserID = tvBrowserID; }
+
 	public ArrayList< DVBViewerEntry > getMergedEntries() { return this.mergedEntries ; } ;
 	public void setMergedEntries( ArrayList< DVBViewerEntry > entries) { this.mergedEntries = entries; } ;
 	public void prepareTimerSetting()

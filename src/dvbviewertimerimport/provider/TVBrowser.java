@@ -25,7 +25,7 @@ public class TVBrowser extends Provider
 		this.canModify = false ;
 		this.canAddChannel = false ;
 		this.isFunctional = false ;
-		
+		this.isTVBrowser = true ;
 	}
 	
 	@Override
