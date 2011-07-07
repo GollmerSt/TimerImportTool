@@ -162,7 +162,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		this.mergeStatus = mergeStatus ;
 		this.mergeID = mergeID ;
 		this.provider = provider ;
-		if ( provider.isTVBrowser() )
+		if ( provider != null && provider.isTVBrowser() )
 			this.tvBrowserID = providerID ;
 		this.outDatedInfo = outDatedInfo.clone() ;
 		this.isCollapsed = isCollapsed ;
