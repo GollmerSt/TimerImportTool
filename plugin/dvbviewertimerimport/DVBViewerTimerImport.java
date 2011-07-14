@@ -46,7 +46,6 @@ import dvbviewertimerimport.misc.Helper;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
-import dvbviewertimerimport.misc.Helper.SearchBiDirectional.Result;
 import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.provider.ProviderChannel;
 
@@ -272,6 +271,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     return pluginInfo ;
   }
 
+  //TODO hier kann man für die verschiedenen Provuder unterschiedliche Icons definieren
   @Override
   public Icon[] getMarkIconsForProgram(Program p)
   {
@@ -488,9 +488,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       for ( int i = 0 ; i < end ; ++i )
       {
         DVBViewerEntry co = this.control.getDVBViewer().getRecordEntries().get(i) ;
-        if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
+        if (    co.getProvider() == provider && co.isProgramEntry()  && co.getTvBrowserID() != null )
         {
-          Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
+          Program program = Plugin.getPluginManager().getProgram( co.getTvBrowserID() ) ;
           if ( program != null )
             continue ;
           Program pgm = this.searchBestFit( co ) ;
@@ -543,8 +543,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
 
     for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
     {
-      if (    co.getProvider() == provider && co.getProviderCID() != null
-           && co.getProviderCID().equals( program.getUniqueID() )
+      if (    co.getTvBrowserID() != null
+           && co.getTvBrowserID().equals( program.getUniqueID() )
            && co.isProgramEntry() )
       {
         entry = co ;
@@ -567,9 +567,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     boolean unresolvedEntries = false ;
     for ( DVBViewerEntry co : this.control.getDVBViewer().getRecordEntries() )
     {
-      if (    co.getProvider() == provider && co.isProgramEntry()  && co.getProviderCID() != null )
+      if (    co.isProgramEntry()  && co.getTvBrowserID() != null )
       {
-        Program program = Plugin.getPluginManager().getProgram( co.getProviderCID() ) ;
+        Program program = Plugin.getPluginManager().getProgram( co.getTvBrowserID() ) ;
         if ( program == null )
         {
           unresolvedEntries = true ;
@@ -853,7 +853,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
         return false ;
       if ( this.getStartOrg() < start || end < this.getStartOrg() )
         return false ;
-      if ( this.getEndOrg() > start || end > this.getEndOrg() )
+      if ( this.getEndOrg() < start || end < this.getEndOrg() )
         return false ;
       return true ;
     }
@@ -866,11 +866,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       if ( channelID == null )
         return result ;
       long start, end ;
-      if ( this.getStart() == this.getStartOrg() )
+      if ( this.getStart() != this.getStartOrg() )
         start = this.getStartOrg() - DVBViewerTimerImport.searchIntervallOrg ;
       else
         start = this.getStartOrg() - DVBViewerTimerImport.searchIntervallReal ;
-      if ( this.getEnd() == this.getEndOrg() )
+      if ( this.getEnd() != this.getEndOrg() )
         end = this.getEndOrg() + DVBViewerTimerImport.searchIntervallOrg ;
       else
         end = this.getStartOrg() + DVBViewerTimerImport.searchIntervallReal ;
@@ -932,6 +932,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     public String getTitle() {
       return this.program.getTitle() ;
     }
+    
+    @Override
+    public String toString()
+    {
+      return this.program.toString() ;
+    }
   }
   public static class SearchEntryViewer extends DVBViewerTimerImport.SearchEntry
   {
@@ -976,6 +982,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
     public String getTitle() {
       return this.entry.getTitle() ;
     }
+    
+    public DVBViewerEntry getEntry() {
+      return entry;
+    }
+
     public boolean inRange( SearchEntry e )
     {
       if ( this.getStart() > e.getStartOrg() && this.getStart() > e.getEndOrg() )
@@ -983,6 +994,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
       if ( this.getEnd() < e.getEndOrg() && this.getEnd() < e.getStartOrg() )
         return false ;
       return true ;
+    }
+    @Override
+    public String toString()
+    {
+      return this.entry.toString() ;
     }
   }
   void updateForeignEntries()
@@ -1038,8 +1054,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
         for ( ; it.hasNext() ; )
         {
           Program pgm = it.next() ;
-          if ( pgm.getTitle().equals( dE.getTitle() ) )
-            browserMap.put( pgm.getUniqueID(), new SearchEntryBrowser( pgm ) ) ;
+          browserMap.put( pgm.getUniqueID(), new SearchEntryBrowser( pgm ) ) ;
         }
       }
     }
@@ -1127,6 +1142,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider
           continue ;
       }
       Program pgm = ((SearchEntryBrowser)list.get().get(0)).getProgram() ;
+      ( (SearchEntryViewer)d).getEntry().setTvBrowserID( pgm.getUniqueID() ) ;
       this.markProgram( pgm, true ) ;
       pgm.validateMarking() ;
     }
