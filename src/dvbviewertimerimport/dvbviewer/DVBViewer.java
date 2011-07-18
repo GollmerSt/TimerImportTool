@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -96,7 +97,11 @@ public class DVBViewer {
 	private ArrayList< HashMap< String, Channel> > channelsLists
 			= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	private Map< Long, ChannelSet > channelSetMap = new HashMap< Long, ChannelSet >() ;
+	private Map< String, List< ChannelSet > > dvbViewerToChannelSetMap = new HashMap< String, List< ChannelSet > >() ;
 
+	public Map<String, List<ChannelSet>> getDvbViewerToChannelSetMap() {
+		return dvbViewerToChannelSetMap;
+	}
 	private final String exePath ;
 	private String dvbViewerPath = null ;
 	private String dvbExePath = null ;
@@ -646,6 +651,15 @@ public class DVBViewer {
 			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
 		}
 		this.channelSetMap.put( channelSet.getID(), channelSet ) ;
+		
+		List< ChannelSet > list = this.dvbViewerToChannelSetMap.get( channelSet.getDVBViewerChannel() ) ;
+		
+		if ( list == null )
+		{
+			list = new ArrayList< ChannelSet >() ;
+			this.dvbViewerToChannelSetMap.put( channelSet.getDVBViewerChannel(), list ) ;
+		}
+		list.add( channelSet ) ;
 	}
 	public void merge()
 	{
