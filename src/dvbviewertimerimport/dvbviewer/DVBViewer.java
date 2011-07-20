@@ -94,14 +94,11 @@ public class DVBViewer {
 
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID() ;
-	private ArrayList< HashMap< String, Channel> > channelsLists
-			= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+	private List< HashMap< String, ChannelSet> > channelSetsLists
+			= new ArrayList< HashMap< String, ChannelSet> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	private Map< Long, ChannelSet > channelSetMap = new HashMap< Long, ChannelSet >() ;
 	private Map< String, List< ChannelSet > > dvbViewerToChannelSetMap = new HashMap< String, List< ChannelSet > >() ;
 
-	public Map<String, List<ChannelSet>> getDvbViewerToChannelSetMap() {
-		return dvbViewerToChannelSetMap;
-	}
 	private final String exePath ;
 	private String dvbViewerPath = null ;
 	private String dvbExePath = null ;
@@ -168,9 +165,9 @@ public class DVBViewer {
 	}
 	public void setProvider()
 	{
-		if ( this.channelsLists.size() == 0)
+		if ( this.channelSetsLists.size() == 0)
 			for ( int ix = 0 ; ix < dvbviewertimerimport.provider.Provider.getProviders().size() ; ix++ ) 
-				channelsLists.add( new HashMap< String, Channel>() ) ;
+				channelSetsLists.add( null ) ;
 	}
 	public static String determineExePath()
 	{
@@ -411,23 +408,23 @@ public class DVBViewer {
 			}
 		}
 	}
-	public Channel getDVBViewerChannel( final int providerID, final String providerChannel )
+	public ChannelSet getDVBViewerChannel( final int providerID, final String providerChannel )
 	{
 		this.prepareProvider() ;
-		HashMap< String, Channel > channelMap = this.channelsLists.get( providerID ) ;
+		Map< String, ChannelSet > channelMap = this.getChannelListOfProvider( providerID ) ;
 		if ( ! channelMap.containsKey( providerChannel ) )
 		{
 			ErrorClass.setWarníng() ;
 			throw new ErrorClass( ResourceManager.msg( "MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel ) ) ;
 		}
-		Channel c = channelMap.get( providerChannel ) ;
-		String dvbViewerChannel = c.getDVBViewer() ;
+		ChannelSet cs = channelMap.get( providerChannel ) ;
+		String dvbViewerChannel = cs.getDVBViewerChannel() ;
 		if ( dvbViewerChannel == null || dvbViewerChannel.length() == 0 )
 		{
 			ErrorClass.setWarníng() ;
 			throw new ErrorClass( ResourceManager.msg( "MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel ) ) ;
 		}
-		return c ;
+		return cs ;
 	}
 
 	public boolean addNewEntry( Provider provider,
@@ -437,8 +434,8 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
-		TimeOffsets o = c.getOffsets() ;
+		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
+		TimeOffsets o = cs.getTimeOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
@@ -447,8 +444,8 @@ public class DVBViewer {
 		if ( end < System.currentTimeMillis() )
 			return false ;
 
-		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
-											   c.getChannelSet(),
+		DVBViewerEntry e = new DVBViewerEntry( cs.getDVBViewerChannel(),
+											   cs,
 											   providerID,
 											   start,
 											   end,
@@ -458,7 +455,7 @@ public class DVBViewer {
 											   title,
 											   this.timerAction ,
 											   this.afterRecordingAction ,
-											   c.getMerge( provider.getMerge() ),
+											   cs.getMerge( provider.getMerge() ),
 											   provider ) ;
 
 		for ( DVBViewerEntry co : this.recordEntries )
@@ -487,8 +484,8 @@ public class DVBViewer {
 							   long end,
 							   String title )
 	{
-		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
-		TimeOffsets o = c.getOffsets() ;
+		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
+		TimeOffsets o = cs.getTimeOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
 		long endOrg = end ;
@@ -499,8 +496,8 @@ public class DVBViewer {
 			shiftEntry.setToDelete() ;
 			return false ;
 		}
-		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
-											   c.getChannelSet(),
+		DVBViewerEntry e = new DVBViewerEntry( cs.getDVBViewerChannel(),
+											   cs,
 											   providerID,
 											   start,
 											   end,
@@ -510,7 +507,7 @@ public class DVBViewer {
 											   title,
 											   this.timerAction ,
 											   this.afterRecordingAction ,
-											   c.getMerge( provider.getMerge() ),
+											   cs.getMerge( provider.getMerge() ),
 											   provider ) ;
 		e = shiftEntry.shift ( e ) ;
 		if ( e != null )
@@ -525,10 +522,10 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-		Channel c = this.getDVBViewerChannel( provider.getID(), channel) ;
+		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
 
-		DVBViewerEntry e = new DVBViewerEntry( c.getDVBViewer(),
-											   c.getChannelSet(), 
+		DVBViewerEntry e = new DVBViewerEntry( cs.getDVBViewerChannel(),
+											   cs, 
 											   null,
 											   start,
 											   end,
@@ -538,7 +535,7 @@ public class DVBViewer {
 											   title,
 											   this.timerAction,
 											   this.afterRecordingAction,
-											   c.getMerge( provider.getMerge() ),
+											   cs.getMerge( provider.getMerge() ),
 											   provider ) ;
 
 		for ( DVBViewerEntry co : this.recordEntries )
@@ -624,43 +621,63 @@ public class DVBViewer {
 	public TimerActionItems getTimerAction() { return this.timerAction ; } ;
 	public void clearChannelLists()
 	{
-		this.channelsLists
-		  	= new ArrayList< HashMap< String, Channel> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
+		this.channelSetsLists
+		  	= new ArrayList< HashMap< String, ChannelSet > >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 		this.channelSetMap = new HashMap< Long, ChannelSet >() ;
+		this.dvbViewerToChannelSetMap  = null ;
 		this.setProvider() ;
 	}
-	private void addChannel( HashMap< String, Channel> channels,
+	private void addChannelSet( HashMap< String, ChannelSet> channels,
 							 String channelName,
-							 Channel channel,
+							 ChannelSet channelSet,
 							 String channelGroupName )
 	{
 		if ( channelName == null )
 			return ;
 		if ( channels.containsKey( channelName ) && ! channelGroupName.equals("DVBViewer"))		//TODO workarround, solution: TimerEntry must contain the channelSetID
 			throw new ErrorClass( "The " + channelGroupName + " channel \"" + channelName + "\" is not unique") ;
-		channels.put( new String( channelName ), channel ) ;
+		channels.put( new String( channelName ), channelSet ) ;
 	}
 	public void addChannel( ChannelSet channelSet )
 	{
-		Channel c = new Channel( channelSet,
-								 channelSet.getTimeOffsets(),
-								 channelSet.getMerge() ) ;
-		for ( dvbviewertimerimport.control.Channel cC : channelSet.getChannels() )
-		{
-			int type = cC.getType() ;
-			this.addChannel( this.channelsLists.get(type ), cC.getName(), c, cC.getTypeName() ) ;
-		}
 		this.channelSetMap.put( channelSet.getID(), channelSet ) ;
-		
-		List< ChannelSet > list = this.dvbViewerToChannelSetMap.get( channelSet.getDVBViewerChannel() ) ;
-		
-		if ( list == null )
-		{
-			list = new ArrayList< ChannelSet >() ;
-			this.dvbViewerToChannelSetMap.put( channelSet.getDVBViewerChannel(), list ) ;
-		}
-		list.add( channelSet ) ;
+		this.dvbViewerToChannelSetMap = null ;
 	}
+
+	public List<ChannelSet> getChannelSetListByDvbViewerChannel( String channel ) {
+		if ( this.dvbViewerToChannelSetMap  == null )
+			for ( ChannelSet cs : this.channelSetMap.values() )
+			{
+				List< ChannelSet > list = this.dvbViewerToChannelSetMap.get( cs.getDVBViewerChannel() ) ;
+				
+				if ( list == null )
+				{
+					list = new ArrayList< ChannelSet >() ;
+					this.dvbViewerToChannelSetMap.put( cs.getDVBViewerChannel(), list ) ;
+				}
+				list.add( cs ) ;
+			}
+		return this.dvbViewerToChannelSetMap.get(channel);
+	}
+	
+	private Map< String, ChannelSet> getChannelListOfProvider( int providerID )
+	{
+		HashMap< String, ChannelSet> result = this.channelSetsLists.get(providerID ) ;
+		if ( result != null )
+			return result ;
+		result = new HashMap< String, ChannelSet>() ;
+		this.channelSetsLists.add(providerID, result ) ;
+		for ( ChannelSet cs : this.channelSetMap.values() )
+		{
+			for ( dvbviewertimerimport.control.Channel cc : cs.getChannels() )
+			{
+				if ( providerID == cc.getType() )
+					this.addChannelSet( result, cc.getName(), cs, cc.getTypeName() ) ;
+			}
+		}
+		return result ;
+	}
+	
 	public void merge()
 	{
 		for ( int iO = 0 ; iO < this.recordEntries.size() ; iO++ )
