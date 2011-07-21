@@ -97,7 +97,7 @@ public class DVBViewer {
 	private List< HashMap< String, ChannelSet> > channelSetsLists
 			= new ArrayList< HashMap< String, ChannelSet> >( dvbviewertimerimport.provider.Provider.getProviders().size() ) ;
 	private Map< Long, ChannelSet > channelSetMap = new HashMap< Long, ChannelSet >() ;
-	private Map< String, List< ChannelSet > > dvbViewerToChannelSetMap = new HashMap< String, List< ChannelSet > >() ;
+	private Map< String, List< ChannelSet > > dvbViewerToChannelSetMap = null ;
 
 	private final String exePath ;
 	private String dvbViewerPath = null ;
@@ -408,7 +408,7 @@ public class DVBViewer {
 			}
 		}
 	}
-	public ChannelSet getDVBViewerChannel( final int providerID, final String providerChannel )
+	public ChannelSet getDVBViewerChannelSet( final int providerID, final String providerChannel )
 	{
 		this.prepareProvider() ;
 		Map< String, ChannelSet > channelMap = this.getChannelListOfProvider( providerID ) ;
@@ -434,7 +434,7 @@ public class DVBViewer {
 							 long end,
 							 String title )
 	{
-		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
+		ChannelSet cs = this.getDVBViewerChannelSet( provider.getID(), channel) ;
 		TimeOffsets o = cs.getTimeOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
@@ -484,7 +484,7 @@ public class DVBViewer {
 							   long end,
 							   String title )
 	{
-		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
+		ChannelSet cs = this.getDVBViewerChannelSet( provider.getID(), channel) ;
 		TimeOffsets o = cs.getTimeOffsets() ;
 		long startOrg = start ;
 		start -= o.getPreOffset(start)*60000 ;
@@ -522,7 +522,7 @@ public class DVBViewer {
 			 long end,
 			 String title )
 	{
-		ChannelSet cs = this.getDVBViewerChannel( provider.getID(), channel) ;
+		ChannelSet cs = this.getDVBViewerChannelSet( provider.getID(), channel) ;
 
 		DVBViewerEntry e = new DVBViewerEntry( cs.getDVBViewerChannel(),
 											   cs, 
@@ -646,6 +646,8 @@ public class DVBViewer {
 
 	public List<ChannelSet> getChannelSetListByDvbViewerChannel( String channel ) {
 		if ( this.dvbViewerToChannelSetMap  == null )
+		{
+		  this.dvbViewerToChannelSetMap = new HashMap< String, List< ChannelSet > >() ;
 			for ( ChannelSet cs : this.channelSetMap.values() )
 			{
 				List< ChannelSet > list = this.dvbViewerToChannelSetMap.get( cs.getDVBViewerChannel() ) ;
@@ -657,6 +659,7 @@ public class DVBViewer {
 				}
 				list.add( cs ) ;
 			}
+		}
 		return this.dvbViewerToChannelSetMap.get(channel);
 	}
 	
