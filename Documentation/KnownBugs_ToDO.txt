@@ -1,3 +1,5 @@
 1.	64-Bit-Version der DLL
 2.	Nicht TV-Browser-Einträge anzeigen lassen, evtl. anderes Icon
 3.	Synchronisierung über Internet, evtl. HTML-Datei
+4.	Filter für doppelte Einträge für den TVBrowser aktivieren
+5.	Sync-Problem lösen
