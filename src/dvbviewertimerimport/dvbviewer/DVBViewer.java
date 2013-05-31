@@ -13,8 +13,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 import javax.xml.stream.XMLEventReader;
@@ -106,13 +106,11 @@ public class DVBViewer {
 	private dvbviewertimerimport.dvbviewer.channels.Channels channels = new dvbviewertimerimport.dvbviewer.channels.Channels(
 			this);
 
-	private final Boolean listLock = new Boolean( false ) ;
 	private ArrayList<DVBViewerEntry> recordEntries = null;
 	private MaxID maxID = new MaxID();
-	private List<HashMap<String, ChannelSet>> channelSetsLists = new ArrayList<HashMap<String, ChannelSet>>(
+	private ArrayList<HashMap<String, Channel>> channelsLists = new ArrayList<HashMap<String, Channel>>(
 			dvbviewertimerimport.provider.Provider.getProviders().size());
 	private Map<Long, ChannelSet> channelSetMap = new HashMap<Long, ChannelSet>();
-	private Map<String, List<ChannelSet>> dvbViewerToChannelSetMap = null;
 
 	private final String exePath;
 	private String dvbViewerPath = null;
@@ -178,10 +176,10 @@ public class DVBViewer {
 	}
 
 	public void setProvider() {
-		if (this.channelSetsLists.size() == 0)
+		if (this.channelsLists.size() == 0)
 			for (int ix = 0; ix < dvbviewertimerimport.provider.Provider
 					.getProviders().size(); ix++)
-				channelSetsLists.add(null);
+				channelsLists.add(new HashMap<String, Channel>());
 	}
 
 	public static String determineExePath() {
@@ -414,30 +412,30 @@ public class DVBViewer {
 		}
 	}
 
-	public ChannelSet getDVBViewerChannelSet(final int providerID,
+	public Channel getDVBViewerChannel(final int providerID,
 			final String providerChannel) {
 		this.prepareProvider();
-		Map<String, ChannelSet> channelMap = this
-				.getChannelListOfProvider(providerID);
+		HashMap<String, Channel> channelMap = this.channelsLists
+				.get(providerID);
 		if (!channelMap.containsKey(providerChannel)) {
 			ErrorClass.setWarníng();
 			throw new ErrorClass(ResourceManager.msg(
 					"MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel));
 		}
-		ChannelSet cs = channelMap.get(providerChannel);
-		String dvbViewerChannel = cs.getDVBViewerChannel();
+		Channel c = channelMap.get(providerChannel);
+		String dvbViewerChannel = c.getDVBViewer();
 		if (dvbViewerChannel == null || dvbViewerChannel.length() == 0) {
 			ErrorClass.setWarníng();
 			throw new ErrorClass(ResourceManager.msg(
 					"MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel));
 		}
-		return cs;
+		return c;
 	}
 
 	public boolean addNewEntry(Provider provider, String providerID,
 			String channel, long start, long end, String title) {
-		ChannelSet cs = this.getDVBViewerChannelSet(provider.getID(), channel);
-		TimeOffsets o = cs.getTimeOffsets();
+		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
+		TimeOffsets o = c.getOffsets();
 		long startOrg = start;
 		start -= o.getPreOffset(start) * 60000;
 		long endOrg = end;
@@ -446,10 +444,10 @@ public class DVBViewer {
 		if (end < System.currentTimeMillis())
 			return false;
 
-		DVBViewerEntry e = new DVBViewerEntry(cs.getDVBViewerChannel(), cs,
-				providerID, start, end, startOrg, endOrg, "-------", title,
-				this.timerAction, this.afterRecordingAction,
-				cs.getMerge(provider.getMerge()), provider);
+		DVBViewerEntry e = new DVBViewerEntry(c.getDVBViewer(),
+				c.getChannelSet(), providerID, start, end, startOrg, endOrg,
+				"-------", title, this.timerAction, this.afterRecordingAction,
+				c.getMerge(provider.getMerge()), provider);
 
 		for (DVBViewerEntry co : this.recordEntries) {
 			if (co.isFilterElement() && e.isOrgEqual(co)) {
@@ -469,8 +467,8 @@ public class DVBViewer {
 	public boolean shiftEntry(DVBViewerEntry shiftEntry, Provider provider,
 			String providerID, String channel, long start, long end,
 			String title) {
-		ChannelSet cs = this.getDVBViewerChannelSet(provider.getID(), channel);
-		TimeOffsets o = cs.getTimeOffsets();
+		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
+		TimeOffsets o = c.getOffsets();
 		long startOrg = start;
 		start -= o.getPreOffset(start) * 60000;
 		long endOrg = end;
@@ -480,10 +478,10 @@ public class DVBViewer {
 			shiftEntry.setToDelete();
 			return false;
 		}
-		DVBViewerEntry e = new DVBViewerEntry(cs.getDVBViewerChannel(), cs,
-				providerID, start, end, startOrg, endOrg, "-------", title,
-				this.timerAction, this.afterRecordingAction,
-				cs.getMerge(provider.getMerge()), provider);
+		DVBViewerEntry e = new DVBViewerEntry(c.getDVBViewer(),
+				c.getChannelSet(), providerID, start, end, startOrg, endOrg,
+				"-------", title, this.timerAction, this.afterRecordingAction,
+				c.getMerge(provider.getMerge()), provider);
 		e = shiftEntry.shift(e);
 		if (e != null) {
 			this.addRecordingEntry(e);
@@ -493,12 +491,12 @@ public class DVBViewer {
 
 	public void deleteEntry(Provider provider, String channel, long start,
 			long end, String title) {
-		ChannelSet cs = this.getDVBViewerChannelSet(provider.getID(), channel);
+		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
 
-		DVBViewerEntry e = new DVBViewerEntry(cs.getDVBViewerChannel(), cs,
-				null, start, end, start, end, "-------", title,
-				this.timerAction, this.afterRecordingAction,
-				cs.getMerge(provider.getMerge()), provider);
+		DVBViewerEntry e = new DVBViewerEntry(c.getDVBViewer(),
+				c.getChannelSet(), null, start, end, start, end, "-------",
+				title, this.timerAction, this.afterRecordingAction,
+				c.getMerge(provider.getMerge()), provider);
 
 		for (DVBViewerEntry co : this.recordEntries) {
 			if (e.isOrgEqual(co)) {
@@ -653,18 +651,14 @@ public class DVBViewer {
 	};
 
 	public void clearChannelLists() {
-		synchronized (this.listLock) {
-			this.channelSetsLists = new ArrayList<HashMap<String, ChannelSet>>(
-					dvbviewertimerimport.provider.Provider.getProviders()
-							.size());
-			this.channelSetMap = new HashMap<Long, ChannelSet>();
-			this.dvbViewerToChannelSetMap = null;
-		}
+		this.channelsLists = new ArrayList<HashMap<String, Channel>>(
+				dvbviewertimerimport.provider.Provider.getProviders().size());
+		this.channelSetMap = new HashMap<Long, ChannelSet>();
 		this.setProvider();
 	}
 
-	private void addChannelSet(HashMap<String, ChannelSet> channels,
-			String channelName, ChannelSet channelSet, String channelGroupName) {
+	private void addChannel(HashMap<String, Channel> channels,
+			String channelName, Channel channel, String channelGroupName) {
 		if (channelName == null)
 			return;
 		if (channels.containsKey(channelName)
@@ -675,53 +669,18 @@ public class DVBViewer {
 															// channelSetID
 			throw new ErrorClass("The " + channelGroupName + " channel \""
 					+ channelName + "\" is not unique");
-		channels.put(new String(channelName), channelSet);
+		channels.put(new String(channelName), channel);
 	}
 
 	public void addChannel(ChannelSet channelSet) {
-		synchronized (this.listLock) {
-			this.channelSetMap.put(channelSet.getID(), channelSet);
-			this.dvbViewerToChannelSetMap = null;
+		Channel c = new Channel(channelSet, channelSet.getTimeOffsets(),
+				channelSet.getMerge());
+		for (dvbviewertimerimport.control.Channel cC : channelSet.getChannels()) {
+			int type = cC.getType();
+			this.addChannel(this.channelsLists.get(type), cC.getName(), c,
+					cC.getTypeName());
 		}
-	}
-
-	public List<ChannelSet> getChannelSetListByDvbViewerChannel(String channel) {
-		synchronized (this.listLock) {
-			if (this.dvbViewerToChannelSetMap == null) {
-				this.dvbViewerToChannelSetMap = new HashMap<String, List<ChannelSet>>();
-				for (ChannelSet cs : this.channelSetMap.values()) {
-					List<ChannelSet> list = this.dvbViewerToChannelSetMap
-							.get(cs.getDVBViewerChannel());
-
-					if (list == null) {
-						list = new ArrayList<ChannelSet>();
-						this.dvbViewerToChannelSetMap.put(
-								cs.getDVBViewerChannel(), list);
-					}
-					list.add(cs);
-				}
-			}
-			return this.dvbViewerToChannelSetMap.get(channel);
-		}
-	}
-
-	private Map<String, ChannelSet> getChannelListOfProvider(int providerID) {
-		synchronized (this.listLock) {
-			HashMap<String, ChannelSet> result = this.channelSetsLists
-					.get(providerID);
-			if (result != null)
-				return result;
-			result = new HashMap<String, ChannelSet>();
-			this.channelSetsLists.add(providerID, result);
-			for (ChannelSet cs : this.channelSetMap.values()) {
-				for (dvbviewertimerimport.control.Channel cc : cs.getChannels()) {
-					if (providerID == cc.getType())
-						this.addChannelSet(result, cc.getName(), cs,
-								cc.getTypeName());
-				}
-			}
-			return result;
-		}
+		this.channelSetMap.put(channelSet.getID(), channelSet);
 	}
 
 	public void merge() {
@@ -830,11 +789,8 @@ public class DVBViewer {
 					stack.push(ev.asStartElement().getName().getLocalPart());
 					if (!stack.equals(DVBViewer.xmlPath))
 						continue;
-					DVBViewerEntry entry = null ;
-					synchronized (this.listLock) {
-						entry = DVBViewerEntry.readXML(reader, ev,
+					DVBViewerEntry entry = DVBViewerEntry.readXML(reader, ev,
 							f.getName(), this.channelSetMap);
-					}
 					idMap.put(entry.getID(), entry);
 					entry.setID(this.maxID.increment());
 					result.add(entry);
@@ -998,7 +954,8 @@ public class DVBViewer {
 		if (!f.canExecute())
 			return false;
 		try {
-			Runtime.getRuntime().exec(f.getAbsolutePath());
+			ProcessBuilder process = new ProcessBuilder(f.getAbsolutePath());
+			process.start();
 		} catch (IOException e) {
 			return false;
 		}
@@ -1118,8 +1075,10 @@ public class DVBViewer {
 		try {
 			// Runtime.getRuntime().exec( f.getAbsolutePath() + " -c\"" +
 			// parts[1] + ":" + parts[0] + "\"" ) ;
-			Runtime.getRuntime().exec(
-					f.getAbsolutePath() + " " + this.getViewParameters());
+			String[] tokens = getTokens(f.getAbsolutePath(),
+					this.getViewParameters());
+			ProcessBuilder process = new ProcessBuilder(tokens);
+			process.start();
 		} catch (IOException e) {
 			return false;
 		}
@@ -1146,11 +1105,26 @@ public class DVBViewer {
 		if (!f.canExecute())
 			return false;
 		try {
-			Runtime.getRuntime().exec(
-					f.getAbsolutePath() + " " + this.getRecordingParameters());
+			String[] tokens = getTokens(f.getAbsolutePath(),
+					this.getViewParameters());
+			ProcessBuilder process = new ProcessBuilder(tokens);
+			process.start();
 		} catch (IOException e) {
 			return false;
 		}
 		return true;
+	}
+
+	private static String[] getTokens(String command, String paras) {
+		// Log.out(paras) ;
+		StringTokenizer tokenizer = new StringTokenizer(paras);
+		String[] result = new String[tokenizer.countTokens() + 1];
+		result[0] = command;
+		for (int i = 0; i < tokenizer.countTokens(); ++i) {
+			String token = tokenizer.nextToken();
+			result[i + 1] = token;
+			// Log.out(token) ;
+		}
+		return result;
 	}
 }

@@ -6,7 +6,6 @@ package dvbviewertimerimport.misc ;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -251,83 +250,4 @@ public final class Helper {
 		file.delete() ;
 		tempFile.renameTo( file ) ;
 	}
-	public static interface SearchAlgorithm< T >
-	{
-		public ArrayList< T > execute( final T entry, final ArrayList< T > entries ) ;
-	}
-	
-	public static interface Entry< T >
-	{
-		public ArrayList< T > searchSurroundedEntries( ArrayList< T > list ) ;
-	}
-	
-	public static class SearchBiDirectional< T extends Entry< T > >
-	{
-		HashMap< T, ArrayList < T > > choicesInRangeLists = new HashMap< T, ArrayList < T > >() ;
-		
-		public class Result
-		{
-			private final boolean isSure ;
-			private final ArrayList<T> entries ;
-			
-			public boolean isSure() { return isSure ; } ;
-			public ArrayList<T> get() { return entries ; } ;
-			public int size() { return entries.size(); } ; 
-			
-			public Result( final boolean isSure, final ArrayList<T> entries )
-			{
-				this.isSure  = isSure ;
-				this.entries = entries ;
-			}
-		}
-
-		public Result searchBiDirectional( final T xEntry,
-											  final ArrayList< T > choices,
-											  final ArrayList< T > xml,
-											  final SearchAlgorithm< T > algo )
-		{
-			ArrayList<T> result = algo.execute( xEntry, choices ) ;
-	
-			ArrayList<T> cChoices = null ;
-
-			for ( Iterator< T > it = result.iterator() ; it.hasNext() ; )
-			{
-				ArrayList<T> cList = null ;
-					
-				T cS = it.next() ;
-					
-				if ( !choicesInRangeLists.containsKey( cS ))
-				{
-					cList = cS.searchSurroundedEntries( xml ) ;
-	
-					choicesInRangeLists.put(cS, cList ) ;
-				}
-				else
-					cList = choicesInRangeLists.get( cS ) ;
-					
-				cChoices = algo.execute( cS, cList ) ;
-				
-				if ( cChoices == null )
-					continue ;
-	
-				boolean found = false ;
-				
-				for ( T e : cChoices )
-				{
-					if ( xEntry == e )
-					{
-						found = true ;
-						break ;
-					}
-				}
-				if ( ! found )
-					it.remove() ;
-			}
-			boolean isSure = true ;
-			if ( cChoices != null )
-				isSure = cChoices.size() <= 1 && result.size() <= 1 ;
-			return new Result( isSure, result) ;
-		}
-	}
-
 }

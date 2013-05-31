@@ -3,7 +3,7 @@
     <Providers>
         <Provider name="TVInfo" username="DVBViewerImport" password="TimerImportTool" triggeraction="16640" merge="false" message="false" verbose="true" filter="true">
             <Missing enable="false" missingSince="0" missingSyncSince="0"></Missing>
-            <Url>http://www.tvinfo.de/share/openepg/schedule.php</Url>
+            <Url>http://www.tvinfo.de/application/tvinfo/external/openCal/schedule_v2.php</Url>
         </Provider>
         <Provider name="TVGenial" merge="false" message="false" verbose="true" filter="false"></Provider>
         <Provider name="ClickFinder" triggeraction="1234" merge="false" message="false" verbose="true" filter="false"></Provider>

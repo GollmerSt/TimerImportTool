@@ -79,14 +79,6 @@ public class ChannelSet {
 			this.merge = Merge.FALSE ;
 	} ;
 	public Merge getMerge() { return this.merge ; } ;
-	public boolean getMerge( boolean generalMerge)
-	{
-		if ( this.merge == Merge.INVALID )
-			return generalMerge ;
-		else if ( this.merge == Merge.TRUE )
-			return true ;
-		return false ;
-	}
 	public void setDVBViewerChannel( String channelName ) { this.dvbViewerChannel = channelName ; } ;
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
 	public void setID( final long id ) { this.id = id ; } ;

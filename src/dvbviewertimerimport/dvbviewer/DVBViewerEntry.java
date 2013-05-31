@@ -29,7 +29,7 @@ import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.xml.StackXML;
 
 
-public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerEntry >
+public final class DVBViewerEntry implements Cloneable
 {
 	private static final long searchIntervallOrg = 3 * 60 * 60 * 1000 ;	// search Intervall of 3 hours before original start and after original end of programm
 	private static final long searchIntervallReal = 30 * 60 * 1000 ;	// search Intervall of 0.5 hours before start and after end of programm
@@ -88,8 +88,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 	public static boolean getInActiveIfMerged() { return timerStatusIfMerged == StatusTimer.DISABLED ; } ;
 
 	private long id ;
-	private String providerID = null ;
-	private String tvBrowserID = null ;
+	private String providerID ;
 	private boolean isFilterElement ;
 	private StatusTimer statusTimer ;
 	private long dvbViewerID ;
@@ -162,8 +161,6 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		this.mergeStatus = mergeStatus ;
 		this.mergeID = mergeID ;
 		this.provider = provider ;
-		if ( provider != null && provider.isTVBrowser() )
-			this.tvBrowserID = providerID ;
 		this.outDatedInfo = outDatedInfo.clone() ;
 		this.isCollapsed = isCollapsed ;
 		this.toDo = toDo ;
@@ -259,8 +256,6 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 			entry.mergedEntries.addAll( this.mergedEntries ) ;
 		}
 
-		entry.tvBrowserID = this.tvBrowserID ;
-		
 		entry.program = this.program ;
 
 		return entry ;
@@ -339,7 +334,6 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		this.end =  entry.end ;
 
 		this.providerID = entry.providerID ;
-		this.tvBrowserID = entry.tvBrowserID ;
 		this.startOrg = entry.startOrg ;
 		this.endOrg = entry.endOrg ;
 		this.days = entry.days ;
@@ -617,7 +611,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		if ( length > lengthMax )
 		{
 			int weight = WEIGHT_PREFIX * prefixLength + WEIGHT_MAIN * mainLength ;
-			prefixLenMax = ( WEIGHT_PREFIX * prefixLength * lengthMax / weight + 1 ) / WEIGHT_PREFIX ;
+			prefixLenMax = ( WEIGHT_PREFIX * prefixLength * lengthMax / weight + 1 ) ; // / WEIGHT_PREFIX ;
 			mainLenMax = lengthMax - prefixLenMax ;
 		}
 		
@@ -636,10 +630,19 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 			int pPrefixLength = 0 ;
 			if ( prefixLength != 0 )
 			{
+				if ( prefixLength < prefixLenMax ) {
+					mainLenMax += prefixLenMax - prefixLength ;
+					prefixLenMax = prefixLength ;
+				}
+				
 				pPrefixLength = p.getPrefixLength() * prefixLenMax / prefixLength ;
 
 				prefixLenMax  -= pPrefixLength ;
 				prefixLength  -= p.getPrefixLength() ;
+			}
+			if ( mainLength < mainLenMax ) {
+				prefixLenMax += mainLenMax - mainLength ;
+				mainLenMax = mainLength ;
 			}
 			int pLength = p.mainPartLength() * mainLenMax / mainLength ;
 			title.append( p.get( pPrefixLength + pLength) ) ;
@@ -721,18 +724,18 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		return false ;
 	}
 	
-	public ArrayList<DVBViewerEntry> searchSurroundedEntries( final ArrayList<DVBViewerEntry> list )
+	static ArrayList<DVBViewerEntry> searchSurroundedEntries( final DVBViewerEntry entry,  final ArrayList<DVBViewerEntry> list )
 	{
 		ArrayList<DVBViewerEntry> result = new ArrayList< DVBViewerEntry >() ;
 
-		String channelID = this.getChannelID() ;
-		long start = this.startOrg - DVBViewerEntry.searchIntervallOrg ;
-		if ( start > this.preferedStart - DVBViewerEntry.searchIntervallReal)
-			start = this.preferedStart - DVBViewerEntry.searchIntervallReal ;
-		long end = this.endOrg + DVBViewerEntry.searchIntervallOrg ;
-		if ( end < this.end + DVBViewerEntry.searchIntervallReal)
-			end = this.end + DVBViewerEntry.searchIntervallReal ;
-		String days = this.days ;
+		String channelID = entry.getChannelID() ;
+		long start = entry.startOrg - DVBViewerEntry.searchIntervallOrg ;
+		if ( start > entry.preferedStart - DVBViewerEntry.searchIntervallReal)
+			start = entry.preferedStart - DVBViewerEntry.searchIntervallReal ;
+		long end = entry.endOrg + DVBViewerEntry.searchIntervallOrg ;
+		if ( end < entry.end + DVBViewerEntry.searchIntervallReal)
+			end = entry.end + DVBViewerEntry.searchIntervallReal ;
+		String days = entry.days ;
 
 
 		for ( DVBViewerEntry e : list )
@@ -743,13 +746,83 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 		return result ;
 	}
 	
+	private static interface SearchAlgorithm
+	{
+		public ArrayList< DVBViewerEntry > execute( final DVBViewerEntry entry,
+											  final ArrayList< DVBViewerEntry > entries ) ;
+	}
+	
+	private class SearchBiDirectional
+	{
+		HashMap< DVBViewerEntry, ArrayList < DVBViewerEntry > > choicesInRangeLists = new HashMap< DVBViewerEntry, ArrayList < DVBViewerEntry > >() ;
+		
+		public class Result
+		{
+			private final boolean isSure ;
+			private final ArrayList<DVBViewerEntry> entries ;
+			
+			public boolean isSure() { return isSure ; } ;
+			public ArrayList<DVBViewerEntry> get() { return entries ; } ;
+			public int size() { return entries.size(); } ; 
+			
+			private Result( final boolean isSure, final ArrayList<DVBViewerEntry> entries )
+			{
+				this.isSure  = isSure ;
+				this.entries = entries ;
+			}
+		}
+
+		public Result searchBiDirectional( final DVBViewerEntry xEntry,
+											  final ArrayList< DVBViewerEntry > choices,
+											  final ArrayList< DVBViewerEntry > xml,
+											  final SearchAlgorithm algo )
+		{
+			ArrayList<DVBViewerEntry> result = algo.execute( xEntry, choices ) ;
+	
+			ArrayList<DVBViewerEntry> cChoices = null ;
+
+			for ( Iterator< DVBViewerEntry > it = result.iterator() ; it.hasNext() ; )
+			{
+				ArrayList<DVBViewerEntry> cList = null ;
+					
+				DVBViewerEntry cS = it.next() ;
+					
+				if ( !choicesInRangeLists.containsKey( cS ))
+				{
+					cList = searchSurroundedEntries( cS, xml ) ;
+	
+					choicesInRangeLists.put(cS, cList ) ;
+				}
+				else
+					cList = choicesInRangeLists.get( cS ) ;
+					
+				cChoices = algo.execute( cS, cList ) ;
+	
+				boolean found = false ;
+				
+				for ( DVBViewerEntry e : cChoices )
+				{
+					if ( xEntry == e )
+					{
+						found = true ;
+						break ;
+					}
+				}
+				if ( ! found )
+					it.remove() ;
+			}
+			return new Result( cChoices.size() <= 1 && result.size() <= 1, result) ;
+		}
+	}
+
 	public static void updateXMLDataByDVBViewerDataFuzzy(
 	          final ArrayList<DVBViewerEntry> xml,
 	          final ArrayList<DVBViewerEntry> dvbViewer,
 	          boolean allElements)
 	{
-		Helper.SearchBiDirectional<DVBViewerEntry> searchBi = new Helper.SearchBiDirectional<DVBViewerEntry>() ;
+		SearchBiDirectional searchBi = new DVBViewerEntry().new SearchBiDirectional() ;
 
+		
 		// Find and assign all easy to assign service entries, remove the entries from
 		// the merge elements if entry is enabled
 		for ( DVBViewerEntry x : xml )
@@ -762,14 +835,14 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 
 			// Find all programs in the range of searchIntervall
 			
-			Helper.SearchBiDirectional<DVBViewerEntry>.Result list = searchBi.new Result( true, x.searchSurroundedEntries( dvbViewer ) ) ;
+			SearchBiDirectional.Result list = searchBi.new Result( true, searchSurroundedEntries( x, dvbViewer ) ) ;
 
 			if ( list.size() == 0 )
 				continue ;
 
 			// find the best match of title
 			{
-				list = searchBi.searchBiDirectional(x, list.get(), xml, new Helper.SearchAlgorithm< DVBViewerEntry >(){
+				list = searchBi.searchBiDirectional(x, list.get(), xml, new SearchAlgorithm(){
 
 					@Override
 					public ArrayList<DVBViewerEntry> execute(
@@ -805,7 +878,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 
 			if ( ! list.isSure() )
 			{
-				list = searchBi.searchBiDirectional(x, list.get(), xml, new Helper.SearchAlgorithm< DVBViewerEntry >(){
+				list = searchBi.searchBiDirectional(x, list.get(), xml, new SearchAlgorithm(){
 
 					@Override
 					public ArrayList<DVBViewerEntry> execute(
@@ -1035,7 +1108,7 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 								toDelete.mergeElement = null;
 								x.mergedEntries = null;
 								x.providerID = toDelete.providerID;
-								x.tvBrowserID = toDelete.tvBrowserID ;
+								x.preferedTitle = toDelete.preferedTitle;
 								toDelete.setToDelete() ;
 							}
 							else
@@ -1198,7 +1271,6 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 			this.addMergedEntry( result ) ;
 			this.isFilterElement = false ;
 			this.providerID = null ;
-			this.tvBrowserID = null ;
 			this.toDo = ToDo.NEW ;
 		}
 		if ( this.addMergedEntry( dE ) )
@@ -1249,9 +1321,6 @@ public final class DVBViewerEntry implements Cloneable, Helper.Entry< DVBViewerE
 	public long getStartOrg() { return this.startOrg ; } ;
 	public long getEndOrg() { return this.endOrg ; } ;
 	public String getDays() { return this.days ; } ;
-	public String getTvBrowserID() { return tvBrowserID; }
-	public void setTvBrowserID(String tvBrowserID) { this.tvBrowserID = tvBrowserID; }
-
 	public ArrayList< DVBViewerEntry > getMergedEntries() { return this.mergedEntries ; } ;
 	public void setMergedEntries( ArrayList< DVBViewerEntry > entries) { this.mergedEntries = entries; } ;
 	public void prepareTimerSetting()

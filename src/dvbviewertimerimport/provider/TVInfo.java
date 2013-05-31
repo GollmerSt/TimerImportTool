@@ -480,7 +480,7 @@ public final class TVInfo extends Provider {
 		long now = new Date().getTime() ;
 		long d1 = htmlDateFormat.parse(date+Integer.toString( year )+" "+time).getTime() ;
 		
-		if ( d1 < now )
+		if ( d1 > now )
 			return d1 ;
 		else
 			return new Date( htmlDateFormat.parse(date+Integer.toString( year+1 )+" "+time).getTime() ).getTime() ;

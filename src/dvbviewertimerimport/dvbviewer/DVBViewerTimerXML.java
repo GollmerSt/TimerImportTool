@@ -92,7 +92,7 @@ public class DVBViewerTimerXML {
 			end += Constants.DAYMILLSEC ;
 		if ( ix < 0 )
 			ix = this.maxRecordingNo++ ;
-		else if ( ix > maxRecordingNo + 1 )
+		else if ( ix + 1 > maxRecordingNo )
 			maxRecordingNo = ix + 1 ;
 		
 		StatusTimer status = StatusTimer.DISABLED ;

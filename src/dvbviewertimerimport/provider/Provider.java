@@ -99,7 +99,6 @@ public abstract class Provider implements DVBViewerProvider {
 	private boolean isPrepared = false ;
 	protected boolean isFunctional = true ;
 	protected boolean isSilent ;
-	protected boolean isTVBrowser = false ;
 	private OutDatedInfo outDatedLimits = null ;
 	protected TimeZone timeZone = TimeZone.getDefault() ;
  
@@ -164,8 +163,6 @@ public abstract class Provider implements DVBViewerProvider {
 	public boolean mustInstall() { return this.mustInstall ; } ;
 	public boolean isPrepared() { return this.isPrepared ; } ;
 	public boolean isSilent() { return this.isSilent ; } ;
-	
-	public boolean isTVBrowser() { return isTVBrowser ;	} ;
 	
 	public boolean isFunctional() { return isFunctional ; } ;
 	public void setIsFunctional( final boolean status ) { isFunctional = status ; } ;
