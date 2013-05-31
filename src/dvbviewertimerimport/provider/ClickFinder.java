@@ -37,10 +37,13 @@ public class ClickFinder extends Provider {
 		super(control, false, false, "ClickFinder", false, false, false, true,
 				false, false);
 		this.canImport = true;
+		this.canModify = false;
+		this.canAddChannel = false;
 		this.dvbViewer = control.getDVBViewer();
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin");
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
 		this.dateFormat.setTimeZone(timeZone);
+		this.isFunctional = this.getDbasePath() != null ;
 	}
 
 	private String getParaInfo() {
@@ -95,92 +98,81 @@ public class ClickFinder extends Provider {
 
 		return true;
 	}
-	
+
 	private String getDbasePath() {
-		String dbPath = null ;
+		String dbPath = null;
 		for (String path : reg_pathes) {
-			String rPath = path + "\\Gemeinsames" ;
-			dbPath = Registry.getValue( rPath, "DBDatei");
-			if ( dbPath != null ) {
-				break ;
+			String rPath = path + "\\Gemeinsames";
+			dbPath = Registry.getValue(rPath, "DBDatei");
+			if (dbPath != null) {
+				break;
 			}
 		}
-		return dbPath ;
+		return dbPath;
 	}
 
 	@Override
 	public boolean install() // boolean setDataDir )
 	{
-		boolean successfull = false ;
+		boolean successfull = false;
 		if (!Constants.IS_WINDOWS)
 			return false;
 		// if ( setDataDir )
 		// dataPathPara = " -path \"\"\"" + this.dvbViewer.getDataPath() +
 		// "\"\"\"";
 		for (String path : reg_pathes) {
-			String rPath = path + "\\Gemeinsames" ;
-			String regContents = Registry.getValue( rPath, "DBDatei");
-			if ( regContents == null ) {
-				continue ;
+			String rPath = path + "\\Gemeinsames";
+			String regContents = Registry.getValue(rPath, "DBDatei");
+			if (regContents == null) {
+				continue;
 			}
-			Log.out("Registry entry found at " + rPath ) ;
-			successfull = true ;
-			regContents = Registry.getValue( path + "\\TVGhost", "AddOns" ) ;
-			if ( regContents == null || ! regContents.contains("DVBViewer") ) {
+			Log.out("Registry entry found at " + rPath);
+			successfull = true;
+			regContents = Registry.getValue(path + "\\TVGhost", "AddOns");
+			if (regContents == null || !regContents.contains("DVBViewer")) {
 				if (regContents != null && regContents.length() != 0)
 					regContents += ",DVBViewer";
 				else
 					regContents = "DVBViewer";
-				Registry.setValue(path
-						+ "\\TVGhost",
-						"REG_SZ", "AddOns", regContents);
+				Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns",
+						regContents);
 			}
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "AddOnName", "DVBViewer");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_DWORD", "EinbindungsModus", "2");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "KurzBeschreibung", "DVBViewer programmieren");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "LangBeschreibung",
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"AddOnName", "DVBViewer");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD",
+					"EinbindungsModus", "2");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"KurzBeschreibung", "DVBViewer programmieren");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"LangBeschreibung",
 					"Übergeben Sie diese Sendung an den DVBViewer");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_DWORD", "ParameterZusatz", "2");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "SpezialButtonGrafikName", "AddOn");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "SpezialButtonToolTiptext",
-					"SpezialButtonToolTiptext");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "ExeDateiname", "javaw");
-			Registry.setValue(path
-					+ "\\TVGhost\\AddOn_DVBViewer",
-					"REG_SZ", "ParameterFest",
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD",
+					"ParameterZusatz", "2");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"SpezialButtonGrafikName", "AddOn");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"SpezialButtonToolTiptext", "SpezialButtonToolTiptext");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"ExeDateiname", "javaw");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
+					"ParameterFest",
 					"-jar \"\"\"" + this.dvbViewer.getExePath()
 							+ File.separator + this.dvbViewer.getExeName()
 							+ "\"\"\" -ClickFinder ");
 		}
-		return successfull ;
+		return successfull;
 	}
 
 	@Override
 	public boolean uninstall() {
 		for (String path : reg_pathes) {
-			String rPath = path + "\\TVGhost" ;
+			String rPath = path + "\\TVGhost";
 			String regContents = Registry.getValue(rPath, "AddOns");
 
 			if (regContents == null || !regContents.contains("DVBViewer")) {
 				continue;
 			}
-			Log.out("Registry entry found at " + rPath ) ;
+			Log.out("Registry entry found at " + rPath);
 
 			String[] temps;
 			if (regContents.contains(","))
@@ -190,11 +182,10 @@ public class ClickFinder extends Provider {
 			regContents = "";
 			for (int i = 0; i < temps.length; i++)
 				regContents += temps[i];
-			Registry.setValue(path + "\\TVGhost", "REG_SZ",
-					"AddOns", regContents);
+			Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns",
+					regContents);
 
-			Registry.delete(path + "\\TVGhost\\AddOn_DVBViewer",
-					"");
+			Registry.delete(path + "\\TVGhost\\AddOn_DVBViewer", "");
 		}
 		return true;
 	}
@@ -241,9 +232,7 @@ public class ClickFinder extends Provider {
 	public ArrayList<Channel> readChannels() {
 		Database db = null;
 		try {
-			db = Database
-					.open(new File(this.getDbasePath()),
-							true);
+			db = Database.open(new File(this.getDbasePath()), true);
 		} catch (IOException e) {
 			Log.out("Database not found");
 			return null;
@@ -262,8 +251,8 @@ public class ClickFinder extends Provider {
 		ArrayList<Channel> result = new ArrayList<Channel>();
 		for (Map<String, Object> row : table) {
 			String name = (String) row.get("SenderKennung");
-			if ( name == null ) {
-				continue ;
+			if (name == null) {
+				continue;
 			}
 			Channel channel = this.createChannel(name, null);
 			result.add(channel);
@@ -272,9 +261,9 @@ public class ClickFinder extends Provider {
 			db.close();
 		} catch (IOException e) {
 		}
-		if ( result.isEmpty() ) {
+		if (result.isEmpty()) {
 			Log.out("Column or entry of \"SenderKennung\" not found");
-			return null ;
+			return null;
 		}
 		return result;
 	};
