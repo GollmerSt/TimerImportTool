@@ -238,8 +238,11 @@ public final class TVInfo extends Provider {
 						String title = ev.asCharacters().getData() ;
 						title.trim() ;
 						entry.setTitle(title);
+					}
+				}
+				if (ev.isEndElement()) {
+					if (stack.equals(TVInfo.xmlPathTVinfoTitle)) {
 						boolean isAdded = false;
-
 						try {
 							isAdded = entry.add();
 						} catch (ErrorClass e) {
@@ -256,9 +259,8 @@ public final class TVInfo extends Provider {
 									+ entry.title);
 						}
 					}
-				}
-				if (ev.isEndElement())
 					stack.pop();
+				}
 			}
 			reader.close();
 		} catch (XMLStreamException e) {
