@@ -147,8 +147,17 @@ public final class TVInfo extends Provider {
 		long end = 0;
 		String title = null;
 
-		public void setTitle(final String title) {
-			this.title = title;
+		public void setTitle( String title) {
+			String [] array = title.split("\\r|\\n") ;
+			title= "" ;
+			for ( String comp : array ) {
+				title += comp ;
+			}
+			if ( this.title == null ) {
+				this.title = title;
+			} else {
+				this.title += " " + title ;
+			}
 		}
 
 		public boolean add() {
@@ -226,7 +235,9 @@ public final class TVInfo extends Provider {
 				}
 				if (ev.isCharacters()) {
 					if (stack.equals(TVInfo.xmlPathTVinfoTitle)) {
-						entry.setTitle(ev.asCharacters().getData());
+						String title = ev.asCharacters().getData() ;
+						title.trim() ;
+						entry.setTitle(title);
 						boolean isAdded = false;
 
 						try {

@@ -15,6 +15,9 @@ public class Function {
 	{
 		int weight = 0 ;
 		int sLength = search.length() ;
+		if (sLength == 0 ) {
+			sLength = 1 ;
+		}
 		int aLength = array.length() ;
 		for ( int val : list )
 			weight += (int) Math.pow( val, 1.5) ;
@@ -34,6 +37,9 @@ public class Function {
 	{
 		int weight = 0 ;
 		int sLength = search.length() ;
+		if ( sLength == 0 ) {
+			sLength = 1 ;
+		}
 		for ( int val : list )
 			weight += (int) Math.pow( val, 1.5) ;
 		weight *= 1000 ;
