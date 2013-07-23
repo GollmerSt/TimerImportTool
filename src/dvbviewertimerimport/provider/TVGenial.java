@@ -72,6 +72,9 @@ public class TVGenial extends Provider {
 	public boolean install()
 	{
 		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		if ( programDir == null ) {
+			programDir = Registry.getValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial5", "InstallDir") ;
+		}
 		if ( programDir == null )
 		{
 			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
@@ -105,6 +108,9 @@ public class TVGenial extends Provider {
 	public boolean uninstall()
 	{
 		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		if ( programDir == null ) {
+			programDir = Registry.getValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial5", "InstallDir") ;
+		}
 		if ( programDir == null )
 		{
 			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
