@@ -443,7 +443,7 @@ EndOffset   = 0
 //  (z.B.  nimm mal folgendes auf: 24:02:2002-20:15 24:02:2002-21:00 (Sat 1) >Tierwelten am Amazonas <)
 ////
 // Für DVBViewer-TimerImport-Tool:
-DoRecord javaw ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+DoRecord "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
 
 
 
@@ -476,7 +476,7 @@ DoRecord javaw ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddh
 //   Zum löschen folgenden Befehl aktivieren:
 ////
 // Für DVBViewer-TimerImport-Tool:
-DoDelete javaw ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+DoDelete "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
 
 
 

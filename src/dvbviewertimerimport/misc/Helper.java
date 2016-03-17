@@ -105,10 +105,14 @@ public final class Helper {
 			String choiceOrg = choiceObject.toString() ;
 			String choice = reworkFunc.stringToString( choiceOrg ) ;
 			int weigthFirstChar = 0 ;
-			if ( string.trim().length() >= charCount && choice.trim().length() >= charCount )
+			try {
+							if ( string.trim().length() >= charCount && choice.trim().length() >= charCount )
 				if( string.trim().substring( 0, charCount).equalsIgnoreCase( choice.trim().substring( 0, charCount) ) )
 					weigthFirstChar = weightOfFirstChar ;
 			
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
 			
 			ArrayList< Integer > partLength = getSplitedLength( string, choice, charCount ) ;
 			

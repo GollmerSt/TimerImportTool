@@ -29,11 +29,31 @@ public class Registry {
 	}
 	static public boolean setValue( String path, String type, String key, String value )
 	{
-		String command = "reg add \"" + path + "\" /v \"" + key + "\" /t " + type + " /d \"" + value + "\" /f";
-		//System.out.println( command ) ;
-		if ( Registry.exec( command ) == null )
+		ProcessBuilder process = new ProcessBuilder(
+				"reg",
+				"add",
+				path,
+				"/v",
+				key,
+				"/t",
+				type,
+				"/d",
+				value,
+				"/f") ;
+		
+		try {
+			if ( process.start() == null )
+				return false ;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 			return false ;
-		//System.out.print( out ) ;
+		}
+//		String command = "reg add \"" + path + "\" /v \"" + key + "\" /t " + type + " /d \"" + value + "\" /f";
+//		//System.out.println( command ) ;
+//		if ( Registry.exec( command ) == null )
+//			return false ;
+//		//System.out.print( out ) ;
 		return true ;
 	}
 	static public boolean delete( String path, String key )

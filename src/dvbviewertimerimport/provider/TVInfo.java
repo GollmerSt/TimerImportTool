@@ -40,16 +40,17 @@ import dvbviewertimerimport.provider.Provider;
 import dvbviewertimerimport.xml.StackXML;
 
 public final class TVInfo extends Provider {
-	
-	private static final boolean DEBUG = false ;
 
-	private static final String senderURL = "http://www.tvinfo.de/system/_editSender.php";
+	private static final boolean DEBUG = false;
+
+	//private static final String senderURL = "http://www.tvinfo.de/system/_editSender.php";
+	private static final String senderURL = "http://www.tvinfo.de/sender"; // todo
 	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200";
 
-	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>(
-			"epg_schedule", "epg_schedule_entry");
-	private static final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>(
-			"epg_schedule", "epg_schedule_entry", "title");
+	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>("epg_schedule",
+			"epg_schedule_entry");
+	private static final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>("epg_schedule",
+			"epg_schedule_entry", "title");
 
 	private final DVBViewer dvbViewer;
 	private final SimpleDateFormat dateFormat;
@@ -65,9 +66,27 @@ public final class TVInfo extends Provider {
 		return this;
 	};
 
+	private static enum HTML_Type {
+		PROVIDER("t1"), DATE("t2"), START_TIME("t3"), END_TIME("t4"), TITLE("t5");
+
+		private final String stringId;
+
+		private HTML_Type(String stringId) {
+			this.stringId = stringId;
+		}
+
+		public static HTML_Type get(String stringId) {
+			for (HTML_Type type : HTML_Type.values()) {
+				if (type.stringId.equals(stringId)) {
+					return type;
+				}
+			}
+			return null;
+		}
+	}
+
 	public TVInfo(Control control) {
-		super(control, true, true, "TVInfo", true, true, true, false, true,
-				true);
+		super(control, true, true, "TVInfo", true, true, true, false, true, true);
 		this.canModify = false;
 		this.canAddChannel = false;
 		this.canImport = true;
@@ -106,10 +125,8 @@ public final class TVInfo extends Provider {
 		return Helper.bytesToString(md.digest());
 	}
 
-	public InputStream connect() throws DigestException,
-			NoSuchAlgorithmException {
-		String completeURL = this.url + "?username=" + this.username
-				+ "&password=" + this.getMD5();
+	public InputStream connect() throws DigestException, NoSuchAlgorithmException {
+		String completeURL = this.url + "?username=" + this.username + "&password=" + this.getMD5();
 		return Html.getStream(completeURL, "TVInfo XML");
 	}
 
@@ -146,25 +163,28 @@ public final class TVInfo extends Provider {
 		long start = 0;
 		long end = 0;
 		String title = null;
+		private int textCount = 0;
 
-		public void setTitle( String title) {
-			String [] array = title.split("\\r|\\n") ;
-			title= "" ;
-			for ( String comp : array ) {
-				title += comp ;
+		public void setTitle(String title) {
+			if (textCount++ == 1 && title.equals(" ")) {
+				title = " - ";
 			}
-			if ( this.title == null ) {
+			String[] array = title.split("\\r|\\n");
+			title = "";
+			for (String comp : array) {
+				title += comp;
+			}
+			if (this.title == null) {
 				this.title = title;
 			} else {
-				this.title += " " + title ;
+				this.title += " " + title;
 			}
 		}
 
 		public boolean add() {
 			if (channel == null || channel.length() == 0)
 				return false;
-			dvbViewer.addNewEntry(getTVInfo(), providerID, channel, start, end,
-					title);
+			dvbViewer.addNewEntry(getTVInfo(), providerID, channel, start, end, title);
 			solvedChannels.add(channel);
 			return true;
 		}
@@ -177,7 +197,7 @@ public final class TVInfo extends Provider {
 				String attributeName = a.getName().getLocalPart();
 				String value = a.getValue();
 				try {
-					if (attributeName.equals("channel") && ! DEBUG)
+					if (attributeName.equals("channel") && !DEBUG)
 						channel = value;
 					else if (attributeName.equals("uid"))
 						providerID = value;
@@ -192,8 +212,7 @@ public final class TVInfo extends Provider {
 				}
 			}
 			if ((start & end) == 0)
-				throw new ErrorClass(ev,
-						"Error in  TVinfo data, start or end time not given");
+				throw new ErrorClass(ev, "Error in  TVinfo data, start or end time not given");
 		}
 
 		public long getKey() {
@@ -219,9 +238,9 @@ public final class TVInfo extends Provider {
 		}
 
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
+		inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 		try {
-			XMLEventReader reader = inputFactory
-					.createXMLEventReader(new StreamSource(iS));
+			XMLEventReader reader = inputFactory.createXMLEventReader(new StreamSource(iS));
 			StackXML<String> stack = new StackXML<String>();
 			MyEntry entry = null;
 			while (reader.hasNext()) {
@@ -235,8 +254,8 @@ public final class TVInfo extends Provider {
 				}
 				if (ev.isCharacters()) {
 					if (stack.equals(TVInfo.xmlPathTVinfoTitle)) {
-						String title = ev.asCharacters().getData() ;
-						title.trim() ;
+						String title = ev.asCharacters().getData();
+						title.trim();
 						entry.setTitle(title);
 					}
 				}
@@ -254,9 +273,7 @@ public final class TVInfo extends Provider {
 								this.unresolvedEntries = new ArrayList<MyEntry>();
 							this.unresolvedEntries.add(entry);
 							Log.out("Empty channelname in TVInfo data at line "
-									+ Integer.toString(ev.getLocation()
-											.getLineNumber()) + ", title: "
-									+ entry.title);
+									+ Integer.toString(ev.getLocation().getLineNumber()) + ", title: " + entry.title);
 						}
 					}
 					stack.pop();
@@ -264,19 +281,16 @@ public final class TVInfo extends Provider {
 			}
 			reader.close();
 		} catch (XMLStreamException e) {
-			if (e.getLocation().getLineNumber() == 1
-					&& e.getLocation().getColumnNumber() == 1)
-				throw new ErrorClass(
-						"No data available from TVInfo, account data should be checked.");
+			if (e.getLocation().getLineNumber() == 1 && e.getLocation().getColumnNumber() == 1)
+				throw new ErrorClass("No data available from TVInfo, account data should be checked.");
 			else
-				throw new ErrorClass(e, "Error on reading TVInfo data."
-						+ " Position: Line = "
-						+ Integer.toString(e.getLocation().getLineNumber())
-						+ ", column = "
-						+ Integer.toString(e.getLocation().getColumnNumber()));
+				throw new ErrorClass(e,
+						"Error on reading TVInfo data." + " Position: Line = "
+								+ Integer.toString(e.getLocation().getLineNumber()) + ", column = "
+								+ Integer.toString(e.getLocation().getColumnNumber()));
 
 		}
-		if (this.unresolvedEntries != null )
+		if (this.unresolvedEntries != null)
 			this.readMerklisteAndAddUnresolverEntries();
 		return true;
 	}
@@ -284,25 +298,19 @@ public final class TVInfo extends Provider {
 	public class MerkzettelParserCallback extends HTMLEditorKit.ParserCallback {
 		private boolean isTableRead = false;
 		private boolean isFinished = false;
-		private boolean isHeader = false;
 		private boolean isData = false;
-		private int columnSender = -1;
-		private int columnDatum = -1;
-		private int columnUhrzeit = -1;
-		private int columnTitel = -1;
-		private int colCount = -1;
-		private int rowCount = -1;
+		private HTML_Type currentType = null;
 		private HashMap<Long, ArrayList<MyEntry>> entries = null;
-		private MyEntry actualEntry = null;
+		private MyEntry currentEntry = null;
 		private String dateString = null;
 		private String timeString = null;
 
 		public HashMap<Long, ArrayList<MyEntry>> getResult() {
 			return this.entries;
 		};
-		
+
 		public Boolean isOK() {
-			return true ;
+			return true;
 		}
 
 		@Override
@@ -311,25 +319,14 @@ public final class TVInfo extends Provider {
 				return;
 			}
 			if (t == HTML.Tag.TABLE) {
-				if (a.containsAttribute(HTML.Attribute.CLASS, "list")) {
+				if (a.containsAttribute(HTML.Attribute.CLASS, "list")
+						&& a.containsAttribute(HTML.Attribute.ID, "reminderList")) {
 					isTableRead = true;
 				}
-			} else if (this.isTableRead) {
-				if (t == HTML.Tag.TR) {
-					colCount = -1;
-					++rowCount;
-					if (rowCount > 0) {
-						this.actualEntry = new MyEntry();
-						this.dateString = null;
-						this.timeString = null;
-					}
-				} else if (t == HTML.Tag.TH) {
-					++colCount;
-					isHeader = true;
-				} else if (t == HTML.Tag.TD) {
-					++colCount;
-					isData = true;
-				}
+			} else if (this.isTableRead && t == HTML.Tag.TD) {
+				String stringId = (String) a.getAttribute(HTML.Attribute.CLASS);
+				this.isData = true;
+				this.currentType = HTML_Type.get(stringId);
 			}
 		}
 
@@ -341,26 +338,21 @@ public final class TVInfo extends Provider {
 			if (isTableRead) {
 				if (t == HTML.Tag.TABLE) {
 					isFinished = true;
-				} else if (t == HTML.Tag.TH) {
-					isHeader = false;
-				} else if (t == HTML.Tag.TD) {
-					isData = false;
-				} else if (t == HTML.Tag.TR) {
-					if (rowCount > 0) {
-						if (entries == null) {
-							entries = new HashMap<Long, ArrayList<MyEntry>>();
-						}
-						if (this.dateString != null && this.timeString != null) {
-							try {
-								actualEntry.start = htmlTimeToLong( this.dateString, this.timeString ) ;
-								ArrayList<MyEntry> list = new ArrayList<MyEntry>();
-								list.add(actualEntry);
-								this.entries.put(actualEntry.getKey(),
-										list);
-							} catch (ParseException e) {
+				} else if (isData && t == HTML.Tag.TR) {
+					if (this.dateString != null && this.timeString != null) {
+						try {
+							currentEntry.start = htmlTimeToLong(this.dateString, this.timeString);
+							ArrayList<MyEntry> list = this.entries.get(currentEntry.getKey());
+							if (list == null) {
+								list = new ArrayList<MyEntry>();
+								this.entries.put(currentEntry.getKey(), list);
 							}
+							list.add(currentEntry);
+						} catch (ParseException e) {
 						}
 					}
+					currentEntry = null;
+					isData = false;
 				}
 			}
 		}
@@ -370,38 +362,41 @@ public final class TVInfo extends Provider {
 			if (isFinished) {
 				return;
 			}
-			if (this.isHeader) {
-				String dataString = new String(data) ;
-				if (dataString.equals("Sender")) {
-					this.columnSender = colCount;
-				} else if (dataString.equals("Datum")) {
-					this.columnDatum = colCount;
-				} else if (dataString.equals("Uhrzeit")) {
-					this.columnUhrzeit = colCount;
-				} else if (dataString.equals(" ")) {
-					this.columnTitel = colCount;
+			if (this.isData && this.currentType != null) {
+
+				if (this.currentEntry == null) {
+					this.currentEntry = new MyEntry();
+					this.dateString = null;
+					this.timeString = null;
+					if (entries == null) {
+						entries = new HashMap<Long, ArrayList<MyEntry>>();
+					}
 				}
-			} else if (this.isData) {
 				String dataString = new String(data);
 
-				if (colCount == columnSender) {
-					this.actualEntry.channel = dataString;
-				} else if (colCount == columnTitel) {
-					this.actualEntry.title = dataString;
-				} else if (colCount == columnDatum) {
+				switch (this.currentType) {
+				case PROVIDER:
+					this.currentEntry.channel = dataString;
+					break;
+				case TITLE:
+					this.currentEntry.setTitle(dataString);
+					break;
+				case DATE:
 					this.dateString = dataString;
-				} else if (colCount == columnUhrzeit) {
+					break;
+				case START_TIME:
 					this.timeString = dataString;
+					break;
+				default:
+					break;
 				}
 			}
 		}
-
 	}
 
 	public void readMerklisteAndAddUnresolverEntries() {
 		String md5 = this.getMD5();
-		String completeURL = TVInfo.merkzettelURL + "&user=" + this.username
-				+ "&pass=" + md5;
+		String completeURL = TVInfo.merkzettelURL + "&user=" + this.username + "&pass=" + md5;
 
 		InputStream stream = null;
 
@@ -416,8 +411,7 @@ public final class TVInfo extends Provider {
 		MerkzettelParserCallback myCallBack = new MerkzettelParserCallback();
 
 		try {
-			new ParserDelegator().parse(new InputStreamReader(stream),
-					myCallBack, true);
+			new ParserDelegator().parse(new InputStreamReader(stream), myCallBack, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -434,16 +428,14 @@ public final class TVInfo extends Provider {
 			if (hashMap.containsKey(e.getKey())) {
 				ArrayList<MyEntry> entries = hashMap.get(e.getKey());
 
-				entries = dvbviewertimerimport.misc.Helper.getTheBestChoices(
-						e.toString(), entries, 0, 1, null);
+				entries = dvbviewertimerimport.misc.Helper.getTheBestChoices(e.toString(), entries, 0, 1, null);
 				if (entries.size() > 1) {
 					Log.out("Empty channelnname can't assigned to a entry of the Merkzettel (not unique), entry ignored");
 					continue;
 				}
 				e.channel = entries.get(0).channel;
-				Log.out(true,
-						"The entry with the empty channel name containig the title \""
-								+ e.title + "\" is assigned to: " + e.channel);
+				Log.out(true, "The entry with the empty channel name containig the title \"" + e.title
+						+ "\" is assigned to: " + e.channel);
 				try {
 					e.add();
 				} catch (ErrorClass e1) {
@@ -467,84 +459,67 @@ public final class TVInfo extends Provider {
 	public long htmlTimeToLong(String date, String time) throws ParseException {
 		int year = new GregorianCalendar(this.timeZone).get(Calendar.YEAR);
 		long now = new Date().getTime();
-		long d1 = htmlDateFormat.parse(
-				date + Integer.toString(year) + " " + time).getTime();
+		long d1 = htmlDateFormat.parse(date + Integer.toString(year) + " " + time).getTime();
 
 		if (d1 > now)
 			return d1;
 		else
-			return new Date(htmlDateFormat.parse(
-					date + Integer.toString(year + 1) + " " + time).getTime())
-					.getTime();
+			return new Date(htmlDateFormat.parse(date + Integer.toString(year + 1) + " " + time).getTime()).getTime();
 	}
 
-	public class System_EditSenderParserCallback extends
-			HTMLEditorKit.ParserCallback {
-		private boolean isAllSenderRead = false;
-		private boolean isOK = true;
-
-		private boolean isH1 = false;
-		private boolean isSenderAuswahl = false;
-		private boolean isTitle = false;
-		private boolean isChecked = false;
-
-		public boolean isOK() {
-			return this.isOK;
-		};
-
-		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			if (this.isAllSenderRead)
-				return;
-			if (t == HTML.Tag.H1)
-				this.isH1 = true;
-			else if (t == HTML.Tag.TITLE)
-				this.isTitle = true;
+	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback {
+		private boolean isUserSenderReading = false;
+		private boolean isUserSenderRead = false;
+		public boolean isUserSenderRead() {
+			return isUserSenderRead;
 		}
 
-		public void handleSimpleTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			if (!this.isSenderAuswahl)
+		private Integer divSender = null;
+		private int divCount = 0;
+
+		@Override
+		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
+			if (this.isUserSenderRead)
 				return;
-			if (t == HTML.Tag.IMG) {
-				String channelName = (String) a
-						.getAttribute(HTML.Attribute.ALT);
-				Channel c = createChannel(channelName, "");
-				allSender.add(c);
-				if (this.isChecked)
-					userSender.add(channelName);
-			}
-			if (t == HTML.Tag.INPUT) {
-				if (a.containsAttribute(HTML.Attribute.VALUE,
-						"Änderungen speichern")) {
-					this.isSenderAuswahl = false;
-					this.isAllSenderRead = true;
-				} else if (this.isSenderAuswahl
-						&& a.containsAttribute(HTML.Attribute.TYPE, "checkbox")) {
-					if (a.isDefined(HTML.Attribute.CHECKED))
-						this.isChecked = true;
-					else
-						this.isChecked = false;
+			if (t == HTML.Tag.DIV) {
+				if (a.containsAttribute(HTML.Attribute.ID, "myBroadcaster")) {
+					this.isUserSenderReading = true;
+				}
+				if (this.isUserSenderReading) {
+					++this.divCount;
+					if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
+						this.divSender = this.divCount;
+					}
 				}
 			}
 		}
 
+		@Override
 		public void handleEndTag(HTML.Tag t, int pos) {
-			if (this.isAllSenderRead)
+			if (this.isUserSenderRead )
 				return;
-			if (t == HTML.Tag.H1)
-				this.isH1 = false;
-			else if (t == HTML.Tag.TITLE)
-				this.isTitle = false;
+			if (t == HTML.Tag.DIV && ( this.isUserSenderReading  ) ) {
+				--this.divCount;
+				if ( this.divCount == 0 ) {
+					if ( this.isUserSenderReading ) {
+						this.isUserSenderRead = true ;
+						this.isUserSenderReading = false ;
+					}
+				} else if ( this.divSender != null && this.divSender > this.divCount ) {
+					this.divSender = null ;
+				}
+			}
+
 		}
 
+		@Override
 		public void handleText(char[] data, int pos) {
-			if (isTitle) {
-				String title = new String(data);
-				if (!title.contains("Sender konfigurieren"))
-					this.isOK = false;
-			}
-			if (this.isH1) {
-				if (new String(data).equals("Senderauswahl"))
-					this.isSenderAuswahl = true;
+			if (this.divSender != null && this.divSender == this.divCount) {
+				String sender = new String(data);
+
+				if (this.isUserSenderReading) {
+					userSender.add(sender);
+				}
 			}
 		}
 	}
@@ -555,8 +530,7 @@ public final class TVInfo extends Provider {
 
 		String md5 = this.getMD5();
 
-		String completeURL = TVInfo.senderURL + "?user=" + this.username
-				+ "&pass=" + this.getMD5();
+		String completeURL = TVInfo.senderURL + "?user=" + this.username + "&pass=" + this.getMD5();
 
 		InputStream stream = null;
 
@@ -571,13 +545,12 @@ public final class TVInfo extends Provider {
 		System_EditSenderParserCallback myCallBack = new System_EditSenderParserCallback();
 
 		try {
-			new ParserDelegator().parse(new InputStreamReader(stream),
-					myCallBack, true);
+			new ParserDelegator().parse(new InputStreamReader(stream), myCallBack, true);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (!myCallBack.isOK()) {
+		if (!myCallBack.isUserSenderRead()) {
 			this.allSender = null;
 			Log.out("TVInfo pages are modified. Get a new version if available");
 

@@ -21,6 +21,7 @@ import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
@@ -35,6 +36,8 @@ public class TVGenial extends Provider {
 	private static final String PATH_LOGO_FILE     = "TVGenial/Logo.png" ;
 	private static final String PATH_RECORDER_FILE = "TVGenial/recorder.ini" ;
 	private static final String PATH_SETUP_FILE    = "TVGenial/Setup.ini" ;
+	private static final String REG_ROOT           = "HKEY_CURRENT_USER\\Software\\ARAKON-Systems\\TVgenial" ;
+	private static final String REG_ROOT5          = REG_ROOT + "5" ;
 
 	private final SimpleDateFormat dateFormat ;
 	
@@ -49,7 +52,12 @@ public class TVGenial extends Provider {
 		this.canAddChannel = false ;
 		this.canImport = true ;
 		
-		this.isFunctional = null != Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		String installDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
+		if ( installDir == null) {
+			installDir = Registry.getValue( REG_ROOT5, "InstallDir" ) ;
+		}
+		
+		this.isFunctional = null != installDir ;
 	}
 
  @Override
@@ -71,9 +79,9 @@ public class TVGenial extends Provider {
 	@Override
 	public boolean install()
 	{
-		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		String programDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
 		if ( programDir == null ) {
-			programDir = Registry.getValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial5", "InstallDir") ;
+			programDir = Registry.getValue( REG_ROOT5 , "InstallDir") ;
 		}
 		if ( programDir == null )
 		{
@@ -90,16 +98,20 @@ public class TVGenial extends Provider {
 		
 		ArrayList< String[] > keyList = new ArrayList< String[] >() ;
 		
-		String [] stringSet = new String[ 2 ] ;
+		String javaHome = System.getProperty("java.home");
 		
-		stringSet[0] = "%JAR_File%" ;
-		stringSet[1] = jarFile ;
-		
+		String [] stringSet = new String[]{ "%JAR_File%", jarFile } ;
+		keyList.add( stringSet ) ;
+
+		stringSet = new String[]{ "%JAVA_Home%", javaHome } ;
+		keyList.add( stringSet ) ;
+
+		stringSet = new String[]{ "%PLUGIN_version%", Versions.getVersion() } ;
 		keyList.add( stringSet ) ;
 				
 		ResourceManager.copyFile( file.getPath(), PATH_SCRIPT_FILE, keyList, true ) ;
 		ResourceManager.copyBinaryFile( file.getPath(), PATH_LOGO_FILE ) ;
-		ResourceManager.copyFile( file.getPath(), PATH_RECORDER_FILE ) ;
+		ResourceManager.copyFile( file.getPath(), PATH_RECORDER_FILE, keyList, true ) ;
 		ResourceManager.copyFile( file.getPath(), PATH_SETUP_FILE ) ;
 		
 		return true ;
@@ -107,9 +119,9 @@ public class TVGenial extends Provider {
 	@Override
 	public boolean uninstall()
 	{
-		String programDir = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "InstallDir" ) ;
+		String programDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
 		if ( programDir == null ) {
-			programDir = Registry.getValue("HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial5", "InstallDir") ;
+			programDir = Registry.getValue( REG_ROOT5, "InstallDir") ;
 		}
 		if ( programDir == null )
 		{
