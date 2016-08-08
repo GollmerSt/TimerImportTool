@@ -27,7 +27,7 @@ public class Tuner {
 	private byte  satModulationSystem ; // 0 = DVB-S, 1 = DVB-S2
 										// SatModulationSystem is deprecated! Only set for compatibility
 	private byte  flags ;				// Bit 0: 1 = encrypted channel
-										// Bit 1: 1 = don't display EPG on What's Now Tab & in Timeline
+										// Bit 1: 1 = Don't update automatically
 										// Bit 2: 1 = channel broadcasts RDS data
 										// Bit 3: 1 = channels is a video service (even if the Video PID is temporarily = 0)
 										// Bit 4: 1 = channel is an audio service (even if the Audio PID is temporarily = 0)

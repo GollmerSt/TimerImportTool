@@ -43,7 +43,8 @@ public final class TVInfo extends Provider {
 
 	private static final boolean DEBUG = false;
 
-	//private static final String senderURL = "http://www.tvinfo.de/system/_editSender.php";
+	// private static final String senderURL =
+	// "http://www.tvinfo.de/system/_editSender.php";
 	private static final String senderURL = "http://www.tvinfo.de/sender"; // todo
 	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200";
 
@@ -470,6 +471,9 @@ public final class TVInfo extends Provider {
 	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback {
 		private boolean isUserSenderReading = false;
 		private boolean isUserSenderRead = false;
+		private boolean isUnusedSenderReading = false;
+		private boolean isUnusedSenderRead = false;
+
 		public boolean isUserSenderRead() {
 			return isUserSenderRead;
 		}
@@ -479,16 +483,29 @@ public final class TVInfo extends Provider {
 
 		@Override
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			if (this.isUserSenderRead)
-				return;
-			if (t == HTML.Tag.DIV) {
-				if (a.containsAttribute(HTML.Attribute.ID, "myBroadcaster")) {
-					this.isUserSenderReading = true;
+			if (!this.isUserSenderRead) {
+				if (t == HTML.Tag.DIV) {
+					if (a.containsAttribute(HTML.Attribute.ID, "myBroadcaster")) {
+						this.isUserSenderReading = true;
+					}
+					if (this.isUserSenderReading) {
+						++this.divCount;
+						if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
+							this.divSender = this.divCount;
+						}
+					}
 				}
-				if (this.isUserSenderReading) {
-					++this.divCount;
-					if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
-						this.divSender = this.divCount;
+			}
+			if (!this.isUnusedSenderRead) {
+				if (t == HTML.Tag.DIV) {
+					if (a.containsAttribute(HTML.Attribute.ID, "notUsedBroadcaster")) {
+						this.isUnusedSenderReading = true;
+					}
+					if (this.isUnusedSenderReading) {
+						++this.divCount;
+						if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
+							this.divSender = this.divCount;
+						}
 					}
 				}
 			}
@@ -496,17 +513,21 @@ public final class TVInfo extends Provider {
 
 		@Override
 		public void handleEndTag(HTML.Tag t, int pos) {
-			if (this.isUserSenderRead )
+			if (this.isUserSenderRead)
 				return;
-			if (t == HTML.Tag.DIV && ( this.isUserSenderReading  ) ) {
+			if (t == HTML.Tag.DIV && (this.isUserSenderReading)) {
 				--this.divCount;
-				if ( this.divCount == 0 ) {
-					if ( this.isUserSenderReading ) {
-						this.isUserSenderRead = true ;
-						this.isUserSenderReading = false ;
+				if (this.divCount == 0) {
+					if (this.isUserSenderReading) {
+						this.isUserSenderRead = true;
+						this.isUserSenderReading = false;
 					}
-				} else if ( this.divSender != null && this.divSender > this.divCount ) {
-					this.divSender = null ;
+					if (this.isUnusedSenderReading) {
+						this.isUnusedSenderRead = true;
+						this.isUnusedSenderReading = false;
+					}
+				} else if (this.divSender != null && this.divSender > this.divCount) {
+					this.divSender = null;
 				}
 			}
 
@@ -519,6 +540,10 @@ public final class TVInfo extends Provider {
 
 				if (this.isUserSenderReading) {
 					userSender.add(sender);
+				}
+				if (this.isUserSenderReading || this.isUnusedSenderReading) {
+					Channel c = createChannel(sender, "");
+					allSender.add(c);
 				}
 			}
 		}
