@@ -47,6 +47,7 @@ public final class TVInfo extends Provider {
 	// "http://www.tvinfo.de/system/_editSender.php";
 	private static final String senderURL = "http://www.tvinfo.de/sender"; // todo
 	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200";
+	private static final String senderXmlUrl = "http://www.tvinfo.de/external/openCal/stations.php?username=";
 
 	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>("epg_schedule",
 			"epg_schedule_entry");

@@ -1,0 +1,1550 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--http://www.tvinfo.de/external/openCal/stations.php?username=...-->
+<stations version="1.0" encoding="UTF-8">
+	<station selected="selected">
+		<id>37</id>
+		<name>ARD - Das Erste</name>
+		<altnames>
+			<altname>ARD - Das Erste</altname>
+			<altname>ARD</altname>
+			<altname>ard</altname>
+			<altname>Das Erste</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>36</id>
+		<name>ZDF</name>
+		<altnames>
+			<altname>ZDF</altname>
+			<altname>zdf</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>23</id>
+		<name>RTL</name>
+		<altnames>
+			<altname>RTL</altname>
+			<altname>rtl</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>22</id>
+		<name>Pro7</name>
+		<altnames>
+			<altname>Pro7</altname>
+			<altname>PRO7</altname>
+			<altname>pro7</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>38</id>
+		<name>Sat1</name>
+		<altnames>
+			<altname>Sat1</altname>
+			<altname>SAT1</altname>
+			<altname>sat1</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>12</id>
+		<name>Kabel1</name>
+		<altnames>
+			<altname>Kabel1</altname>
+			<altname>K1</altname>
+			<altname>kabel1</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>24</id>
+		<name>RTL2</name>
+		<altnames>
+			<altname>RTL2</altname>
+			<altname>rtl2</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>25</id>
+		<name>SRTL</name>
+		<altnames>
+			<altname>SRTL</altname>
+			<altname>RTLS</altname>
+			<altname>srtl</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>32</id>
+		<name>VIVA</name>
+		<altnames>
+			<altname>VIVA</altname>
+			<altname>VIVA1</altname>
+			<altname>viva</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>34</id>
+		<name>VOX</name>
+		<altnames>
+			<altname>VOX</altname>
+			<altname>vox</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>152</id>
+		<name>Tele 5</name>
+		<altnames>
+			<altname>Tele 5</altname>
+			<altname>tele-5</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>322</id>
+		<name>ServusTV</name>
+		<altnames>
+			<altname>ServusTV</altname>
+			<altname>servustv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>226</id>
+		<name>Comedy Central</name>
+		<altnames>
+			<altname>Comedy Central</altname>
+			<altname>COMEDY CENTRAL</altname>
+			<altname>comedy-central</altname>
+			<altname>NICK/COMEDY</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>541</id>
+		<name>Family TV</name>
+		<altnames>
+			<altname>Family TV</altname>
+			<altname>FamilyTV</altname>
+			<altname>familytv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>542</id>
+		<name>Zee.One</name>
+		<altnames>
+			<altname>Zee.One</altname>
+			<altname>ZeeOne</altname>
+			<altname>zeeone</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>2</id>
+		<name>3sat</name>
+		<altnames>
+			<altname>3sat</altname>
+			<altname>3SAT</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>9</id>
+		<name>EinsPlus</name>
+		<altnames>
+			<altname>EinsPlus</altname>
+			<altname>einsplus</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>100</id>
+		<name>DW-tv</name>
+		<altnames>
+			<altname>DW-tv</altname>
+			<altname>dw-tv</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>51</id>
+		<name>ZDFneo</name>
+		<altnames>
+			<altname>ZDFneo</altname>
+			<altname>zdfneo</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>3</id>
+		<name>ARD-alpha</name>
+		<altnames>
+			<altname>ARD-alpha</altname>
+			<altname>ALPHA</altname>
+			<altname>ard-alpha</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>4</id>
+		<name>arte</name>
+		<altnames>
+			<altname>arte</altname>
+			<altname>ARTE</altname>
+			<altname>arte HD</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>8</id>
+		<name>EinsFestival</name>
+		<altnames>
+			<altname>EinsFestival</altname>
+			<altname>einsfestival</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>91</id>
+		<name>ZDF Kultur</name>
+		<altnames>
+			<altname>ZDF Kultur</altname>
+			<altname>ZDF KULTUR</altname>
+			<altname>zdfkultur</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>516</id>
+		<name>Welt der Wunder</name>
+		<altnames>
+			<altname>Welt der Wunder</altname>
+			<altname>WeltDerWunderTV</altname>
+			<altname>welt-der-wunder</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>20</id>
+		<name>Phoenix</name>
+		<altnames>
+			<altname>Phoenix</altname>
+			<altname>PHOENIX</altname>
+			<altname>phoenix</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>123</id>
+		<name>BBC</name>
+		<altnames>
+			<altname>BBC</altname>
+			<altname>bbc</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>40</id>
+		<name>N24</name>
+		<altnames>
+			<altname>N24</altname>
+			<altname>n24</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>133</id>
+		<name>ZDFinfokanal</name>
+		<altnames>
+			<altname>ZDFinfokanal</altname>
+			<altname>ZDF Info</altname>
+			<altname>zdfinfokanal</altname>
+			<altname>ZDFinfo</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>183</id>
+		<name>CNBC</name>
+		<altnames>
+			<altname>CNBC</altname>
+			<altname>cnbc</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>81</id>
+		<name>n-tv</name>
+		<altnames>
+			<altname>n-tv</altname>
+			<altname>NTV</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>93</id>
+		<name>CNN</name>
+		<altnames>
+			<altname>CNN</altname>
+			<altname>cnn</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>94</id>
+		<name>EuroNews</name>
+		<altnames>
+			<altname>EuroNews</altname>
+			<altname>EURONEWS</altname>
+			<altname>euronews</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>98</id>
+		<name>BloombergTV</name>
+		<altnames>
+			<altname>BloombergTV</altname>
+			<altname>bloombergtv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>112</id>
+		<name>Tagesschau24</name>
+		<altnames>
+			<altname>Tagesschau24</altname>
+			<altname>tagesschau24</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>231</id>
+		<name>DMAX</name>
+		<altnames>
+			<altname>DMAX</altname>
+			<altname>dmax</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>323</id>
+		<name>sixx</name>
+		<altnames>
+			<altname>sixx</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>460</id>
+		<name>RTL Nitro</name>
+		<altnames>
+			<altname>RTL Nitro</altname>
+			<altname>rtl-nitro</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>501</id>
+		<name>RTLplus</name>
+		<altnames>
+			<altname>RTLplus</altname>
+			<altname>rtlplus</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>491</id>
+		<name>ProSieben MAXX</name>
+		<altnames>
+			<altname>ProSieben MAXX</altname>
+			<altname>pro7-maxx</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>511</id>
+		<name>TLC</name>
+		<altnames>
+			<altname>TLC</altname>
+			<altname>tlc</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>13</id>
+		<name>Ki.Ka</name>
+		<altnames>
+			<altname>Ki.Ka</altname>
+			<altname>KKA</altname>
+			<altname>ki.ka</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>61</id>
+		<name>Disney Channel</name>
+		<altnames>
+			<altname>Disney Channel</altname>
+			<altname>Disney Channel Free TV</altname>
+			<altname>disney-channel</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>230</id>
+		<name>Anixe HD</name>
+		<altnames>
+			<altname>Anixe HD</altname>
+			<altname>ANIXE HD</altname>
+			<altname>anixe-hd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>475</id>
+		<name>Sat1 Gold</name>
+		<altnames>
+			<altname>Sat1 Gold</altname>
+			<altname>Sat1Gold</altname>
+			<altname>sat1gold</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>533</id>
+		<name>Ric TV</name>
+		<altnames>
+			<altname>Ric TV</altname>
+			<altname>RIC</altname>
+			<altname>ric</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>513</id>
+		<name>joiz</name>
+		<altnames>
+			<altname>joiz</altname>
+			<altname>joiz Deutschland</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>5</id>
+		<name>RBB</name>
+		<altnames>
+			<altname>RBB</altname>
+			<altname>rbb</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>6</id>
+		<name>BR</name>
+		<altnames>
+			<altname>BR</altname>
+			<altname>BFS</altname>
+			<altname>br</altname>
+			<altname>Bayerisches FS Süd</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>11</id>
+		<name>HR</name>
+		<altnames>
+			<altname>HR</altname>
+			<altname>HF</altname>
+			<altname>hr</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>14</id>
+		<name>MDR</name>
+		<altnames>
+			<altname>MDR</altname>
+			<altname>mdr</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>15</id>
+		<name>NDR</name>
+		<altnames>
+			<altname>NDR</altname>
+			<altname>N3</altname>
+			<altname>ndr</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>31</id>
+		<name>münchen.tv</name>
+		<altnames>
+			<altname>münchen.tv</altname>
+			<altname>Muenchen TV</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>35</id>
+		<name>WDR</name>
+		<altnames>
+			<altname>WDR</altname>
+			<altname>wdr</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>44</id>
+		<name>SWR</name>
+		<altnames>
+			<altname>SWR</altname>
+			<altname>swr</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>218</id>
+		<name>OTV</name>
+		<altnames>
+			<altname>OTV</altname>
+			<altname>otv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>186</id>
+		<name>TV Franken</name>
+		<altnames>
+			<altname>TV Franken</altname>
+			<altname>tv-franken</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>216</id>
+		<name>TIDE</name>
+		<altnames>
+			<altname>TIDE</altname>
+			<altname>tide</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>182</id>
+		<name>TVBerlin</name>
+		<altnames>
+			<altname>TVBerlin</altname>
+			<altname>tvberlin</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>113</id>
+		<name>HH1</name>
+		<altnames>
+			<altname>HH1</altname>
+			<altname>hh1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>145</id>
+		<name>Spreekanal</name>
+		<altnames>
+			<altname>Spreekanal</altname>
+			<altname>spreekanal</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>192</id>
+		<name>rheinmaintv</name>
+		<altnames>
+			<altname>rheinmaintv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>203</id>
+		<name>RNFplus</name>
+		<altnames>
+			<altname>RNFplus</altname>
+			<altname>rnfplus</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>232</id>
+		<name>münchen 2</name>
+		<altnames>
+			<altname>münchen 2</altname>
+			<altname>muenchen2</altname>
+			<altname>münchen-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>229</id>
+		<name>intv</name>
+		<altnames>
+			<altname>intv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>10</id>
+		<name>Eurosport</name>
+		<altnames>
+			<altname>Eurosport</altname>
+			<altname>EUROSPORT</altname>
+			<altname>eurosport</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>320</id>
+		<name>Sport1</name>
+		<altnames>
+			<altname>Sport1</altname>
+			<altname>sport1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>520</id>
+		<name>Sport1+</name>
+		<altnames>
+			<altname>Sport1+</altname>
+			<altname>SP1PLU</altname>
+			<altname>sport1plus</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>131</id>
+		<name>Home Shopping Europe</name>
+		<altnames>
+			<altname>Home Shopping Europe</altname>
+			<altname>home-shopping-europe</altname>
+			<altname>HSE</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>132</id>
+		<name>QVC</name>
+		<altnames>
+			<altname>QVC</altname>
+			<altname>qvc</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>351</id>
+		<name>Channel 21</name>
+		<altnames>
+			<altname>Channel 21</altname>
+			<altname>CHANNEL21SHOP</altname>
+			<altname>channel21</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>357</id>
+		<name>Sonnenklar TV</name>
+		<altnames>
+			<altname>Sonnenklar TV</altname>
+			<altname>SKLAR</altname>
+			<altname>sonnenklar-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>191</id>
+		<name>Bibel TV</name>
+		<altnames>
+			<altname>Bibel TV</altname>
+			<altname>bibel-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>365</id>
+		<name>K TV</name>
+		<altnames>
+			<altname>K TV</altname>
+			<altname>K-TV</altname>
+			<altname>ktv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>17</id>
+		<name>ORF1</name>
+		<altnames>
+			<altname>ORF1</altname>
+			<altname>orf1</altname>
+		</altnames>
+	</station>
+	<station selected="selected">
+		<id>18</id>
+		<name>ORF2</name>
+		<altnames>
+			<altname>ORF2</altname>
+			<altname>orf2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>27</id>
+		<name>TSR1</name>
+		<altnames>
+			<altname>TSR1</altname>
+			<altname>TSR</altname>
+			<altname>tsr1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>28</id>
+		<name>TSR2</name>
+		<altnames>
+			<altname>TSR2</altname>
+			<altname>tsr2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>42</id>
+		<name>SFR2</name>
+		<altnames>
+			<altname>SFR2</altname>
+			<altname>SF2</altname>
+			<altname>sfr2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>41</id>
+		<name>SFR1</name>
+		<altnames>
+			<altname>SFR1</altname>
+			<altname>SF1</altname>
+			<altname>sfr1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>185</id>
+		<name>Belgien 1</name>
+		<altnames>
+			<altname>Belgien 1</altname>
+			<altname>belgien-1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>102</id>
+		<name>RTL Lux</name>
+		<altnames>
+			<altname>RTL Lux</altname>
+			<altname>RTL LUX</altname>
+			<altname>rtl-lux</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>103</id>
+		<name>NL 1</name>
+		<altnames>
+			<altname>NL 1</altname>
+			<altname>NL1</altname>
+			<altname>nl-1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>104</id>
+		<name>NL 2</name>
+		<altnames>
+			<altname>NL 2</altname>
+			<altname>NL2</altname>
+			<altname>nl-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>105</id>
+		<name>NL 3</name>
+		<altnames>
+			<altname>NL 3</altname>
+			<altname>NL3</altname>
+			<altname>nl-3</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>108</id>
+		<name>ATV</name>
+		<altnames>
+			<altname>ATV</altname>
+			<altname>atv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>109</id>
+		<name>DR1</name>
+		<altnames>
+			<altname>DR1</altname>
+			<altname>dr1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>110</id>
+		<name>DR2</name>
+		<altnames>
+			<altname>DR2</altname>
+			<altname>dr2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>146</id>
+		<name>TV Slovenija 1</name>
+		<altnames>
+			<altname>TV Slovenija 1</altname>
+			<altname>tv-slovenija-1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>147</id>
+		<name>TV Slovenija 2</name>
+		<altnames>
+			<altname>TV Slovenija 2</altname>
+			<altname>tv-slovenija-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>202</id>
+		<name>PULS4</name>
+		<altnames>
+			<altname>PULS4</altname>
+			<altname>PU4</altname>
+			<altname>puls4</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>176</id>
+		<name>gotv</name>
+		<altnames>
+			<altname>gotv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>29</id>
+		<name>TV5</name>
+		<altnames>
+			<altname>TV5</altname>
+			<altname>tv5</altname>
+			<altname>TV5MONDE EUROPE</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>206</id>
+		<name>RSI LA 1</name>
+		<altnames>
+			<altname>RSI LA 1</altname>
+			<altname>TSI1</altname>
+			<altname>rsi-la1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>207</id>
+		<name>RSI LA 2</name>
+		<altnames>
+			<altname>RSI LA 2</altname>
+			<altname>TSI2</altname>
+			<altname>rsi-la2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>208</id>
+		<name>TV 2</name>
+		<altnames>
+			<altname>TV 2</altname>
+			<altname>tv-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>369</id>
+		<name>RTL TVI</name>
+		<altnames>
+			<altname>RTL TVI</altname>
+			<altname>rtl-tvi</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>368</id>
+		<name>DMC.TV</name>
+		<altnames>
+			<altname>DMC.TV</altname>
+			<altname>DMC</altname>
+			<altname>dmc</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>372</id>
+		<name>Okto.TV</name>
+		<altnames>
+			<altname>Okto.TV</altname>
+			<altname>okto</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>371</id>
+		<name>Super RTL CH</name>
+		<altnames>
+			<altname>Super RTL CH</altname>
+			<altname>SRTLCH</altname>
+			<altname>super-rtl-ch</altname>
+			<altname>SUPER RTL</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>441</id>
+		<name>ATV2</name>
+		<altnames>
+			<altname>ATV2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>449</id>
+		<name>ORF 3</name>
+		<altnames>
+			<altname>ORF 3</altname>
+			<altname>ORF III</altname>
+			<altname>orf3</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>451</id>
+		<name>ORF Sport Plus</name>
+		<altnames>
+			<altname>ORF Sport Plus</altname>
+			<altname>ORF SPORT PLUS</altname>
+			<altname>orf-sport</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>481</id>
+		<name>TRT</name>
+		<altnames>
+			<altname>TRT</altname>
+			<altname>trt</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>193</id>
+		<name>Animal Planet</name>
+		<altnames>
+			<altname>Animal Planet</altname>
+			<altname>ANIMAL PLANET</altname>
+			<altname>animal-planet</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>471</id>
+		<name>Pro Sieben Fun</name>
+		<altnames>
+			<altname>Pro Sieben Fun</altname>
+			<altname>ProSiebenFun</altname>
+			<altname>prosiebenfun</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>46</id>
+		<name>MTV</name>
+		<altnames>
+			<altname>MTV</altname>
+			<altname>mtv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>52</id>
+		<name>13th Street</name>
+		<altnames>
+			<altname>13th Street</altname>
+			<altname>13TH STREET</altname>
+			<altname>13th-street</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>58</id>
+		<name>Classica</name>
+		<altnames>
+			<altname>Classica</altname>
+			<altname>CLASSICA</altname>
+			<altname>classica</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>60</id>
+		<name>Discovery Channel</name>
+		<altnames>
+			<altname>Discovery Channel</altname>
+			<altname>DISCOVERY CHANNEL</altname>
+			<altname>discovery-channel</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>68</id>
+		<name>Goldstar TV</name>
+		<altnames>
+			<altname>Goldstar TV</altname>
+			<altname>GOLDSTAR TV</altname>
+			<altname>goldstar-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>70</id>
+		<name>Junior</name>
+		<altnames>
+			<altname>Junior</altname>
+			<altname>JUNIOR</altname>
+			<altname>junior</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>73</id>
+		<name>Planet</name>
+		<altnames>
+			<altname>Planet</altname>
+			<altname>PLANET</altname>
+			<altname>planet</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>217</id>
+		<name>Nick</name>
+		<altnames>
+			<altname>Nick</altname>
+			<altname>NICK</altname>
+			<altname>nick</altname>
+			<altname>NICK/COMEDY</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>430</id>
+		<name>nicktoons</name>
+		<altnames>
+			<altname>nicktoons</altname>
+			<altname>NickToons</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>106</id>
+		<name>Beate Uhse TV</name>
+		<altnames>
+			<altname>Beate Uhse TV</altname>
+			<altname>BEATE-UHSE.TV</altname>
+			<altname>beate-uhse-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>509</id>
+		<name>SKY HD 3D</name>
+		<altnames>
+			<altname>SKY HD 3D</altname>
+			<altname>SKY HD-3D</altname>
+			<altname>sky-hd-3d</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>219</id>
+		<name>Discovery HD</name>
+		<altnames>
+			<altname>Discovery HD</altname>
+			<altname>DISCOVERY HD</altname>
+			<altname>discovery-hd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>519</id>
+		<name>GEO Television</name>
+		<altnames>
+			<altname>GEO Television</altname>
+			<altname>GEOTelevision</altname>
+			<altname>geo-television</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>172</id>
+		<name>Heimatkanal</name>
+		<altnames>
+			<altname>Heimatkanal</altname>
+			<altname>HEIMATKANAL</altname>
+			<altname>heimatkanal</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>517</id>
+		<name>Universal Channel</name>
+		<altnames>
+			<altname>Universal Channel</altname>
+			<altname>universal-channel</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>181</id>
+		<name>MGM</name>
+		<altnames>
+			<altname>MGM</altname>
+			<altname>mgm</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>188</id>
+		<name>Syfy</name>
+		<altnames>
+			<altname>Syfy</altname>
+			<altname>SCI FI</altname>
+			<altname>syfy</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>189</id>
+		<name>Extreme Sports Channel</name>
+		<altnames>
+			<altname>Extreme Sports Channel</altname>
+			<altname>extreme-sports-channel</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>196</id>
+		<name>Blue Movie 1</name>
+		<altnames>
+			<altname>Blue Movie 1</altname>
+			<altname>BLUE MOVIE 1</altname>
+			<altname>blue-movie1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>302</id>
+		<name>History HD</name>
+		<altnames>
+			<altname>History HD</altname>
+			<altname>HISTORY HD</altname>
+			<altname>historyhd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>408</id>
+		<name>Disney XD</name>
+		<altnames>
+			<altname>Disney XD</altname>
+			<altname>DISNEY XD</altname>
+			<altname>disneyxd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>234</id>
+		<name>Eurosport 2</name>
+		<altnames>
+			<altname>Eurosport 2</altname>
+			<altname>EUROS2</altname>
+			<altname>eurosport-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>235</id>
+		<name>Cartoon Network</name>
+		<altnames>
+			<altname>Cartoon Network</altname>
+			<altname>cartoon-network</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>237</id>
+		<name>FOX</name>
+		<altnames>
+			<altname>FOX</altname>
+			<altname>fox</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>239</id>
+		<name>Sky Action</name>
+		<altnames>
+			<altname>Sky Action</altname>
+			<altname>SKY ACTION</altname>
+			<altname>sky-action</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>241</id>
+		<name>Sky Cinema</name>
+		<altnames>
+			<altname>Sky Cinema</altname>
+			<altname>SKY CINEMA</altname>
+			<altname>sky-cinema</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>243</id>
+		<name>Sky Cinema +1</name>
+		<altnames>
+			<altname>Sky Cinema +1</altname>
+			<altname>SKY CINEMA +1</altname>
+			<altname>sky-cinema+1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>245</id>
+		<name>Sky Cinema +24</name>
+		<altnames>
+			<altname>Sky Cinema +24</altname>
+			<altname>SKY CINEMA +24</altname>
+			<altname>sky-cinema+24</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>247</id>
+		<name>Sky Cinema Hits</name>
+		<altnames>
+			<altname>Sky Cinema Hits</altname>
+			<altname>SKY CINEMA HITS</altname>
+			<altname>sky-cinema-hits</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>249</id>
+		<name>Sky Comedy</name>
+		<altnames>
+			<altname>Sky Comedy</altname>
+			<altname>SKY COMEDY</altname>
+			<altname>sky-comedy</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>251</id>
+		<name>Sky Emotion</name>
+		<altnames>
+			<altname>Sky Emotion</altname>
+			<altname>SKY EMOTION</altname>
+			<altname>sky-emotion</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>253</id>
+		<name>Sky Fussball Bundesliga</name>
+		<altnames>
+			<altname>Sky Fussball Bundesliga</altname>
+			<altname>sky-fussball-bundesliga</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>255</id>
+		<name>Sky Krimi</name>
+		<altnames>
+			<altname>Sky Krimi</altname>
+			<altname>SKY KRIMI</altname>
+			<altname>sky-krimi</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>257</id>
+		<name>Sky Nostalgie</name>
+		<altnames>
+			<altname>Sky Nostalgie</altname>
+			<altname>SKY NOSTALGIE</altname>
+			<altname>sky-nostalgie</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>259</id>
+		<name>Sky Sport 1</name>
+		<altnames>
+			<altname>Sky Sport 1</altname>
+			<altname>sky-sport-1</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>261</id>
+		<name>Sky Sport 2</name>
+		<altnames>
+			<altname>Sky Sport 2</altname>
+			<altname>sky-sport-2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>263</id>
+		<name>Sky Sport Austria</name>
+		<altnames>
+			<altname>Sky Sport Austria</altname>
+			<altname>SKY SPORT AUSTRIA</altname>
+			<altname>sky-sport-austria</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>264</id>
+		<name>Sky Select</name>
+		<altnames>
+			<altname>Sky Select</altname>
+			<altname>sky-select</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>265</id>
+		<name>Sky Sport HD</name>
+		<altnames>
+			<altname>Sky Sport HD</altname>
+			<altname>SKY SPORT HD</altname>
+			<altname>sky-sport-hd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>300</id>
+		<name>Disney Cinemagic</name>
+		<altnames>
+			<altname>Disney Cinemagic</altname>
+			<altname>DISNEY CINEMAGIC</altname>
+			<altname>disney-cinemagic</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>301</id>
+		<name>Motor Vision TV</name>
+		<altnames>
+			<altname>Motor Vision TV</altname>
+			<altname>MOTORVISION</altname>
+			<altname>motor-vision</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>303</id>
+		<name>Spiegel Geschichte</name>
+		<altnames>
+			<altname>Spiegel Geschichte</altname>
+			<altname>SPIEGEL GESCHICHTE</altname>
+			<altname>spiegel-geschichte</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>304</id>
+		<name>Kabel1 Classics</name>
+		<altnames>
+			<altname>Kabel1 Classics</altname>
+			<altname>kabel eins classics</altname>
+			<altname>kabel1-classics</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>305</id>
+		<name>TNT Serie</name>
+		<altnames>
+			<altname>TNT Serie</altname>
+			<altname>TNT SERIE</altname>
+			<altname>tnt-serie</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>306</id>
+		<name>VH-1 Classic</name>
+		<altnames>
+			<altname>VH-1 Classic</altname>
+			<altname>VH1 Classic</altname>
+			<altname>vh1-classic</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>307</id>
+		<name>AXN</name>
+		<altnames>
+			<altname>AXN</altname>
+			<altname>axn</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>308</id>
+		<name>Boomerang</name>
+		<altnames>
+			<altname>Boomerang</altname>
+			<altname>BOOMERANG</altname>
+			<altname>boomerang</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>311</id>
+		<name>RTL Crime</name>
+		<altnames>
+			<altname>RTL Crime</altname>
+			<altname>rtl-crime</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>312</id>
+		<name>RTL Living</name>
+		<altnames>
+			<altname>RTL Living</altname>
+			<altname>rtl-living</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>313</id>
+		<name>Romance TV</name>
+		<altnames>
+			<altname>Romance TV</altname>
+			<altname>romance-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>470</id>
+		<name>SAT1 Emotions</name>
+		<altnames>
+			<altname>SAT1 Emotions</altname>
+			<altname>SAT1Emotions</altname>
+			<altname>sat1emotions</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>316</id>
+		<name>TNT Film</name>
+		<altnames>
+			<altname>TNT Film</altname>
+			<altname>TNTFILM</altname>
+			<altname>tnt-film</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>317</id>
+		<name>RTL PASSION</name>
+		<altnames>
+			<altname>RTL PASSION</altname>
+			<altname>Passion</altname>
+			<altname>passion</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>318</id>
+		<name>History Channel</name>
+		<altnames>
+			<altname>History Channel</altname>
+			<altname>history-channel</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>353</id>
+		<name>Trace TV</name>
+		<altnames>
+			<altname>Trace TV</altname>
+			<altname>trace-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>355</id>
+		<name>MTV Hits</name>
+		<altnames>
+			<altname>MTV Hits</altname>
+			<altname>mtv-hits</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>356</id>
+		<name>MTV Dance</name>
+		<altnames>
+			<altname>MTV Dance</altname>
+			<altname>mtv-dance</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>359</id>
+		<name>Deutsches Wetterfernsehen</name>
+		<altnames>
+			<altname>Deutsches Wetterfernsehen</altname>
+			<altname>d-wetterfernsehen</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>361</id>
+		<name>Fashion TV</name>
+		<altnames>
+			<altname>Fashion TV</altname>
+			<altname>FASHIONTVHD</altname>
+			<altname>fashion-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>362</id>
+		<name>Gute Laune TV</name>
+		<altnames>
+			<altname>Gute Laune TV</altname>
+			<altname>gute-laune-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>363</id>
+		<name>Motors TV</name>
+		<altnames>
+			<altname>Motors TV</altname>
+			<altname>motors-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>364</id>
+		<name>Silverline</name>
+		<altnames>
+			<altname>Silverline</altname>
+			<altname>silverline</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>435</id>
+		<name>BBC entertainment</name>
+		<altnames>
+			<altname>BBC entertainment</altname>
+			<altname>BBC ENTERTAINMENT</altname>
+			<altname>bbc-entertainment</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>440</id>
+		<name>BonGusto</name>
+		<altnames>
+			<altname>BonGusto</altname>
+			<altname>BONGUSTO</altname>
+			<altname>bongusto</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>406</id>
+		<name>National Geographic HD</name>
+		<altnames>
+			<altname>National Geographic HD</altname>
+			<altname>NGHD</altname>
+			<altname>national-geographic-hd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>401</id>
+		<name>NAT GEO WILD</name>
+		<altnames>
+			<altname>NAT GEO WILD</altname>
+			<altname>NGWILD</altname>
+			<altname>nat-geo-wild</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>266</id>
+		<name>SKY SPORT HD 2</name>
+		<altnames>
+			<altname>SKY SPORT HD 2</altname>
+			<altname>sky-sport-hd2</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>352</id>
+		<name>Nautical Channel</name>
+		<altnames>
+			<altname>Nautical Channel</altname>
+			<altname>nautical-channel</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>443</id>
+		<name>Disney Junior</name>
+		<altnames>
+			<altname>Disney Junior</altname>
+			<altname>DISNEY JUNIOR</altname>
+			<altname>disneyjunior</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>445</id>
+		<name>E! Entertainment (deu)</name>
+		<altnames>
+			<altname>E! Entertainment (deu)</altname>
+			<altname>EENTERTAINGER</altname>
+			<altname>e-entertainment-de</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>447</id>
+		<name>Kinowelt TV</name>
+		<altnames>
+			<altname>Kinowelt TV</altname>
+			<altname>kinowelt-tv</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>453</id>
+		<name>Playboy TV Europe</name>
+		<altnames>
+			<altname>Playboy TV Europe</altname>
+			<altname>PlayboyTvEurope</altname>
+			<altname>playboy-tv-europe</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>455</id>
+		<name>Spiegel TV Wissen</name>
+		<altnames>
+			<altname>Spiegel TV Wissen</altname>
+			<altname>spiegel-tv-wissen</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>477</id>
+		<name>TNT Comedy</name>
+		<altnames>
+			<altname>TNT Comedy</altname>
+			<altname>TNTComedy</altname>
+			<altname>tntcomedy</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>473</id>
+		<name>SKY Atlantic HD</name>
+		<altnames>
+			<altname>SKY Atlantic HD</altname>
+			<altname>SKY ATLANTIC HD</altname>
+			<altname>sky-atlantich-hd</altname>
+		</altnames>
+	</station>
+	<station>
+		<id>480</id>
+		<name>Sony Entertainment TV</name>
+		<altnames>
+			<altname>Sony Entertainment TV</altname>
+			<altname>SET</altname>
+			<altname>sony-entertainment-tv</altname>
+		</altnames>
+	</station>
+</stations>
