@@ -79,7 +79,7 @@ public class TimeOffsets  implements Cloneable
 		long offset = 0 ;
 		if ( this != generalTimeOffsets && this.useGlobal )
 			offset = this.getMax( time, 0, generalTimeOffsets.offsets, 1 ) ;
-		return this.getMax( time, offset, offsets, 1 ) ;
+		return this.getMax( time, offset, this.offsets, 1 ) ;
 	}
 	public static TimeOffsets getGeneralTimeOffsets() { return generalTimeOffsets ; } ;
 	public void writeXML( IndentingXMLStreamWriter sw ) throws XMLStreamException, ParseException
@@ -96,8 +96,8 @@ public class TimeOffsets  implements Cloneable
 		
 		sw.writeEndElement() ;
 	}
-	public OffsetEntry getOffset( int ix ) { return offsets.get( ix ) ; } ;
-	public int size() { return offsets.size() ; } ;
+	public OffsetEntry getOffset( int ix ) { return this.offsets.get( ix ) ; } ;
+	public int size() { return this.offsets.size() ; } ;
 	
 	public boolean getUseGlobal() { return this.useGlobal ; } ;
 	public void setUseGlobal( final boolean useGlobal ) { this.useGlobal = useGlobal ; } ;

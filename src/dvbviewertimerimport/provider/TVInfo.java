@@ -35,8 +35,10 @@ import javax.xml.transform.stream.StreamSource;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
-import dvbviewertimerimport.misc.*;
-import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Helper;
+import dvbviewertimerimport.misc.Html;
+import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.xml.StackXML;
 
 public final class TVInfo extends Provider {
@@ -47,7 +49,7 @@ public final class TVInfo extends Provider {
 	// "http://www.tvinfo.de/system/_editSender.php";
 	private static final String senderURL = "http://www.tvinfo.de/sender"; // todo
 	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200";
-	private static final String senderXmlUrl = "http://www.tvinfo.de/external/openCal/stations.php?username=";
+	//private static final String senderXmlUrl = "http://www.tvinfo.de/external/openCal/stations.php?username=";
 
 	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>("epg_schedule",
 			"epg_schedule_entry");
@@ -95,9 +97,9 @@ public final class TVInfo extends Provider {
 		this.dvbViewer = this.control.getDVBViewer();
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin");
 		this.dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		this.dateFormat.setTimeZone(timeZone);
+		this.dateFormat.setTimeZone(this.timeZone);
 		this.htmlDateFormat = new SimpleDateFormat("EE d.M.y H:m");
-		this.htmlDateFormat.setTimeZone(timeZone);
+		this.htmlDateFormat.setTimeZone(this.timeZone);
 	}
 
 	@Override
@@ -168,7 +170,7 @@ public final class TVInfo extends Provider {
 		private int textCount = 0;
 
 		public void setTitle(String title) {
-			if (textCount++ == 1 && title.equals(" ")) {
+			if (this.textCount++ == 1 && title.equals(" ")) {
 				title = " - ";
 			}
 			String[] array = title.split("\\r|\\n");
@@ -184,10 +186,10 @@ public final class TVInfo extends Provider {
 		}
 
 		public boolean add() {
-			if (channel == null || channel.length() == 0)
+			if (this.channel == null || this.channel.length() == 0)
 				return false;
-			dvbViewer.addNewEntry(getTVInfo(), providerID, channel, start, end, title);
-			solvedChannels.add(channel);
+			TVInfo.this.dvbViewer.addNewEntry(getTVInfo(), this.providerID, this.channel, this.start, this.end, this.title);
+			TVInfo.this.solvedChannels.add(this.channel);
 			return true;
 		}
 
@@ -200,25 +202,25 @@ public final class TVInfo extends Provider {
 				String value = a.getValue();
 				try {
 					if (attributeName.equals("channel") && !DEBUG)
-						channel = value;
+						this.channel = value;
 					else if (attributeName.equals("uid"))
-						providerID = value;
+						this.providerID = value;
 					else if (attributeName.equals("starttime"))
-						start = timeToLong(value);
+						this.start = timeToLong(value);
 					else if (attributeName.equals("endtime"))
-						end = timeToLong(value);
+						this.end = timeToLong(value);
 					else if (attributeName.equals("title"))
-						title = value;
+						this.title = value;
 				} catch (ParseException e) {
 					throw new ErrorClass(ev, "Illegal TVinfo time");
 				}
 			}
-			if ((start & end) == 0)
+			if ((this.start & this.end) == 0)
 				throw new ErrorClass(ev, "Error in  TVinfo data, start or end time not given");
 		}
 
 		public long getKey() {
-			return start;
+			return this.start;
 		}; // Changed from start to end in case of a started recording
 
 		@Override
@@ -317,13 +319,13 @@ public final class TVInfo extends Provider {
 
 		@Override
 		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			if (isFinished) {
+			if (this.isFinished) {
 				return;
 			}
 			if (t == HTML.Tag.TABLE) {
 				if (a.containsAttribute(HTML.Attribute.CLASS, "list")
 						&& a.containsAttribute(HTML.Attribute.ID, "reminderList")) {
-					isTableRead = true;
+					this.isTableRead = true;
 				}
 			} else if (this.isTableRead && t == HTML.Tag.TD) {
 				String stringId = (String) a.getAttribute(HTML.Attribute.CLASS);
@@ -334,34 +336,34 @@ public final class TVInfo extends Provider {
 
 		@Override
 		public void handleEndTag(HTML.Tag t, int pos) {
-			if (isFinished) {
+			if (this.isFinished) {
 				return;
 			}
-			if (isTableRead) {
+			if (this.isTableRead) {
 				if (t == HTML.Tag.TABLE) {
-					isFinished = true;
-				} else if (isData && t == HTML.Tag.TR) {
+					this.isFinished = true;
+				} else if (this.isData && t == HTML.Tag.TR) {
 					if (this.dateString != null && this.timeString != null) {
 						try {
-							currentEntry.start = htmlTimeToLong(this.dateString, this.timeString);
-							ArrayList<MyEntry> list = this.entries.get(currentEntry.getKey());
+							this.currentEntry.start = htmlTimeToLong(this.dateString, this.timeString);
+							ArrayList<MyEntry> list = this.entries.get(this.currentEntry.getKey());
 							if (list == null) {
 								list = new ArrayList<MyEntry>();
-								this.entries.put(currentEntry.getKey(), list);
+								this.entries.put(this.currentEntry.getKey(), list);
 							}
-							list.add(currentEntry);
+							list.add(this.currentEntry);
 						} catch (ParseException e) {
 						}
 					}
-					currentEntry = null;
-					isData = false;
+					this.currentEntry = null;
+					this.isData = false;
 				}
 			}
 		}
 
 		@Override
 		public void handleText(char[] data, int pos) {
-			if (isFinished) {
+			if (this.isFinished) {
 				return;
 			}
 			if (this.isData && this.currentType != null) {
@@ -370,8 +372,8 @@ public final class TVInfo extends Provider {
 					this.currentEntry = new MyEntry();
 					this.dateString = null;
 					this.timeString = null;
-					if (entries == null) {
-						entries = new HashMap<Long, ArrayList<MyEntry>>();
+					if (this.entries == null) {
+						this.entries = new HashMap<Long, ArrayList<MyEntry>>();
 					}
 				}
 				String dataString = new String(data);
@@ -452,7 +454,7 @@ public final class TVInfo extends Provider {
 	public long timeToLong(String time) throws ParseException {
 		// Workaround in case of a wrong time zone of the TVInfo output
 		// must be checked on summer time
-		Date d = new Date(dateFormat.parse(time).getTime()); // + 60 *60 * 1000)
+		Date d = new Date(this.dateFormat.parse(time).getTime()); // + 60 *60 * 1000)
 																// ;
 		// System.out.println(d.toString()) ;
 		return d.getTime();
@@ -461,12 +463,12 @@ public final class TVInfo extends Provider {
 	public long htmlTimeToLong(String date, String time) throws ParseException {
 		int year = new GregorianCalendar(this.timeZone).get(Calendar.YEAR);
 		long now = new Date().getTime();
-		long d1 = htmlDateFormat.parse(date + Integer.toString(year) + " " + time).getTime();
+		long d1 = this.htmlDateFormat.parse(date + Integer.toString(year) + " " + time).getTime();
 
 		if (d1 > now)
 			return d1;
 		else
-			return new Date(htmlDateFormat.parse(date + Integer.toString(year + 1) + " " + time).getTime()).getTime();
+			return new Date(this.htmlDateFormat.parse(date + Integer.toString(year + 1) + " " + time).getTime()).getTime();
 	}
 
 	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback {
@@ -476,7 +478,7 @@ public final class TVInfo extends Provider {
 		private boolean isUnusedSenderRead = false;
 
 		public boolean isUserSenderRead() {
-			return isUserSenderRead;
+			return this.isUserSenderRead;
 		}
 
 		private Integer divSender = null;
@@ -540,11 +542,11 @@ public final class TVInfo extends Provider {
 				String sender = new String(data);
 
 				if (this.isUserSenderReading) {
-					userSender.add(sender);
+					TVInfo.this.userSender.add(sender);
 				}
 				if (this.isUserSenderReading || this.isUnusedSenderReading) {
 					Channel c = createChannel(sender, "");
-					allSender.add(c);
+					TVInfo.this.allSender.add(c);
 				}
 			}
 		}

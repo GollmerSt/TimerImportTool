@@ -4,7 +4,14 @@
 	<classpathentry excluding="**/.svn/**" kind="src" path="rsc"/>
 	<classpathentry excluding="dvbviewertimerimport/DVBViewerTimerImport.java" kind="src" path="plugin"/>
 	<classpathentry kind="src" path="main"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib"/>
+	<classpathentry kind="lib" path="lib/jackcess-3.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.11.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

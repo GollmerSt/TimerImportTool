@@ -59,8 +59,8 @@ public class TimeGUIHelper {
 		public DayTimeEditor()
 		{
 			SpinnerDateModel model = new SpinnerDateModel(new Date(0), null, null, Calendar.MINUTE ) ;
-			spinner = new JSpinner( model ) ;
-			spinner.setEditor(new JSpinner.DateEditor(spinner, "HH:mm"));   	}
+			this.spinner = new JSpinner( model ) ;
+			this.spinner.setEditor(new JSpinner.DateEditor(this.spinner, "HH:mm"));   	}
 		@Override
 		public Component getTableCellEditorComponent(
 					JTable table,
@@ -73,12 +73,12 @@ public class TimeGUIHelper {
 			GregorianCalendar calendar = new GregorianCalendar( TimeZone.getTimeZone("GMT0") ) ;
 			calendar.setTimeInMillis( dayTime ) ;
 			Date value = calendar.getTime()  ;
-			spinner.setValue( value ) ;
-			return spinner ;
+			this.spinner.setValue( value ) ;
+			return this.spinner ;
 		}
 		@Override
 		public Object getCellEditorValue() {
-			long result = ((Date)spinner.getValue()).getTime() ;
+			long result = ((Date)this.spinner.getValue()).getTime() ;
 			return new Long( result ) ;
 		}
 		@Override
@@ -118,8 +118,8 @@ public class TimeGUIHelper {
 		public DateEditor()
 		{
 			SpinnerDateModel model = new SpinnerDateModel(new Date(0), null, null, Calendar.DATE ) ;
-			spinner = new JSpinner( model ) ;
-			spinner.setEditor(new JSpinner.DateEditor(spinner, dateString ));   	}
+			this.spinner = new JSpinner( model ) ;
+			this.spinner.setEditor(new JSpinner.DateEditor(this.spinner, dateString ));   	}
 		@Override
 		public Component getTableCellEditorComponent(
 					JTable table,
@@ -130,12 +130,12 @@ public class TimeGUIHelper {
 		{
 			long dayTime = ((Long)object).longValue() ;
 			Date value = new Date( dayTime )  ;
-			spinner.setValue( value ) ;
-			return spinner ;
+			this.spinner.setValue( value ) ;
+			return this.spinner ;
 		}
 		@Override
 		public Object getCellEditorValue() {
-			long result = ((Date)spinner.getValue()).getTime() ;
+			long result = ((Date)this.spinner.getValue()).getTime() ;
 			return new Long( result ) ;
 		}
 		@Override

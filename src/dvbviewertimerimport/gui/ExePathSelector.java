@@ -30,12 +30,12 @@ public class ExePathSelector
 	public boolean show()
 	{
 		File exeFile = null ;
-		String path = dvbViewer.getDVBExePath() ;
+		String path = this.dvbViewer.getDVBExePath() ;
 		exeFile = new File( path ) ;
-		chooser.setCurrentDirectory( exeFile ) ;
-		chooser.setDialogTitle( ResourceManager.msg( "SELECT_EXECUTABLLE" ) ) ;
-		chooser.setFileSelectionMode( JFileChooser.FILES_ONLY ) ;
-		chooser.setFileFilter( new FileFilter(){
+		this.chooser.setCurrentDirectory( exeFile ) ;
+		this.chooser.setDialogTitle( ResourceManager.msg( "SELECT_EXECUTABLLE" ) ) ;
+		this.chooser.setFileSelectionMode( JFileChooser.FILES_ONLY ) ;
+		this.chooser.setFileFilter( new FileFilter(){
 
 			@Override
 			public boolean accept(File f) {
@@ -47,12 +47,12 @@ public class ExePathSelector
 				// TODO Auto-generated method stub
 				return ResourceManager.msg( "PROGRAMS" ) ;
 			}} ) ;
-		int returnVal = chooser.showDialog( window, ResourceManager.msg( "SELECT" ) ) ;
+		int returnVal = this.chooser.showDialog( this.window, ResourceManager.msg( "SELECT" ) ) ;
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			File file = chooser.getSelectedFile() ;
+			File file = this.chooser.getSelectedFile() ;
 
-			dvbViewer.setDVBExePath( file.getAbsolutePath() ) ;
+			this.dvbViewer.setDVBExePath( file.getAbsolutePath() ) ;
 			return true ;
 		}
 		else

@@ -48,17 +48,17 @@ public class ChannelSet {
 	public Channel add( int type, String name, String id )
 	{
 		Channel channel = Provider.getProvider( type).createChannel( name, id ) ;
-		channels.add( channel ) ;
+		this.channels.add( channel ) ;
 		return channel ;
 	}
 	public Channel add( final Channel channel )
 	{
-		channels.add( channel ) ;
+		this.channels.add( channel ) ;
 		return channel ;
 	}
 	public void remove( int type )
 	{
-		for ( Iterator< Channel > it = channels.iterator() ; it.hasNext() ; )
+		for ( Iterator< Channel > it = this.channels.iterator() ; it.hasNext() ; )
 		{
 			Channel channel = it.next() ;
 			if ( channel.getType() == type )
@@ -69,7 +69,7 @@ public class ChannelSet {
 	public void setAutomaticAssigned( boolean val) { this.isAutomaticAssigned = val ; } ;
 	
 	public void setTimeOffsets( TimeOffsets timeOffsets ) { this.timeOffsets = timeOffsets ; }
-	public TimeOffsets getTimeOffsets() { return timeOffsets ; } ;
+	public TimeOffsets getTimeOffsets() { return this.timeOffsets ; } ;
 	public void setMerge( Merge merge ) { this.merge = merge ; } ;
 	public void setMerge( boolean merge )
 	{
@@ -83,10 +83,10 @@ public class ChannelSet {
 	public String getDVBViewerChannel() { return this.dvbViewerChannel ; } ;
 	public void setID( final long id ) { this.id = id ; } ;
 	public long getID() { return this.id ; } ;
-	public ArrayList< Channel > getChannels() { return channels ; } ;
+	public ArrayList< Channel > getChannels() { return this.channels ; } ;
 	public Channel getChannel( int providerID )
 	{
-		for ( Channel c : channels )
+		for ( Channel c : this.channels )
 		{
 			if ( c.getType() == providerID )
 				return c ;
@@ -97,7 +97,7 @@ public class ChannelSet {
 	{
 		sw.writeStartElement( "Channel" ) ;
 		  if ( this.id >= 0 )
-			  sw.writeAttribute( "id", Long.toString( id ) ) ;
+			  sw.writeAttribute( "id", Long.toString( this.id ) ) ;
 		  for ( Channel c : this.channels )
 			  c.writeXML( sw ) ;
 		

@@ -126,7 +126,7 @@ public abstract class Provider implements DVBViewerProvider {
 		this.isPrepared = !isOutDatedLimitsEnabled;
 		this.isSilent = silent;
 		if (isOutDatedLimitsEnabled) {
-			outDatedLimits = new OutDatedInfo(true);
+			this.outDatedLimits = new OutDatedInfo(true);
 		}
 		Provider.names.add(name);
 		Provider.providers.add(this);
@@ -257,11 +257,11 @@ public abstract class Provider implements DVBViewerProvider {
 	};
 
 	public boolean isFunctional() {
-		return isFunctional;
+		return this.isFunctional;
 	};
 
 	public void setIsFunctional(final boolean status) {
-		isFunctional = status;
+		this.isFunctional = status;
 	};
 
 	public void setPrepared(boolean prepared) {
@@ -456,6 +456,8 @@ public abstract class Provider implements DVBViewerProvider {
 							throw new ErrorClass(ev, e.getErrorString() + " in file \"" + fileName + "\"");
 						}
 						break;
+					default:
+						break;
 					}
 				}
 			}
@@ -575,7 +577,7 @@ public abstract class Provider implements DVBViewerProvider {
 				}
 				ChannelSet cs = new ChannelSet();
 				cs.add(c);
-				control.getChannelSets().add(cs);
+				this.control.getChannelSets().add(cs);
 				Log.out("Channel \"" + c.getName() + "\" added to provider \"" + this.getName() + "\"");
 				count++;
 			}

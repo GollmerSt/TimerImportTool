@@ -14,36 +14,37 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import com.healthmarketscience.jackcess.Database;
+import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
-import dvbviewertimerimport.misc.*;
-import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.misc.Constants;
+import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.Registry;
 
 public class ClickFinder extends Provider {
 
 	private static final String[] reg_pathes = new String[] {
 			"HKCU\\Software\\Classes\\VirtualStore\\MACHINE\\SOFTWARE\\Wow6432Node\\EWE\\TVGhost",
 			"HKCU\\Software\\Classes\\VirtualStore\\MACHINE\\SOFTWARE\\EWE\\TVGhost",
-			"HKLM\\SOFTWARE\\Wow6432Node\\EWE\\TVGhost",
-			"HKLM\\SOFTWARE\\EWE\\TVGhost" };
+			"HKLM\\SOFTWARE\\Wow6432Node\\EWE\\TVGhost", "HKLM\\SOFTWARE\\EWE\\TVGhost" };
 
 	private DVBViewer dvbViewer = null;
 	private final SimpleDateFormat dateFormat;
 
 	public ClickFinder(Control control) {
-		super(control, false, false, "ClickFinder", false, false, false, true,
-				false, false);
+		super(control, false, false, "ClickFinder", false, false, false, true, false, false);
 		this.canImport = true;
 		this.canModify = false;
 		this.canAddChannel = false;
 		this.dvbViewer = control.getDVBViewer();
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin");
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
-		this.dateFormat.setTimeZone(timeZone);
-		this.isFunctional = this.getDbasePath() != null ;
+		this.dateFormat.setTimeZone(this.timeZone);
+		this.isFunctional = this.getDbasePath() != null;
 	}
 
 	private String getParaInfo() {
@@ -73,14 +74,12 @@ public class ClickFinder extends Provider {
 				startTime = value;
 			else if (key.equalsIgnoreCase("Dauer")) {
 				if (!value.matches("\\d+"))
-					throw new ErrorClass(
-							"Undefined value of parameter \"Dauer\".");
+					throw new ErrorClass("Undefined value of parameter \"Dauer\".");
 				milliSeconds = Long.valueOf(value) * 60000;
 			} else if (key.equalsIgnoreCase("Sendung"))
 				title = value;
 		}
-		if (channel == null || startTime == null || milliSeconds < 0
-				|| title == null) {
+		if (channel == null || startTime == null || milliSeconds < 0 || title == null) {
 			String errorString = this.getParaInfo();
 			throw new ErrorClass("Missing parameter" + errorString);
 		}
@@ -89,12 +88,10 @@ public class ClickFinder extends Provider {
 			start = timeToLong(startTime);
 		} catch (ParseException e) {
 			String errorString = this.getParaInfo();
-			throw new ErrorClass(e, "Syntax error in the parameter \"Begin\""
-					+ errorString);
+			throw new ErrorClass(e, "Syntax error in the parameter \"Begin\"" + errorString);
 		}
 		long end = start + milliSeconds;
-		this.dvbViewer
-				.addNewEntry(this, providerID, channel, start, end, title);
+		this.dvbViewer.addNewEntry(this, providerID, channel, start, end, title);
 
 		return true;
 	}
@@ -134,36 +131,27 @@ public class ClickFinder extends Provider {
 					regContents += ",DVBViewer";
 				else
 					regContents = "DVBViewer";
-				Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns",
-						regContents);
+				Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns", regContents);
 			}
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"AddOnName", "DVBViewer");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD",
-					"EinbindungsModus", "2");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"KurzBeschreibung", "DVBViewer programmieren");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"LangBeschreibung",
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "AddOnName", "DVBViewer");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD", "EinbindungsModus", "2");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "KurzBeschreibung",
+					"DVBViewer programmieren");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "LangBeschreibung",
 					"Übergeben Sie diese Sendung an den DVBViewer");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD",
-					"ParameterZusatz", "2");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"SpezialButtonGrafikName", "AddOn");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"SpezialButtonToolTiptext", "SpezialButtonToolTiptext");
-			
-			String javaExe = System.getProperty("java.home");
-			javaExe = "\"" + javaExe + "\\javaw.exe\"" ;
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_DWORD", "ParameterZusatz", "2");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "SpezialButtonGrafikName", "AddOn");
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "SpezialButtonToolTiptext",
+					"SpezialButtonToolTiptext");
 
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"ExeDateiname", javaExe );
+			String javaExe = System.getProperty("java.home");
+			javaExe = "\"" + javaExe + "\\javaw.exe\"";
+
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ExeDateiname", javaExe);
 //			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
 //					"ExeDateiname", /*"\"javaw\"" ) ;*/"\"" + javaExe + "\"");
-			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
-					"ParameterFest",
-					"-jar \"\"\"" + this.dvbViewer.getExePath()
-							+ File.separator + this.dvbViewer.getExeName()
+			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ParameterFest",
+					"-jar \"\"\"" + this.dvbViewer.getExePath() + File.separator + this.dvbViewer.getExeName()
 							+ "\"\"\" -ClickFinder ");
 		}
 		return successfull;
@@ -181,15 +169,22 @@ public class ClickFinder extends Provider {
 			Log.out("Registry entry found at " + rPath);
 
 			String[] temps;
-			if (regContents.contains(","))
-				temps = regContents.split(",DVBViewer");
-			else
-				temps = regContents.split("DVBViewer");
-			regContents = "";
-			for (int i = 0; i < temps.length; i++)
-				regContents += temps[i];
-			Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns",
-					regContents);
+			temps = regContents.split(",");
+			regContents = "5";
+			StringBuilder builder = new StringBuilder();
+			boolean first = true;
+			for (String addOn : temps) {
+				if (!addOn.trim().equals("DVBViewer")) {
+					if (!first) {
+						builder.append(',');
+					} else {
+						first = false;
+					}
+					builder.append(addOn);
+				}
+			}
+			Registry.delete(path + "\\TVGhost", "AddOns");
+			Registry.setValue(path + "\\TVGhost", "REG_SZ", "AddOns", builder.toString());
 
 			Registry.delete(path + "\\TVGhost\\AddOn_DVBViewer", "");
 		}
@@ -197,7 +192,7 @@ public class ClickFinder extends Provider {
 	}
 
 	private long timeToLong(String time) throws ParseException {
-		Date d = new Date(dateFormat.parse(time).getTime());
+		Date d = new Date(this.dateFormat.parse(time).getTime());
 		// System.out.println(d.toString()) ;
 		return d.getTime();
 	}
@@ -238,7 +233,7 @@ public class ClickFinder extends Provider {
 	public ArrayList<Channel> readChannels() {
 		Database db = null;
 		try {
-			db = Database.open(new File(this.getDbasePath()), true);
+			db = DatabaseBuilder.open(new File(this.getDbasePath()));
 		} catch (IOException e) {
 			Log.out("Database not found");
 			return null;

@@ -94,18 +94,18 @@ public class IndentingXMLStreamWriter extends StreamWriterDelegate implements In
     public void setIndent(String indent) {
         if (!indent.equals(this.indent)) {
             this.indent = indent;
-            linePrefix = null;
+            this.linePrefix = null;
         }
     }
 
     public String getIndent() {
-        return indent;
+        return this.indent;
     }
 
     public void setNewLine(String newLine) {
         if (!newLine.equals(this.newLine)) {
             this.newLine = newLine;
-            linePrefix = null;
+            this.linePrefix = null;
         }
     }
 
@@ -122,135 +122,135 @@ public class IndentingXMLStreamWriter extends StreamWriterDelegate implements In
     }
 
     public String getNewLine() {
-        return newLine;
+        return this.newLine;
     }
 
     public void writeStartDocument() throws XMLStreamException {
         beforeMarkup();
-        out.writeStartDocument();
+        this.out.writeStartDocument();
         afterMarkup();
     }
 
     public void writeStartDocument(String version) throws XMLStreamException {
         beforeMarkup();
-        out.writeStartDocument(version);
+        this.out.writeStartDocument(version);
         afterMarkup();
     }
 
     public void writeStartDocument(String encoding, String version) throws XMLStreamException {
         beforeMarkup();
-        out.writeStartDocument(encoding, version);
+        this.out.writeStartDocument(encoding, version);
         afterMarkup();
     }
 
     public void writeDTD(String dtd) throws XMLStreamException {
         beforeMarkup();
-        out.writeDTD(dtd);
+        this.out.writeDTD(dtd);
         afterMarkup();
     }
 
     public void writeProcessingInstruction(String target) throws XMLStreamException {
         beforeMarkup();
-        out.writeProcessingInstruction(target);
+        this.out.writeProcessingInstruction(target);
         afterMarkup();
     }
 
     public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
         beforeMarkup();
-        out.writeProcessingInstruction(target, data);
+        this.out.writeProcessingInstruction(target, data);
         afterMarkup();
     }
 
     public void writeComment(String data) throws XMLStreamException {
         beforeMarkup();
-        out.writeComment(data);
+        this.out.writeComment(data);
         afterMarkup();
     }
 
     public void writeEmptyElement(String localName) throws XMLStreamException {
         beforeMarkup();
-        out.writeEmptyElement(localName);
+        this.out.writeEmptyElement(localName);
         afterMarkup();
     }
 
     public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
         beforeMarkup();
-        out.writeEmptyElement(namespaceURI, localName);
+        this.out.writeEmptyElement(namespaceURI, localName);
         afterMarkup();
     }
 
     public void writeEmptyElement(String prefix, String localName, String namespaceURI)
             throws XMLStreamException {
         beforeMarkup();
-        out.writeEmptyElement(prefix, localName, namespaceURI);
+        this.out.writeEmptyElement(prefix, localName, namespaceURI);
         afterMarkup();
     }
 
     public void writeStartElement(String localName) throws XMLStreamException {
         beforeStartElement();
-        out.writeStartElement(localName);
+        this.out.writeStartElement(localName);
         afterStartElement();
     }
 
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
         beforeStartElement();
-        out.writeStartElement(namespaceURI, localName);
+        this.out.writeStartElement(namespaceURI, localName);
         afterStartElement();
     }
 
     public void writeStartElement(String prefix, String localName, String namespaceURI)
             throws XMLStreamException {
         beforeStartElement();
-        out.writeStartElement(prefix, localName, namespaceURI);
+        this.out.writeStartElement(prefix, localName, namespaceURI);
         afterStartElement();
     }
 
     public void writeCharacters(String text) throws XMLStreamException {
-        out.writeCharacters(text);
+    	this.out.writeCharacters(text);
         afterData();
     }
 
     public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
-        out.writeCharacters(text, start, len);
+    	this.out.writeCharacters(text, start, len);
         afterData();
     }
 
     public void writeCData(String data) throws XMLStreamException {
-        out.writeCData(data);
+    	this.out.writeCData(data);
         afterData();
     }
 
     public void writeEntityRef(String name) throws XMLStreamException {
-        out.writeEntityRef(name);
+    	this.out.writeEntityRef(name);
         afterData();
     }
 
     public void writeEndElement() throws XMLStreamException {
         beforeEndElement();
-        out.writeEndElement();
+        this.out.writeEndElement();
         afterEndElement();
     }
 
     public void writeEndDocument() throws XMLStreamException {
         try {
-            while (depth > 0) {
+            while (this.depth > 0) {
                 writeEndElement(); // indented
             }
         } catch (Exception ignored) {
         }
-        out.writeEndDocument();
+        this.out.writeEndDocument();
         afterEndDocument();
     }
 
     /** Prepare to write markup, by writing a new line and indentation. */
     protected void beforeMarkup() {
-        int soFar = stack[depth];
+        int soFar = this.stack[this.depth];
         if ((soFar & WROTE_DATA) == 0 // no data in this scope
-                && (depth > 0 || soFar != 0)) // not the first line
+                && (this.depth > 0 || soFar != 0)) // not the first line
         {
             try {
-                writeNewLine(depth);
-                if (depth > 0 && getIndent().length() > 0) {
+                writeNewLine(this.depth);
+                if (this.depth > 0 && getIndent().length() > 0) {
                     afterMarkup(); // indentation was written
                 }
             } catch (Exception e) {
@@ -260,37 +260,37 @@ public class IndentingXMLStreamWriter extends StreamWriterDelegate implements In
 
     /** Note that markup or indentation was written. */
     protected void afterMarkup() {
-        stack[depth] |= WROTE_MARKUP;
+    	this.stack[this.depth] |= WROTE_MARKUP;
     }
 
     /** Note that data were written. */
     protected void afterData() {
-        stack[depth] |= WROTE_DATA;
+    	this.stack[this.depth] |= WROTE_DATA;
     }
 
     /** Prepare to start an element, by allocating stack space. */
     protected void beforeStartElement() {
         beforeMarkup();
-        if (stack.length <= depth + 1) {
+        if (this.stack.length <= this.depth + 1) {
             // Allocate more space for the stack:
-            int[] newStack = new int[stack.length * 2];
-            System.arraycopy(stack, 0, newStack, 0, stack.length);
-            stack = newStack;
+            int[] newStack = new int[this.stack.length * 2];
+            System.arraycopy(this.stack, 0, newStack, 0, this.stack.length);
+            this.stack = newStack;
         }
-        stack[depth + 1] = 0; // nothing written yet
+        this.stack[this.depth + 1] = 0; // nothing written yet
     }
 
     /** Note that an element was started. */
     protected void afterStartElement() {
         afterMarkup();
-        ++depth;
+        ++this.depth;
     }
 
     /** Prepare to end an element, by writing a new line and indentation. */
     protected void beforeEndElement() {
-        if (depth > 0 && stack[depth] == WROTE_MARKUP) { // but not data
+        if (this.depth > 0 && this.stack[this.depth] == WROTE_MARKUP) { // but not data
             try {
-                writeNewLine(depth - 1);
+                writeNewLine(this.depth - 1);
             } catch (Exception ignored) {
             }
         }
@@ -298,20 +298,20 @@ public class IndentingXMLStreamWriter extends StreamWriterDelegate implements In
 
     /** Note that an element was ended. */
     protected void afterEndElement() {
-        if (depth > 0) {
-            --depth;
+        if (this.depth > 0) {
+            --this.depth;
         }
     }
 
     /** Note that a document was ended. */
     protected void afterEndDocument() {
-        if (stack[depth = 0] == WROTE_MARKUP) { // but not data
+        if (this.stack[this.depth = 0] == WROTE_MARKUP) { // but not data
             try {
                 writeNewLine(0);
             } catch (Exception ignored) {
             }
         }
-        stack[depth] = 0; // start fresh
+        this.stack[this.depth] = 0; // start fresh
     }
 
     /** Write a line separator followed by indentation. */
@@ -319,19 +319,19 @@ public class IndentingXMLStreamWriter extends StreamWriterDelegate implements In
         final int newLineLength = getNewLine().length();
         final int prefixLength = newLineLength + (getIndent().length() * indentation);
         if (prefixLength > 0) {
-            if (linePrefix == null) {
-                linePrefix = (getNewLine() + getIndent()).toCharArray();
+            if (this.linePrefix == null) {
+            	this.linePrefix = (getNewLine() + getIndent()).toCharArray();
             }
-            while (prefixLength > linePrefix.length) {
+            while (prefixLength > this.linePrefix.length) {
                 // make linePrefix longer:
                 char[] newPrefix = new char[newLineLength
-                        + ((linePrefix.length - newLineLength) * 2)];
-                System.arraycopy(linePrefix, 0, newPrefix, 0, linePrefix.length);
-                System.arraycopy(linePrefix, newLineLength, newPrefix, linePrefix.length,
-                        linePrefix.length - newLineLength);
-                linePrefix = newPrefix;
+                        + ((this.linePrefix.length - newLineLength) * 2)];
+                System.arraycopy(this.linePrefix, 0, newPrefix, 0, this.linePrefix.length);
+                System.arraycopy(this.linePrefix, newLineLength, newPrefix, this.linePrefix.length,
+                		this.linePrefix.length - newLineLength);
+                this.linePrefix = newPrefix;
             }
-            out.writeCharacters(linePrefix, 0, prefixLength);
+            this.out.writeCharacters(this.linePrefix, 0, prefixLength);
         }
     }
 

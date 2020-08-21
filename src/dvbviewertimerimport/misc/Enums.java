@@ -40,9 +40,9 @@ public class Enums {
 		@Override
 		public String toString()
 		{
-			if ( message == null )
+			if ( this.message == null )
 				this.message = ResourceManager.msg( "ActionAfterItems." + this.name() ) ;
-			return message ;
+			return this.message ;
 		} ;
 		public ActionAfterItems get( boolean isService )
 		{
@@ -103,9 +103,9 @@ public class Enums {
 		@Override
 		public String toString()
 		{
-			if ( message == null )
+			if ( this.message == null )
 				this.message = ResourceManager.msg( "TimerActionItems." + this.name() ) ;
-			return message ;
+			return this.message ;
 		} ;
 		public TimerActionItems get( boolean isService )
 		{

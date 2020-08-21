@@ -37,7 +37,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 	//
 
 	public Object getRoot() {
-		return root;
+		return this.root;
 	}
 
 	public boolean isLeaf(Object node) {
@@ -57,11 +57,11 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 	}
 
 	public void addTreeModelListener(TreeModelListener l) {
-		listenerList.add(TreeModelListener.class, l);
+		this.listenerList.add(TreeModelListener.class, l);
 	}
 
 	public void removeTreeModelListener(TreeModelListener l) {
-		listenerList.remove(TreeModelListener.class, l);
+		this.listenerList.remove(TreeModelListener.class, l);
 	}
 
 	/*
@@ -75,7 +75,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 										int[] childIndices,
 										Object[] children) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		TreeModelEvent e = null;
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
@@ -101,7 +101,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 										int[] childIndices,
 										Object[] children) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		TreeModelEvent e = null;
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
@@ -127,7 +127,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 										int[] childIndices,
 										Object[] children) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		TreeModelEvent e = null;
 		// Process the listeners last to first, notifying
 		// those that are interested in this event
@@ -153,7 +153,7 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 										int[] childIndices,
 										Object[] children) {
 		// Guaranteed to return a non-null array
-		Object[] listeners = listenerList.getListenerList();
+		Object[] listeners = this.listenerList.getListenerList();
 		TreeModelEvent e = null;
 		// Process the listeners last to first, notifying
 		// those that are interested in this event

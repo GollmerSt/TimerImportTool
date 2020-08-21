@@ -41,14 +41,14 @@ public class DVBViewerSetupXML {
 	
 	void clear()
 	{
-		map = null ;
+		this.map = null ;
 	}
 	
 	void readXML()
 	{
-		map = new HashMap< String, HashMap< String, String > >() ;
+		this.map = new HashMap< String, HashMap< String, String > >() ;
 		
-		File f = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_SETUP ) ;
+		File f = new File( this.dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_SETUP ) ;
 		if ( ! f.exists() )
 			return ;
 			
@@ -85,9 +85,9 @@ public class DVBViewerSetupXML {
 					}
 					if ( stack.equals( DVBViewerSetupXML.sectionPath ) )
 					{
-						if ( ! map.containsKey( sectionName.string ) )
-							map.put(  sectionName.string, new HashMap< String, String >() ) ;
-						entryMap = map.get( sectionName.string ) ;
+						if ( ! this.map.containsKey( sectionName.string ) )
+							this.map.put(  sectionName.string, new HashMap< String, String >() ) ;
+						entryMap = this.map.get( sectionName.string ) ;
 					}
 				}
 				else if( ev.isEndElement() )
@@ -119,11 +119,11 @@ public class DVBViewerSetupXML {
 	}
 	public String getSetupValue( String section, String name, String deflt )
 	{
-		if ( map == null )
+		if ( this.map == null )
 			this.readXML() ;
-		if ( ! map.containsKey( section ) )
+		if ( ! this.map.containsKey( section ) )
 			return deflt ;
-		HashMap< String, String > entryMap = map.get( section ) ;
+		HashMap< String, String > entryMap = this.map.get( section ) ;
 		if ( ! entryMap.containsKey( name ) )
 			return deflt ;
 		return entryMap.get( name ) ;

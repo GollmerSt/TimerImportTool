@@ -92,8 +92,8 @@ public class DVBViewerTimerXML {
 			end += Constants.DAYMILLSEC ;
 		if ( ix < 0 )
 			ix = this.maxRecordingNo++ ;
-		else if ( ix + 1 > maxRecordingNo )
-			maxRecordingNo = ix + 1 ;
+		else if ( ix + 1 > this.maxRecordingNo )
+			this.maxRecordingNo = ix + 1 ;
 		
 		StatusTimer status = StatusTimer.DISABLED ;
 		
@@ -110,7 +110,7 @@ public class DVBViewerTimerXML {
 				field[ FIELD_DESCRIPTION ] ,
 				TimerActionItems.get( Integer.valueOf( field[ FIELD_TIMER_ACTION ] ) ) ,
 				ActionAfterItems.get( Integer.valueOf( field[ FIELD_SHUTDOWN ] ) ) ) ;
-		entries.put( ix, entry ) ;
+		this.entries.put( ix, entry ) ;
 		return entry ;
 	}
 	private static String createString( DVBViewerEntry e )
@@ -150,9 +150,9 @@ public class DVBViewerTimerXML {
 	public ArrayList<DVBViewerEntry> readTimers()
 	{
 		ArrayList<DVBViewerEntry> result = new ArrayList<DVBViewerEntry>() ;
-		entries = new HashMap< Long, DVBViewerEntry >() ;
+		this.entries = new HashMap< Long, DVBViewerEntry >() ;
 		
-		File f = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
+		File f = new File( this.dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
 		if ( ! f.exists() )
 			return result ;
 		
@@ -214,7 +214,7 @@ public class DVBViewerTimerXML {
 	}
 	private void writeXML()
 	{
-		DVBViewerSetupXML setup = new DVBViewerSetupXML( dvbViewer ) ;
+		DVBViewerSetupXML setup = new DVBViewerSetupXML( this.dvbViewer ) ;
 		
 		String defRecAction   = setup.getSetupValue( "General", "DefRecAction",   "0" ) ; 
 		String defAfterRecord = setup.getSetupValue( "General", "DefAfterRecord", "0" ) ;
@@ -223,7 +223,7 @@ public class DVBViewerTimerXML {
 		 
 		XMLStreamWriter writer = null ;
 		FileOutputStream os = null ;
-		File file = new File( dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
+		File file = new File( this.dvbViewer.getDVBViewerDataPath() + File.separator + NAME_XML_DVBVIEWER_TIMERS ) ;
 		try {
 			try {
 				writer = output.createXMLStreamWriter(
@@ -240,7 +240,7 @@ public class DVBViewerTimerXML {
 			  sw.writeStartElement("section");
 			    sw.writeAttribute( "name", "VCR" ) ;
 			    int count = 0 ;
-			    for ( DVBViewerEntry e : entries.values() )
+			    for ( DVBViewerEntry e : this.entries.values() )
 			    {
 			    	if ( ! e.mustWrite() )
 			    		continue ;

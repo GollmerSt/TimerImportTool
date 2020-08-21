@@ -10,7 +10,7 @@ public class Binary {
 	}
 
 	public byte[] getBytes() {
-		return bytes;
+		return this.bytes;
 	}
 
 	private int pointer ;
@@ -25,7 +25,7 @@ public class Binary {
 	}
 
 	public Binary() {
-		bytes = new byte[0] ;
+		this.bytes = new byte[0] ;
 		this.pointer = 0 ;
 	}
 
@@ -35,26 +35,26 @@ public class Binary {
 	}
 	
 	public void add( byte b ) {
-		if ( pointer >= bytes.length ) {
+		if ( this.pointer >= this.bytes.length ) {
 			throw new Error( "Length of Binary to great") ;
 		}
-		this.bytes[ pointer++ ] = b ;
+		this.bytes[ this.pointer++ ] = b ;
 	}
 	
 	public void addAll( Collection< Byte > bytes ) { 
-		if ( pointer + bytes.size() > this.bytes.length ) {
+		if ( this.pointer + bytes.size() > this.bytes.length ) {
 			throw new Error( "Length of Binary to great") ;
 		}
 		for ( Byte b : bytes ) {
-			this.bytes[ pointer++] = b ; 
+			this.bytes[ this.pointer++] = b ; 
 		}
 	}
 	
 	public byte get( int i ) {
-		return bytes[i] ;
+		return this.bytes[i] ;
 	}
 	
 	public int size() {
-		return pointer ;
+		return this.pointer ;
 	}
 }

@@ -130,12 +130,20 @@ public class Channels {
 		try {
 			this.fileChannel = new FileInputStream(this.file).getChannel();
 		} catch (FileNotFoundException e) {
+			try {
+				this.fileChannel.close();
+			} catch (IOException e1) {
+			}
 			throw new ErrorClass("Error on opening \"" + this.file.getAbsolutePath() + "\". File exists?");
 		}
 
 		try {
-			this.buffer = fileChannel.map(READ_ONLY, 0, SUPPORTED_HEADER_LENGTH);
+			this.buffer = this.fileChannel.map(READ_ONLY, 0, SUPPORTED_HEADER_LENGTH);
 		} catch (IOException e) {
+			try {
+				this.fileChannel.close();
+			} catch (IOException e1) {
+			}
 			this.throwErrorWrongVersion();
 		}
 		if (!this.readString(5).equals(Channels.SUPPORTED_FILE_ID))
@@ -162,7 +170,7 @@ public class Channels {
 
 			int numEntries = (int) ((size - this.headerLength) / this.channelEntryLength);
 			for (int n = 0; n < numEntries; n++) {
-				this.buffer = fileChannel.map(READ_ONLY, this.channelEntryLength * n + this.headerLength,
+				this.buffer = this.fileChannel.map(READ_ONLY, this.channelEntryLength * n + this.headerLength,
 						this.channelEntryLength);
 
 				this.buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -207,16 +215,16 @@ public class Channels {
 	public boolean containsChannelID(String channelID) {
 		String parts[] = channelID.split("\\|");
 		String channelName = parts[parts.length - 1];
-		if (!channelMap.containsKey(channelName))
+		if (!this.channelMap.containsKey(channelName))
 			return false;
-		Channel channel = channelMap.get(channelName);
+		Channel channel = this.channelMap.get(channelName);
 		if (!channel.getChannelID().equals(channelID))
 			return false;
 		return true;
 	}
 
 	public void readXML(final XMLEventReader reader, XMLEvent ev, String name) {
-		channelMap = new TreeMap<String, Channel>(new MyComparator());
+		this.channelMap = new TreeMap<String, Channel>(new MyComparator());
 
 		Stack<String> stack = new Stack<String>();
 		Channel entry = null;
@@ -243,7 +251,7 @@ public class Channels {
 					}
 					if (channelID != null) {
 						entry = Channel.createByChannelID(channelID);
-						channelMap.put(entry.getChannelName(), entry);
+						this.channelMap.put(entry.getChannelName(), entry);
 					}
 				}
 			} else if (ev.isEndElement()) {

@@ -51,142 +51,142 @@ public abstract class StreamWriterDelegate implements XMLStreamWriter {
     protected XMLStreamWriter out;
 
     public Object getProperty(String name) throws IllegalArgumentException {
-        return out.getProperty(name);
+        return this.out.getProperty(name);
     }
 
     public NamespaceContext getNamespaceContext() {
-        return out.getNamespaceContext();
+        return this.out.getNamespaceContext();
     }
 
     public void setNamespaceContext(NamespaceContext context) throws XMLStreamException {
-        out.setNamespaceContext(context);
+        this.out.setNamespaceContext(context);
     }
 
     public void setDefaultNamespace(String uri) throws XMLStreamException {
-        out.setDefaultNamespace(uri);
+        this.out.setDefaultNamespace(uri);
     }
 
     public void writeStartDocument() throws XMLStreamException {
-        out.writeStartDocument();
+        this.out.writeStartDocument();
     }
 
     public void writeStartDocument(String version) throws XMLStreamException {
-        out.writeStartDocument(version);
+        this.out.writeStartDocument(version);
     }
 
     public void writeStartDocument(String encoding, String version) throws XMLStreamException {
-        out.writeStartDocument(encoding, version);
+        this.out.writeStartDocument(encoding, version);
     }
 
     public void writeDTD(String dtd) throws XMLStreamException {
-        out.writeDTD(dtd);
+        this.out.writeDTD(dtd);
     }
 
     public void writeProcessingInstruction(String target) throws XMLStreamException {
-        out.writeProcessingInstruction(target);
+        this.out.writeProcessingInstruction(target);
     }
 
     public void writeProcessingInstruction(String target, String data) throws XMLStreamException {
-        out.writeProcessingInstruction(target, data);
+        this.out.writeProcessingInstruction(target, data);
     }
 
     public void writeComment(String data) throws XMLStreamException {
-        out.writeComment(data);
+        this.out.writeComment(data);
     }
 
     public void writeEmptyElement(String localName) throws XMLStreamException {
-        out.writeEmptyElement(localName);
+        this.out.writeEmptyElement(localName);
     }
 
     public void writeEmptyElement(String namespaceURI, String localName) throws XMLStreamException {
-        out.writeEmptyElement(namespaceURI, localName);
+        this.out.writeEmptyElement(namespaceURI, localName);
     }
 
     public void writeEmptyElement(String prefix, String localName, String namespaceURI)
             throws XMLStreamException {
-        out.writeEmptyElement(prefix, localName, namespaceURI);
+        this.out.writeEmptyElement(prefix, localName, namespaceURI);
     }
 
     public void writeStartElement(String localName) throws XMLStreamException {
-        out.writeStartElement(localName);
+        this.out.writeStartElement(localName);
     }
 
     public void writeStartElement(String namespaceURI, String localName) throws XMLStreamException {
-        out.writeStartElement(namespaceURI, localName);
+        this.out.writeStartElement(namespaceURI, localName);
     }
 
     public void writeStartElement(String prefix, String localName, String namespaceURI)
             throws XMLStreamException {
-        out.writeStartElement(prefix, localName, namespaceURI);
+        this.out.writeStartElement(prefix, localName, namespaceURI);
     }
 
     public void writeDefaultNamespace(String namespaceURI) throws XMLStreamException {
-        out.writeDefaultNamespace(namespaceURI);
+        this.out.writeDefaultNamespace(namespaceURI);
     }
 
     public void writeNamespace(String prefix, String namespaceURI) throws XMLStreamException {
-        out.writeNamespace(prefix, namespaceURI);
+        this.out.writeNamespace(prefix, namespaceURI);
     }
 
     public String getPrefix(String uri) throws XMLStreamException {
-        return out.getPrefix(uri);
+        return this.out.getPrefix(uri);
     }
 
     public void setPrefix(String prefix, String uri) throws XMLStreamException {
-        out.setPrefix(prefix, uri);
+        this.out.setPrefix(prefix, uri);
     }
 
     public void writeAttribute(String localName, String value) throws XMLStreamException {
-        out.writeAttribute(localName, value);
+        this.out.writeAttribute(localName, value);
     }
 
     public void writeAttribute(String localName, boolean value) throws XMLStreamException {
     	String string = "false" ;
     	if ( value )
     		string = "true" ;
-        out.writeAttribute(localName, string);
+        this.out.writeAttribute(localName, string);
     }
 
     public void writeAttribute(String namespaceURI, String localName, String value)
             throws XMLStreamException {
-        out.writeAttribute(namespaceURI, localName, value);
+        this.out.writeAttribute(namespaceURI, localName, value);
     }
 
     public void writeAttribute(String prefix, String namespaceURI, String localName, String value)
             throws XMLStreamException {
-        out.writeAttribute(prefix, namespaceURI, localName, value);
+        this.out.writeAttribute(prefix, namespaceURI, localName, value);
     }
 
     public void writeCharacters(String text) throws XMLStreamException {
-        out.writeCharacters(text);
+        this.out.writeCharacters(text);
     }
 
     public void writeCharacters(char[] text, int start, int len) throws XMLStreamException {
-        out.writeCharacters(text, start, len);
+        this.out.writeCharacters(text, start, len);
     }
 
     public void writeCData(String data) throws XMLStreamException {
-        out.writeCData(data);
+        this.out.writeCData(data);
     }
 
     public void writeEntityRef(String name) throws XMLStreamException {
-        out.writeEntityRef(name);
+        this.out.writeEntityRef(name);
     }
 
     public void writeEndElement() throws XMLStreamException {
-        out.writeEndElement();
+        this.out.writeEndElement();
     }
 
     public void writeEndDocument() throws XMLStreamException {
-        out.writeEndDocument();
+        this.out.writeEndDocument();
     }
 
     public void flush() throws XMLStreamException {
-        out.flush();
+        this.out.flush();
     }
 
     public void close() throws XMLStreamException {
-        out.close();
+        this.out.close();
     }
 
 }

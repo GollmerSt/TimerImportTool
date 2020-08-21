@@ -40,7 +40,7 @@ public class ProviderService extends MyTabPanel {
 	 */
 	private static final long serialVersionUID = 460262656692083356L;
 	
-	private final JComboBox providerCombo = new JComboBox() ;
+	private final JComboBox<Provider> providerCombo = new JComboBox<>() ;
 	private final JCheckBox lockBox = new JCheckBox( ) ;
 	private final JTextField urlBox = new JTextField() ;
 	private final JLabel userNameLabel = new JLabel() ;
@@ -112,53 +112,53 @@ public class ProviderService extends MyTabPanel {
 	public class ProviderSelected implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e) {
-			lockBox.setSelected( false ) ;
-			JComboBox cb = (JComboBox)e.getSource();
+			ProviderService.this.lockBox.setSelected( false ) ;
+			JComboBox<?> cb = (JComboBox<?>)e.getSource();
 			Object o = cb.getSelectedItem() ;
 			if ( o == null )
 				return ;
 			setListenerProviderCheckBoxes( false ) ;
 			updateProvider() ;
 			Provider p = (Provider)cb.getSelectedItem() ;
-			lastProvider = p ;
+			ProviderService.this.lastProvider = p ;
 			boolean hasURL = p.hasURL() ;
 			boolean hasAccount = p.hasAccount() ;
-			lockBox.setEnabled( hasURL ) ;
-			if ( lockBox.isSelected() )
-				urlBox.setEnabled( hasURL ) ;
+			ProviderService.this.lockBox.setEnabled( hasURL ) ;
+			if ( ProviderService.this.lockBox.isSelected() )
+				ProviderService.this.urlBox.setEnabled( hasURL ) ;
 			else
-				urlBox.setEnabled( false ) ;
-			userNameLabel.setEnabled( hasAccount ) ;
-			userNameBox.setEnabled( hasAccount ) ;
-			passwordLabel.setEnabled( hasAccount ) ;
-			passwordBox.setEnabled( hasAccount ) ;
-			triggerBox.setValue( p.getTriggerAction() ) ;
-			providerButton.setEnabled( p.canTest() ) ;
-			providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
+				ProviderService.this.urlBox.setEnabled( false ) ;
+			ProviderService.this.userNameLabel.setEnabled( hasAccount ) ;
+			ProviderService.this.userNameBox.setEnabled( hasAccount ) ;
+			ProviderService.this.passwordLabel.setEnabled( hasAccount ) ;
+			ProviderService.this.passwordBox.setEnabled( hasAccount ) ;
+			ProviderService.this.triggerBox.setValue( p.getTriggerAction() ) ;
+			ProviderService.this.providerButton.setEnabled( p.canTest() ) ;
+			ProviderService.this.providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
 			if ( hasURL )
-				urlBox.setText( p.getURL() ) ;
+				ProviderService.this.urlBox.setText( p.getURL() ) ;
 			else
-				urlBox.setText( "" ) ;
+				ProviderService.this.urlBox.setText( "" ) ;
 			if ( hasAccount )
 			{
-				userNameBox.setText( p.getUserName() ) ;
-				passwordBox.setText( p.getPassword() ) ;
+				ProviderService.this.userNameBox.setText( p.getUserName() ) ;
+				ProviderService.this.passwordBox.setText( p.getPassword() ) ;
 			}
 			else
 			{
-				userNameBox.setText( "" ) ;
-				passwordBox.setText( "" ) ;
+				ProviderService.this.userNameBox.setText( "" ) ;
+				ProviderService.this.passwordBox.setText( "" ) ;
 				
 			}
 			setOutDated( p.getOutDatedLimits() ) ;
-			verboseBox.setSelected( p.getVerbose() ) ;
-			messageBox.setSelected( p.getMessage() ) ;
-			mergeBox.setSelected( p.getMerge() ) ;
-			filterBox.setSelected( p.isFiltered() ) ;
-			installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
-			uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
-			installButton.setEnabled( p.mustInstall() ) ;
-			uninstallButton.setEnabled( p.mustInstall() ) ;
+			ProviderService.this.verboseBox.setSelected( p.getVerbose() ) ;
+			ProviderService.this.messageBox.setSelected( p.getMessage() ) ;
+			ProviderService.this.mergeBox.setSelected( p.getMerge() ) ;
+			ProviderService.this.filterBox.setSelected( p.isFiltered() ) ;
+			ProviderService.this.installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
+			ProviderService.this.uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
+			ProviderService.this.installButton.setEnabled( p.mustInstall() ) ;
+			ProviderService.this.uninstallButton.setEnabled( p.mustInstall() ) ;
 			setListenerProviderCheckBoxes( true ) ;
 
 		}
@@ -168,56 +168,56 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void itemStateChanged(ItemEvent e )
 		{
-			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			Provider p = (Provider) ProviderService.this.providerCombo.getSelectedItem() ;
 			if ( p.hasURL() )
-				urlBox.setEnabled( lockBox.isSelected() ) ;
+				ProviderService.this.urlBox.setEnabled( ProviderService.this.lockBox.isSelected() ) ;
 		}
 	}
 	public void setListenerProviderCheckBoxes( boolean enable )
 	{
 		if ( this.providerCheckBoxesListener == null )
-			providerCheckBoxesListener = new ProviderCheckBoxesChanged() ;
+			this.providerCheckBoxesListener = new ProviderCheckBoxesChanged() ;
 		
-		if ( providerCheckBoxesListenerEnabled == enable )
+		if ( this.providerCheckBoxesListenerEnabled == enable )
 			return ;
 
-		providerCheckBoxesListenerEnabled = enable ;
+		this.providerCheckBoxesListenerEnabled = enable ;
 		
 		if ( enable )
 		{
-			this.verboseBox.addItemListener( providerCheckBoxesListener ) ;
-			this.messageBox.addItemListener( providerCheckBoxesListener ) ;
-			this.mergeBox.addItemListener(   providerCheckBoxesListener ) ;
-			this.filterBox.addItemListener(  providerCheckBoxesListener ) ;
+			this.verboseBox.addItemListener( this.providerCheckBoxesListener ) ;
+			this.messageBox.addItemListener( this.providerCheckBoxesListener ) ;
+			this.mergeBox.addItemListener(   this.providerCheckBoxesListener ) ;
+			this.filterBox.addItemListener(  this.providerCheckBoxesListener ) ;
 		}
 		else
 		{
-			this.verboseBox.removeItemListener( providerCheckBoxesListener ) ;
-			this.messageBox.removeItemListener( providerCheckBoxesListener ) ;
-			this.mergeBox.removeItemListener(   providerCheckBoxesListener ) ;
-			this.filterBox.removeItemListener(  providerCheckBoxesListener ) ;
+			this.verboseBox.removeItemListener( this.providerCheckBoxesListener ) ;
+			this.messageBox.removeItemListener( this.providerCheckBoxesListener ) ;
+			this.mergeBox.removeItemListener(   this.providerCheckBoxesListener ) ;
+			this.filterBox.removeItemListener(  this.providerCheckBoxesListener ) ;
 		}
 	}
 	public class ProviderCheckBoxesChanged implements ItemListener
 	{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			Provider p = (Provider) ProviderService.this.providerCombo.getSelectedItem() ;
 			JCheckBox source = (JCheckBox) e.getItemSelectable();
-			if( source == verboseBox )
+			if( source == ProviderService.this.verboseBox )
 				p.setVerbose( source.isSelected() ) ;
-			else if ( source == messageBox )
+			else if ( source == ProviderService.this.messageBox )
 				p.setMessage( source.isSelected() ) ;
-			else if ( source == mergeBox )
+			else if ( source == ProviderService.this.mergeBox )
 				p.setMerge( source.isSelected() ) ;
-			else if ( source == filterBox )
+			else if ( source == ProviderService.this.filterBox )
 				p.setFilter( source.isSelected() ) ;
-			else if ( source == enableSinceBox && p.getOutDatedLimits() != null )
+			else if ( source == ProviderService.this.enableSinceBox && p.getOutDatedLimits() != null )
 			{
 				p.getOutDatedLimits().setEnabled( source.isSelected() ) ;
 				setOutDated( p.getOutDatedLimits() ) ;
 			}
-			guiPanel.setChanged() ;
+			ProviderService.this.guiPanel.setChanged() ;
 		}
 	}
 	
@@ -228,13 +228,13 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateProvider() ;
-			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			Provider p = (Provider)ProviderService.this.providerCombo.getSelectedItem() ;
 			if ( p.canTest() )
 			{
 				String buttonText = ResourceManager.msg( "FAILED" ) ;
 				if ( p.test() ) 
 					buttonText = ResourceManager.msg( "PASS" ) ;
-				providerButton.setText( buttonText ) ;
+				ProviderService.this.providerButton.setText( buttonText ) ;
 			}
 		}
 	}
@@ -243,25 +243,25 @@ public class ProviderService extends MyTabPanel {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			updateProvider() ;
-			Provider p = (Provider)providerCombo.getSelectedItem() ;
+			Provider p = (Provider)ProviderService.this.providerCombo.getSelectedItem() ;
 			if ( p.mustInstall() )
 			{
 				JButton button = (JButton)e.getSource() ;
-				if ( button == installButton )
+				if ( button == ProviderService.this.installButton )
 				{
 					if ( p.install() )
-						installButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+						ProviderService.this.installButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 					else
-						installButton.setText( ResourceManager.msg( "FAILED" ) ) ;
-					uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
+						ProviderService.this.installButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+					ProviderService.this.uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
 				}
-				else if ( button == uninstallButton )
+				else if ( button == ProviderService.this.uninstallButton )
 				{
 					if ( p.uninstall() )
-						uninstallButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+						ProviderService.this.uninstallButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
 					else
-						uninstallButton.setText( ResourceManager.msg( "FAILED" ) ) ;
-					installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
+						ProviderService.this.uninstallButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+					ProviderService.this.installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
 				}
 			}
 		}
@@ -270,41 +270,41 @@ public class ProviderService extends MyTabPanel {
 	{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			DVBViewerService dvbs = control.getDVBViewer().getService() ;
+			DVBViewerService dvbs = ProviderService.this.control.getDVBViewer().getService() ;
 			Object source = e.getItemSelectable();
-			boolean serviceEnabled = serviceEnableBox.isSelected() ;
-			if( source == serviceEnableBox )
+			boolean serviceEnabled = ProviderService.this.serviceEnableBox.isSelected() ;
+			if( source == ProviderService.this.serviceEnableBox )
 			{
-				urlServiceLabel.setEnabled( serviceEnabled ) ;
-				urlServiceBox.setEnabled( serviceEnabled ) ;
-				userServiceLabel.setEnabled( serviceEnabled ) ;
-				userServiceBox.setEnabled( serviceEnabled ) ;
-				passwordServiceLabel.setEnabled( serviceEnabled ) ;
-				passwordServiceBox.setEnabled( serviceEnabled ) ;
-				serviceButton.setEnabled( serviceEnabled ) ;
-				wolEnableBox.setEnabled( serviceEnabled ) ;
+				ProviderService.this.urlServiceLabel.setEnabled( serviceEnabled ) ;
+				ProviderService.this.urlServiceBox.setEnabled( serviceEnabled ) ;
+				ProviderService.this.userServiceLabel.setEnabled( serviceEnabled ) ;
+				ProviderService.this.userServiceBox.setEnabled( serviceEnabled ) ;
+				ProviderService.this.passwordServiceLabel.setEnabled( serviceEnabled ) ;
+				ProviderService.this.passwordServiceBox.setEnabled( serviceEnabled ) ;
+				ProviderService.this.serviceButton.setEnabled( serviceEnabled ) ;
+				ProviderService.this.wolEnableBox.setEnabled( serviceEnabled ) ;
 				if ( serviceEnabled != dvbs.isEnabled() )
 				{
 					dvbs.setEnabled( serviceEnabled ) ;
-					guiPanel.setChanged() ;
-					guiPanel.updateIfServiceChanged() ;
+					ProviderService.this.guiPanel.setChanged() ;
+					ProviderService.this.guiPanel.updateIfServiceChanged() ;
 				}
 			}
-			if ( source == wolEnableBox || source == serviceEnableBox )
+			if ( source == ProviderService.this.wolEnableBox || source == ProviderService.this.serviceEnableBox )
 			{
-				boolean enabled = wolEnableBox.isSelected() ;
+				boolean enabled = ProviderService.this.wolEnableBox.isSelected() ;
 				if ( enabled != dvbs.getEnableWOL() )
 				{
 					dvbs.setEnableWOL( enabled ) ;
-					guiPanel.setChanged() ;
+					ProviderService.this.guiPanel.setChanged() ;
 				}
 				enabled = enabled && serviceEnabled ;
-				waitTimeLabel.setEnabled( enabled ) ;
-				waitTimeBox.setEnabled( enabled ) ;
-				broadCastLabel.setEnabled( enabled ) ;
-				broadCastBox.setEnabled( enabled ) ;
-				macLabel.setEnabled( enabled ) ;
-				macBox.setEnabled( enabled ) ;
+				ProviderService.this.waitTimeLabel.setEnabled( enabled ) ;
+				ProviderService.this.waitTimeBox.setEnabled( enabled ) ;
+				ProviderService.this.broadCastLabel.setEnabled( enabled ) ;
+				ProviderService.this.broadCastBox.setEnabled( enabled ) ;
+				ProviderService.this.macLabel.setEnabled( enabled ) ;
+				ProviderService.this.macBox.setEnabled( enabled ) ;
 			}
 		}
 	}
@@ -317,7 +317,7 @@ public class ProviderService extends MyTabPanel {
 			long version ;
 			try
 			{
-				version = control.getDVBViewer().getService().readVersion( true ) ;
+				version = ProviderService.this.control.getDVBViewer().getService().readVersion( true ) ;
 			} catch ( ErrorClass e1 ) {
 				version = -1 ;
 			}
@@ -347,7 +347,7 @@ public class ProviderService extends MyTabPanel {
 	}
 	public void init()
 	{
-		Provider defaultProvider = Provider.getProvider( control.getDefaultProvider() ) ;
+		Provider defaultProvider = Provider.getProvider( this.control.getDefaultProvider() ) ;
 		
 		TitledBorder  tB = null ;
 		GridBagConstraints c = null ;
@@ -441,7 +441,7 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 		
-		providerBox.add( passwordBox, c ) ;
+		providerBox.add( this.passwordBox, c ) ;
 
 
 		
@@ -468,7 +468,7 @@ public class ProviderService extends MyTabPanel {
 				defaultProvider.getTriggerAction(), //initial value
 				-1, 1 << 15, 1 ) ;
 		this.triggerBox.setModel( model );
-		providerBox.add( triggerBox, c ) ;
+		providerBox.add( this.triggerBox, c ) ;
 
 
 		
@@ -610,8 +610,8 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
 		this.providerButton.setText( ResourceManager.msg( "CHECK" ) ) ;
-		providerButton.addActionListener( new ProviderTestButton() ) ;
-		providerBox.add( providerButton, c ) ;
+		this.providerButton.addActionListener( new ProviderTestButton() ) ;
+		providerBox.add( this.providerButton, c ) ;
 		
 		
 		
@@ -624,8 +624,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = new Insets( 0, 0, 0, 0 ); ;
 
 		this.installButton.setText( ResourceManager.msg( "INSTALL" ) ) ;
-		installButton.addActionListener( new ProviderInstallButtons() ) ;
-		installPanel.add( installButton, c ) ;
+		this.installButton.addActionListener( new ProviderInstallButtons() ) ;
+		installPanel.add( this.installButton, c ) ;
 
 		
 		c = new GridBagConstraints();
@@ -636,8 +636,8 @@ public class ProviderService extends MyTabPanel {
 		c.insets     = new Insets( 0, 0, 0, 0 ); ;
 
 		this.uninstallButton.setText( ResourceManager.msg( "UNINSTALL" ) ) ;
-		uninstallButton.addActionListener( new ProviderInstallButtons() ) ;
-		installPanel.add( uninstallButton, c ) ;
+		this.uninstallButton.addActionListener( new ProviderInstallButtons() ) ;
+		installPanel.add( this.uninstallButton, c ) ;
 
 		c = new GridBagConstraints();
 		c.gridx      = 0 ;
@@ -801,7 +801,7 @@ public class ProviderService extends MyTabPanel {
 				dvbs.getWaitTimeAfterWOL(), //initial value
 				-1, 60, 1 ) ;
 		this.waitTimeBox.setModel( waitModel );
-		serviceBox.add( waitTimeBox, c ) ;
+		serviceBox.add( this.waitTimeBox, c ) ;
 
 
 		
@@ -862,8 +862,8 @@ public class ProviderService extends MyTabPanel {
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 
 		this.serviceButton.setText( ResourceManager.msg( "CHECK" ) ) ;
-		serviceButton.addActionListener( new ServiceTestButton() ) ;
-		serviceBox.add( serviceButton, c ) ;
+		this.serviceButton.addActionListener( new ServiceTestButton() ) ;
+		serviceBox.add( this.serviceButton, c ) ;
 
 		
 		

@@ -48,7 +48,7 @@ public final class DVBViewerEntry implements Cloneable
 		private MergeStatus( boolean ... bb )
 		{
 			for ( boolean b : bb )
-				list.add( b ) ;
+				this.list.add( b ) ;
 		}
 		public boolean canMerge( MergeStatus s )
 		{
@@ -422,30 +422,30 @@ public final class DVBViewerEntry implements Cloneable
 		
 		public PartialTitle( String s )
 		{
-			part = new StringBuilder( s ) ;
+			this.part = new StringBuilder( s ) ;
 			getInparenthesis() ;
-			part.delete(startParenthesis, startParenthesis + lengthParenthesis ) ;
+			this.part.delete(this.startParenthesis, this.startParenthesis + this.lengthParenthesis ) ;
 			
 		}
 		public void deletePrefix( int n )
 		{
-			isReduced = true ;
+			this.isReduced = true ;
 			setPrefixLength( n ) ;
 		}
 		private void setPrefixLength( int n )
 		{
-			if ( isReduced )
+			if ( this.isReduced )
 			{
-				left.setPrefixLength( n ) ;
-				prefixLength = left.getPrefixLength( false ) ;
-				isPrefixSet = true ;
+				this.left.setPrefixLength( n ) ;
+				this.prefixLength = this.left.getPrefixLength( false ) ;
+				this.isPrefixSet = true ;
 			}
-			else if ( isPrefixSet )
-				Math.min(n, prefixLength) ;
+			else if ( this.isPrefixSet )
+				Math.min(n, this.prefixLength) ;
 			else
 			{
-				prefixLength = n ;
-				isPrefixSet = true ;
+				this.prefixLength = n ;
+				this.isPrefixSet = true ;
 			}
 		}
 		public int getPrefixLength()
@@ -454,23 +454,23 @@ public final class DVBViewerEntry implements Cloneable
 		}
 		public int getPrefixLength( boolean isOutput )
 		{
-			if ( isReduced && isOutput )
+			if ( this.isReduced && isOutput )
 				return 0 ;
-			if ( isReduced && ! isPrefixSet )
+			if ( this.isReduced && ! this.isPrefixSet )
 			{
-				prefixLength = left.getPrefixLength( false ) ;
-				isPrefixSet = true ;
+				this.prefixLength = this.left.getPrefixLength( false ) ;
+				this.isPrefixSet = true ;
 			}
-			return prefixLength ;
+			return this.prefixLength ;
 		}
 		public int mainPartLength()
 		{
-			return part.length() - getPrefixLength( false ) ;
+			return this.part.length() - getPrefixLength( false ) ;
 		}
 		public int length()
 		{
-			int length = part.length() ;
-			if ( isReduced )
+			int length = this.part.length() ;
+			if ( this.isReduced )
 			{
 				length -= getPrefixLength( false ) ;
 			}
@@ -478,29 +478,29 @@ public final class DVBViewerEntry implements Cloneable
 		}
 		public char charAt( int i )
 		{
-			return part.charAt( i ) ;
+			return this.part.charAt( i ) ;
 		}
 		public String get( int i )
 		{
-			if ( isReduced )
+			if ( this.isReduced )
 			{
 				int pl = getPrefixLength( false ) ;
-				return part.substring( pl, pl + i ) ;
+				return this.part.substring( pl, pl + i ) ;
 			}
 			else
-				return part.substring( 0, i ) ;
+				return this.part.substring( 0, i ) ;
 		}
 		public String toString()
 		{
-			return part.toString() ;
+			return this.part.toString() ;
 		}
 		public String getOriginal()
 		{
-			return part.toString() ;
+			return this.part.toString() ;
 		}
 		public int lengthOrg()
 		{
-			return part.length() ;
+			return this.part.length() ;
 		}
 		public void searchAndSetPrefix( PartialTitle left )
 		{
@@ -525,35 +525,35 @@ public final class DVBViewerEntry implements Cloneable
 		}
 		public int getInparenthesis()
 		{
-			if ( lengthParenthesis < 0 )
+			if ( this.lengthParenthesis < 0 )
 			{
 				int level = 0 ;
-				lengthParenthesis = 0 ;
+				this.lengthParenthesis = 0 ;
 				
-				for ( int i = 0 ; i < part.length() ; ++i  )
+				for ( int i = 0 ; i < this.part.length() ; ++i  )
 				{
 					if ( level > 0 )
-						++lengthParenthesis ;
-					char c = part.charAt( i ) ;
+						++this.lengthParenthesis ;
+					char c = this.part.charAt( i ) ;
 					if ( c == '(')
 					{
 						++level ;
-						startParenthesis = i ;
+						this.startParenthesis = i ;
 					}
 					else if ( c == ')' )
 					{
 						--level ;
 						if ( level <= 0 )
 						{
-							++lengthParenthesis ;
+							++this.lengthParenthesis ;
 							if ( level < 0 )
-								startParenthesis = i ;
+								this.startParenthesis = i ;
 							break ;
 						}
 					}
 				}
 			}
-			return lengthParenthesis ;
+			return this.lengthParenthesis ;
 		}
 	}
 
@@ -761,9 +761,9 @@ public final class DVBViewerEntry implements Cloneable
 			private final boolean isSure ;
 			private final ArrayList<DVBViewerEntry> entries ;
 			
-			public boolean isSure() { return isSure ; } ;
-			public ArrayList<DVBViewerEntry> get() { return entries ; } ;
-			public int size() { return entries.size(); } ; 
+			public boolean isSure() { return this.isSure ; } ;
+			public ArrayList<DVBViewerEntry> get() { return this.entries ; } ;
+			public int size() { return this.entries.size(); } ; 
 			
 			private Result( final boolean isSure, final ArrayList<DVBViewerEntry> entries )
 			{
@@ -787,14 +787,14 @@ public final class DVBViewerEntry implements Cloneable
 					
 				DVBViewerEntry cS = it.next() ;
 					
-				if ( !choicesInRangeLists.containsKey( cS ))
+				if ( !this.choicesInRangeLists.containsKey( cS ))
 				{
 					cList = searchSurroundedEntries( cS, xml ) ;
 	
-					choicesInRangeLists.put(cS, cList ) ;
+					this.choicesInRangeLists.put(cS, cList ) ;
 				}
 				else
-					cList = choicesInRangeLists.get( cS ) ;
+					cList = this.choicesInRangeLists.get( cS ) ;
 					
 				cChoices = algo.execute( cS, cList ) ;
 	
@@ -1307,8 +1307,8 @@ public final class DVBViewerEntry implements Cloneable
 	public void clearDVBViewerID() { this.dvbViewerID = -1 ; } ;
 	public String getChannel() { return this.channel ; } ;
 	public String getTitle() {return this.preferedTitle ; } ;
-	public ActionAfterItems getActionAfter() { return actionAfter ; } ;
-	public TimerActionItems getTimerAction() { return timerAction ; } ;
+	public ActionAfterItems getActionAfter() { return this.actionAfter ; } ;
+	public TimerActionItems getTimerAction() { return this.timerAction ; } ;
 	public String toString()
 	{
 		return this.preferedTitle + timeFormat.format( new Date( this.preferedStart ) ) + timeFormat.format( new Date( this.end ) ) ;
@@ -1930,8 +1930,8 @@ public final class DVBViewerEntry implements Cloneable
 			  else
 				  sw.writeAttribute( "statusTimer",    	 this.statusTimer.toString() ) ;
 
-			  if ( channelSet != null )
-				sw.writeAttribute( "channelSetID", Long.toString( channelSet.getID() ) ) ;
+			  if ( this.channelSet != null )
+				sw.writeAttribute( "channelSetID", Long.toString( this.channelSet.getID() ) ) ;
 			  else
 			  	sw.writeAttribute( "channel",          this.channel ) ;
 			  sw.writeAttribute( "start",            Long.toString( this.preferedStart ) ) ;
@@ -1957,7 +1957,7 @@ public final class DVBViewerEntry implements Cloneable
 			    sw.writeCharacters( this.preferedTitle ) ;
 			  sw.writeEndElement() ;
 
-			  if (mergedEntries != null )
+			  if (this.mergedEntries != null )
 			  {
 				  sw.writeStartElement( "MergedEntries" ) ;
 				  for ( DVBViewerEntry e : this.mergedEntries )
@@ -1974,5 +1974,5 @@ public final class DVBViewerEntry implements Cloneable
 			throw new ErrorClass( e, "Unexpected error on writing the file \"" + f.getName() + "\"" );
 		}
 	}
-	public ChannelSet getChannelSet() { return channelSet ; } ; 
+	public ChannelSet getChannelSet() { return this.channelSet ; } ; 
 }

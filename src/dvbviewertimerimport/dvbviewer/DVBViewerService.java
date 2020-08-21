@@ -85,7 +85,7 @@ public class DVBViewerService {
 			// getRequestingURL(), getRequestingHost(),
 			// getRequestingSite(), getRequestingPort() );
 
-			return new PasswordAuthentication(userName, password.toCharArray());
+			return new PasswordAuthentication(DVBViewerService.this.userName, DVBViewerService.this.password.toCharArray());
 		}
 	}
 

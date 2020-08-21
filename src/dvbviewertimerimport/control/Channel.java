@@ -41,16 +41,16 @@ public class Channel {
 		sw.writeStartElement( "Provider" ) ;
 		sw.writeAttribute( "name", this.getTypeName() ) ;
 		if ( this.id != null )
-			sw.writeAttribute( "channelID",id ) ;
-		sw.writeCharacters( name ) ;
+			sw.writeAttribute( "channelID",this.id ) ;
+		sw.writeCharacters( this.name ) ;
 		sw.writeEndElement() ;
 	}
 	@Override
 	public String toString()
 	{
-		String out = this.getTypeName() + " channel: Name = \"" + name + "\"" ;
-		if ( id != null )
-			out += "  Id = \"" + id + "\"" ;
+		String out = this.getTypeName() + " channel: Name = \"" + this.name + "\"" ;
+		if ( this.id != null )
+			out += "  Id = \"" + this.id + "\"" ;
 		return out ;
 	}
 	public Object getIDKey() { return null ; } ;  // ID of the provider, type is provider dependent

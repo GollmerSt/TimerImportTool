@@ -86,9 +86,9 @@ public class OutDatedInfo implements Cloneable
 			long l = Long.valueOf( value ) ;
 			
 			if ( key.equals( "missingSince" ) )
-				missingSince = l ;
+				this.missingSince = l ;
 			else if ( key.equals( "missingSyncSince" ) )
-				missingSyncSince = (int) l ;
+				this.missingSyncSince = (int) l ;
 		}
 		else if ( key.equals( "enable" ) )
 		{

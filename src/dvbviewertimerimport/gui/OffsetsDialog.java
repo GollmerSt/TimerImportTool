@@ -76,30 +76,30 @@ public class OffsetsDialog extends JDialog {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			JButton source = (JButton)e.getSource() ;
-			if ( source == okButton )
+			if ( source == OffsetsDialog.this.okButton )
 			{
-				guiPanel.setChanged() ;
-				table.editingStopped( null ) ;
-				offsets.setUseGlobal( ! globalCheckBox.isSelected() ) ;
-				originalOffsets.assign( offsets ) ;
+				OffsetsDialog.this.guiPanel.setChanged() ;
+				OffsetsDialog.this.table.editingStopped( null ) ;
+				OffsetsDialog.this.offsets.setUseGlobal( ! OffsetsDialog.this.globalCheckBox.isSelected() ) ;
+				OffsetsDialog.this.originalOffsets.assign( OffsetsDialog.this.offsets ) ;
 				dispose() ;
 			}
-			else if ( source == cancelButton )
+			else if ( source == OffsetsDialog.this.cancelButton )
 				dispose() ;
-			else if ( source == newButton )
+			else if ( source == OffsetsDialog.this.newButton )
 			{
-				table.editingStopped( null ) ;
-				offsets.addEmpty() ;
-				((MyTableModel)table.getModel()).fireTableDataChanged() ;
+				OffsetsDialog.this.table.editingStopped( null ) ;
+				OffsetsDialog.this.offsets.addEmpty() ;
+				((MyTableModel)OffsetsDialog.this.table.getModel()).fireTableDataChanged() ;
 			}
-			else if ( source == deleteButton )
+			else if ( source == OffsetsDialog.this.deleteButton )
 			{
-				table.editingStopped( null ) ;
-				int line = table.getSelectedRow() ;
+				OffsetsDialog.this.table.editingStopped( null ) ;
+				int line = OffsetsDialog.this.table.getSelectedRow() ;
 				if ( line < 0 )
 					return ;
-				offsets.delete( line ) ;
-				((MyTableModel)table.getModel()).fireTableDataChanged() ;
+				OffsetsDialog.this.offsets.delete( line ) ;
+				((MyTableModel)OffsetsDialog.this.table.getModel()).fireTableDataChanged() ;
 			}
 		}
 		
@@ -224,7 +224,7 @@ public class OffsetsDialog extends JDialog {
 
 		this.table.setModel( new MyTableModel() ) ;
 				
-		table.setRowHeight( 22 ) ;
+		this.table.setRowHeight( 22 ) ;
 		TableColumn column = null ;
 		column = this.table.getColumnModel().getColumn( 0 ) ;
 		column.setCellEditor( new SpinnerNumberEditor( 0, 999, 1 ) ) ;
@@ -249,7 +249,7 @@ public class OffsetsDialog extends JDialog {
 		column.setCellEditor( new TimeGUIHelper.DayTimeEditor() ) ;
 		column.setPreferredWidth( 65 ) ;
 		
-		table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
+		this.table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
 	}
 	class WeekDayObject
 	{
@@ -291,7 +291,7 @@ public class OffsetsDialog extends JDialog {
 		}
 		@Override
 		public String getColumnName(int col) {
-			return columnNames[col];
+			return OffsetsDialog.this.columnNames[col];
 		}
 		@Override
 		public Class<?> getColumnClass(int col)
@@ -307,13 +307,13 @@ public class OffsetsDialog extends JDialog {
 		}
 		@Override
 		public int getRowCount() {
-			return offsets.size() ; // + 1 ;
+			return OffsetsDialog.this.offsets.size() ; // + 1 ;
 		}
 
 		@Override
 		public Object getValueAt(int row, int col)
 		{
-			OffsetEntry entry = offsets.getOffset( row ) ;
+			OffsetEntry entry = OffsetsDialog.this.offsets.getOffset( row ) ;
 			int minutes[] = entry.getMinutes() ;
 			
 			switch ( col )
@@ -342,7 +342,7 @@ public class OffsetsDialog extends JDialog {
 		@Override
 		public void setValueAt(Object value, int row, int col)
 		{
-			OffsetEntry entry = offsets.getOffset( row ) ;
+			OffsetEntry entry = OffsetsDialog.this.offsets.getOffset( row ) ;
 			int minutes[] = entry.getMinutes() ;
 			
 			switch ( col )
@@ -405,7 +405,7 @@ public class OffsetsDialog extends JDialog {
 				JCheckBox checkBox = this.checkBoxes[ ix ] ;
 				checkBox.setSelected( weekDays[ ix ] ) ;
 				if ( isSelected )
-					checkBox.setBackground( selectedBackGround ) ;
+					checkBox.setBackground( this.selectedBackGround ) ;
 				else
 					checkBox.setBackground( this.originalBackGround ) ;
 	 		}
@@ -423,14 +423,14 @@ public class OffsetsDialog extends JDialog {
 		private Color selectedBackGround = new JTextField().getSelectionColor() ;
 		
 		public WeekDayEditor() {
-			((FlowLayout)panel.getLayout()).setHgap( 0 ) ;
-			((FlowLayout)panel.getLayout()).setVgap( 0 ) ;
+			((FlowLayout)this.panel.getLayout()).setHgap( 0 ) ;
+			((FlowLayout)this.panel.getLayout()).setVgap( 0 ) ;
 			for ( int ix = 0 ; ix < this.checkBoxes.length ; ix++ )
 			{
 				JCheckBox checkBox = new JCheckBox() ;
-				checkBox.setBackground( selectedBackGround ) ;
+				checkBox.setBackground( this.selectedBackGround ) ;
 				this.checkBoxes[ ix ] = checkBox ;
-				panel.add( checkBox ) ;
+				this.panel.add( checkBox ) ;
 			}
 			this.checkBoxes[ 0 ].getBackground();
 		}
@@ -448,7 +448,7 @@ public class OffsetsDialog extends JDialog {
 				JCheckBox checkBox = this.checkBoxes[ ix ] ;
 				checkBox.setSelected( weekDays[ ix ] ) ;
 			}
-			return panel ;
+			return this.panel ;
 		}
 		@Override
 		public Object getCellEditorValue() {
@@ -475,7 +475,7 @@ public class OffsetsDialog extends JDialog {
 		
 		public SpinnerNumberEditor( int start, int end, int step )
 		{
-			spinner = new JSpinner(new SpinnerNumberModel( start, start, end, step ) ) ;
+			this.spinner = new JSpinner(new SpinnerNumberModel( start, start, end, step ) ) ;
 		}
 		@Override
 		public Component getTableCellEditorComponent(
@@ -486,12 +486,12 @@ public class OffsetsDialog extends JDialog {
 					int column)
 		{
 			int value = ((Integer)object).intValue() ;
-			spinner.setValue( value ) ;
-			return spinner ;
+			this.spinner.setValue( value ) ;
+			return this.spinner ;
 		}
 		@Override
 		public Object getCellEditorValue() {
-			return spinner.getValue() ;
+			return this.spinner.getValue() ;
 		}
 		@Override
 		public boolean shouldSelectCell(EventObject arg0) {

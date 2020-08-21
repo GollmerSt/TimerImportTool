@@ -104,36 +104,36 @@ public class TreeTableModelAdapter extends AbstractTableModel
 	// Wrappers, implementing TableModel interface.
 
 	public int getColumnCount() {
-		return treeTableModel.getColumnCount();
+		return this.treeTableModel.getColumnCount();
 	}
 
 	public String getColumnName(int column) {
-		return treeTableModel.getColumnName(column);
+		return this.treeTableModel.getColumnName(column);
 	}
 
 		public Class<?> getColumnClass(int column) {
-		return treeTableModel.getColumnClass(column);
+		return this.treeTableModel.getColumnClass(column);
 	}
 
 	public int getRowCount() {
-		return tree.getRowCount();
+		return this.tree.getRowCount();
 	}
 
 	private Object nodeForRow(int row) {
-		TreePath treePath = tree.getPathForRow(row);
+		TreePath treePath = this.tree.getPathForRow(row);
 		return treePath.getLastPathComponent();
 	}
 
 	public Object getValueAt(int row, int column) {
-		return treeTableModel.getValueAt(nodeForRow(row), column);
+		return this.treeTableModel.getValueAt(nodeForRow(row), column);
 	}
 
 	public boolean isCellEditable(int row, int column) {
-		 return treeTableModel.isCellEditable(nodeForRow(row), column);
+		 return this.treeTableModel.isCellEditable(nodeForRow(row), column);
 	}
 
 	public void setValueAt(Object value, int row, int column) {
-		treeTableModel.setValueAt(value, nodeForRow(row), column);
+		this.treeTableModel.setValueAt(value, nodeForRow(row), column);
 	}
 
 	/**

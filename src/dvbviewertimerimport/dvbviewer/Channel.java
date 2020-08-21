@@ -26,9 +26,9 @@ public class Channel {
 	public TimeOffsets  getOffsets() { return this.offsets ; } ;
 	public boolean getMerge( boolean generalMerge)
 	{
-		if (      merge == Merge.INVALID )
+		if (      this.merge == Merge.INVALID )
 			return generalMerge ;
-		else if ( merge == Merge.TRUE )
+		else if ( this.merge == Merge.TRUE )
 			return true ;
 		return false ;
 	}

@@ -77,8 +77,8 @@ public class ProviderAssignment  extends MyTabPanel
 	private final String[] columnNames ;
 
 	private final JCheckBox unlockBox = new JCheckBox() ;
-	private final JComboBox providerCombo = new JComboBox() ;
-	private final JComboBox channelCombo = new JComboBox() ;
+	private final JComboBox<Provider> providerCombo = new JComboBox<>() ;
+	private final JComboBox<String> channelCombo = new JComboBox<>() ;
 	private final JButton addChannelButton = new JButton() ;
 	private final JButton modifyChannelButton = new JButton() ;
 	private final JButton importButton = new JButton() ;
@@ -89,7 +89,7 @@ public class ProviderAssignment  extends MyTabPanel
 
 	private void enableByProvider( boolean enable )
 	{
-		Provider p = (Provider) providerCombo.getSelectedItem() ;
+		Provider p = (Provider) this.providerCombo.getSelectedItem() ;
 
 		this.modifyChannelButton.setEnabled  ( p.canModify() && enable ) ;
 		this.addChannelButton.setEnabled   ( p.canAddChannel() && enable ) ;
@@ -100,40 +100,40 @@ public class ProviderAssignment  extends MyTabPanel
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
-			boolean enable = unlockBox.isSelected() ;
-			providerCombo.setEnabled( enable ) ;
-			channelCombo.setEnabled( enable ) ;
-			channelCombo.setEditable( enable ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			boolean enable = ProviderAssignment.this.unlockBox.isSelected() ;
+			ProviderAssignment.this.providerCombo.setEnabled( enable ) ;
+			ProviderAssignment.this.channelCombo.setEnabled( enable ) ;
+			ProviderAssignment.this.channelCombo.setEditable( enable ) ;
 			enableByProvider( enable ) ;
 			updateTable() ;
-			table.setEnabled( enable ) ;
+			ProviderAssignment.this.table.setEnabled( enable ) ;
 		}
 	}
 	public class ProviderSelected implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 
 			enableByProvider( true ) ;
 
 			updateChannelComboBox() ;
 
-			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem() ;
 			if ( p == null )
 				return ;
 
-			int row = table.getSelectedRow() ;
+			int row = ProviderAssignment.this.table.getSelectedRow() ;
 			if ( row < 0 )
 				return ;
-			int selectedLine = sorter.convertRowIndexToModel( row ) ;
-			MyTableObject o = (MyTableObject) table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
+			int selectedLine = ProviderAssignment.this.sorter.convertRowIndexToModel( row ) ;
+			MyTableObject o = (MyTableObject) ProviderAssignment.this.table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
 			if ( ! o.isEmpty )
 			{
-				channelCombo.setSelectedItem( o.toString() ) ;
+				ProviderAssignment.this.channelCombo.setSelectedItem( o.toString() ) ;
 			}
 		}
 	}
@@ -141,23 +141,23 @@ public class ProviderAssignment  extends MyTabPanel
 	{
 		public void actionPerformed(ActionEvent e)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
-			int ix = channelCombo.getSelectedIndex() ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			int ix = ProviderAssignment.this.channelCombo.getSelectedIndex() ;
 
 			if ( ix >= 0 )
 			{
-				lastSelectedChannel = (String) channelCombo.getItemAt( ix ) ;
-				Provider p = (Provider) providerCombo.getSelectedItem() ;
+				ProviderAssignment.this.lastSelectedChannel = (String) ProviderAssignment.this.channelCombo.getItemAt( ix ) ;
+				Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem() ;
 				if ( p == null )
 					return ;
 				if ( ix > 0 )
 				{
-					int ics = providerMaps.get( p.getID() ).get( lastSelectedChannel ).getIndex() ;
+					int ics = ProviderAssignment.this.providerMaps.get( p.getID() ).get( ProviderAssignment.this.lastSelectedChannel ).getIndex() ;
 					if ( ics >= 0 )
 					{
-						int tableLine = sorter.convertRowIndexToView( ics ) ;
-						table.setRowSelectionInterval( tableLine, tableLine ) ;
+						int tableLine = ProviderAssignment.this.sorter.convertRowIndexToView( ics ) ;
+						ProviderAssignment.this.table.setRowSelectionInterval( tableLine, tableLine ) ;
 						//table.scrollRectToVisible(table.getCellRect(tableLine,ix,true));
 					}
 				}
@@ -169,20 +169,20 @@ public class ProviderAssignment  extends MyTabPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 
-			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem() ;
 			if ( p == null )
 				return ;
 
-			TreeMap< String, ChannelAssignment > map = providerMaps.get( p.getID() ) ;
+			TreeMap< String, ChannelAssignment > map = ProviderAssignment.this.providerMaps.get( p.getID() ) ;
 
 			JButton button = (JButton) e.getSource() ;
 
-			String channel = (String) channelCombo.getEditor().getItem() ;
+			String channel = (String) ProviderAssignment.this.channelCombo.getEditor().getItem() ;
 
-			if ( button == addChannelButton )
+			if ( button == ProviderAssignment.this.addChannelButton )
 			{
 				if ( ! map.containsKey( channel ) )
 				{
@@ -191,21 +191,21 @@ public class ProviderAssignment  extends MyTabPanel
 					updateTableComboBoxes() ;
 				}
 			}
-			else if ( button == modifyChannelButton )
+			else if ( button == ProviderAssignment.this.modifyChannelButton )
 			{
-				if (   lastSelectedChannel != null
-					 && lastSelectedChannel.length() != 0 )
+				if (   ProviderAssignment.this.lastSelectedChannel != null
+					 && ProviderAssignment.this.lastSelectedChannel.length() != 0 )
 				{
 					if ( ! map.containsKey( channel ) )
 					{
-						int ix = map.get( lastSelectedChannel ).getIndex() ;
+						int ix = map.get( ProviderAssignment.this.lastSelectedChannel ).getIndex() ;
 						if ( ix >= 0 )
 						{
-							ChannelSet cs = control.getChannelSets().get( ix ) ;
+							ChannelSet cs = ProviderAssignment.this.control.getChannelSets().get( ix ) ;
 							String id = cs.getChannel( p.getID() ).getTextID() ;
 							cs.remove( p.getID() ) ;
 							cs.add( p.getID(), channel, id ) ;
-							map.remove( lastSelectedChannel ) ;
+							map.remove( ProviderAssignment.this.lastSelectedChannel ) ;
 							map.put( channel, new ChannelAssignment( cs.getChannel( p.getID() ), ix ) ) ;
 							updateChannelComboBox() ;
 							updateTableComboBoxes() ;
@@ -214,18 +214,18 @@ public class ProviderAssignment  extends MyTabPanel
 					}
 				}
 			}
-			else if ( button == importButton )
+			else if ( button == ProviderAssignment.this.importButton )
 			{
 				int count = p.importChannels() ;
 				if ( count >= 0 )
 				{
 					p.updateChannelMap() ;
 					updateIfChannelSetsChanged( p ) ;
-					importButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
-					messageLabel.setText( ResourceManager.msg( "CHANNELS_IMPORTED", Integer.toString( count ) ) ) ;
+					ProviderAssignment.this.importButton.setText( ResourceManager.msg( "SUCCESSFULL" ) ) ;
+					ProviderAssignment.this.messageLabel.setText( ResourceManager.msg( "CHANNELS_IMPORTED", Integer.toString( count ) ) ) ;
 				}
 				else
-					importButton.setText( ResourceManager.msg( "FAILED" ) ) ;
+					ProviderAssignment.this.importButton.setText( ResourceManager.msg( "FAILED" ) ) ;
 			}
 		}
 	}
@@ -236,17 +236,17 @@ public class ProviderAssignment  extends MyTabPanel
 		public void valueChanged(ListSelectionEvent e) {
 			if ( e.getValueIsAdjusting() )
 				return ;
-			Provider p = (Provider) providerCombo.getSelectedItem() ;
+			Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem() ;
 			if ( p == null )
 				return ;
-			int row = table.getSelectedRow() ;
+			int row = ProviderAssignment.this.table.getSelectedRow() ;
 			if ( row < 0 )
 				return ;
-			int selectedLine = sorter.convertRowIndexToModel( row ) ;
-			MyTableObject o = (MyTableObject) table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
+			int selectedLine = ProviderAssignment.this.sorter.convertRowIndexToModel( row ) ;
+			MyTableObject o = (MyTableObject) ProviderAssignment.this.table.getModel().getValueAt( selectedLine, p.getID()+1 ) ;
 			if ( ! o.isEmpty )
 			{
-				channelCombo.setSelectedItem( o.toString() ) ;
+				ProviderAssignment.this.channelCombo.setSelectedItem( o.toString() ) ;
 			}
 		}
 	}
@@ -289,9 +289,9 @@ public class ProviderAssignment  extends MyTabPanel
 		TreeMap< String, ChannelAssignment > map = this.providerMaps.get( pid ) ;
 		map.clear() ;
 
-		for ( int ix = 0 ; ix < control.getChannelSets().size() ; ix++ )
+		for ( int ix = 0 ; ix < this.control.getChannelSets().size() ; ix++ )
 		{
-			ChannelSet cs = control.getChannelSets().get( ix ) ;
+			ChannelSet cs = this.control.getChannelSets().get( ix ) ;
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
 				continue ;
@@ -300,7 +300,7 @@ public class ProviderAssignment  extends MyTabPanel
 	}
 	public void init()
 	{
-		Provider defaultProvider = Provider.getProvider( control.getDefaultProvider() ) ;
+		Provider defaultProvider = Provider.getProvider( this.control.getDefaultProvider() ) ;
 		Insets i = new Insets( 5, 5, 5, 5 );
 		GridBagConstraints c = null ;
 
@@ -427,8 +427,8 @@ public class ProviderAssignment  extends MyTabPanel
 		c.fill       = GridBagConstraints.HORIZONTAL ;
 		c.insets     = i ;
 
-		messageLabel.setForeground( SystemColor.RED ) ;
-		messageLabel.setPreferredSize( new Dimension( 200,20 ) ) ;
+		this.messageLabel.setForeground( SystemColor.RED ) ;
+		this.messageLabel.setPreferredSize( new Dimension( 200,20 ) ) ;
 		this.add( this.messageLabel, c ) ;
 }
 	private void updateChannelComboBox()
@@ -443,14 +443,14 @@ public class ProviderAssignment  extends MyTabPanel
 	}
 	private void setupTable()
 	{
-		this.sorter = new TableRowSorter<TableModel>(table.getModel());
+		this.sorter = new TableRowSorter<TableModel>(this.table.getModel());
 
 		for ( int i = 0 ; i <= Provider.getProviders().size() ; i++ )
-			sorter.setComparator(  i, new MyTableComparator() ) ;
+			this.sorter.setComparator(  i, new MyTableComparator() ) ;
 
-		table.setRowSorter(sorter);
+		this.table.setRowSorter(this.sorter);
 
-		table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
+		this.table.setSelectionMode( ListSelectionModel.SINGLE_SELECTION ) ;
 
 
 		TableColumn column = null ;
@@ -463,7 +463,7 @@ public class ProviderAssignment  extends MyTabPanel
 		for ( Provider p : Provider.getProviders() )
 		{
 			int pid = p.getID() ;
-			JComboBox comboBox = new JComboBox();
+			JComboBox<?> comboBox = new JComboBox<>();
 			comboBox.addPopupMenuListener( new PopupCellChanged() ) ;
 			column = this.table.getColumnModel().getColumn( pid + 1 ) ;
 			column.setPreferredWidth( 150 ) ;
@@ -484,7 +484,7 @@ public class ProviderAssignment  extends MyTabPanel
 					  int col)
 				{
 					String channel = value.toString() ;
-					((JComboBox)getComponent()).setSelectedItem( channel ) ;
+					((JComboBox<?>)getComponent()).setSelectedItem( channel ) ;
 					return super.getTableCellEditorComponent(table, value,
 															 isSelected, row, col);
 				}
@@ -520,7 +520,9 @@ public class ProviderAssignment  extends MyTabPanel
 			int pid = p.getID() ;
 			TableColumn column = this.table.getColumnModel().getColumn( pid + 1 ) ;
 			DefaultCellEditor editor = (DefaultCellEditor) column.getCellEditor() ;
-			JComboBox comboBox = (JComboBox) editor.getComponent() ;
+			@SuppressWarnings("unchecked")
+			JComboBox<String> component = (JComboBox<String>) editor.getComponent();
+			JComboBox<String> comboBox = component ;
 			comboBox.hidePopup() ;
 			comboBox.removeAllItems() ;
 			comboBox.addItem( "" ) ;
@@ -532,9 +534,9 @@ public class ProviderAssignment  extends MyTabPanel
 	}
 	private void showTableLine( int line )
 	{
-		int tableLine = sorter.convertRowIndexToView( line ) ;
-		table.setRowSelectionInterval( tableLine, tableLine ) ;
-		table.scrollRectToVisible(table.getCellRect(tableLine,0,true));
+		int tableLine = this.sorter.convertRowIndexToView( line ) ;
+		this.table.setRowSelectionInterval( tableLine, tableLine ) ;
+		this.table.scrollRectToVisible(this.table.getCellRect(tableLine,0,true));
 	}
 
 	public class PopupCellChanged implements PopupMenuListener
@@ -543,22 +545,22 @@ public class ProviderAssignment  extends MyTabPanel
 		@Override
 		public void popupMenuCanceled(PopupMenuEvent arg0)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 		@Override
 		public void popupMenuWillBecomeInvisible(PopupMenuEvent arg0)
 		{
 			cancelCellEditing() ;
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 
 		//@Override
 		public void popupMenuWillBecomeVisible(PopupMenuEvent e)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 		}
 	}
 
@@ -574,8 +576,8 @@ public class ProviderAssignment  extends MyTabPanel
 			this.channelSet = channelSet ;
 		}
 		@Override
-		public String toString() { return channel ; } ;
-		public boolean isNullEntry() { return channelSet == null ; } ;
+		public String toString() { return this.channel ; } ;
+		public boolean isNullEntry() { return this.channelSet == null ; } ;
 	}
 	public class MyTableComparator implements Comparator< MyTableObject>
 	{
@@ -614,7 +616,7 @@ public class ProviderAssignment  extends MyTabPanel
 			return Provider.getProviders().size() + 1 ;
 		}
 		public String getColumnName(int col) {
-			return columnNames[col];
+			return ProviderAssignment.this.columnNames[col];
 		}
 		@Override
 		public Class<MyTableObject> getColumnClass(int col)
@@ -630,14 +632,14 @@ public class ProviderAssignment  extends MyTabPanel
 		}
 		@Override
 		public int getRowCount() {
-			return control.getChannelSets().size()+1;
+			return ProviderAssignment.this.control.getChannelSets().size()+1;
 		}
 
 		@Override
 		public Object getValueAt(int row, int col) {
-			if ( row < control.getChannelSets().size() )
+			if ( row < ProviderAssignment.this.control.getChannelSets().size() )
 			{
-				ChannelSet cs = control.getChannelSets().get(row) ;
+				ChannelSet cs = ProviderAssignment.this.control.getChannelSets().get(row) ;
 				if ( col == 0)
 				{
 					String dvbViewer = cs.getDVBViewerChannel() ;
@@ -645,7 +647,7 @@ public class ProviderAssignment  extends MyTabPanel
 					{
 						String parts[] = dvbViewer.split("\\|") ;
 						String out  = parts[ parts.length - 1 ] ;
-						if ( control.getDVBViewer().getChannels().containsChannelID( dvbViewer ))
+						if ( ProviderAssignment.this.control.getDVBViewer().getChannels().containsChannelID( dvbViewer ))
 							return new MyTableObject( out, cs ) ;
 					}
 					else
@@ -672,8 +674,8 @@ public class ProviderAssignment  extends MyTabPanel
 		@Override
 		public void setValueAt(Object value, int row, int col)
 		{
-			messageLabel.setText( "") ;
-			importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
+			ProviderAssignment.this.messageLabel.setText( "") ;
+			ProviderAssignment.this.importButton.setText( ResourceManager.msg( "IMPORT_TV" ) ) ;
 			cancelCellEditing() ;
 
 			String channel = (String) value ;
@@ -681,14 +683,14 @@ public class ProviderAssignment  extends MyTabPanel
 			int csid = row ;
 			int pid = col - 1 ;
 
-			TreeMap< String, ChannelAssignment> channelMap = providerMaps.get( pid ) ;
+			TreeMap< String, ChannelAssignment> channelMap = ProviderAssignment.this.providerMaps.get( pid ) ;
 			ChannelSet cs ;
-			if ( csid < control.getChannelSets().size() )
-				cs = control.getChannelSets().get( csid ) ;
+			if ( csid < ProviderAssignment.this.control.getChannelSets().size() )
+				cs = ProviderAssignment.this.control.getChannelSets().get( csid ) ;
 			else
 			{
 				cs = new ChannelSet() ;
-				control.getChannelSets().add( cs ) ;
+				ProviderAssignment.this.control.getChannelSets().add( cs ) ;
 			}
 
 
@@ -700,7 +702,7 @@ public class ProviderAssignment  extends MyTabPanel
 				{
 					showTableLine( pcsid ) ;
 					int answer = JOptionPane.showConfirmDialog(
-							guiPanel.getWindow(),
+							ProviderAssignment.this.guiPanel.getWindow(),
 									"\"" + channel + "\" " + ResourceManager.msg( "ASSIGNED_ERROR" ),
 									Constants.PROGRAM_NAME,
 									JOptionPane.OK_CANCEL_OPTION );
@@ -709,7 +711,7 @@ public class ProviderAssignment  extends MyTabPanel
 						showTableLine( csid ) ;
 						return ;
 					}
-					ChannelSet pcs = control.getChannelSets().get( pcsid ) ;
+					ChannelSet pcs = ProviderAssignment.this.control.getChannelSets().get( pcsid ) ;
 					pcs.remove( pid ) ;
 					pca.setIndex( -1 ) ;
 					boolean isDeleted = removeChannelSetIfEmpty( pcsid ) ;
@@ -739,14 +741,14 @@ public class ProviderAssignment  extends MyTabPanel
 			updateTable() ;
 			showTableLine( csid ) ;
 
-			guiPanel.setChanged() ;
+			ProviderAssignment.this.guiPanel.setChanged() ;
 		}
 	}
 	private boolean removeChannelSetIfEmpty( int csid )
 	{
-		if ( control.getChannelSets().get( csid ).getChannels().size() != 0 )
+		if ( this.control.getChannelSets().get( csid ).getChannels().size() != 0 )
 			return false ;
-		control.getChannelSets().remove( csid ) ;
+		this.control.getChannelSets().remove( csid ) ;
 		for ( TreeMap< String, ChannelAssignment > map : this.providerMaps )
 		{
 			for ( Map.Entry< String, ChannelAssignment > entry : map.entrySet() )

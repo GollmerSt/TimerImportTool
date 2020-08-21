@@ -26,7 +26,6 @@ import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
 import dvbviewertimerimport.misc.ResourceManager;
-import dvbviewertimerimport.provider.Provider;
 
 public class TVGenial extends Provider {
 
@@ -48,7 +47,7 @@ public class TVGenial extends Provider {
 		super( control, false, false, "TVGenial", false, false, false, true, false, false);
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
 		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
-		this.dateFormat.setTimeZone( timeZone ) ;
+		this.dateFormat.setTimeZone( this.timeZone ) ;
 		this.canAddChannel = false ;
 		this.canImport = true ;
 		
@@ -206,8 +205,9 @@ public class TVGenial extends Provider {
 				list.add( c ) ; ;
 				nameMap.put( nameLong, tvuid ) ;
 			}
+			br.close();
 		} catch (IOException e) {
-			return null ;
+			return list = null ;
 		}
 	return list ;
 	}
@@ -284,7 +284,7 @@ public class TVGenial extends Provider {
 		
 		String channel = null ; ;
 				
-		for ( ChannelSet cs : control.getChannelSets() )
+		for ( ChannelSet cs : this.control.getChannelSets() )
 		{
 			Channel c = cs.getChannel( this.getID() ) ;
 			if ( c == null )
@@ -303,7 +303,7 @@ public class TVGenial extends Provider {
 	}
 	private long timeToLong( String time ) throws ParseException
 	{
-		Date d = new Date( dateFormat.parse(time).getTime()) ;
+		Date d = new Date( this.dateFormat.parse(time).getTime()) ;
 		//System.out.println(d.toString()) ;
 		return d.getTime() ;
 	}

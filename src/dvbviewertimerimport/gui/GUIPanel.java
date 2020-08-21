@@ -61,9 +61,9 @@ public class GUIPanel extends JPanel
 			if ( source == null )
 				return ;
 			source.update( true ) ;
-			if ( previousTab != null )
-				previousTab.update( false );
-			previousTab = source ;
+			if ( GUIPanel.this.previousTab != null )
+				GUIPanel.this.previousTab.update( false );
+			GUIPanel.this.previousTab = source ;
 		}
 		
 	}
@@ -87,22 +87,22 @@ public class GUIPanel extends JPanel
 	{ 
 
 		
-		dvbViewerAssignment = new DVBViewerAssignment( this ) ;
+		this.dvbViewerAssignment = new DVBViewerAssignment( this ) ;
 		ProviderService tab2 = new ProviderService( this ) ;
 		this.miscellaneous = new Miscellaneous( this ) ;
 		this.providerAssignment = new ProviderAssignment( this ) ;
 				
-		this.tabbedPane.add( ResourceManager.msg( "DVBVIEWER_ASSIGNMENT" ), dvbViewerAssignment); 
+		this.tabbedPane.add( ResourceManager.msg( "DVBVIEWER_ASSIGNMENT" ), this.dvbViewerAssignment); 
 		this.tabbedPane.add( ResourceManager.msg( "PROVIDER_SERVICE" ), tab2);
 		this.tabbedPane.add( ResourceManager.msg( "MISCELLANEOUS" ), this.miscellaneous);
-		this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), providerAssignment);
+		this.tabbedPane.add( ResourceManager.msg( "PROVIDER_ASSIGNMENT" ), this.providerAssignment);
 		
-		this.tabbedPane.setSelectedComponent( miscellaneous ) ;
+		this.tabbedPane.setSelectedComponent( this.miscellaneous ) ;
 
 		for ( Component tp : this.tabbedPane.getComponents() )
 			((MyTabPanel)tp).init() ;
 		
-		this.tabbedPane.setSelectedComponent( dvbViewerAssignment ) ;
+		this.tabbedPane.setSelectedComponent( this.dvbViewerAssignment ) ;
 		
 		this.add( this.tabbedPane, BorderLayout.CENTER ) ;
 		this.tabbedPane.addChangeListener( new TabChanged() ) ;
@@ -115,24 +115,24 @@ public class GUIPanel extends JPanel
 	}
 	public void updateDVBViewerChannels()
 	{
-		dvbViewerAssignment.updateDVBViewerChannels() ;
+		this.dvbViewerAssignment.updateDVBViewerChannels() ;
 	}
 	public void updateExecuteButton()
 	{
-		if ( gui == null )
+		if ( this.gui == null )
 			return ;
 		Object o = this.tabbedPane.getSelectedComponent() ;
 		if ( o != null && o.getClass() == DVBViewerAssignment.class )
-			gui.updateExecuteButton( true ) ;
+			this.gui.updateExecuteButton( true ) ;
 		else
-			gui.updateExecuteButton( false ) ;
+			this.gui.updateExecuteButton( false ) ;
 	}
 	public ArrayList< String > getLookAndFeelNames()
 	{
-		if ( gui == null )
+		if ( this.gui == null )
 			return null ;
 		else
-			return gui.getLookAndFeelNames() ;
+			return this.gui.getLookAndFeelNames() ;
 	} ;
 
 	public void setLookAndFeel( String name )

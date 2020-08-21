@@ -7,12 +7,10 @@ package dvbviewertimerimport.provider;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-
 import dvbviewertimerimport.DVBViewerTimerImport;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
-import dvbviewertimerimport.provider.Provider;
 
 public class TVBrowser extends Provider
 {

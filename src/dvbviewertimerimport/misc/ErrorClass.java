@@ -20,20 +20,20 @@ public class ErrorClass extends Error
 	public ErrorClass( String errorString )
 	{
 		super( errorString ) ;
-		mainError = null ;
+		this.mainError = null ;
 		this.errorString = errorString ;
 	}
 	public ErrorClass( Throwable e, String errorString )
 	{
 		super( errorString ) ;
-		mainError = e ;
+		this.mainError = e ;
 		this.errorString = errorString ;
 	}
 	public ErrorClass( XMLEvent ev, String errorString )
 	{
 		super(   errorString + " near line "
 			   + Integer.toString( ev.getLocation().getLineNumber() ) + "." ) ;
-		mainError = null ;
+		this.mainError = null ;
 		this.errorString =   errorString + " near line "
 						   + Integer.toString( ev.getLocation().getLineNumber() ) + "." ;
 	}
@@ -41,7 +41,7 @@ public class ErrorClass extends Error
 	public ErrorClass( XMLStreamException e, String errorString )
 	{
 		super( errorString ) ;
-		mainError = e ;
+		this.mainError = e ;
 		this.errorString = errorString ;
 	}
 	

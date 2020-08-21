@@ -29,18 +29,18 @@ public class WorkPathSelector
 	public boolean show()
 	{
 		File pathFile = null ;
-		String path = dvbViewer.getDVBViewerPath() ;
+		String path = this.dvbViewer.getDVBViewerPath() ;
 		if ( path != null )
 			pathFile = new File( path ) ;
-		chooser.setCurrentDirectory( pathFile ) ;
-		chooser.setDialogTitle( ResourceManager.msg( "SELECT_DVBVIEWER_DIRECTORY" ) ) ;
-		chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY ) ;
-		int returnVal = chooser.showDialog( window, ResourceManager.msg( "SELECT" ) ) ;
+		this.chooser.setCurrentDirectory( pathFile ) ;
+		this.chooser.setDialogTitle( ResourceManager.msg( "SELECT_DVBVIEWER_DIRECTORY" ) ) ;
+		this.chooser.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY ) ;
+		int returnVal = this.chooser.showDialog( this.window, ResourceManager.msg( "SELECT" ) ) ;
 		if (returnVal == JFileChooser.APPROVE_OPTION)
 		{
-			File file = chooser.getSelectedFile() ;
+			File file = this.chooser.getSelectedFile() ;
 
-			dvbViewer.setDVBViewerPath( file.getAbsolutePath() ) ;
+			this.dvbViewer.setDVBViewerPath( file.getAbsolutePath() ) ;
 			return true ;
 		}
 		else

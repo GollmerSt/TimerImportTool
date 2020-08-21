@@ -27,16 +27,16 @@ public class Channel {
 	}
 	public void read()
 	{
-		Tuner tuner = new Tuner( channels ) ;
+		Tuner tuner = new Tuner( this.channels ) ;
 		tuner.read();
 		
 		this.isVideo = tuner.isVideo() ;
 		
-		channels.readString( 26 );
-		this.channelName = channels.readString( 26 ) ;
-		channels.readString( 26 );
+		this.channels.readString( 26 );
+		this.channelName = this.channels.readString( 26 ) ;
+		this.channels.readString( 26 );
 
-		MappedByteBuffer buffer = channels.getMappedByteBuffer() ;
+		MappedByteBuffer buffer = this.channels.getMappedByteBuffer() ;
 
 		buffer.get();
 		buffer.get();
@@ -45,7 +45,7 @@ public class Channel {
 		id |= tuner.getAudioPID() << 16 ;
 		id |= tuner.getServiceID() ;
 		
-		if ( channelName == null )
+		if ( this.channelName == null )
 		{
 			return ;
 		}

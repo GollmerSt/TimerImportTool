@@ -101,44 +101,37 @@ public class GUI extends JFrame{
 
 		@Override
 		public void windowActivated(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowClosed(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowClosing(WindowEvent arg0) {
-			// TODO Auto-generated method stub
-			MyTabPanel tabPanel = guiPanel.getSelectedComponent() ;
+			MyTabPanel tabPanel = GUI.this.guiPanel.getSelectedComponent() ;
 			tabPanel.update( false ) ;
 			if ( messageIsChanged( ResourceManager.msg( "SETUP_CHANGED" ) ) )
 			{
-				status = GUIStatus.CANCEL ;
+				GUI.this.status = GUIStatus.CANCEL ;
 				waitAPP() ;
 			}
 		}
 
 		@Override
 		public void windowDeactivated(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowDeiconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowIconified(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 
 		@Override
 		public void windowOpened(WindowEvent arg0) {
-			// TODO Auto-generated method stub
 		}
 		
 	}
@@ -147,42 +140,42 @@ public class GUI extends JFrame{
 	{
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			guiPanel.updateTab() ;
+			GUI.this.guiPanel.updateTab() ;
 
 			JButton button = (JButton) e.getSource() ;
 			
-			if ( button == okButton )
+			if ( button == GUI.this.okButton )
 			{
-				status = GUIStatus.OK ;
+				GUI.this.status = GUIStatus.OK ;
 				waitAPP() ;
 			}
-			else if ( button == cancelButton && messageIsChanged( ResourceManager.msg( "SETUP_CHANGED" ) ) )
+			else if ( button == GUI.this.cancelButton && messageIsChanged( ResourceManager.msg( "SETUP_CHANGED" ) ) )
 			{
-				status = GUIStatus.CANCEL ;
+				GUI.this.status = GUIStatus.CANCEL ;
 				waitAPP() ;
 			}
-			if ( button == applyButton )
+			if ( button == GUI.this.applyButton )
 			{
-				status = GUIStatus.APPLY ;
+				GUI.this.status = GUIStatus.APPLY ;
 				waitAPP() ;
-				isChanged = false ;
+				GUI.this.isChanged = false ;
 			}
-			if ( button == executeButton )
+			if ( button == GUI.this.executeButton )
 			{
 				if ( messageIsChanged( ResourceManager.msg( "SETUP_SAVE" ) ))
-					status = GUIStatus.SAVE_EXECUTE ;
+					GUI.this.status = GUIStatus.SAVE_EXECUTE ;
 				else
-					status = GUIStatus.EXECUTE ;
+					GUI.this.status = GUIStatus.EXECUTE ;
 				waitAPP() ;
 			}
-			if ( button == updateButton )
+			if ( button == GUI.this.updateButton )
 			{
-				status = GUIStatus.UPDATE ;
+				GUI.this.status = GUIStatus.UPDATE ;
 				waitAPP() ;
 			}
-			if ( button == modifyButton )
+			if ( button == GUI.this.modifyButton )
 			{
-				new TimersDialog( gui, control ).init() ;
+				new TimersDialog( GUI.this.gui, GUI.this.control ).init() ;
 			}
 		}
 	}
@@ -190,8 +183,8 @@ public class GUI extends JFrame{
 	{
 		@Override
 		public void itemStateChanged(ItemEvent e) {
-			Provider p = Provider.getProvider( control.getDefaultProvider() ) ;
-			p.setFilterEnabled( ! forceBox.isSelected() ) ;
+			Provider p = Provider.getProvider( GUI.this.control.getDefaultProvider() ) ;
+			p.setFilterEnabled( ! GUI.this.forceBox.isSelected() ) ;
 		}
 }
 	public Control getControl() { return this.control ; } ;
@@ -242,7 +235,7 @@ public class GUI extends JFrame{
 		
 		this.executeButton.setText( ResourceManager.msg( "EXECUTE" ) ) ;
 		this.executeButton.addActionListener( new ButtonPressed() ) ;
-		this.getContentPane().add( executeButton, c ) ;
+		this.getContentPane().add( this.executeButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -253,7 +246,7 @@ public class GUI extends JFrame{
 		
 		this.forceBox.setText( ResourceManager.msg( "ALL_TIMERS" ) ) ;
 		this.forceBox.addItemListener( new AllTimersChanged() ) ;
-		this.getContentPane().add( forceBox, c ) ;
+		this.getContentPane().add( this.forceBox, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -299,7 +292,7 @@ public class GUI extends JFrame{
 		
 		this.cancelButton.setText( ResourceManager.msg( "CANCEL" ) ) ;
 		this.cancelButton.addActionListener( new ButtonPressed() ) ;
-		this.getContentPane().add( cancelButton, c ) ;
+		this.getContentPane().add( this.cancelButton, c ) ;
 
 
 		c = new GridBagConstraints();
@@ -327,7 +320,7 @@ public class GUI extends JFrame{
 	{
 		if ( enableExecute )
 		{
-			Provider p = Provider.getProvider( control.getDefaultProvider() ) ;
+			Provider p = Provider.getProvider( this.control.getDefaultProvider() ) ;
 			this.executeButton.setEnabled( p.canExecute() ) ;
 			this.executeButton.setVisible( true ) ;
 			this.forceBox.setEnabled( p.isFiltered() && p.canExecute() ) ;
@@ -374,7 +367,9 @@ public class GUI extends JFrame{
 				JOptionPane.YES_NO_OPTION );
 		return( answer == JOptionPane.YES_OPTION ) ;
 	}
-	public ArrayList< String > getLookAndFeelNames() { return lookAndFeelNames ; } ;
+
+	public ArrayList<String> getLookAndFeelNames() {
+		return this.lookAndFeelNames ; } ;
 	public void setLookAndFeel( String name )
 	{
 		if ( ! this.lookAndFeelAssignment.containsKey( name ) )

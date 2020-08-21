@@ -15,9 +15,9 @@ public class Tuner {
 		private byte[] array = new byte[3] ;
 		protected void read( MappedByteBuffer buffer )
 		{
-			array[0] = buffer.get();
-			array[1] = buffer.get();
-			array[2] = buffer.get();
+			this.array[0] = buffer.get();
+			this.array[1] = buffer.get();
+			this.array[2] = buffer.get();
 		}
 	}
 	public static final int ENTRY_LENGTH = 52 ;
@@ -111,7 +111,7 @@ public class Tuner {
 	}
 	public void read()
 	{
-		MappedByteBuffer buffer = channels.getMappedByteBuffer() ;
+		MappedByteBuffer buffer = this.channels.getMappedByteBuffer() ;
 				
 		this.type                = buffer.get() ;
 		this.channelGroup        = buffer.get() ;

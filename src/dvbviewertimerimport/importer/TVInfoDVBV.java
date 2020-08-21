@@ -32,7 +32,7 @@ public class TVInfoDVBV {
 		
 		int pid = Provider.getProviderID( "TVInfo" ) ;
 		
-		for ( ChannelSet cs :  control.getChannelSets() )
+		for ( ChannelSet cs :  this.control.getChannelSets() )
 		{
 			Channel c = cs.getChannel( pid ) ;
 			if ( c == null )
@@ -40,7 +40,7 @@ public class TVInfoDVBV {
 			map.put( cs.getChannel( pid ).getName(), cs ) ;
 		}
 		
-		File f = new File( control.getDVBViewer().getPluginConfPath()
+		File f = new File( this.control.getDVBViewer().getPluginConfPath()
 		          + File.separator
 		          + NAME_IMPORTFILE ) ;
 		if ( ! f.canRead() )
@@ -84,7 +84,12 @@ public class TVInfoDVBV {
 					}
 				}
 			}
+			br.close();
 		} catch (IOException e) {
+			try {
+				br.close();
+			} catch (IOException e1) {
+			}
 			throw new ErrorClass( f.getAbsolutePath() ) ;
 		}
 	}

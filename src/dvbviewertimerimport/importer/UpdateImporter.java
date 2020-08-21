@@ -37,7 +37,7 @@ public class UpdateImporter
 		ArrayList< HashMap< String, ChannelSet > > pMap = new ArrayList< HashMap< String, ChannelSet > >() ;
 
 
-		ArrayList<ChannelSet> updateChannels = control.getChannelSets() ;
+		ArrayList<ChannelSet> updateChannels = this.control.getChannelSets() ;
 
 		for ( int id = 0 ; id < Provider.getProviders().size() ; id++ )
 		{
@@ -63,10 +63,10 @@ public class UpdateImporter
 		}
 		for ( ChannelSet cs : newChannels )
 		{
-			control.getChannelSets().add( cs ) ;
+			this.control.getChannelSets().add( cs ) ;
 			Log.out( "Following channel set is added:\n\n" + cs.toString() + "\n" ) ;
 		}
-		return warning ;
+		return this.warning ;
 	}
 	private boolean update( ChannelSet cs , ArrayList< HashMap< String, ChannelSet > > pMap )
 	{

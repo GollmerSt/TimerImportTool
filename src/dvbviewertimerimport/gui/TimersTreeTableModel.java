@@ -143,14 +143,14 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 		((DVBViewerEntry)this.root).setMergedEntries( children ) ;
 		Object [] path = { this.root } ;
 		this.fireTreeStructureChanged( TimersTreeTableModel.this, path, null, null);
-		if ( treeTable != null )
+		if ( this.treeTable != null )
 		{
 			for ( DVBViewerEntry entry : getChildren( this.root ) )
 			{
 				if ( entry.isCollapsed() )
-					treeTable.getTree().collapsePath( entry.getPath() ) ;
+					this.treeTable.getTree().collapsePath( entry.getPath() ) ;
 				else
-					treeTable.getTree().expandPath( entry.getPath() ) ;
+					this.treeTable.getTree().expandPath( entry.getPath() ) ;
 			}
 		}
 	}
