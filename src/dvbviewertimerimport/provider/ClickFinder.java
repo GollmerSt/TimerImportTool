@@ -144,8 +144,7 @@ public class ClickFinder extends Provider {
 			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "SpezialButtonToolTiptext",
 					"SpezialButtonToolTiptext");
 
-			String javaExe = System.getProperty("java.home");
-			javaExe = "\"" + javaExe + "\\javaw.exe\"";
+			String javaExe = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
 
 			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ExeDateiname", javaExe);
 //			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",

@@ -4,40 +4,54 @@
 
 package dvbviewertimerimport.main;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public class Versions {
-	private static final int MAJOR_VERSION                  = 1 ;
-	private static final int MINOR_VERSION                  = 3 ;
-	private static final int SUB_VERSION                    = 6 ;
-	private static final String DVBVIEWER_COM_DLL_VERSION   = "1.00.05" ;
-	private static final boolean DVBVIEWER_BETA_STATUS      = true ;
+	private static String VERSION = "01.03.06.rc1";
+	private static final String DVBVIEWER_COM_DLL_VERSION = "1.00.05";
 
-	public static String getVersion() { return getVersion( false, false ) ; } ;
+	public static String getVersion() {
 
-	public static String getVersion( boolean betaStatus )
-	{
-		return getVersion( betaStatus, false ) ;
-	} ;
+		String[] splited = VERSION.split(".");
 
-	public static String getVersion( boolean betaStatus, boolean isEverFalse )
-	{
-		String last = null ;
-		if ( betaStatus && DVBVIEWER_BETA_STATUS || isEverFalse )
-			last = " beta" ;
-		else
-			last = "" ;
-		return          Integer.toString( MAJOR_VERSION )
-				+ "." + Integer.toString( MINOR_VERSION )
-	            + "." + Integer.toString( SUB_VERSION )
-	            + last ;
-	} ;
-	public static String getDVBViewerCOMVersion() { return DVBVIEWER_COM_DLL_VERSION ; } ;
+		if (splited.length > 3) {
+			int pos = VERSION.lastIndexOf('.');
+			return VERSION.substring(0, pos) + ' ' + VERSION.substring(pos) + 1;
+		} else {
+			return VERSION;
+		}
+	};
+
+	public static String getDVBViewerCOMVersion() {
+		return DVBVIEWER_COM_DLL_VERSION;
+	};
 
 	/**
 	 * @return triple containing the version numbers
 	 */
-	public static int[] getIntVersion()
-	{
-	  int[] version = { MAJOR_VERSION, MINOR_VERSION, SUB_VERSION, DVBVIEWER_BETA_STATUS?1:0 } ;
-	  return version ;
+	public static int[] getIntVersion() {
+		Collection<Integer> col = new ArrayList<>();
+		String[] splited = VERSION.split("\\.");
+		boolean beta = false;
+		for (String part : splited) {
+			int number = -1;
+			try {
+				number = Integer.parseUnsignedInt(part);
+			} catch (NumberFormatException e) {
+			}
+			if (number >= 0) {
+				col.add(number);
+			} else {
+				beta = true;
+			}
+		}
+		col.add(beta ? 1 : 0);
+		int [] out = new int[col.size()];
+		int i = 0;
+		for ( Integer o:col) {
+			out[i++] = o.intValue();
+		}
+		return out;
 	}
 }

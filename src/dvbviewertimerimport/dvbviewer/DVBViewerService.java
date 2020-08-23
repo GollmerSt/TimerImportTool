@@ -19,6 +19,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -33,9 +34,13 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry.StatusTimer;
+import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
-import dvbviewertimerimport.misc.*;
+import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Helper;
+import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.WakeOnLan;
 import dvbviewertimerimport.xml.StackXML;
 
 public class DVBViewerService {
@@ -152,7 +157,7 @@ public class DVBViewerService {
 				if (this.userName.length() > 0 && this.password.length() > 0) {
 					// Daten für HTTP-Authentifizierung festlegen
 					conn.setRequestProperty("Authorization",
-							"Basic " + Base64.encodeBytes(new String(this.userName + ":" + this.password).getBytes()));
+							"Basic " + Base64.getEncoder().encodeToString(new String(this.userName + ":" + this.password).getBytes()));
 				}
 				input = conn.getInputStream();
 			} catch (ProtocolException e1) {

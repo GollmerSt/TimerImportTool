@@ -200,7 +200,7 @@ public class GUI extends JFrame{
 		}
 		this.setDefaultCloseOperation( JFrame.DO_NOTHING_ON_CLOSE );
 		this.setIconImage( this.programIcon.getImage() ) ;
-		this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME + " " + Versions.getVersion( true ) ) ;
+		this.setTitle( dvbviewertimerimport.misc.Constants.PROGRAM_NAME + " " + Versions.getVersion() ) ;
 		this.setLayout(  new GridBagLayout() ) ;
 		
 		GridBagConstraints c = null ;

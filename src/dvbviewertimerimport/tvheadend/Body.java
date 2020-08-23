@@ -78,7 +78,7 @@ public class Body<T extends Body.BodyValue> extends Value< T > implements Serial
 		Pointer.Integer pointer = new Pointer.Integer();
 		while (pointer.getValue() < length) {
 			Value<?> value = Value.deserialize(bytes, pointer);
-			values.put(value.getName(), value);
+			this.values.put(value.getName(), value);
 		}
 	}
 
@@ -146,16 +146,16 @@ public class Body<T extends Body.BodyValue> extends Value< T > implements Serial
 //		for (int i = 0; i < 4; ++i) {
 //			result.add(null);
 //		}
-		int size = 0;
+//		int size = 0;
 
 		for ( Iterator<Value<?>> it = this.values.iterator(); it.hasNext();) {
 			Value<?> value = it.next();
-			size += value.getDataSize();
+//			size += value.getDataSize();
 			result.addAll(value.getBytes());
 		}
 
-		Binary bytes = new Binary(size);
-
+//		Binary bytes = new Binary(size);
+//
 //		Bin bin = new Bin(bytes.size());
 //
 //		int i = 0;
@@ -172,12 +172,12 @@ public class Body<T extends Body.BodyValue> extends Value< T > implements Serial
 		Pointer.Integer pointer = new Pointer.Integer(start);
 		while (pointer.getValue() < start+length) {
 			Value<?> value = Value.deserialize(bytes, pointer);
-			values.put(value.getName(), value);
+			this.values.put(value.getName(), value);
 		}
 	}
 
 	public T  getValues() {
-		return values;
+		return this.values;
 	}
 
 }

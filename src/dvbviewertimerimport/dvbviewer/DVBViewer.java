@@ -252,9 +252,10 @@ public class DVBViewer {
 									temp = "";
 								path = System.getenv("ALLUSERSPROFILE") + temp + path;
 								userMode = 2;
-							} else
+							} else {
 								bR.close();
 								throw new ErrorClass("The file \"" + iniFile + "\" contains an illegal user mode.");
+							}
 						} else if (key.equalsIgnoreCase("Root") && userMode != 0) {
 							root = true;
 							path += File.separator + value;

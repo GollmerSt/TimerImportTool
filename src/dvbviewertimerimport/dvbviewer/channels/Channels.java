@@ -124,16 +124,13 @@ public class Channels {
 		return result;
 	}
 
+	@SuppressWarnings("resource")
 	public void openFileAndCheckHeader() {
 		this.file = new File(this.dvbViewer.getDVBViewerDataPath() + File.separator + CHANNEL_FILE_NAME);
 
 		try {
 			this.fileChannel = new FileInputStream(this.file).getChannel();
 		} catch (FileNotFoundException e) {
-			try {
-				this.fileChannel.close();
-			} catch (IOException e1) {
-			}
 			throw new ErrorClass("Error on opening \"" + this.file.getAbsolutePath() + "\". File exists?");
 		}
 
