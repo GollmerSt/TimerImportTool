@@ -15,7 +15,7 @@ public abstract class Value< T > {
 	protected T value ; 
 
 	public Collection<Byte> getCache() {
-		return cache;
+		return this.cache;
 	}
 
 	public void setCache(Collection<Byte> cache) {
@@ -26,7 +26,7 @@ public abstract class Value< T > {
 		if ( this.name == null ) {
 			return null ;
 		}
-		return name.toString() ;
+		return this.name.toString() ;
 	}
 
 	public void setName(String name) {
@@ -67,7 +67,7 @@ public abstract class Value< T > {
 
 	
 	public int getSerializesSize() {
-		int size = 1 + 1 + 4 + name.getDataSize() + this.getDataSize() ;
+		int size = 1 + 1 + 4 + this.name.getDataSize() + this.getDataSize() ;
 		return size ;
 	}
 	

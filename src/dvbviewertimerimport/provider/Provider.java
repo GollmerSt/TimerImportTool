@@ -5,12 +5,18 @@
 package dvbviewertimerimport.provider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TimeZone;
+
+import javax.xml.stream.XMLEventReader;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.XMLEvent;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
@@ -19,26 +25,22 @@ import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
-
-import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.Attribute;
-import javax.xml.stream.events.XMLEvent;
-
-import dvbviewertimerimport.xml.Conversions;
-import dvbviewertimerimport.xml.StackXML;
-
 import dvbviewertimerimport.misc.ErrorClass;
 import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.xml.Conversions;
+import dvbviewertimerimport.xml.StackXML;
 
 public abstract class Provider implements DVBViewerProvider {
 
 	private static final StackXML<String> pathProvider = new StackXML<String>("Providers", "Provider");
 	private static final StackXML<String> pathURL = new StackXML<String>("Providers", "Provider", "Url");
+	private static final StackXML<String> pathSenderURL = new StackXML<String>("Providers", "Provider", "SenderUrl");
 	private static final StackXML<String> pathMissing = new StackXML<String>("Providers", "Provider", "Missing");
+	private static final StackXML<String> pathRegularExpression = new StackXML<String>("Providers", "Provider",
+			"RegularExpression");
 
 	private enum XMLStatus {
-		UKNOWN, MISSING, PROVIDER
+		UKNOWN, MISSING, PROVIDER, REGEX
 	};
 
 	private static ArrayList<String> names = new ArrayList<String>();
@@ -98,6 +100,7 @@ public abstract class Provider implements DVBViewerProvider {
 	protected boolean canAddChannel = true;
 	private final String name;
 	protected String url = "";
+	protected String senderURL = "";
 	protected String username = null;
 	protected String password = null;
 	private int triggerAction = -1;
@@ -111,6 +114,18 @@ public abstract class Provider implements DVBViewerProvider {
 	protected boolean isSilent;
 	private OutDatedInfo outDatedLimits = null;
 	protected TimeZone timeZone = TimeZone.getDefault();
+
+	static class RegularExpression {
+		final String id;
+		final String regString;
+
+		public RegularExpression(String id, String regString) {
+			this.id = id;
+			this.regString = regString;
+		}
+	}
+
+	protected Collection<RegularExpression> regularExpressions = new ArrayList<>();
 
 	public Provider(Control control, boolean hasAccount, boolean hasURL, String name, boolean canExecute,
 			boolean canTest, boolean filter, boolean mustInstall, boolean silent, boolean isOutDatedLimitsEnabled) {
@@ -140,6 +155,7 @@ public abstract class Provider implements DVBViewerProvider {
 		return this.name;
 	};
 
+	@Override
 	public String toString() {
 		return this.name;
 	};
@@ -280,7 +296,14 @@ public abstract class Provider implements DVBViewerProvider {
 		return true;
 	};
 
-	public boolean containsChannel(final Channel channel, boolean ifList) {
+	/**
+	 * 
+	 * @param channel
+	 * @param userChannels true: user search over user channels
+	 * @return True if channel is supported by the provider
+	 */
+
+	public boolean containsChannel(final Channel channel, boolean userChannels) {
 		return true;
 	};
 
@@ -299,21 +322,27 @@ public abstract class Provider implements DVBViewerProvider {
 		return this.importChannels(false);
 	};
 
+	/**
+	 * 
+	 * @return true, if importer get all possible channels of the provider
+	 */
 	public boolean isAllChannelsImport() {
 		return false;
 	};
 
-	protected ArrayList<Channel> readChannels() {
+	protected Collection<Channel> readChannels() {
 		return null;
 	};
 
 	public void updateRecordings(ArrayList<DVBViewerEntry> entries) {
 	};
 
+	@Override
 	public boolean process(boolean getAll, DVBViewer.Command command) {
 		return true;
 	};
 
+	@Override
 	public boolean processEntry(Object args, DVBViewer.Command command) {
 		return true;
 	};
@@ -389,6 +418,10 @@ public abstract class Provider implements DVBViewerProvider {
 		boolean filter = false;
 		OutDatedInfo info = new OutDatedInfo(true);
 		String url = "";
+		String senderURL = "";
+
+		String regularId = null;
+		String regularExpression = null;
 
 		XMLStatus xmlStatus = XMLStatus.UKNOWN;
 
@@ -417,6 +450,10 @@ public abstract class Provider implements DVBViewerProvider {
 					info = new OutDatedInfo(true);
 
 					xmlStatus = XMLStatus.MISSING;
+				} else if (stack.equals(pathRegularExpression)) {
+					regularId = null;
+					regularExpression = "";
+					xmlStatus = XMLStatus.REGEX;
 				}
 
 				@SuppressWarnings("unchecked")
@@ -428,42 +465,55 @@ public abstract class Provider implements DVBViewerProvider {
 					String value = a.getValue().trim();
 
 					switch (xmlStatus) {
-					case PROVIDER:
-						if (attributeName.equals("name"))
-							name = value;
-						else if (attributeName.equals("username"))
-							username = value;
-						else if (attributeName.equals("password"))
-							password = value;
-						else if (attributeName.equals("triggeraction")) {
-							if (!value.matches("\\d+"))
-								throw new ErrorClass(ev, "Wrong triggeraction format in file \"" + fileName + "\"");
-							triggerAction = Integer.valueOf(value);
-						} else if (attributeName.equals("merge"))
-							merge = Conversions.getBoolean(value, ev, fileName);
-						else if (attributeName.equals("verbose"))
-							verbose = Conversions.getBoolean(value, ev, fileName);
-						else if (attributeName.equals("message"))
-							message = Conversions.getBoolean(value, ev, fileName);
-						else if (attributeName.equals("filter"))
-							filter = Conversions.getBoolean(value, ev, fileName);
-						break;
+						case PROVIDER:
+							if (attributeName.equals("name"))
+								name = value;
+							else if (attributeName.equals("username"))
+								username = value;
+							else if (attributeName.equals("password"))
+								password = value;
+							else if (attributeName.equals("triggeraction")) {
+								if (!value.matches("\\d+"))
+									throw new ErrorClass(ev, "Wrong triggeraction format in file \"" + fileName + "\"");
+								triggerAction = Integer.valueOf(value);
+							} else if (attributeName.equals("merge"))
+								merge = Conversions.getBoolean(value, ev, fileName);
+							else if (attributeName.equals("verbose"))
+								verbose = Conversions.getBoolean(value, ev, fileName);
+							else if (attributeName.equals("message"))
+								message = Conversions.getBoolean(value, ev, fileName);
+							else if (attributeName.equals("filter"))
+								filter = Conversions.getBoolean(value, ev, fileName);
+							break;
 
-					case MISSING:
-						try {
-							info.readXML(attributeName, value);
-						} catch (ErrorClass e) {
-							throw new ErrorClass(ev, e.getErrorString() + " in file \"" + fileName + "\"");
-						}
-						break;
-					default:
-						break;
+						case MISSING:
+							try {
+								info.readXML(attributeName, value);
+							} catch (ErrorClass e) {
+								throw new ErrorClass(ev, e.getErrorString() + " in file \"" + fileName + "\"");
+							}
+							break;
+						case REGEX:
+							if (attributeName.equals("id")) {
+								regularId = value;
+							}
+						default:
+							break;
 					}
 				}
 			}
 			if (ev.isCharacters()) {
-				if (stack.equals(pathURL))
-					url += ev.asCharacters().getData().trim();
+				String data = ev.asCharacters().getData();
+				if (data.startsWith("null")) {
+					data = data.substring(4);
+				}
+				if (stack.equals(pathURL)) {
+					url += data.trim();
+				} else if (stack.equals(pathSenderURL)) {
+					senderURL += data.trim();
+				} else if (stack.equals(pathRegularExpression)) {
+					regularExpression += data.trim();
+				}
 			}
 			if (ev.isEndElement()) {
 				if (stack.equals(pathProvider)) {
@@ -481,8 +531,12 @@ public abstract class Provider implements DVBViewerProvider {
 						provider.outDatedLimits = info;
 						info = null;
 					}
+					provider.senderURL = senderURL;
 					provider.url = url;
 					url = "";
+				} else if (stack.equals(pathRegularExpression)) {
+					provider = Provider.getProvider(name);
+					provider.regularExpressions.add(new RegularExpression(regularId, regularExpression));
 				}
 				stack.pop();
 				if (stack.size() == 1)
@@ -519,8 +573,19 @@ public abstract class Provider implements DVBViewerProvider {
 			}
 
 			if (provider.hasURL) {
-				sw.writeStartElement("Url");
+				sw.writeStartElement(pathURL.lastElement());
 				sw.writeCharacters(provider.url);
+				sw.writeEndElement();
+			}
+			if (!provider.senderURL.isEmpty()) {
+				sw.writeStartElement(pathSenderURL.lastElement());
+				sw.writeCharacters(provider.senderURL);
+				sw.writeEndElement();
+			}
+			for (RegularExpression expr : provider.regularExpressions) {
+				sw.writeStartElement(pathRegularExpression.lastElement());
+				sw.writeAttribute("id", expr.id);
+				sw.writeCData(expr.regString);
 				sw.writeEndElement();
 			}
 			sw.writeEndElement();
@@ -529,7 +594,7 @@ public abstract class Provider implements DVBViewerProvider {
 	}
 
 	public int assignChannels() {
-		ArrayList<Channel> channels = readChannels();
+		Collection<Channel> channels = readChannels();
 
 		if (channels == null)
 			return -1;
@@ -541,14 +606,16 @@ public abstract class Provider implements DVBViewerProvider {
 
 		if (channels.size() == 0)
 			return 0;
-		Channel channelProv = (Channel) channels.toArray()[0];
+		// Channel channelProv = (Channel) channels.toArray()[0];
+
+		// Creating of maps sorted by name and id based on old data
 
 		for (ChannelSet cs : this.control.getChannelSets()) {
 			Channel c = cs.getChannel(pid);
 			if (c == null)
 				continue;
 			mapByName.put(c.getName(), cs);
-			Object key = channelProv.getIDKey(c);
+			Object key = c.getIDKey(c);
 			if (key != null)
 				mapByID.put(key, cs);
 		}
@@ -560,9 +627,13 @@ public abstract class Provider implements DVBViewerProvider {
 		for (Channel c : channels) {
 			boolean found = true;
 			Object key = c.getIDKey();
-			if (mapByID.containsKey(key))
-				;
-			else if (mapByName.containsKey(c.getName())) {
+			ChannelSet former = mapByID.get(key);
+			if (former != null) {
+				if (!former.getChannel(pid).getName().equals(c.getName())) {
+					former.remove(pid);
+					former.add(c);
+				}
+			} else if (mapByName.containsKey(c.getName())) {
 				String name = c.getName();
 				Channel pc = mapByName.get(name).getChannel(pid);
 				pc.setID(key);
@@ -601,4 +672,19 @@ public abstract class Provider implements DVBViewerProvider {
 	public void setTimeZone(TimeZone timeZone) {
 		this.timeZone = timeZone;
 	};
+
+	protected static class ChannelsResult {
+		Collection<String> allChannels = new ArrayList<String>();
+		Collection<String> userChannels = new ArrayList<String>();
+	}
+
+	protected String getRegularExpression(String id) {
+		for (RegularExpression expr : this.regularExpressions) {
+			if (id.equals(expr.id)) {
+				return expr.regString;
+			}
+		}
+		return null;
+	}
+
 }

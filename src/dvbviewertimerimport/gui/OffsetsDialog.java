@@ -262,6 +262,7 @@ public class OffsetsDialog extends JDialog {
 		{
 			this.weekdays = weekdays ;
 		}
+		@Override
 		public String toString()
 		{
 			String result = "" ;
@@ -336,6 +337,8 @@ public class OffsetsDialog extends JDialog {
 					e.printStackTrace();
 				}
 				return new Long( dayTime ) ;
+				default:
+					break;
 			}
 			return null ;
 		}
@@ -365,6 +368,8 @@ public class OffsetsDialog extends JDialog {
 				//	dayTime = Constants.DAYMILLSEC ;
 				entry.getDayTimes()[ col - 3 ] = longToDayTime( dayTime ) ;
 				break ;
+				default:
+					break;
 			}
 		}
 	}

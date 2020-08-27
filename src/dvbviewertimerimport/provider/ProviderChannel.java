@@ -26,6 +26,7 @@ public class ProviderChannel< T >
 	{
 		return this.key ;
 	}
+	@Override
 	public String toString()
 	{
 		return "Name: " + this.name + ", Key: " + this.key.toString() ;

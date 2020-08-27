@@ -1,4 +1,4 @@
-package dvbviewertimerimport.gui.treetable ;
+package dvbviewertimerimport.gui.treetable;
 
 /*
  * @(#)TreeTableModelAdapter.java       1.2 98/10/27
@@ -33,7 +33,6 @@ package dvbviewertimerimport.gui.treetable ;
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.table.AbstractTableModel;
@@ -44,18 +43,16 @@ import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 
 /**
- * This is a wrapper class takes a TreeTableModel and implements
- * the table model interface. The implementation is trivial, with
- * all of the event dispatching support provided by the superclass:
- * the AbstractTableModel.
+ * This is a wrapper class takes a TreeTableModel and implements the table model
+ * interface. The implementation is trivial, with all of the event dispatching
+ * support provided by the superclass: the AbstractTableModel.
  *
  * @version 1.2 10/27/98
  *
  * @author Philip Milne
  * @author Scott Violet
  */
-public class TreeTableModelAdapter extends AbstractTableModel
-{
+public class TreeTableModelAdapter extends AbstractTableModel {
 	/**
 	 * 
 	 */
@@ -70,11 +67,14 @@ public class TreeTableModelAdapter extends AbstractTableModel
 		tree.addTreeExpansionListener(new TreeExpansionListener() {
 			// Don't use fireTableRowsInserted() here; the selection model
 			// would get updated twice.
+			@Override
 			public void treeExpanded(TreeExpansionEvent event) {
-			  fireTableDataChanged();
+				fireTableDataChanged();
 			}
+
+			@Override
 			public void treeCollapsed(TreeExpansionEvent event) {
-			  fireTableDataChanged();
+				fireTableDataChanged();
 			}
 		});
 
@@ -83,18 +83,22 @@ public class TreeTableModelAdapter extends AbstractTableModel
 		// not be guaranteed the tree will have finished processing
 		// the event before us.
 		treeTableModel.addTreeModelListener(new TreeModelListener() {
+			@Override
 			public void treeNodesChanged(TreeModelEvent e) {
 				delayedFireTableDataChanged();
 			}
 
+			@Override
 			public void treeNodesInserted(TreeModelEvent e) {
 				delayedFireTableDataChanged();
 			}
 
+			@Override
 			public void treeNodesRemoved(TreeModelEvent e) {
 				delayedFireTableDataChanged();
 			}
 
+			@Override
 			public void treeStructureChanged(TreeModelEvent e) {
 				delayedFireTableDataChanged();
 			}
@@ -103,18 +107,22 @@ public class TreeTableModelAdapter extends AbstractTableModel
 
 	// Wrappers, implementing TableModel interface.
 
+	@Override
 	public int getColumnCount() {
 		return this.treeTableModel.getColumnCount();
 	}
 
+	@Override
 	public String getColumnName(int column) {
 		return this.treeTableModel.getColumnName(column);
 	}
 
-		public Class<?> getColumnClass(int column) {
+	@Override
+	public Class<?> getColumnClass(int column) {
 		return this.treeTableModel.getColumnClass(column);
 	}
 
+	@Override
 	public int getRowCount() {
 		return this.tree.getRowCount();
 	}
@@ -124,14 +132,17 @@ public class TreeTableModelAdapter extends AbstractTableModel
 		return treePath.getLastPathComponent();
 	}
 
+	@Override
 	public Object getValueAt(int row, int column) {
 		return this.treeTableModel.getValueAt(nodeForRow(row), column);
 	}
 
+	@Override
 	public boolean isCellEditable(int row, int column) {
-		 return this.treeTableModel.isCellEditable(nodeForRow(row), column);
+		return this.treeTableModel.isCellEditable(nodeForRow(row), column);
 	}
 
+	@Override
 	public void setValueAt(Object value, int row, int column) {
 		this.treeTableModel.setValueAt(value, nodeForRow(row), column);
 	}
@@ -142,10 +153,10 @@ public class TreeTableModelAdapter extends AbstractTableModel
 	 */
 	protected void delayedFireTableDataChanged() {
 		SwingUtilities.invokeLater(new Runnable() {
+			@Override
 			public void run() {
 				fireTableDataChanged();
 			}
 		});
 	}
 }
-

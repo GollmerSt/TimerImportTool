@@ -101,6 +101,7 @@ public class JTreeTable extends JTable {
 	 * tree is not actually in the component hierarchy it will never receive this
 	 * unless we forward it in this manner.
 	 */
+	@Override
 	public void updateUI() {
 		super.updateUI();
 		if (this.tree != null) {
@@ -118,6 +119,7 @@ public class JTreeTable extends JTable {
 	 * an editor. Returning -1 for the editing row in this case, ensures the editor
 	 * is never painted.
 	 */
+	@Override
 	public int getEditingRow() {
 		return (getColumnClass(this.editingColumn) == TreeTableModel.class) ? -1 : this.editingRow;
 	}
@@ -125,6 +127,7 @@ public class JTreeTable extends JTable {
 	/**
 	 * Overridden to pass the new rowHeight to the tree.
 	 */
+	@Override
 	public void setRowHeight(int rowHeight) {
 		super.setRowHeight(rowHeight);
 		if (this.tree != null && this.tree.getRowHeight() != rowHeight) {
@@ -160,6 +163,7 @@ public class JTreeTable extends JTable {
 		 * updateUI is overridden to set the colors of the Tree's renderer to match that
 		 * of the table.
 		 */
+		@Override
 		public void updateUI() {
 			super.updateUI();
 			// Make the tree's cell renderer use the table's cell selection
@@ -179,6 +183,7 @@ public class JTreeTable extends JTable {
 		/**
 		 * Sets the row height of the tree, and forwards the row height to the table.
 		 */
+		@Override
 		public void setRowHeight(int rowHeight) {
 			if (rowHeight > 0) {
 				super.setRowHeight(rowHeight);
@@ -191,6 +196,7 @@ public class JTreeTable extends JTable {
 		/**
 		 * This is overridden to set the height to match that of the JTable.
 		 */
+		@Override
 		public void setBounds(int x, int y, int w, int h) {
 			super.setBounds(x, 0, w, JTreeTable.this.getHeight());
 		}
@@ -199,6 +205,7 @@ public class JTreeTable extends JTable {
 		 * Sublcassed to translate the graphics such that the last visible row will be
 		 * drawn at 0,0.
 		 */
+		@Override
 		public void paint(Graphics g) {
 			g.translate(0, -this.visibleRow * getRowHeight());
 			super.paint(g);
@@ -207,6 +214,7 @@ public class JTreeTable extends JTable {
 		/**
 		 * TreeCellRenderer method. Overridden to update the visible row.
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
 				int row, int column) {
 			if (isSelected)
@@ -223,6 +231,7 @@ public class JTreeTable extends JTable {
 	 * TreeTableCellEditor implementation. Component returned is the JTree.
 	 */
 	public class TreeTableCellEditor extends AbstractCellEditor implements TableCellEditor {
+		@Override
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int r, int c) {
 			return JTreeTable.this.tree;
 		}
@@ -245,6 +254,7 @@ public class JTreeTable extends JTable {
 		 * By returning false we are also enforcing the policy that the tree will never
 		 * be editable (at least by a key sequence).
 		 */
+		@Override
 		public boolean isCellEditable(EventObject e) {
 			if (e instanceof MouseEvent) {
 				for (int counter = getColumnCount() - 1; counter >= 0; counter--) {
@@ -294,6 +304,7 @@ public class JTreeTable extends JTable {
 		 * super. This is the only place DefaultTreeSelectionModel alters the
 		 * ListSelectionModel.
 		 */
+		@Override
 		public void resetRowSelection() {
 			if (!this.updatingListSelectionModel) {
 				this.updatingListSelectionModel = true;
@@ -353,6 +364,7 @@ public class JTreeTable extends JTable {
 		 * selection of the list changse.
 		 */
 		class ListSelectionHandler implements ListSelectionListener {
+			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				updateSelectedPathsFromSelectedRows();
 			}

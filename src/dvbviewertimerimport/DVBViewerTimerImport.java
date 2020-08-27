@@ -52,6 +52,7 @@ import dvbviewertimerimport.provider.ProviderChannel;
  *
  */
 public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
+
 	private static Version version = null;
 
 	private static DVBViewerTimerImport plugin = null;
@@ -77,7 +78,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	private DVBViewerChannelChooseAction chooseChannelAction = new DVBViewerChannelChooseAction();
 	private DVBViewerTimerAction timerAction = new DVBViewerTimerAction();
 
-	private DVBViewerProvider dvbViewerProvider = this;
 	private int providerID;
 	private Provider provider;
 
@@ -95,6 +95,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 		DVBViewerTimerImport.plugin = this;
 	}
 
+	@Override
 	protected void finalize() {
 		DVBViewerTimerImport.plugin = null;
 	}
@@ -108,30 +109,43 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	 */
 	@Override
 	public void loadSettings(Properties settings) {
-		if (!init())
-			return;
-		handleTvDataUpdateFinished();
+		try {
+			if (!init()) {
+				return;
+			}
+			handleTvDataUpdateFinished();
+		} catch (Throwable ee) {
+			Log.out("Throws on loadSettings, Message: " + ee.getMessage());
+			throw ee;
+		}
 	}
 
 	@Override
 	public void handleTvDataUpdateFinished() {
-		DVBViewerTimerImport.plugin.tvbChannelNames = null;
 		try {
-			this.control.getDVBViewer().process(this.dvbViewerProvider, false, (Object) null, Command.UPDATE_TVBROWSER);
-		} catch (ErrorClass e) {
-			this.errorMessage(e);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (TerminateClass e) {
+			DVBViewerTimerImport.plugin.tvbChannelNames = null;
+			try {
+				this.control.getDVBViewer().process(this, false, (Object) null, Command.UPDATE_TVBROWSER);
+			} catch (ErrorClass e) {
+				this.errorMessage(e);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (TerminateClass e) {
+			}
+		} catch (Throwable ee) {
+			Log.out("Throws on handleTvDataUpdateFinished, Message: " + ee.getMessage());
+			throw ee;
 		}
 	}
 
 	private static Map<String, Channel> getUniqueAssignmentMap() {
-		if (DVBViewerTimerImport.plugin == null)
+		if (DVBViewerTimerImport.plugin == null) {
 			return null;
-		if (DVBViewerTimerImport.plugin.uniqueAssignment == null)
+		}
+		if (DVBViewerTimerImport.plugin.uniqueAssignment == null) {
 			getTVBChannelNames();
+		}
 		return DVBViewerTimerImport.plugin.uniqueAssignment;
 	}
 
@@ -139,12 +153,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	 * @return Array containing the channel names of the TV-Browser
 	 */
 	public static ProviderChannel<String>[] getTVBChannelNames() {
-		if (DVBViewerTimerImport.plugin == null)
+		if (DVBViewerTimerImport.plugin == null) {
 			return null;
-
-		if (DVBViewerTimerImport.plugin.tvbChannelNames != null)
+		}
+		if (DVBViewerTimerImport.plugin.tvbChannelNames != null) {
 			return DVBViewerTimerImport.plugin.tvbChannelNames;
-
+		}
 		devplugin.Channel[] channels = devplugin.Plugin.getPluginManager().getSubscribedChannels();
 
 		DVBViewerTimerImport.plugin.uniqueAssignment = new HashMap<String, Channel>();
@@ -178,9 +192,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	}
 
 	private boolean init() {
-		if (this.isInitialized)
+		if (this.isInitialized) {
 			return true;
-
+		}
 		Provider.setIsPlugin();
 
 		try {
@@ -219,6 +233,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 		this.control.setDefaultProvider(this.provider.getName());
 
 		this.isInitialized = true;
+		Log.out("TVBrowser plugin initialized");
 		return true;
 	}
 
@@ -226,7 +241,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	 * @param e Throwable of the last exception/error ....
 	 */
 	public void errorMessage(Throwable e) {
-		if (e.getClass().equals(ErrorClass.class)) {
+		if (e instanceof ErrorClass) {
 			Log.error(e.getLocalizedMessage());
 			Log.out("Import terminated with errors");
 		}
@@ -243,19 +258,30 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 	@Override
 	public PluginInfo getInfo() {
-		if (this.pluginInfo == null)
-			this.pluginInfo = new PluginInfo(DVBViewerTimerImport.class, ResourceManager.msg("PLUGIN_NAME"),
-					ResourceManager.msg("DESCRIPTION"), "Gollmer, Stefan");
-		return this.pluginInfo;
+		try {
+			if (this.pluginInfo == null)
+				this.pluginInfo = new PluginInfo(DVBViewerTimerImport.class, ResourceManager.msg("PLUGIN_NAME"),
+						ResourceManager.msg("DESCRIPTION"), "Gollmer, Stefan");
+			return this.pluginInfo;
+		} catch (Throwable ee) {
+			Log.out("Throws on getInfo, Message: " + ee.getMessage());
+			throw ee;
+		}
 	}
 
 	@Override
 	public Icon[] getMarkIconsForProgram(Program p) {
-		if (this.markIcons != null)
+		try {
+			if (this.markIcons != null) {
+				return this.markIcons;
+			}
+			Icon i = ResourceManager.createImageIcon("icons/dvbViewer Programm16.png", "DVBViewer icon");
+			this.markIcons = new Icon[] { i };
 			return this.markIcons;
-		Icon i = ResourceManager.createImageIcon("icons/dvbViewer Programm16.png", "DVBViewer icon");
-		this.markIcons = new Icon[] { i };
-		return this.markIcons;
+		} catch (Throwable ee) {
+			Log.out("Throws on getMarkIconsForProgram, Message: " + ee.getMessage());
+			throw ee;
+		}
 	}
 
 	private class DVBViewerChannelChooseAction extends AbstractAction {
@@ -277,21 +303,28 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			if (DVBViewerTimerImport.this.dvbViewer == null)
-				return;
-			devplugin.Channel tvBChannel = this.program.getChannel();
-
-			dvbviewertimerimport.dvbviewer.Channel dvbChannel = null;
-
 			try {
-				dvbChannel = DVBViewerTimerImport.this.dvbViewer.getDVBViewerChannel(DVBViewerTimerImport.this.provider.getID(),
-						tvBChannel.getName());
-			} catch (ErrorClass e1) {
-				errorMessage(e1);
-				return;
-			}
+				if (DVBViewerTimerImport.this.dvbViewer == null) {
+					return;
+				}
 
-			DVBViewerTimerImport.this.dvbViewer.startDVBViewerAndSelectChannel(dvbChannel.getDVBViewer());
+				devplugin.Channel tvBChannel = this.program.getChannel();
+
+				dvbviewertimerimport.dvbviewer.Channel dvbChannel = null;
+
+				try {
+					dvbChannel = DVBViewerTimerImport.this.dvbViewer
+							.getDVBViewerChannel(DVBViewerTimerImport.this.provider.getID(), tvBChannel.getName());
+				} catch (ErrorClass e1) {
+					errorMessage(e1);
+					return;
+				}
+
+				DVBViewerTimerImport.this.dvbViewer.startDVBViewerAndSelectChannel(dvbChannel.getDVBViewer());
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBViewerChannelChooseAction.actionPerformed, Message: " + ee.getMessage());
+				throw ee;
+			}
 		}
 	}
 
@@ -318,21 +351,28 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				DVBViewerTimerImport.this.control.getDVBViewer().process(DVBViewerTimerImport.this.dvbViewerProvider, false, this.program, this.command);
-			} catch (ErrorClass e) {
-				errorMessage(e);
-				return;
-			} catch (Exception e) {
-				errorMessage(e);
-				e.printStackTrace();
-				return;
-			} catch (TerminateClass e) {
-				return;
-			}
-			markProgram(this.program, this.command == Command.SET);
+				try {
+					DVBViewerTimerImport.this.control.getDVBViewer().process(DVBViewerTimerImport.this, false,
+							this.program, this.command);
+				} catch (ErrorClass e) {
+					errorMessage(e);
+					return;
+				} catch (Exception e) {
+					errorMessage(e);
+					e.printStackTrace();
+					return;
+				} catch (TerminateClass e) {
+					return;
+				}
+				markProgram(this.program, this.command == Command.SET);
 
-			this.program.validateMarking();
-			updateTreeNode();
+				this.program.validateMarking();
+				updateTreeNode();
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBViewerTimerAction.actionPerformed, Message: " + ee.getMessage());
+				throw ee;
+			}
+
 		}
 
 	}
@@ -342,7 +382,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		Command temp = Command.SET;
 		try {
-			if (this.control.getDVBViewer().process(this.dvbViewerProvider, false, program, Command.FIND))
+			if (this.control.getDVBViewer().process(this, false, program, Command.FIND))
 				temp = Command.DELETE;
 		} catch (ErrorClass e) {
 			this.errorMessage(e);
@@ -394,35 +434,56 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		@Override
 		public JPanel createSettingsPanel() {
-			if (!init())
-				return null;
-			if (DVBViewerTimerImport.this.settingsPanel == null) {
-				DVBViewerTimerImport.this.settingsPanel = new GUIPanel(DVBViewerTimerImport.this.control);
-				DVBViewerTimerImport.this.settingsPanel.init();
+			try {
+				if (!init())
+					return null;
+				if (DVBViewerTimerImport.this.settingsPanel == null) {
+					DVBViewerTimerImport.this.settingsPanel = new GUIPanel(DVBViewerTimerImport.this.control);
+					DVBViewerTimerImport.this.settingsPanel.init();
+				}
+				return DVBViewerTimerImport.this.settingsPanel;
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBVSettingsTab.createSettingsPanel, Message: " + ee.getMessage());
+				throw ee;
 			}
-			return DVBViewerTimerImport.this.settingsPanel;
 		}
 
 		@Override
 		public Icon getIcon() {
-			ImageIcon pluginIcon = ResourceManager.createImageIcon("icons/dvbViewer Programm16.png", "DVBViewer icon");
-			return pluginIcon;
+			try {
+				ImageIcon pluginIcon = ResourceManager.createImageIcon("icons/dvbViewer Programm16.png",
+						"DVBViewer icon");
+				return pluginIcon;
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBVSettingsTab.getIcon, Message: " + ee.getMessage());
+				throw ee;
+			}
 		}
 
 		@Override
 		public String getTitle() {
-			return ResourceManager.msg("PLUGIN_NAME");
+			try {
+				return ResourceManager.msg("PLUGIN_NAME");
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBVSettingsTab.getTitle, Message: " + ee.getMessage());
+				throw ee;
+			}
 		}
 
 		@Override
 		public void saveSettings() {
-			if (!init())
-				return;
-			DVBViewerTimerImport.this.control.setDVBViewerEntries();
-			Log.out("Configuration saved");
-			DVBViewerTimerImport.this.control.renameImportedFile();
-			DVBViewerTimerImport.this.settingsPanel.updateTab();
-			DVBViewerTimerImport.this.control.write(null);
+			try {
+				if (!init())
+					return;
+				DVBViewerTimerImport.this.control.setDVBViewerEntries();
+				Log.out("Configuration saved");
+				DVBViewerTimerImport.this.control.renameImportedFile();
+				DVBViewerTimerImport.this.settingsPanel.updateTab();
+				DVBViewerTimerImport.this.control.write(null);
+			} catch (Throwable ee) {
+				Log.out("Throws on DVBVSettingsTab.saveSettings, Message: " + ee.getMessage());
+				throw ee;
+			}
 		}
 
 	}
@@ -433,59 +494,68 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 	@Override
 	public boolean processEntry(Object arg, DVBViewer.Command command) {
-		boolean result = true;
+		try {
+			boolean result = true;
 
-		if (command == Command.UPDATE_TVBROWSER) {
-			this.updateMarks();
-			return true;
-		}
+			if (command == Command.UPDATE_TVBROWSER) {
+				this.updateMarks();
+				return true;
+			}
 
-		if (command == Command.UPDATE_UNRESOLVED_ENTRIES) {
-			int end = this.control.getDVBViewer().getRecordEntries().size();
-			for (int i = 0; i < end; ++i) {
-				DVBViewerEntry co = this.control.getDVBViewer().getRecordEntries().get(i);
-				if (co.getProvider() == this.provider && co.isProgramEntry() && co.getProviderCID() != null) {
-					Program program = Plugin.getPluginManager().getProgram(co.getProviderCID());
-					if (program != null)
+			if (command == Command.UPDATE_UNRESOLVED_ENTRIES) {
+				int end = this.control.getDVBViewer().getRecordEntries().size();
+				for (int i = 0; i < end; ++i) {
+					DVBViewerEntry co = this.control.getDVBViewer().getRecordEntries().get(i);
+					if (co.getProvider() == this.provider && co.isProgramEntry() && co.getProviderCID() != null) {
+						Program program = Plugin.getPluginManager().getProgram(co.getProviderCID());
+						if (program != null)
+							continue;
+						Program pgm = this.searchBestFit(co);
+						if (pgm == null)
+							continue;
+						long[] times = calcRecordTimes(pgm);
+						String channel = pgm.getChannel().getName();
+						this.dvbViewer.shiftEntry(co, this.provider, pgm.getUniqueID(), channel, times[0], times[1],
+								pgm.getTitle());
+						this.markProgram(pgm, true);
+						pgm.validateMarking();
 						continue;
-					Program pgm = this.searchBestFit(co);
-					if (pgm == null)
-						continue;
-					long[] times = calcRecordTimes(pgm);
-					String channel = pgm.getChannel().getName();
-					this.dvbViewer.shiftEntry(co, this.provider, pgm.getUniqueID(), channel, times[0], times[1], pgm.getTitle());
-					this.markProgram(pgm, true);
-					pgm.validateMarking();
-					continue;
+					}
 				}
+				return true;
 			}
-			return true;
+
+			Program program = (Program) arg;
+
+			switch (command) {
+				case SET: {
+					long[] times = calcRecordTimes(program);
+					String channel = program.getChannel().getName();
+					this.dvbViewer.addNewEntry(this.provider, program.getUniqueID(), channel, times[0], times[1],
+							program.getTitle());
+					break;
+				}
+				case FIND:
+					result = findProgram(program) != null;
+					break;
+				case DELETE: {
+					DVBViewerEntry entry = findProgram(program);
+					if (entry == null)
+						return false;
+					this.dvbViewer.deleteEntry(entry);
+					break;
+				}
+				default:
+					break;
+			}
+			return result;
+		} catch ( ErrorClass ee) {
+			throw ee;
+		} catch (Throwable ee) {
+			Log.out("Throws on processEntry, Message: " + ee.getMessage());
+			Log.outStackTrace(ee);
+			throw ee;
 		}
-
-		Program program = (Program) arg;
-
-		switch (command) {
-			case SET: {
-				long[] times = calcRecordTimes(program);
-				String channel = program.getChannel().getName();
-				this.dvbViewer.addNewEntry(this.provider, program.getUniqueID(), channel, times[0], times[1], program.getTitle());
-				break;
-			}
-			case FIND:
-				result = findProgram(program) != null;
-				break;
-			case DELETE: {
-				DVBViewerEntry entry = findProgram(program);
-				if (entry == null)
-					return false;
-				this.dvbViewer.deleteEntry(entry);
-				break;
-			}
-			default:
-				break;
-		}
-
-		return result;
 	}
 
 	/**
@@ -529,7 +599,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		if (unresolvedEntries) {
 			try {
-				this.dvbViewer.process(this.dvbViewerProvider, false, null, Command.UPDATE_UNRESOLVED_ENTRIES);
+				this.dvbViewer.process(this, false, null, Command.UPDATE_UNRESOLVED_ENTRIES);
 			} catch (ErrorClass err) {
 				errorMessage(err);
 				return;
@@ -569,7 +639,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 					Program p = pIt.next();
 					Date dd = p.getDate();
 					this.calendar.clear();
-					this.calendar.set(dd.getYear(), dd.getMonth() - 1, dd.getDayOfMonth(), p.getHours(), p.getMinutes());
+					this.calendar.set(dd.getYear(), dd.getMonth() - 1, dd.getDayOfMonth(), p.getHours(),
+							p.getMinutes());
 					long tmp = this.calendar.getTimeInMillis();
 					if (tmp > startTime && tmp < endTime) {
 						endTime = tmp;
@@ -601,7 +672,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new TimersDialog(null, DVBViewerTimerImport.this.control).init();
+				try {
+					new TimersDialog(null, DVBViewerTimerImport.this.control).init();
+				} catch (Throwable ee) {
+					Log.out("Throws on getButtonAction.actionPerformed, Message: " + ee.getMessage());
+					throw ee;
+				}
 			}
 		};
 
@@ -625,46 +701,61 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 	@Override
 	public boolean canReceiveProgramsWithTarget() {
-		return getProgramReceiveTargets().length > 0;
+		try {
+			return getProgramReceiveTargets().length > 0;
+		} catch (Throwable ee) {
+			Log.out("Throws on canReceiveProgramsWithTarget, Message: " + ee.getMessage());
+			throw ee;
+		}
 	}
 
 	@Override
 	public boolean receivePrograms(Program[] programArr, ProgramReceiveTarget receiveTarget) {
-		if (receiveTarget == null || receiveTarget.getTargetId() == null)
-			return false;
-
-		String id = receiveTarget.getTargetId();
-
 		try {
-			if (id.equals("RECORD"))
-				this.dvbViewer.process(this.dvbViewerProvider, false, programArr, DVBViewer.Command.SET);
-			else if (id.equals("REMOVE"))
-				this.dvbViewer.process(this.dvbViewerProvider, false, programArr, DVBViewer.Command.DELETE);
-			else
+			if (receiveTarget == null || receiveTarget.getTargetId() == null)
 				return false;
-		} catch (ErrorClass e) {
-			errorMessage(e);
-			return false;
-		} catch (Exception e) {
-			errorMessage(e);
-			e.printStackTrace();
-			return false;
-		} catch (TerminateClass e) {
-			return false;
+
+			String id = receiveTarget.getTargetId();
+
+			try {
+				if (id.equals("RECORD"))
+					this.dvbViewer.process(this, false, programArr, DVBViewer.Command.SET);
+				else if (id.equals("REMOVE"))
+					this.dvbViewer.process(this, false, programArr, DVBViewer.Command.DELETE);
+				else
+					return false;
+			} catch (ErrorClass e) {
+				errorMessage(e);
+				return false;
+			} catch (Exception e) {
+				errorMessage(e);
+				e.printStackTrace();
+				return false;
+			} catch (TerminateClass e) {
+				return false;
+			}
+			updateMarks();
+			return true;
+		} catch (Throwable ee) {
+			Log.out("Throws on receivePrograms, Message: " + ee.getMessage());
+			throw ee;
 		}
-		updateMarks();
-		return true;
 	}
 
 	@Override
 	public ProgramReceiveTarget[] getProgramReceiveTargets() {
-		ProgramReceiveTarget ADD_TARGET = new ProgramReceiveTarget(this, DVBViewerTimerImport.ADD_TIMER, "RECORD");
-		ProgramReceiveTarget REMOVE_TARGET = new ProgramReceiveTarget(this, DVBViewerTimerImport.DELETE_TIMER,
-				"REMOVE");
+		try {
+			ProgramReceiveTarget ADD_TARGET = new ProgramReceiveTarget(this, DVBViewerTimerImport.ADD_TIMER, "RECORD");
+			ProgramReceiveTarget REMOVE_TARGET = new ProgramReceiveTarget(this, DVBViewerTimerImport.DELETE_TIMER,
+					"REMOVE");
 
-		ProgramReceiveTarget[] targets = { ADD_TARGET, REMOVE_TARGET };
+			ProgramReceiveTarget[] targets = { ADD_TARGET, REMOVE_TARGET };
 
-		return targets;
+			return targets;
+		} catch (Throwable ee) {
+			Log.out("Throws on getProgramReceiveTargets, Message: " + ee.getMessage());
+			throw ee;
+		}
 	}
 
 	public Program searchBestFit(DVBViewerEntry entry) {
@@ -724,4 +815,5 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 		}
 		return result;
 	}
+
 }

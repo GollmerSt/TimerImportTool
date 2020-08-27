@@ -4,9 +4,11 @@
 
 package dvbviewertimerimport.provider;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.security.DigestException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -14,12 +16,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Scanner;
 import java.util.TimeZone;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
 
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.html.HTML;
@@ -32,6 +38,8 @@ import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
@@ -41,27 +49,29 @@ import dvbviewertimerimport.misc.Html;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.xml.StackXML;
 
+@SuppressWarnings("deprecation")
 public final class TVInfo extends Provider {
 
 	private static final boolean DEBUG = false;
 
+	private static final boolean INDIVIDUAL_CHANNELLIST_AVAILABLE = false;
+
 	// private static final String senderURL =
 	// "http://www.tvinfo.de/system/_editSender.php";
-	private static final String senderURL = "http://www.tvinfo.de/sender"; // todo
-	private static final String merkzettelURL = "http://www.tvinfo.de/merkzettel?LIMIT=200";
-	//private static final String senderXmlUrl = "http://www.tvinfo.de/external/openCal/stations.php?username=";
+	private static final String merkzettelURL = "https://www.tvinfo.de/merkzettel?LIMIT=200";
+	// private static final String senderXmlUrl =
+	// "http://www.tvinfo.de/external/openCal/stations.php?username=";
 
-	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<String>("epg_schedule",
-			"epg_schedule_entry");
-	private static final StackXML<String> xmlPathTVinfoTitle = new StackXML<String>("epg_schedule",
-			"epg_schedule_entry", "title");
+	private static final StackXML<String> xmlPathTVinfoEntry = new StackXML<>("epg_schedule", "epg_schedule_entry");
+	private static final StackXML<String> xmlPathTVinfoTitle = new StackXML<>("epg_schedule", "epg_schedule_entry",
+			"title");
 
 	private final DVBViewer dvbViewer;
 	private final SimpleDateFormat dateFormat;
 	private final SimpleDateFormat htmlDateFormat;
 
 	private ArrayList<MyEntry> unresolvedEntries = null;
-	private HashSet<String> solvedChannels = new HashSet<String>();
+	private HashSet<String> solvedChannels = new HashSet<>();
 
 	private HashSet<String> userSender = null;
 	private ArrayList<Channel> allSender = null;
@@ -120,7 +130,7 @@ public final class TVInfo extends Provider {
 	private String getMD5() {
 		MessageDigest md = null;
 		try {
-			md = MessageDigest.getInstance("MD5");
+			md = MessageDigest.getInstance("SHA-1");
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -131,7 +141,7 @@ public final class TVInfo extends Provider {
 
 	public InputStream connect() throws DigestException, NoSuchAlgorithmException {
 		String completeURL = this.url + "?username=" + this.username + "&password=" + this.getMD5();
-		return Html.getStream(completeURL, "TVInfo XML");
+		return Html.getStream(completeURL, "TVInfo XML", false);
 	}
 
 	@Override
@@ -146,14 +156,16 @@ public final class TVInfo extends Provider {
 			e.printStackTrace();
 		}
 		String comp = "<?xml version=\"1.0";
-		byte[] buffer = new byte[100];
+		byte[] buffer = new byte[1024];
+		int length = 0;
 		try {
-			i.read(buffer);
+			length = i.read(buffer);
 			i.close();
 		} catch (IOException e) {
 			return false;
 		}
-		String content = new String(buffer, 0, comp.length());
+		String content = new String(buffer, 0, length);
+		content = new String(buffer, 0, comp.length());
 		if (content.length() < comp.length())
 			return false;
 		if (!content.equals(comp))
@@ -188,7 +200,8 @@ public final class TVInfo extends Provider {
 		public boolean add() {
 			if (this.channel == null || this.channel.length() == 0)
 				return false;
-			TVInfo.this.dvbViewer.addNewEntry(getTVInfo(), this.providerID, this.channel, this.start, this.end, this.title);
+			TVInfo.this.dvbViewer.addNewEntry(getTVInfo(), this.providerID, this.channel, this.start, this.end,
+					this.title);
 			TVInfo.this.solvedChannels.add(this.channel);
 			return true;
 		}
@@ -245,7 +258,7 @@ public final class TVInfo extends Provider {
 		inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 		try {
 			XMLEventReader reader = inputFactory.createXMLEventReader(new StreamSource(iS));
-			StackXML<String> stack = new StackXML<String>();
+			StackXML<String> stack = new StackXML<>();
 			MyEntry entry = null;
 			while (reader.hasNext()) {
 				XMLEvent ev = reader.nextEvent();
@@ -274,7 +287,7 @@ public final class TVInfo extends Provider {
 
 						if (!isAdded) {
 							if (this.unresolvedEntries == null)
-								this.unresolvedEntries = new ArrayList<MyEntry>();
+								this.unresolvedEntries = new ArrayList<>();
 							this.unresolvedEntries.add(entry);
 							Log.out("Empty channelname in TVInfo data at line "
 									+ Integer.toString(ev.getLocation().getLineNumber()) + ", title: " + entry.title);
@@ -348,7 +361,7 @@ public final class TVInfo extends Provider {
 							this.currentEntry.start = htmlTimeToLong(this.dateString, this.timeString);
 							ArrayList<MyEntry> list = this.entries.get(this.currentEntry.getKey());
 							if (list == null) {
-								list = new ArrayList<MyEntry>();
+								list = new ArrayList<>();
 								this.entries.put(this.currentEntry.getKey(), list);
 							}
 							list.add(this.currentEntry);
@@ -373,26 +386,26 @@ public final class TVInfo extends Provider {
 					this.dateString = null;
 					this.timeString = null;
 					if (this.entries == null) {
-						this.entries = new HashMap<Long, ArrayList<MyEntry>>();
+						this.entries = new HashMap<>();
 					}
 				}
 				String dataString = new String(data);
 
 				switch (this.currentType) {
-				case PROVIDER:
-					this.currentEntry.channel = dataString;
-					break;
-				case TITLE:
-					this.currentEntry.setTitle(dataString);
-					break;
-				case DATE:
-					this.dateString = dataString;
-					break;
-				case START_TIME:
-					this.timeString = dataString;
-					break;
-				default:
-					break;
+					case PROVIDER:
+						this.currentEntry.channel = dataString;
+						break;
+					case TITLE:
+						this.currentEntry.setTitle(dataString);
+						break;
+					case DATE:
+						this.dateString = dataString;
+						break;
+					case START_TIME:
+						this.timeString = dataString;
+						break;
+					default:
+						break;
 				}
 			}
 		}
@@ -406,7 +419,7 @@ public final class TVInfo extends Provider {
 
 		try {
 			stream = Html.getStream(completeURL, "TVInfo Merkzettel",
-					"tvusername=" + this.username + "; tvuserpass=" + md5);
+					"tvusername=" + this.username + "; tvuserpass=" + md5, true);
 		} catch (ErrorClass e) {
 			Log.out(e.getErrorString());
 			return;
@@ -455,7 +468,7 @@ public final class TVInfo extends Provider {
 		// Workaround in case of a wrong time zone of the TVInfo output
 		// must be checked on summer time
 		Date d = new Date(this.dateFormat.parse(time).getTime()); // + 60 *60 * 1000)
-																// ;
+																	// ;
 		// System.out.println(d.toString()) ;
 		return d.getTime();
 	}
@@ -468,117 +481,71 @@ public final class TVInfo extends Provider {
 		if (d1 > now)
 			return d1;
 		else
-			return new Date(this.htmlDateFormat.parse(date + Integer.toString(year + 1) + " " + time).getTime()).getTime();
-	}
-
-	public class System_EditSenderParserCallback extends HTMLEditorKit.ParserCallback {
-		private boolean isUserSenderReading = false;
-		private boolean isUserSenderRead = false;
-		private boolean isUnusedSenderReading = false;
-		private boolean isUnusedSenderRead = false;
-
-		public boolean isUserSenderRead() {
-			return this.isUserSenderRead;
-		}
-
-		private Integer divSender = null;
-		private int divCount = 0;
-
-		@Override
-		public void handleStartTag(HTML.Tag t, MutableAttributeSet a, int pos) {
-			if (!this.isUserSenderRead) {
-				if (t == HTML.Tag.DIV) {
-					if (a.containsAttribute(HTML.Attribute.ID, "myBroadcaster")) {
-						this.isUserSenderReading = true;
-					}
-					if (this.isUserSenderReading) {
-						++this.divCount;
-						if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
-							this.divSender = this.divCount;
-						}
-					}
-				}
-			}
-			if (!this.isUnusedSenderRead) {
-				if (t == HTML.Tag.DIV) {
-					if (a.containsAttribute(HTML.Attribute.ID, "notUsedBroadcaster")) {
-						this.isUnusedSenderReading = true;
-					}
-					if (this.isUnusedSenderReading) {
-						++this.divCount;
-						if (a.containsAttribute(HTML.Attribute.CLASS, "w60")) {
-							this.divSender = this.divCount;
-						}
-					}
-				}
-			}
-		}
-
-		@Override
-		public void handleEndTag(HTML.Tag t, int pos) {
-			if (this.isUserSenderRead)
-				return;
-			if (t == HTML.Tag.DIV && (this.isUserSenderReading)) {
-				--this.divCount;
-				if (this.divCount == 0) {
-					if (this.isUserSenderReading) {
-						this.isUserSenderRead = true;
-						this.isUserSenderReading = false;
-					}
-					if (this.isUnusedSenderReading) {
-						this.isUnusedSenderRead = true;
-						this.isUnusedSenderReading = false;
-					}
-				} else if (this.divSender != null && this.divSender > this.divCount) {
-					this.divSender = null;
-				}
-			}
-
-		}
-
-		@Override
-		public void handleText(char[] data, int pos) {
-			if (this.divSender != null && this.divSender == this.divCount) {
-				String sender = new String(data);
-
-				if (this.isUserSenderReading) {
-					TVInfo.this.userSender.add(sender);
-				}
-				if (this.isUserSenderReading || this.isUnusedSenderReading) {
-					Channel c = createChannel(sender, "");
-					TVInfo.this.allSender.add(c);
-				}
-			}
-		}
+			return new Date(this.htmlDateFormat.parse(date + Integer.toString(year + 1) + " " + time).getTime())
+					.getTime();
 	}
 
 	public void readSystem_EditSenderPage() {
-		this.userSender = new HashSet<String>();
-		this.allSender = new ArrayList<Channel>();
+		this.userSender = new HashSet<>();
+		this.allSender = new ArrayList<>();
 
-		String md5 = this.getMD5();
+		String completeURL = this.senderURL;
 
-		String completeURL = TVInfo.senderURL + "?user=" + this.username + "&pass=" + this.getMD5();
-
-		InputStream stream = null;
+		BufferedReader stream = null;
 
 		try {
-			stream = Html.getStream(completeURL, "TVInfo Sender/Bearbeiten",
-					"tvusername=" + this.username + "; tvuserpass=" + md5);
+			InputStream urlStream = Html.getStream(completeURL, "TVInfo Sender/Bearbeiten", // null, true);
+					"tvusername=" + this.username + "; tvuserhash=f824e9bb925e609ce7bb39b50c19ae316b058875", true);// +
+																													// md5);
+			stream = new BufferedReader(new InputStreamReader(urlStream, "UTF-8"));
 		} catch (ErrorClass e) {
 			Log.out(e.getErrorString());
 			return;
-		}
-
-		System_EditSenderParserCallback myCallBack = new System_EditSenderParserCallback();
-
-		try {
-			new ParserDelegator().parse(new InputStreamReader(stream), myCallBack, true);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-		if (!myCallBack.isUserSenderRead()) {
+
+		Pattern regexHeaderUser = Pattern.compile(this.getRegularExpression("userHeader"));
+		Pattern regexUser = Pattern
+				.compile(this.getRegularExpression("userChannel") + '|' + this.getRegularExpression("notUsedHeader"));
+		Pattern regexUnused = Pattern.compile(this.getRegularExpression("notUsedChannel"));
+
+		Scanner scanner = new Scanner(stream);
+
+		boolean headerFound = true; // scanner.findWithinHorizon(regexHeaderUser,0) != null;
+
+		boolean userSenderRead = false;
+
+		boolean finished = false;
+
+		scanner.findWithinHorizon(regexHeaderUser, 0);
+
+		while (!finished && scanner.findWithinHorizon(regexUser, 0) != null) {
+			MatchResult match = scanner.match();
+			if (match.groupCount() > 0 && match.group(1) != null) {
+				String sender = StringEscapeUtils.unescapeHtml4(match.group(1));
+				Channel c = createChannel(sender, "");
+				TVInfo.this.allSender.add(c);
+				TVInfo.this.userSender.add(sender);
+				userSenderRead = true;
+			} else {
+				finished = true;
+			}
+		}
+
+		boolean unusedSenderRead = false;
+
+		while (scanner.findWithinHorizon(regexUnused, 0) != null) {
+			MatchResult match = scanner.match();
+			String sender = StringEscapeUtils.unescapeHtml4(match.group(1));
+			Channel c = createChannel(sender, "");
+			TVInfo.this.allSender.add(c);
+			unusedSenderRead = true;
+		}
+
+		scanner.close();
+
+		if (!(userSenderRead || unusedSenderRead) || !headerFound) {
 			this.allSender = null;
 			Log.out("TVInfo pages are modified. Get a new version if available");
 
@@ -599,15 +566,15 @@ public final class TVInfo extends Provider {
 	};
 
 	@Override
-	protected ArrayList<Channel> readChannels() {
+	protected Collection<Channel> readChannels() {
 		if (this.allSender == null)
 			this.readSystem_EditSenderPage();
 		return this.allSender;
 	};
 
 	@Override
-	public boolean containsChannel(final Channel channel, boolean ifList) {
-		if (ifList)
+	public boolean containsChannel(final Channel channel, boolean userChannels) {
+		if (!userChannels)
 			return true;
 
 		if (this.userSender == null)
@@ -617,6 +584,7 @@ public final class TVInfo extends Provider {
 
 	@Override
 	public boolean isChannelMapAvailable() {
-		return true;
+//		return true;
+		return INDIVIDUAL_CHANNELLIST_AVAILABLE;
 	}
 }

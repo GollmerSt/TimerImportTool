@@ -8,7 +8,7 @@ public class Pointer< T > {
 	}
 
 	public T getValue() {
-		return value;
+		return this.value;
 	}
 
 	public void setValue(T value) {

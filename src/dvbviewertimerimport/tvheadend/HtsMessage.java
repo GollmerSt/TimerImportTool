@@ -1,10 +1,5 @@
 package dvbviewertimerimport.tvheadend;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -17,12 +12,11 @@ import java.util.Map;
 import java.util.Set;
 
 import dvbviewertimerimport.tvheadend.Body.BodyValue;
-import dvbviewertimerimport.tvheadend.HtsMessage.Format;
 
 public class HtsMessage {
 	public enum Format {
-		MAP(1, new Body<BodyMap>(new BodyMap())), S64(2, new Signed64()), STR(3, new HString()), BIN(4,
-				new Bin()), LIST(5, new Body<BodyCollection>(new BodyCollection()));
+		MAP(1, new Body<BodyMap>(new BodyMap())), S64(2, new Signed64()), STR(3, new HString()), BIN(4, new Bin()),
+		LIST(5, new Body<BodyCollection>(new BodyCollection()));
 
 		private final byte id;
 		private final Value<?> valueBase;
@@ -33,7 +27,7 @@ public class HtsMessage {
 		}
 
 		public byte getId() {
-			return id;
+			return this.id;
 		}
 
 		public Value<?> createValue() {
@@ -59,7 +53,7 @@ public class HtsMessage {
 		}
 
 		public Bin(String name, Binary bin) {
-			super( name );
+			super(name);
 			this.value = new ArrayList<Byte>();
 			for (byte b : bin.bytes) {
 				this.value.add(b);
@@ -86,8 +80,8 @@ public class HtsMessage {
 
 		public int toInt() {
 			int result = 0;
-			for (byte b : value) {
-				result = ( result << 8 ) + ((int)b & 0xff);
+			for (byte b : this.value) {
+				result = (result << 8) + ((int) b & 0xff);
 			}
 			return result;
 		}
@@ -135,11 +129,10 @@ public class HtsMessage {
 		public Collection<Byte> getBytes() {
 			return this.value;
 		}
-		
-		
+
 		@Override
 		public String toString() {
-			return this.getContents().toString() ;
+			return this.getContents().toString();
 		}
 
 	}
@@ -169,7 +162,7 @@ public class HtsMessage {
 
 		@Override
 		public Collection<Byte> getBytesUncached() {
-			ByteBuffer buffer = CHARSET.encode(value);
+			ByteBuffer buffer = CHARSET.encode(this.value);
 			Collection<Byte> out = new ArrayList<Byte>(buffer.remaining());
 			while (buffer.hasRemaining()) {
 				out.add(buffer.get());
@@ -197,19 +190,24 @@ public class HtsMessage {
 
 	private static class BodyCollection extends ArrayList<Value<?>> implements BodyValue {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -168254535842748631L;
+
 		@Override
 		public BodyValue create() {
 			return new BodyCollection();
 		}
 
 		@Override
-		public Value put(String key, Value value) {
+		public Value<?> put(String key, Value<?> value) {
 			super.add(value);
 			return value;
 		}
 
 		@Override
-		public boolean add(Value arg0) {
+		public boolean add(Value<?> arg0) {
 			return super.add(arg0);
 		}
 
@@ -219,11 +217,11 @@ public class HtsMessage {
 		}
 
 		@Override
-		public Value get(Object name) {
+		public Value<?> get(Object name) {
 			if (!(name instanceof String) || name == null) {
 				return null;
 			}
-			for (Value value : this) {
+			for (Value<?> value : this) {
 				if (name.equals((String) name)) {
 					return value;
 				}
@@ -252,12 +250,12 @@ public class HtsMessage {
 
 				@Override
 				public boolean hasNext() {
-					return iterator.hasNext();
+					return this.iterator.hasNext();
 				}
 
 				@Override
 				public Value<?> next() {
-					return iterator.next();
+					return this.iterator.next();
 				}
 			};
 		}
@@ -297,7 +295,7 @@ public class HtsMessage {
 		@Override
 		public Collection<Byte> getBytesUncached() {
 			Collection<Byte> result = new ArrayList<Byte>(4);
-			long val = value;
+			long val = this.value;
 			while (val != 0) {
 				result.add((byte) (val & 0xff));
 				val >>>= 8;
@@ -308,20 +306,19 @@ public class HtsMessage {
 		@Override
 		public void set(Binary bytes, int start, int length) {
 			this.value = 0L;
-			for ( int i = start; i < start + length; ++i) {
-				this.value = (this.value << 8) + ( (long) bytes.get(i) & 0xffL );
+			for (int i = start; i < start + length; ++i) {
+				this.value = (this.value << 8) + ((long) bytes.get(i) & 0xffL);
 			}
 		}
-		
-		
+
 		@Override
 		public String toString() {
-			return Long.toString( this.getContents() ) ;
+			return Long.toString(this.getContents());
 		}
 
 	}
 
-	public static class HMap extends Body<BodyMap> implements Map< String, Value<?>> {
+	public static class HMap extends Body<BodyMap> implements Map<String, Value<?>> {
 
 		public HMap() {
 			super(new BodyMap());
@@ -335,7 +332,7 @@ public class HtsMessage {
 		@Override
 		public void clear() {
 			this.getValues().clear();
-			
+
 		}
 
 		@Override
@@ -376,7 +373,7 @@ public class HtsMessage {
 		@Override
 		public void putAll(Map<? extends String, ? extends Value<?>> arg0) {
 			this.getValues().putAll(arg0);
-			
+
 		}
 
 		@Override
@@ -386,22 +383,22 @@ public class HtsMessage {
 
 		@Override
 		public int size() {
-			return this.getValues().size() ;
+			return this.getValues().size();
 		}
 
 		@Override
 		public Collection<Value<?>> values() {
 			return this.getValues().values();
 		}
-		
+
 		@Override
 		public String toString() {
-			return this.getValues().toString() ;
+			return this.getValues().toString();
 		}
 
 	}
 
-	public static class HList extends Body<BodyCollection> implements List< Value<?> > {
+	public static class HList extends Body<BodyCollection> implements List<Value<?>> {
 
 		public HList() {
 			super(new BodyCollection());
@@ -413,19 +410,19 @@ public class HtsMessage {
 		private static final long serialVersionUID = 3629828214660152913L;
 
 		@Override
-		public boolean add(Value arg0) {
+		public boolean add(Value<?> arg0) {
 			return this.getValues().add(arg0);
 		}
 
 		@Override
-		public void add(int arg0, Value arg1) {
+		public void add(int arg0, Value<?> arg1) {
 			this.getValues().add(arg0, arg1);
-			
+
 		}
 
 		@Override
 		public boolean addAll(Collection<? extends Value<?>> arg0) {
-			return this.getValues().addAll( arg0);
+			return this.getValues().addAll(arg0);
 		}
 
 		@Override
@@ -449,7 +446,7 @@ public class HtsMessage {
 		}
 
 		@Override
-		public Value get(int arg0) {
+		public Value<?> get(int arg0) {
 			return this.getValues().get(arg0);
 		}
 
@@ -465,7 +462,7 @@ public class HtsMessage {
 
 		@Override
 		public Iterator<Value<?>> iterator() {
-			return this.getValues().iterator() ;
+			return this.getValues().iterator();
 		}
 
 		@Override
@@ -475,7 +472,7 @@ public class HtsMessage {
 
 		@Override
 		public ListIterator<Value<?>> listIterator() {
-			return this.getValues().listIterator() ;
+			return this.getValues().listIterator();
 		}
 
 		@Override
@@ -489,7 +486,7 @@ public class HtsMessage {
 		}
 
 		@Override
-		public Value remove(int arg0) {
+		public Value<?> remove(int arg0) {
 			return this.getValues().remove(arg0);
 		}
 
@@ -504,7 +501,7 @@ public class HtsMessage {
 		}
 
 		@Override
-		public Value set(int arg0, Value arg1) {
+		public Value<?> set(int arg0, Value<?> arg1) {
 			return this.getValues().set(arg0, arg1);
 		}
 
@@ -520,17 +517,17 @@ public class HtsMessage {
 
 		@Override
 		public Object[] toArray() {
-			return this.getValues().toArray() ;
+			return this.getValues().toArray();
 		}
 
 		@Override
 		public <T> T[] toArray(T[] arg0) {
 			return this.getValues().toArray(arg0);
 		}
-		
+
 		@Override
 		public String toString() {
-			return this.getValues().toString() ;
+			return this.getValues().toString();
 		}
 
 	}

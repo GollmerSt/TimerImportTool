@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import com.healthmarketscience.jackcess.Database;
@@ -18,6 +21,7 @@ import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
 
 import dvbviewertimerimport.control.Channel;
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.Constants;
@@ -32,8 +36,13 @@ public class ClickFinder extends Provider {
 			"HKCU\\Software\\Classes\\VirtualStore\\MACHINE\\SOFTWARE\\EWE\\TVGhost",
 			"HKLM\\SOFTWARE\\Wow6432Node\\EWE\\TVGhost", "HKLM\\SOFTWARE\\EWE\\TVGhost" };
 
+	private static final boolean INDIVIDUAL_CHANNELLIST_AVAILABLE = true;
+
 	private DVBViewer dvbViewer = null;
 	private final SimpleDateFormat dateFormat;
+
+	private Set<String> userChannels = null;
+	private Collection<Channel> allSender = null;
 
 	public ClickFinder(Control control) {
 		super(control, false, false, "ClickFinder", false, false, false, true, false, false);
@@ -53,7 +62,7 @@ public class ClickFinder extends Provider {
 
 	@Override
 	public boolean processEntry(Object args, DVBViewer.Command command) {
-		String channel = null;
+		String id = null;
 		String providerID = null;
 		String startTime = null;
 		long milliSeconds = -1;
@@ -67,7 +76,7 @@ public class ClickFinder extends Provider {
 			String value = p.substring(pos + 1).trim();
 
 			if (key.equalsIgnoreCase("Sender"))
-				channel = value;
+				id = value;
 			else if (key.equalsIgnoreCase("Pos"))
 				providerID = value;
 			else if (key.equalsIgnoreCase("Beginn"))
@@ -79,7 +88,7 @@ public class ClickFinder extends Provider {
 			} else if (key.equalsIgnoreCase("Sendung"))
 				title = value;
 		}
-		if (channel == null || startTime == null || milliSeconds < 0 || title == null) {
+		if (id == null || startTime == null || milliSeconds < 0 || title == null) {
 			String errorString = this.getParaInfo();
 			throw new ErrorClass("Missing parameter" + errorString);
 		}
@@ -91,6 +100,19 @@ public class ClickFinder extends Provider {
 			throw new ErrorClass(e, "Syntax error in the parameter \"Begin\"" + errorString);
 		}
 		long end = start + milliSeconds;
+
+		String channel = null;
+
+		for (ChannelSet cs : this.control.getChannelSets()) {
+			Channel c = cs.getChannel(this.getID());
+			if (c == null)
+				continue;
+			if (id.contentEquals((String) c.getIDKey())) {
+				channel = c.getName();
+				break;
+			}
+		}
+
 		this.dvbViewer.addNewEntry(this, providerID, channel, start, end, title);
 
 		return true;
@@ -144,7 +166,7 @@ public class ClickFinder extends Provider {
 			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "SpezialButtonToolTiptext",
 					"SpezialButtonToolTiptext");
 
-			String javaExe = System.getProperty("java.home") + File.separator + "bin" + File.separator + "java";
+			String javaExe = System.getProperty("java.home") + File.separator + "bin" + File.separator + "javaw";
 
 			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ", "ExeDateiname", javaExe);
 //			Registry.setValue(path + "\\TVGhost\\AddOn_DVBViewer", "REG_SZ",
@@ -206,12 +228,16 @@ public class ClickFinder extends Provider {
 		return new Channel(this.getID(), name, id) {
 			@Override
 			public Object getIDKey() {
-				return this.getName();
+				if (this.getTextID() == null) {
+					return this.getName();
+				} else {
+					return this.getTextID();
+				}
 			}
 
 			@Override
 			public Object getIDKey(final Channel c) {
-				return c.getName();
+				return c.getIDKey();
 			}; // ID of the provider, type is provider dependent
 		};
 	}
@@ -229,14 +255,24 @@ public class ClickFinder extends Provider {
 		return true;
 	};
 
-	public ArrayList<Channel> readChannels() {
+	@Override
+	public Collection<Channel> readChannels() {
+
+		if (this.allSender != null) {
+			return this.allSender;
+		}
+
 		Database db = null;
+
+		// open data base
 		try {
 			db = DatabaseBuilder.open(new File(this.getDbasePath()));
 		} catch (IOException e) {
 			Log.out("Database not found");
 			return null;
 		}
+
+		// Read channel table (complete list of channels)
 		Table table = null;
 		try {
 			table = db.getTable("Sender");
@@ -248,15 +284,22 @@ public class ClickFinder extends Provider {
 			}
 			return null;
 		}
-		ArrayList<Channel> result = new ArrayList<Channel>();
+		Collection<Channel> result = new ArrayList<>();
+		this.userChannels = new HashSet<>();
 		for (Map<String, Object> row : table) {
 			String name = (String) row.get("SenderKennung");
 			if (name == null) {
 				continue;
 			}
-			Channel channel = this.createChannel(name, null);
+			boolean favorit = (boolean) row.get("Favorit");
+			String bezeichnung = (String) row.get("Bezeichnung");
+			Channel channel = this.createChannel(bezeichnung, name);
+			if (favorit) {
+				this.userChannels.add(bezeichnung);
+			}
 			result.add(channel);
 		}
+
 		try {
 			db.close();
 		} catch (IOException e) {
@@ -265,7 +308,23 @@ public class ClickFinder extends Provider {
 			Log.out("Column or entry of \"SenderKennung\" not found");
 			return null;
 		}
+		this.allSender = result;
 		return result;
 	};
 
+	@Override
+	public boolean containsChannel(final Channel channel, boolean userChannels) {
+		if (!userChannels)
+			return true;
+
+		if (this.userChannels == null)
+			this.readChannels();
+		return this.userChannels.contains(channel.getName());
+	}
+
+	@Override
+	public boolean isChannelMapAvailable() {
+//		return true;
+		return INDIVIDUAL_CHANNELLIST_AVAILABLE;
+	}
 }

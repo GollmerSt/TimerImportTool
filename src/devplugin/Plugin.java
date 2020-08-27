@@ -55,14 +55,17 @@ public abstract class Plugin implements Marker, ProgramReceiveIf {
 		return null;
 	}
 
+	@Override
 	public boolean canReceiveProgramsWithTarget() {
 		return false;
 	}
 
+	@Override
 	public boolean receivePrograms(Program[] programArr, ProgramReceiveTarget receiveTarget) {
 		return false;
 	}
 
+	@Override
 	public ProgramReceiveTarget[] getProgramReceiveTargets() {
 		return null;
 	}

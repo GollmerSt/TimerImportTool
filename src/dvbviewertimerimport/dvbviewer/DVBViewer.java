@@ -350,8 +350,9 @@ public class DVBViewer {
 		boolean result = true;
 		if (command == Command.FIND && this.recordEntries != null) {
 			result = provider.process(getAll, command);
-			for (Object o : args)
+			for (Object o : args) {
 				result &= provider.processEntry(o, command);
+			}
 			return result;
 		}
 		this.connectDVBViewerIfNecessary();
@@ -360,13 +361,16 @@ public class DVBViewer {
 			this.mergeXMLWithDVBViewerData(null);
 
 			result = provider.process(getAll, command);
-			if (command == Command.UPDATE_UNRESOLVED_ENTRIES)
+			if (command == Command.UPDATE_UNRESOLVED_ENTRIES) {
 				result &= provider.processEntry(null, command);
-			else
-				for (Object o : args)
+			} else {
+				for (Object o : args) {
 					result &= provider.processEntry(o, command);
-			if (command != Command.FIND && command != Command.UPDATE_TVBROWSER)
+				}
+			}
+			if (command != Command.FIND && command != Command.UPDATE_TVBROWSER) {
 				this.setDVBViewerTimers();
+			}
 		} catch (Exception e) {
 			this.disconnectDVBViewer();
 			throw e;
@@ -936,6 +940,7 @@ public class DVBViewer {
 		Thread thread = new Thread("DVBViewer select channel") {
 			private final boolean repeatChannelSelection = true;
 
+			@Override
 			public void run() {
 				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000;
 				while (!DVBViewerCOM.connect()) {

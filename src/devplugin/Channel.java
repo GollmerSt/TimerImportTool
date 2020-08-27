@@ -1,9 +1,13 @@
 package devplugin;
 
-public abstract class Channel {
+public class Channel {
 
-	public abstract String getName();
+	public  String getName() {
+		return null ;
+	}
 
-	public abstract String getUniqueId();
+	public  String getUniqueId() {
+		return null;
+	}
 
 }

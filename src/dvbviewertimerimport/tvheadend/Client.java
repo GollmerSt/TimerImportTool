@@ -10,8 +10,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import javax.xml.crypto.dsig.spec.HMACParameterSpec;
-
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.tvheadend.HtsExceptions.AccessProhibitedException;
 import dvbviewertimerimport.tvheadend.HtsExceptions.ReceiveException;
@@ -37,10 +35,11 @@ public class Client {
 	private Bin challenge = null;
 	private Bin digest = null;
 	private final Socket socket;
-	private final Receiver receiver ;
+	private final Receiver receiver;
 
 	private final InputStream inputStream;
 
+	@SuppressWarnings("unused")
 	public Client(String ipAddress, int port) {
 		Socket socketTemp = null;
 		InputStream inTemp = null;
@@ -55,14 +54,14 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
-			socket = socketTemp;
-			inputStream = inTemp;
+			this.socket = socketTemp;
+			this.inputStream = inTemp;
 		}
 		this.setPassword(new HString(PASSWORD));
 		this.user = new HString("username", USERNAME);
 		this.receiver = new Receiver(this);
 	}
-	
+
 	public void startReceiving() {
 		this.receiver.start();
 	}
@@ -71,7 +70,7 @@ public class Client {
 		HtsMessage.HList message = new HtsMessage.HList();
 
 		int result = this.sequenceNo;
-		message.add(new Signed64("seq", (long) sequenceNo & 0xffffffffL));
+		message.add(new Signed64("seq", (long) this.sequenceNo & 0xffffffffL));
 		message.add(new HString("method", command));
 		if (this.user != null) {
 			message.add(this.user);
@@ -83,9 +82,9 @@ public class Client {
 			message.add(value);
 		}
 
-		message.write(socket.getOutputStream());
+		message.write(this.socket.getOutputStream());
 
-		++sequenceNo;
+		++this.sequenceNo;
 
 		return result;
 	}
@@ -94,7 +93,7 @@ public class Client {
 
 		HMap map = new HMap();
 
-		map.read(inputStream);
+		map.read(this.inputStream);
 
 		return map;
 	}
@@ -110,7 +109,7 @@ public class Client {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		Collection<Byte> col = new ArrayList<Byte>(password.getBytes());
+		Collection<Byte> col = new ArrayList<Byte>(this.password.getBytes());
 		col.addAll(this.challenge.getBytes());
 		Binary binary = new Binary(col);
 		md.update(binary.bytes);
@@ -121,7 +120,7 @@ public class Client {
 	}
 
 	public HString getPassword() {
-		return password;
+		return this.password;
 	}
 
 	public void setPassword(HString password) {
@@ -130,7 +129,7 @@ public class Client {
 	}
 
 	public Bin getChallenge() {
-		return challenge;
+		return this.challenge;
 	}
 
 	public void setChallenge(Bin challenge) {
@@ -146,6 +145,7 @@ public class Client {
 		return map;
 	}
 
+	@SuppressWarnings("unused")
 	public void enableAsyncMetadata() throws IOException, ClassNotFoundException, ReceiveException,
 			SequenceNumberException, AccessProhibitedException {
 		Signed64 epgEnable = new Signed64("epg", 0);
@@ -154,26 +154,30 @@ public class Client {
 		System.out.println(received);
 	}
 
-	public static void main(String[] args) throws ClassNotFoundException, IOException, ReceiveException, SequenceNumberException, AccessProhibitedException {
+	@SuppressWarnings("unused")
+	public static void main(String[] args) throws ClassNotFoundException, IOException, ReceiveException,
+			SequenceNumberException, AccessProhibitedException {
 		Client client = new Client(IP_ADDRESS, PORT_NUMBER);
-		client.startReceiving();;
+		client.startReceiving();
+		;
 		client.hello();
 		client.enableAsyncMetadata();
-		
+
 		HMap map;
-		while ( true ) {
-		try {
-			map = client.hello();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		try {
-			Thread.sleep(60000);
-		} catch (InterruptedException e) {
-		}
+		while (true) {
+			try {
+				map = client.hello();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			try {
+				Thread.sleep(60000);
+			} catch (InterruptedException e) {
+			}
 		}
 	}
+
 	public Socket getSocket() {
-		return socket;
+		return this.socket;
 	}
 }

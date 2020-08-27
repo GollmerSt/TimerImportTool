@@ -1,13 +1,14 @@
 package devplugin;
 
 public class PluginTreeNode {
-	  public PluginTreeNode(final Marker marker, final boolean handleTvDataUpdate) {
+	public PluginTreeNode(final Marker marker, final boolean handleTvDataUpdate) {
 	}
 
-	public void addProgram(Program program) {
+	public PluginTreeNode addProgram(final Program program) {
+		return null;
 	}
 
-	public void removeProgram(Program program) {
+	public void removeProgram(final Program program) {
 	}
 
 	public void update() {

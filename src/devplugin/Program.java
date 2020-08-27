@@ -1,6 +1,6 @@
 package devplugin;
 
-public abstract class Program {
+public interface Program {
 
 	public abstract Channel getChannel();
 

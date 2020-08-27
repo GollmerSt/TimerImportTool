@@ -9,13 +9,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.TimeZone;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringEscapeUtils;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
@@ -23,315 +32,310 @@ import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Html;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
 import dvbviewertimerimport.misc.ResourceManager;
 
 public class TVGenial extends Provider {
 
-	private static final String NAME_PLUGIN_PATH   = "DVBViewer" ;
-	private static final String NAME_CHANNEL_FILE  = "tvuid.txt" ;
-	private static final String PATH_SCRIPT_FILE   = "TVGenial/DVBViewer.txt" ;
-	private static final String PATH_LOGO_FILE     = "TVGenial/Logo.png" ;
-	private static final String PATH_RECORDER_FILE = "TVGenial/recorder.ini" ;
-	private static final String PATH_SETUP_FILE    = "TVGenial/Setup.ini" ;
-	private static final String REG_ROOT           = "HKEY_CURRENT_USER\\Software\\ARAKON-Systems\\TVgenial" ;
-	private static final String REG_ROOT5          = REG_ROOT + "5" ;
+	private static final String NAME_PLUGIN_PATH = "DVBViewer";
+	private static final String NAME_CHANNEL_FILE = "tvuid.txt";
+	private static final String PATH_SCRIPT_FILE = "TVGenial/DVBViewer.txt";
+	private static final String PATH_LOGO_FILE = "TVGenial/Logo.png";
+	private static final String PATH_RECORDER_FILE = "TVGenial/recorder.ini";
+	private static final String PATH_SETUP_FILE = "TVGenial/Setup.ini";
+	private static final String[] REG_ROOT = { "HKEY_CURRENT_USER\\Software\\ARAKON-Systems\\TVgenial",
+			"HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\ARAKON-Systems\\TVgenial" };
+	private static final String REG_ROOT5 = "5";
 
-	private final SimpleDateFormat dateFormat ;
-	
-	private HashSet< Long > channelSet = null ;
-	
+	private final SimpleDateFormat dateFormat;
 
- public TVGenial( Control control ) {
-		super( control, false, false, "TVGenial", false, false, false, true, false, false);
-		this.timeZone = TimeZone.getTimeZone("Europe/Berlin") ;
-		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm") ;
-		this.dateFormat.setTimeZone( this.timeZone ) ;
-		this.canAddChannel = false ;
-		this.canImport = true ;
-		
-		String installDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
-		if ( installDir == null) {
-			installDir = Registry.getValue( REG_ROOT5, "InstallDir" ) ;
+	private HashSet<Long> channelSet = null;
+	private Collection<Channel > allSender = null;
+
+	private static String getRegKey(String key) {
+		String installDir = null;
+		for (String path : REG_ROOT) {
+			installDir = Registry.getValue(path, "InstallDir");
+			if (installDir == null) {
+				installDir = Registry.getValue(path + REG_ROOT5, key);
+			}
+			if (installDir != null) {
+				return installDir;
+			}
 		}
-		
-		this.isFunctional = null != installDir ;
+		return null;
 	}
 
- @Override
- public Channel createChannel( String name, String id )
- {
-	return new Channel( this.getID(), name, id )
-	{
-		@Override
-		public Object getIDKey()
-		{
-			return Long.valueOf( getNumID() ) ;
-		}
-		@Override
-		public Object getIDKey( final Channel c ) { return Long.valueOf( c.getNumID() ) ; } ;  // ID of the provider, type is provider dependent
-		} ;
+	public TVGenial(Control control) {
+		super(control, false, false, "TVGenial", false, false, false, true, false, false);
+		this.timeZone = TimeZone.getTimeZone("Europe/Berlin");
+		this.dateFormat = new SimpleDateFormat("yyyyMMddHHmm");
+		this.dateFormat.setTimeZone(this.timeZone);
+		this.canAddChannel = false;
+		this.canImport = true;
+
+		String installDir = getRegKey("InstallDir");
+
+		this.isFunctional = null != installDir;
+	}
+
+	@Override
+	public Channel createChannel(String name, String id) {
+		return new Channel(this.getID(), name, id) {
+			@Override
+			public Object getIDKey() {
+				return Long.valueOf(getNumID());
+			}
+
+			@Override
+			public Object getIDKey(final Channel c) {
+				return Long.valueOf(c.getNumID());
+			}; // ID of the provider, type is provider dependent
+		};
 	};
 
-	
 	@Override
-	public boolean install()
-	{
-		String programDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
-		if ( programDir == null ) {
-			programDir = Registry.getValue( REG_ROOT5 , "InstallDir") ;
+	public boolean install() {
+		String programDir = getRegKey("InstallDir");
+
+		if (programDir == null) {
+			Log.out("Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed.");
+			return false;
 		}
-		if ( programDir == null )
-		{
-			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
-			return false ;
-		}
-		
-		File file = new File( programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH  ) ;
-		file.mkdir() ;
-		
-		String jarFile =   this.control.getDVBViewer().getExePath()
-		                 + File.separator 
-		                 + this.control.getDVBViewer().getExeName() ;
-		
-		ArrayList< String[] > keyList = new ArrayList< String[] >() ;
-		
+
+		File file = new File(programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH);
+		file.mkdir();
+
+		String jarFile = this.control.getDVBViewer().getExePath() + File.separator
+				+ this.control.getDVBViewer().getExeName();
+
+		ArrayList<String[]> keyList = new ArrayList<String[]>();
+
 		String javaHome = System.getProperty("java.home");
-		
-		String [] stringSet = new String[]{ "%JAR_File%", jarFile } ;
-		keyList.add( stringSet ) ;
 
-		stringSet = new String[]{ "%JAVA_Home%", javaHome } ;
-		keyList.add( stringSet ) ;
+		String[] stringSet = new String[] { "%JAR_File%", jarFile };
+		keyList.add(stringSet);
 
-		stringSet = new String[]{ "%PLUGIN_version%", Versions.getVersion() } ;
-		keyList.add( stringSet ) ;
-				
-		ResourceManager.copyFile( file.getPath(), PATH_SCRIPT_FILE, keyList, true ) ;
-		ResourceManager.copyBinaryFile( file.getPath(), PATH_LOGO_FILE ) ;
-		ResourceManager.copyFile( file.getPath(), PATH_RECORDER_FILE, keyList, true ) ;
-		ResourceManager.copyFile( file.getPath(), PATH_SETUP_FILE ) ;
-		
-		return true ;
+		stringSet = new String[] { "%JAVA_Home%", javaHome };
+		keyList.add(stringSet);
+
+		stringSet = new String[] { "%PLUGIN_version%", Versions.getVersion() };
+		keyList.add(stringSet);
+
+		ResourceManager.copyFile(file.getPath(), PATH_SCRIPT_FILE, keyList, true);
+		ResourceManager.copyBinaryFile(file.getPath(), PATH_LOGO_FILE);
+		ResourceManager.copyFile(file.getPath(), PATH_RECORDER_FILE, keyList, true);
+		ResourceManager.copyFile(file.getPath(), PATH_SETUP_FILE);
+
+		return true;
 	}
-	@Override
-	public boolean uninstall()
-	{
-		String programDir = Registry.getValue( REG_ROOT, "InstallDir" ) ;
-		if ( programDir == null ) {
-			programDir = Registry.getValue( REG_ROOT5, "InstallDir") ;
-		}
-		if ( programDir == null )
-		{
-			Log.out( "Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed." ) ;
-			return false ;
-		}
-		
-		File dir = new File( programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH  ) ;
-		
-		String [] files = { PATH_SCRIPT_FILE, PATH_LOGO_FILE, PATH_RECORDER_FILE, PATH_SETUP_FILE } ;
-		
-		for ( String fs : files )
-		{
-			File f = new File( dir.getPath() + File.separator + fs.split( "/" )[1] ) ;
-			f.delete() ;
-		}
-		dir.delete() ;
-		
-		return true ;
-	}
-	@Override
-	protected ArrayList< Channel > readChannels()
-	{
-		String dataPath = Registry.getValue( "HKEY_LOCAL_MACHINE\\SOFTWARE\\ARAKON-Systems\\TVgenial", "PublicDataRoot") ;
-		if ( dataPath == null )
-			return null ;
-		
-		ArrayList< Channel > list = new ArrayList< Channel >() ;
 
-		File f = new File( dataPath + File.separator + NAME_CHANNEL_FILE ) ;
-		
-		if ( ! f.canRead() )
-			throw new ErrorClass( "File \"" + f.getAbsolutePath() + "\" not found" ) ;
+	@Override
+	public boolean uninstall() {
+		String programDir = getRegKey("InstallDir");
+
+		if (programDir == null) {
+			Log.out("Registry entry of TVGenial not found. \nIt seems to be that installation of TVGenial is failed.");
+			return false;
+		}
+
+		File dir = new File(programDir + File.separator + "Interfaces" + File.separator + TVGenial.NAME_PLUGIN_PATH);
+
+		String[] files = { PATH_SCRIPT_FILE, PATH_LOGO_FILE, PATH_RECORDER_FILE, PATH_SETUP_FILE };
+
+		for (String fs : files) {
+			File f = new File(dir.getPath() + File.separator + fs.split("/")[1]);
+			f.delete();
+		}
+		dir.delete();
+
+		return true;
+	}
+
+	@Override
+	protected ArrayList<Channel> readChannels() {
+		String dataPath = getRegKey("PublicDataRoot");
+		if (dataPath == null)
+			return null;
+
+		ArrayList<Channel> list = new ArrayList<Channel>();
+
+		File f = new File(dataPath + File.separator + NAME_CHANNEL_FILE);
+
+		if (!f.canRead())
+			throw new ErrorClass("File \"" + f.getAbsolutePath() + "\" not found");
 
 		FileReader fr;
 		try {
-			fr = new FileReader( f );
+			fr = new FileReader(f);
 		} catch (FileNotFoundException e) {
-			return null ;
+			return null;
 		}
-			
-		BufferedReader br = new BufferedReader( fr ) ;
-			
-		String line ;
-		
-		HashMap< String, Long > nameMap = new HashMap< String, Long >() ;
 
-		int pid = this.getID() ;
-		
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( pid ) ;
-			if ( c == null )
-				continue ;
-			nameMap.put( c.getName(), c.getNumID() ) ;
+		BufferedReader br = new BufferedReader(fr);
+
+		String line;
+
+		HashMap<String, Long> nameMap = new HashMap<String, Long>();
+
+		int pid = this.getID();
+
+		for (ChannelSet cs : this.control.getChannelSets()) {
+			Channel c = cs.getChannel(pid);
+			if (c == null)
+				continue;
+			nameMap.put(c.getName(), c.getNumID());
 		}
-			
+
 		try {
-			while ( (line = br.readLine() ) != null )
-			{
+			while ((line = br.readLine()) != null) {
 				line = line.trim();
+
+				if (line.substring(0, 2).equals("//"))
+					continue;
+				String[] parts = line.split("\\|");
+
+				if (parts.length < 2)
+					continue;
+				long tvuid = Long.valueOf(parts[0]);
+				String name = parts[1];
+				String nameLong = parts[2];
+				String cName = name ;
 				
-				if ( line.substring( 0, 2 ).equals( "//" ) )
-					continue ;
-				String [] parts = line.split( "\\|" ) ;
-				
-				if ( parts.length < 2 )
-					continue ;
-				long tvuid = Long.valueOf( parts[0] ) ; 
-				String name = parts[1] ;
-				String nameLong = name ;
-				
-				
-				int countR = 0 ;
-				while ( nameMap.containsKey( nameLong ) )
-				{
-					if ( nameMap.get( nameLong) == tvuid )
-						break ;
-					nameLong = name + Integer.valueOf( countR++ ) ;
+				if ( nameMap.containsKey(cName)) {
+					cName = nameLong ;
 				}
-				Channel c = this.createChannel( nameLong, Long.toString( tvuid ) ) ;
-				list.add( c ) ; ;
-				nameMap.put( nameLong, tvuid ) ;
+
+				int countR = 0;
+				while (nameMap.containsKey(cName)) {
+					if (nameMap.get(cName) == tvuid)
+						break;
+					cName = name + Integer.valueOf(countR++);
+				}
+				Channel c = this.createChannel(cName, Long.toString(tvuid));
+				list.add(c);
+				;
+				nameMap.put(cName, tvuid);
 			}
 			br.close();
 		} catch (IOException e) {
-			return list = null ;
+			return list = null;
 		}
-	return list ;
+		return list;
 	}
+
 	@Override
-	public int importChannels( boolean check )
-	{
-		if ( check )
-			return 0 ;
-		
-		return this.assignChannels() ;
+	public int importChannels(boolean check) {
+		if (check)
+			return 0;
+
+		return this.assignChannels();
 	}
-	private String getParaInfo()
-	{
-		return 
-		", necessary parameters:\n   -TVGenial TVUID=ccc Beginn=yyyyMMddHHmm Dauer=nnn Sendung=cccccc" ;
+
+	private String getParaInfo() {
+		return ", necessary parameters:\n   -TVGenial TVUID=ccc Beginn=yyyyMMddHHmm Dauer=nnn Sendung=cccccc";
 	}
+
 	@Override
-	public boolean processEntry( Object args, DVBViewer.Command command )
-	{		
-		long tvuid = -1 ;
-		String startTime = null ;
-		long milliSeconds = -1 ;
-		String title = null ;
-		
-		boolean mustDelete = false ;
-		
-		
-		
-		for ( String p : (String [])args )
-		{			
-			int pos = p.indexOf('=') ;
-			if ( pos < 0 )
-			{
-				if ( p.trim().equalsIgnoreCase("-delete"))
-					mustDelete = true ;
-				continue ;
+	public boolean processEntry(Object args, DVBViewer.Command command) {
+		long tvuid = -1;
+		String startTime = null;
+		long milliSeconds = -1;
+		String title = null;
+
+		boolean mustDelete = false;
+
+		for (String p : (String[]) args) {
+			int pos = p.indexOf('=');
+			if (pos < 0) {
+				if (p.trim().equalsIgnoreCase("-delete"))
+					mustDelete = true;
+				continue;
 			}
-			String key   = p.substring(0, pos).trim() ;
-			String value = p.substring(pos+1).trim() ;
-			
-			if      ( key.equalsIgnoreCase("TVUID"))
-			{
-				if ( ! value.matches( "\\d+" ))
-				{
-					String errorString = this.getParaInfo() ;
-					throw new ErrorClass( "Invalid parameter TVUID" + errorString ) ;
+			String key = p.substring(0, pos).trim();
+			String value = p.substring(pos + 1).trim();
+
+			if (key.equalsIgnoreCase("TVUID")) {
+				if (!value.matches("\\d+")) {
+					String errorString = this.getParaInfo();
+					throw new ErrorClass("Invalid parameter TVUID" + errorString);
 				}
-				tvuid = Long.valueOf( value ) ;
-			}
-			else if ( key.equalsIgnoreCase("Beginn"))
-				startTime = value ;
-			else if ( key.equalsIgnoreCase("Dauer"))
-			{
-				if ( ! value.matches("\\d+") )
-					throw new ErrorClass( "Undefined value of parameter \"Dauer\".") ;
-				milliSeconds = Long.valueOf(value) * 60000 ;
-			}
-			else if ( key.equalsIgnoreCase("Sendung"))
-				title = value ;
+				tvuid = Long.valueOf(value);
+			} else if (key.equalsIgnoreCase("Beginn"))
+				startTime = value;
+			else if (key.equalsIgnoreCase("Dauer")) {
+				if (!value.matches("\\d+"))
+					throw new ErrorClass("Undefined value of parameter \"Dauer\".");
+				milliSeconds = Long.valueOf(value) * 60000;
+			} else if (key.equalsIgnoreCase("Sendung"))
+				title = value;
 		}
-		if ( tvuid < 0 || startTime == null || milliSeconds < 0 || title == null )
-		{
-			String errorString = this.getParaInfo() ;
-			throw new ErrorClass( "Missing parameter" + errorString ) ;
+		if (tvuid < 0 || startTime == null || milliSeconds < 0 || title == null) {
+			String errorString = this.getParaInfo();
+			throw new ErrorClass("Missing parameter" + errorString);
 		}
-		long start = 0 ;
+		long start = 0;
 		try {
-			start = timeToLong( startTime ) ;
+			start = timeToLong(startTime);
 		} catch (ParseException e) {
-			String errorString = this.getParaInfo() ;
-			throw new ErrorClass( e, "Syntax error in the parameter \"Begin\"" + errorString ) ;
+			String errorString = this.getParaInfo();
+			throw new ErrorClass(e, "Syntax error in the parameter \"Begin\"" + errorString);
 		}
-		long end = start + milliSeconds ;
-		
-		String channel = null ; ;
-				
-		for ( ChannelSet cs : this.control.getChannelSets() )
-		{
-			Channel c = cs.getChannel( this.getID() ) ;
-			if ( c == null )
-				continue ;
-			if ( tvuid == c.getNumID() )
-			{
-				channel = c.getName() ;
-				break ;
+		long end = start + milliSeconds;
+
+		String channel = null;
+		;
+
+		for (ChannelSet cs : this.control.getChannelSets()) {
+			Channel c = cs.getChannel(this.getID());
+			if (c == null)
+				continue;
+			if (tvuid == c.getNumID()) {
+				channel = c.getName();
+				break;
 			}
 		}
-		if ( mustDelete )
-			this.control.getDVBViewer().deleteEntry( this, channel, start, end, title) ;
+		if (mustDelete)
+			this.control.getDVBViewer().deleteEntry(this, channel, start, end, title);
 		else
-			this.control.getDVBViewer().addNewEntry( this, null, channel, start, end, title ) ;
-		return true ;
+			this.control.getDVBViewer().addNewEntry(this, null, channel, start, end, title);
+		return true;
 	}
-	private long timeToLong( String time ) throws ParseException
-	{
-		Date d = new Date( this.dateFormat.parse(time).getTime()) ;
-		//System.out.println(d.toString()) ;
-		return d.getTime() ;
+
+	private long timeToLong(String time) throws ParseException {
+		Date d = new Date(this.dateFormat.parse(time).getTime());
+		// System.out.println(d.toString()) ;
+		return d.getTime();
 	}
+
 	@Override
-	public boolean isAllChannelsImport() { return true ; } ;
+	public boolean isAllChannelsImport() {
+		return true;
+	};
+
 	@Override
-	public boolean containsChannel( final Channel channel, boolean ifList )
-	{
-		if ( ! isFunctional() )
-			return true ;
-		
-		if (this.channelSet == null)
-		{
-			this.channelSet = new HashSet< Long >();
-			ArrayList< Channel > channels = readChannels() ;
-			for ( Channel c : channels)
-				this.channelSet.add( c.getNumID() );
+	public boolean containsChannel(final Channel channel, boolean userChannels) {
+		if (!isFunctional())
+			return true;
+
+		if (this.channelSet == null) {
+			this.channelSet = new HashSet<Long>();
+			ArrayList<Channel> channels = readChannels();
+			for (Channel c : channels)
+				this.channelSet.add(c.getNumID());
 		}
-		return this.channelSet.contains( channel.getNumID() ) ;
-	}		
-	@Override
-	public void updateChannelMap()
-	{
-		this.channelSet = null ;
+		return this.channelSet.contains(channel.getNumID());
 	}
+
 	@Override
-	public boolean isChannelMapAvailable()
-	{
-		return false ;
+	public void updateChannelMap() {
+		this.channelSet = null;
+	}
+
+	@Override
+	public boolean isChannelMapAvailable() {
+		return false;
 	}
 }

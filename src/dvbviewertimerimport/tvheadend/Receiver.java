@@ -32,7 +32,7 @@ public class Receiver {
 
 	public Receiver(Client client) {
 		this.client = client;
-		thread = new Thread(new Runnable());
+		this.thread = new Thread(new Runnable());
 	}
 
 	public void start() {
@@ -46,22 +46,22 @@ public class Receiver {
 			while (true) {
 				InputStream in;
 				try {
-					in = client.getSocket().getInputStream();
+					in = Receiver.this.client.getSocket().getInputStream();
 					if (in.available() > 0) {
-						HMap received = client.receive();
+						HMap received = Receiver.this.client.receive();
 						System.out.println(received);
 						HString method = (HString) received.get("method");
 						if (method == null) {
 							setSyncReceived(received);
 							synchronized (Receiver.this) {
-								if (syncThread != null) {
-									syncThread.interrupt();
+								if (Receiver.this.syncThread != null) {
+									Receiver.this.syncThread.interrupt();
 								}
 							}
 						} else {
 							Received r = new Received(method.getContents(), received);
-							asyncListener.hasChanged();
-							asyncListener.notifyObservers(r);
+							Receiver.this.asyncListener.hasChanged();
+							Receiver.this.asyncListener.notifyObservers(r);
 						}
 					} else {
 						try {
@@ -127,11 +127,11 @@ public class Receiver {
 		}
 
 		public HMap getMap() {
-			return map;
+			return this.map;
 		}
 
 		public String getMethod() {
-			return method;
+			return this.method;
 		}
 	}
 

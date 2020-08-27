@@ -253,6 +253,7 @@ public class Miscellaneous extends MyTabPanel
 		public String getTimeZoneString() { return this.timeZone.getID() ; } ;
 	} ;
 
+	@Override
 	public void init()
 	{		
 		Insets i = new Insets( 5, 5, 5, 5 );
@@ -967,6 +968,7 @@ public class Miscellaneous extends MyTabPanel
 		
 		chooser.setFileFilter(new FileFilter()
 		{
+			@Override
 			public boolean accept(File f)
 			{
 				String parts[] = f.getName().split( "\\." ) ;
@@ -974,6 +976,7 @@ public class Miscellaneous extends MyTabPanel
 					return false ;
 				return parts[ parts.length - 1 ].equals( "xml" ) ;
 			}
+			@Override
 			public String getDescription()
 			{
 				return ResourceManager.msg( "EXPORT_FILE_DESCRIPTION" ) ;

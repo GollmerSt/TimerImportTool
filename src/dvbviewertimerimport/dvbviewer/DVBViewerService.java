@@ -19,7 +19,6 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -84,13 +83,15 @@ public class DVBViewerService {
 	}
 
 	private class MyAuthenticator extends Authenticator {
+		@Override
 		protected PasswordAuthentication getPasswordAuthentication() {
 			// System.out.println( "Hier erfolgt die Authentifizierung" ) ;
 			// System.out.printf( "url=%s, host=%s, ip=%s, port=%s%n",
 			// getRequestingURL(), getRequestingHost(),
 			// getRequestingSite(), getRequestingPort() );
 
-			return new PasswordAuthentication(DVBViewerService.this.userName, DVBViewerService.this.password.toCharArray());
+			return new PasswordAuthentication(DVBViewerService.this.userName,
+					DVBViewerService.this.password.toCharArray());
 		}
 	}
 
@@ -154,11 +155,13 @@ public class DVBViewerService {
 				if (check) {
 					conn.setUseCaches(false); // Cachen ausschalten
 				}
-				if (this.userName.length() > 0 && this.password.length() > 0) {
-					// Daten für HTTP-Authentifizierung festlegen
-					conn.setRequestProperty("Authorization",
-							"Basic " + Base64.getEncoder().encodeToString(new String(this.userName + ":" + this.password).getBytes()));
-				}
+//				if (this.userName.length() > 0 && this.password.length() > 0) {
+//					// Daten für HTTP-Authentifizierung festlegen
+//					conn.setRequestProperty("Authorization",
+//							"Basic " + Base64.encodeBytes(new String(this.userName + ":" + this.password).getBytes()));
+//					conn.setRequestProperty("Authorization", "Basic " + Base64.
+//							.encodeToString(new String(this.userName + ":" + this.password).getBytes()));
+//				}
 				input = conn.getInputStream();
 			} catch (ProtocolException e1) {
 				throw new ErrorClass(
@@ -369,36 +372,39 @@ public class DVBViewerService {
 						String value = a.getValue();
 
 						switch (type) {
-						case 1:
-							if (attributeName.equals("Enabled")) {
-								if (value.equals("0"))
-									enable = false;
-								else if (!value.equals("-1"))
-									throw new ErrorClass(ev, "Format error: Unexpected enable bit format from service");
-							} else if (attributeName.equals("Date"))
-								dateString = value;
-							else if (attributeName.equals("Start"))
-								startString = value;
-							else if (attributeName.equals("End"))
-								endString = value;
-							else if (attributeName.equals("Days"))
-								days = value;
-							else if (attributeName.equals("ShutDown"))
-								actionAfter = ActionAfterItems.get(Integer.valueOf(value));
-							else if (attributeName.equals("Action"))
-								timerAction = TimerActionItems.get(Integer.valueOf(value));
-							else if (attributeName.equals("Day")) {
-								if (!value.equals("-------"))
-									enable = false; // ignore periodic timer
-													// entry
-							}
-							break;
+							case 1:
+								if (attributeName.equals("Enabled")) {
+									if (value.equals("0"))
+										enable = false;
+									else if (!value.equals("-1"))
+										throw new ErrorClass(ev,
+												"Format error: Unexpected enable bit format from service");
+								} else if (attributeName.equals("Date"))
+									dateString = value;
+								else if (attributeName.equals("Start"))
+									startString = value;
+								else if (attributeName.equals("End"))
+									endString = value;
+								else if (attributeName.equals("Days"))
+									days = value;
+								else if (attributeName.equals("ShutDown"))
+									actionAfter = ActionAfterItems.get(Integer.valueOf(value));
+								else if (attributeName.equals("Action"))
+									timerAction = TimerActionItems.get(Integer.valueOf(value));
+								else if (attributeName.equals("Day")) {
+									if (!value.equals("-------"))
+										enable = false; // ignore periodic timer
+														// entry
+								}
+								break;
 
-						case 2:
-							if (attributeName.equals("ID")) {
-								channel = DVBViewer.reworkChannelID(value);
-							}
-							break;
+							case 2:
+								if (attributeName.equals("ID")) {
+									channel = DVBViewer.reworkChannelID(value);
+								}
+								break;
+							default:
+								break;
 						}
 					}
 				}
@@ -456,23 +462,20 @@ public class DVBViewerService {
 
 		/*
 		 * <?xml version="1.0" encoding="iso-8859-1"?> <Timers> <Timer Type="1"
-		 * Enabled="0" Priority="50" Date="05.07.2999" Start="23:39:00"
-		 * End="00:09:00" Days="TT-----" Action="0"> <Descr>Bayerisches FS Süd
-		 * (deu)</Descr> <Options AdjustPAT="-1" AllAudio="-1" DVBSubs="-1"
-		 * Teletext="-1"/> <Format>2</Format> <Folder>Auto</Folder>
-		 * <NameScheme>%event_%date_%time</NameScheme> <Log Enabled="-1"
-		 * Extended="0"/> <Channel ID="550137291|Bayerisches FS Süd (deu)"/>
-		 * <Executeable>0</Executeable> <Recording>0</Recording> <ID>0</ID>
-		 * </Timer> <Timer Type="1" Enabled="-1" Priority="50" Date="05.07.2009"
-		 * Start="18:35:00" End="19:50:00" Action="0">
-		 * <Descr>Lindenstrasse</Descr> <Options AdjustPAT="-1"/>
-		 * <Format>2</Format> <Folder>Auto</Folder>
-		 * <NameScheme>%event_%date_%time</NameScheme> <Log Enabled="-1"
-		 * Extended="0"/> <Channel ID="543583690|Das Erste (deu)"/>
+		 * Enabled="0" Priority="50" Date="05.07.2999" Start="23:39:00" End="00:09:00"
+		 * Days="TT-----" Action="0"> <Descr>Bayerisches FS Süd (deu)</Descr> <Options
+		 * AdjustPAT="-1" AllAudio="-1" DVBSubs="-1" Teletext="-1"/> <Format>2</Format>
+		 * <Folder>Auto</Folder> <NameScheme>%event_%date_%time</NameScheme> <Log
+		 * Enabled="-1" Extended="0"/> <Channel
+		 * ID="550137291|Bayerisches FS Süd (deu)"/> <Executeable>0</Executeable>
+		 * <Recording>0</Recording> <ID>0</ID> </Timer> <Timer Type="1" Enabled="-1"
+		 * Priority="50" Date="05.07.2009" Start="18:35:00" End="19:50:00" Action="0">
+		 * <Descr>Lindenstrasse</Descr> <Options AdjustPAT="-1"/> <Format>2</Format>
+		 * <Folder>Auto</Folder> <NameScheme>%event_%date_%time</NameScheme> <Log
+		 * Enabled="-1" Extended="0"/> <Channel ID="543583690|Das Erste (deu)"/>
 		 * <Executeable>-1</Executeable> <Recording>-1</Recording> <ID>1</ID>
 		 * <Recordstat StartTime="05.07.2009 18:40:33">G:\Neue
-		 * Aufnahmen\Lindenstrasse_07-05_18-40-33.ts</Recordstat> </Timer>
-		 * </Timers>
+		 * Aufnahmen\Lindenstrasse_07-05_18-40-33.ts</Recordstat> </Timer> </Timers>
 		 */
 	}
 
