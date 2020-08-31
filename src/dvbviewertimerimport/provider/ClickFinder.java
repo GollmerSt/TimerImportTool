@@ -11,9 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.TimeZone;
 
 import com.healthmarketscience.jackcess.Database;
@@ -41,13 +39,10 @@ public class ClickFinder extends Provider {
 	private DVBViewer dvbViewer = null;
 	private final SimpleDateFormat dateFormat;
 
-	private Set<String> userChannels = null;
-	private Collection<Channel> allSender = null;
-
 	public ClickFinder(Control control) {
 		super(control, false, false, "ClickFinder", false, false, false, true, false, false);
 		this.canImport = true;
-		this.canModify = false;
+		this.canModify = true;
 		this.canAddChannel = false;
 		this.dvbViewer = control.getDVBViewer();
 		this.timeZone = TimeZone.getTimeZone("Europe/Berlin");
@@ -224,44 +219,13 @@ public class ClickFinder extends Provider {
 	}
 
 	@Override
-	public Channel createChannel(String name, String id) {
-		return new Channel(this.getID(), name, id) {
-			@Override
-			public Object getIDKey() {
-				if (this.getTextID() == null) {
-					return this.getName();
-				} else {
-					return this.getTextID();
-				}
-			}
-
-			@Override
-			public Object getIDKey(final Channel c) {
-				return c.getIDKey();
-			}; // ID of the provider, type is provider dependent
-		};
-	}
-
-	@Override
-	public int importChannels(boolean check) {
-		if (check)
-			return 0;
-
-		return this.assignChannels();
-	}
-
-	@Override
 	public boolean isAllChannelsImport() {
 		return true;
 	};
 
 	@Override
 	public Collection<Channel> readChannels() {
-
-		if (this.allSender != null) {
-			return this.allSender;
-		}
-
+		
 		Database db = null;
 
 		// open data base
@@ -285,7 +249,6 @@ public class ClickFinder extends Provider {
 			return null;
 		}
 		Collection<Channel> result = new ArrayList<>();
-		this.userChannels = new HashSet<>();
 		for (Map<String, Object> row : table) {
 			String name = (String) row.get("SenderKennung");
 			if (name == null) {
@@ -293,10 +256,7 @@ public class ClickFinder extends Provider {
 			}
 			boolean favorit = (boolean) row.get("Favorit");
 			String bezeichnung = (String) row.get("Bezeichnung");
-			Channel channel = this.createChannel(bezeichnung, name);
-			if (favorit) {
-				this.userChannels.add(bezeichnung);
-			}
+			Channel channel = this.createChannel(bezeichnung, name, null, favorit);
 			result.add(channel);
 		}
 
@@ -308,19 +268,10 @@ public class ClickFinder extends Provider {
 			Log.out("Column or entry of \"SenderKennung\" not found");
 			return null;
 		}
-		this.allSender = result;
+
 		return result;
 	};
 
-	@Override
-	public boolean containsChannel(final Channel channel, boolean userChannels) {
-		if (!userChannels)
-			return true;
-
-		if (this.userChannels == null)
-			this.readChannels();
-		return this.userChannels.contains(channel.getName());
-	}
 
 	@Override
 	public boolean isChannelMapAvailable() {

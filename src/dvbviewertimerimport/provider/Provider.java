@@ -9,9 +9,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TimeZone;
+import java.util.Comparator;
 
 import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamException;
@@ -32,6 +35,8 @@ import dvbviewertimerimport.xml.StackXML;
 
 public abstract class Provider implements DVBViewerProvider {
 
+	private static final boolean DEBUG = true;
+
 	private static final StackXML<String> pathProvider = new StackXML<String>("Providers", "Provider");
 	private static final StackXML<String> pathURL = new StackXML<String>("Providers", "Provider", "Url");
 	private static final StackXML<String> pathSenderURL = new StackXML<String>("Providers", "Provider", "SenderUrl");
@@ -50,8 +55,8 @@ public abstract class Provider implements DVBViewerProvider {
 	private static Stack<ArrayList<String>> nameStack = new Stack<ArrayList<String>>();
 	private static Stack<ArrayList<Provider>> providerStack = new Stack<ArrayList<Provider>>();
 
-	public Channel createChannel(String name, String id) {
-		return new Channel(this.id, name, id);
+	public Channel createChannel(String name, String userName, String id, boolean user) {
+		return new Channel(this.pid, name, userName, id, user);
 	}
 
 	public static void push() {
@@ -88,7 +93,7 @@ public abstract class Provider implements DVBViewerProvider {
 		}
 	}
 
-	private final int id;
+	private final int pid;
 	protected final Control control;
 	private final boolean hasAccount;
 	private final boolean hasURL;
@@ -115,9 +120,12 @@ public abstract class Provider implements DVBViewerProvider {
 	private OutDatedInfo outDatedLimits = null;
 	protected TimeZone timeZone = TimeZone.getDefault();
 
-	static class RegularExpression {
-		final String id;
-		final String regString;
+	private Collection<Channel> allChannels = null;
+	private Set<String> userChannelNames = null;
+
+	private static class RegularExpression {
+		private final String id;
+		private final String regString;
 
 		public RegularExpression(String id, String regString) {
 			this.id = id;
@@ -133,7 +141,7 @@ public abstract class Provider implements DVBViewerProvider {
 		this.hasAccount = hasAccount;
 		this.hasURL = hasURL;
 		this.name = name;
-		this.id = Provider.providers.size();
+		this.pid = Provider.providers.size();
 		this.canExecute = canExecute;
 		this.canTest = canTest;
 		this.filter = filter;
@@ -148,7 +156,7 @@ public abstract class Provider implements DVBViewerProvider {
 	}
 
 	public int getID() {
-		return this.id;
+		return this.pid;
 	};
 
 	public String getName() {
@@ -304,22 +312,37 @@ public abstract class Provider implements DVBViewerProvider {
 	 */
 
 	public boolean containsChannel(final Channel channel, boolean userChannels) {
-		return true;
-	};
-
-	public void updateChannelMap() {
-	};
+		if (!userChannels) {
+			return true;
+		}
+		if (this.userChannelNames == null) {
+			if (this.allChannels == null) {
+				this.allChannels = this.readChannels();
+			}
+			this.userChannelNames = new HashSet<>();
+			for (Channel c : this.allChannels) {
+				if (c.isUser()) {
+					this.userChannelNames.add(c.getName());
+				}
+			}
+		}
+		if (this.userChannelNames.size() != 0) {
+			return this.userChannelNames.contains(channel.getName());
+		} else {
+			return true;
+		}
+	}
 
 	public boolean isChannelMapAvailable() {
 		return false;
 	};
 
-	public int importChannels(boolean check) {
-		return -1;
-	};
-
 	public int importChannels() {
-		return this.importChannels(false);
+		int changes = this.assignChannels();
+		if (changes > 0) {
+			this.userChannelNames = null;
+		}
+		return changes;
 	};
 
 	/**
@@ -566,12 +589,6 @@ public abstract class Provider implements DVBViewerProvider {
 			sw.writeAttribute("message", provider.message);
 			sw.writeAttribute("verbose", provider.verbose);
 			sw.writeAttribute("filter", provider.filter);
-			if (provider.outDatedLimits != null) {
-				sw.writeStartElement("Missing");
-				provider.outDatedLimits.writeXML(sw);
-				sw.writeEndElement();
-			}
-
 			if (provider.hasURL) {
 				sw.writeStartElement(pathURL.lastElement());
 				sw.writeCharacters(provider.url);
@@ -588,78 +605,113 @@ public abstract class Provider implements DVBViewerProvider {
 				sw.writeCData(expr.regString);
 				sw.writeEndElement();
 			}
+			if (provider.outDatedLimits != null) {
+				sw.writeStartElement("Missing");
+				provider.outDatedLimits.writeXML(sw);
+				sw.writeEndElement();
+			}
+
 			sw.writeEndElement();
 		}
 		sw.writeEndElement();
 	}
 
 	public int assignChannels() {
+		if (!this.isFunctional) {
+			return 0;
+		}
 		Collection<Channel> channels = readChannels();
 
 		if (channels == null)
 			return -1;
+
+		Map<String, List<Channel>> buildMap = new HashMap<>();
+
+		for (Channel channel : channels) {
+			String name = channel.getName();
+			List<Channel> list = buildMap.get(name);
+			if (list == null) {
+				list = new ArrayList<>();
+				buildMap.put(name, list);
+			}
+			list.add(channel);
+		}
+
+		Comparator<Channel> comparator = new Comparator<Channel>() {
+			@Override
+			public int compare(Channel o1, Channel o2) {
+				return o1.getIDKey().compareTo(o2.getIDKey());
+			}
+		};
+
+		for (List<Channel> list : buildMap.values()) {
+			if (list.size() > 1) {
+				list.sort(comparator);
+			}
+		}
 
 		HashMap<Object, ChannelSet> mapByID = new HashMap<Object, ChannelSet>();
 		HashMap<String, ChannelSet> mapByName = new HashMap<String, ChannelSet>();
 
 		int pid = this.getID();
 
-		if (channels.size() == 0)
-			return 0;
 		// Channel channelProv = (Channel) channels.toArray()[0];
 
-		// Creating of maps sorted by name and id based on old data
+		// Creating of maps sorted by name and pid based on old data
 
 		for (ChannelSet cs : this.control.getChannelSets()) {
 			Channel c = cs.getChannel(pid);
 			if (c == null)
 				continue;
 			mapByName.put(c.getName(), cs);
-			Object key = c.getIDKey(c);
-			if (key != null)
+			Object key = c.getIDKey();
+			if (c.hasId())
 				mapByID.put(key, cs);
 		}
 
 		int count = 0;
 
-		Set<Object> assignedSetByID = new HashSet<Object>();
+		for (List<Channel> list : buildMap.values()) {
+			for (int ix = 0; ix < list.size(); ++ix) {
+				Channel c = list.get(ix);
+				if (DEBUG) {
+					Log.out("Channel processing: \"" + c.getName() + "\" of provider \"" + this.getName()
+							+ "\" with provider key \"" + c.getIDKey() + "\"");
+				}
+				String channelName = c.getName() + (ix == 0 ? "" : "(" + ix + ")");
 
-		for (Channel c : channels) {
-			boolean found = true;
-			Object key = c.getIDKey();
-			ChannelSet former = mapByID.get(key);
-			if (former != null) {
-				if (!former.getChannel(pid).getName().equals(c.getName())) {
+				String key = c.getIDKey();
+				ChannelSet former = mapByID.get(key);
+				if (former != null) {
+					mapByID.remove(key);
+				} else {
+					former = mapByName.get(channelName);
+				}
+
+				if (former != null) {
 					former.remove(pid);
 					former.add(c);
+					mapByName.remove(former.getChannel(pid).getName());
+				} else {
+					ChannelSet cs = new ChannelSet();
+					cs.add(c);
+					this.control.getChannelSets().add(cs);
+					Log.out("Channel \"" + c.getName() + "\" added to provider \"" + this.getName() + "\"");
+					count++;
 				}
-			} else if (mapByName.containsKey(c.getName())) {
-				String name = c.getName();
-				Channel pc = mapByName.get(name).getChannel(pid);
-				pc.setID(key);
-			} else
-				found = false;
-
-			if (!found) {
-				if (assignedSetByID.contains(key)) {
-					Log.out("Channel \"" + c.getName() + "\" of provider \"" + this.getName()
-							+ "\" isn't unique. Ignored.");
-					continue;
-				}
-				ChannelSet cs = new ChannelSet();
-				cs.add(c);
-				this.control.getChannelSets().add(cs);
-				Log.out("Channel \"" + c.getName() + "\" added to provider \"" + this.getName() + "\"");
-				count++;
 			}
-			mapByID.remove(key);
-			assignedSetByID.add(key);
 		}
 		if (isAllChannelsImport()) {
 			for (ChannelSet cs : mapByID.values()) {
 				Log.out("Channel \"" + cs.getChannel(getID()).getName() + "\" removed from provider \"" + this.getName()
 						+ "\"");
+				mapByName.remove(cs.getChannel(pid).getName());
 				cs.remove(getID());
+			}
+			for (ChannelSet cs : mapByName.values()) {
+				Log.out("Channel \"" + cs.getChannel(getID()).getName() + "\" removed from provider \"" + this.getName()
+				+ "\"");
+		cs.remove(getID());
 			}
 		}
 		return count;

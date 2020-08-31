@@ -35,14 +35,15 @@ public class ChannelSet {
 	}
 
 	private ArrayList<Channel> channels = new ArrayList<Channel>();
-	private String dvbViewerChannel = null;
+	private String dvbViewerChannelName = null;
+	private String dvbViewerChannelId = null;
 	private TimeOffsets timeOffsets = new TimeOffsets();
 	private Merge merge = Merge.INVALID;
 	private boolean isAutomaticAssigned = false;
 	private long id = -1;
 
-	public Channel add(int type, String name, String id) {
-		Channel channel = Provider.getProvider(type).createChannel(name, id);
+	public Channel add(int type, String name, String userName, String id, boolean user) {
+		Channel channel = Provider.getProvider(type).createChannel(name, userName, id, user);
 		this.channels.add(channel);
 		return channel;
 	}
@@ -92,11 +93,21 @@ public class ChannelSet {
 	};
 
 	public void setDVBViewerChannel(String channelName) {
-		this.dvbViewerChannel = channelName;
+		String [] parts;
+		if (channelName == null) {
+			parts = new String[] { null, null };
+		} else {
+			parts = channelName.split("\\|");
+		}
+		this.dvbViewerChannelName = parts[1];
+		this.dvbViewerChannelId = parts[0];
 	};
 
 	public String getDVBViewerChannel() {
-		return this.dvbViewerChannel;
+		if (this.dvbViewerChannelId == null) {
+			return null;
+		}
+		return this.dvbViewerChannelId + '|' + this.dvbViewerChannelName;
 	};
 
 	public void setID(final long id) {
@@ -120,7 +131,7 @@ public class ChannelSet {
 	}
 
 	public void writeXML(IndentingXMLStreamWriter sw) throws XMLStreamException, ParseException {
-		if (this.dvbViewerChannel == null && this.channels.size() == 0) {
+		if (this.dvbViewerChannelId == null && this.channels.size() == 0) {
 			return;
 		}
 		sw.writeStartElement("Channel");
@@ -129,9 +140,11 @@ public class ChannelSet {
 		for (Channel c : this.channels)
 			c.writeXML(sw);
 
-		if (this.dvbViewerChannel != null) {
+		String dvbChannel = this.getDVBViewerChannel();
+
+		if (dvbChannel != null) {
 			sw.writeStartElement("DVBViewer");
-			sw.writeCharacters(this.dvbViewerChannel);
+			sw.writeCharacters(dvbChannel);
 			sw.writeEndElement();
 		}
 		this.timeOffsets.writeXML(sw);
@@ -150,10 +163,18 @@ public class ChannelSet {
 	public String toString() {
 		String out = "";
 
-		if (this.dvbViewerChannel != null)
-			out += "DVBViewer channel: " + this.dvbViewerChannel.toString() + "\n";
+		if (this.dvbViewerChannelId != null)
+			out += "DVBViewer channel: " + this.getDVBViewerChannel() + "\n";
 		for (Channel c : this.channels)
 			out += c.toString() + "\n";
 		return out;
+	}
+
+	public String getDvbViewerChannelName() {
+		return this.dvbViewerChannelName;
+	}
+
+	public String getDvbViewerChannelId() {
+		return this.dvbViewerChannelId;
 	}
 }

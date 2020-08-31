@@ -5,13 +5,11 @@
 package dvbviewertimerimport;
 
 import java.awt.event.ActionEvent;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -33,9 +31,9 @@ import devplugin.SettingsTab;
 import devplugin.Version;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerProvider;
-import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
 import dvbviewertimerimport.gui.GUIPanel;
 import dvbviewertimerimport.gui.TimersDialog;
 import dvbviewertimerimport.main.Versions;
@@ -45,13 +43,14 @@ import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.misc.TerminateClass;
 import dvbviewertimerimport.provider.Provider;
-import dvbviewertimerimport.provider.ProviderChannel;
 
 /**
  * @author Stefan Gollmer
  *
  */
 public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
+
+	private static final boolean DEBUG = true;
 
 	private static Version version = null;
 
@@ -83,7 +82,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 	private GregorianCalendar calendar;
 
-	private ProviderChannel<String>[] tvbChannelNames = null;
+	private Collection<dvbviewertimerimport.control.Channel> tvbChannelNames = null;
 	private Map<String, Channel> uniqueAssignment = null;
 
 	private PluginTreeNode mRootNode = new PluginTreeNode(this, false);
@@ -152,7 +151,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	/**
 	 * @return Array containing the channel names of the TV-Browser
 	 */
-	public static ProviderChannel<String>[] getTVBChannelNames() {
+	public static Collection<dvbviewertimerimport.control.Channel> getTVBChannelNames() {
 		if (DVBViewerTimerImport.plugin == null) {
 			return null;
 		}
@@ -163,32 +162,21 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		DVBViewerTimerImport.plugin.uniqueAssignment = new HashMap<String, Channel>();
 
-		@SuppressWarnings("unchecked")
-		ProviderChannel<String>[] newInstance = (ProviderChannel<String>[]) Array
-				.newInstance(new ProviderChannel<String>("", "").getClass(), channels.length);
-		DVBViewerTimerImport.plugin.tvbChannelNames = newInstance;
+		DVBViewerTimerImport.plugin.tvbChannelNames = new ArrayList<>();
 
-		int idx = -1;
-		Map<String, List<String>> checkMap = new HashMap<String, List<String>>();
+		// create a map, containing for each channel name the possible unique IDs
+
 		for (devplugin.Channel c : channels) {
-			String key = c.getName();
-			if (!checkMap.containsKey(key))
-				checkMap.put(key, new ArrayList<String>());
-			checkMap.get(key).add(c.getUniqueId());
-			DVBViewerTimerImport.plugin.uniqueAssignment.put(c.getUniqueId(), c);
-		}
-		for (Map.Entry<String, List<String>> mapEntry : checkMap.entrySet()) {
-			List<String> list = mapEntry.getValue();
-			DVBViewerTimerImport.plugin.tvbChannelNames[++idx] = new ProviderChannel<String>(mapEntry.getKey(),
-					mapEntry.getValue().get(0));
-			if (list.size() > 1) {
-				int cnt = 1;
-				for (cnt = 1; cnt < list.size(); ++cnt)
-					DVBViewerTimerImport.plugin.tvbChannelNames[++idx] = new ProviderChannel<String>(
-							mapEntry.getKey() + "(" + Integer.toString(cnt) + ")", list.get(cnt));
+			if (DEBUG) {
+				Log.out("Channel processing: \"" + c.getName() + "\" with provider key \"" + c.getUniqueId() + "\"");
 			}
+			DVBViewerTimerImport.plugin.uniqueAssignment.put(c.getUniqueId(), c);
+			DVBViewerTimerImport.plugin.tvbChannelNames
+					.add(new dvbviewertimerimport.control.Channel(3, c.getName(), null, c.getUniqueId(), true));
 		}
+
 		return DVBViewerTimerImport.plugin.tvbChannelNames;
+
 	}
 
 	private boolean init() {
@@ -549,7 +537,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 					break;
 			}
 			return result;
-		} catch ( ErrorClass ee) {
+		} catch (ErrorClass ee) {
 			throw ee;
 		} catch (Throwable ee) {
 			Log.out("Throws on processEntry, Message: " + ee.getMessage());

@@ -9,22 +9,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Scanner;
 import java.util.TimeZone;
-import java.util.regex.MatchResult;
-import java.util.regex.Pattern;
-
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
@@ -32,7 +22,6 @@ import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.main.Versions;
 import dvbviewertimerimport.misc.ErrorClass;
-import dvbviewertimerimport.misc.Html;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.Registry;
 import dvbviewertimerimport.misc.ResourceManager;
@@ -51,8 +40,6 @@ public class TVGenial extends Provider {
 
 	private final SimpleDateFormat dateFormat;
 
-	private HashSet<Long> channelSet = null;
-	private Collection<Channel > allSender = null;
 
 	private static String getRegKey(String key) {
 		String installDir = null;
@@ -75,26 +62,12 @@ public class TVGenial extends Provider {
 		this.dateFormat.setTimeZone(this.timeZone);
 		this.canAddChannel = false;
 		this.canImport = true;
+		this.canModify = true;
 
 		String installDir = getRegKey("InstallDir");
 
 		this.isFunctional = null != installDir;
 	}
-
-	@Override
-	public Channel createChannel(String name, String id) {
-		return new Channel(this.getID(), name, id) {
-			@Override
-			public Object getIDKey() {
-				return Long.valueOf(getNumID());
-			}
-
-			@Override
-			public Object getIDKey(final Channel c) {
-				return Long.valueOf(c.getNumID());
-			}; // ID of the provider, type is provider dependent
-		};
-	};
 
 	@Override
 	public boolean install() {
@@ -214,7 +187,7 @@ public class TVGenial extends Provider {
 						break;
 					cName = name + Integer.valueOf(countR++);
 				}
-				Channel c = this.createChannel(cName, Long.toString(tvuid));
+				Channel c = this.createChannel(cName, null, Long.toString(tvuid), false);
 				list.add(c);
 				;
 				nameMap.put(cName, tvuid);
@@ -224,14 +197,6 @@ public class TVGenial extends Provider {
 			return list = null;
 		}
 		return list;
-	}
-
-	@Override
-	public int importChannels(boolean check) {
-		if (check)
-			return 0;
-
-		return this.assignChannels();
 	}
 
 	private String getParaInfo() {
@@ -314,25 +279,6 @@ public class TVGenial extends Provider {
 	public boolean isAllChannelsImport() {
 		return true;
 	};
-
-	@Override
-	public boolean containsChannel(final Channel channel, boolean userChannels) {
-		if (!isFunctional())
-			return true;
-
-		if (this.channelSet == null) {
-			this.channelSet = new HashSet<Long>();
-			ArrayList<Channel> channels = readChannels();
-			for (Channel c : channels)
-				this.channelSet.add(c.getNumID());
-		}
-		return this.channelSet.contains(channel.getNumID());
-	}
-
-	@Override
-	public void updateChannelMap() {
-		this.channelSet = null;
-	}
 
 	@Override
 	public boolean isChannelMapAvailable() {

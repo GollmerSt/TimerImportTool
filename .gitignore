@@ -2,3 +2,6 @@
 .vs
 /Visual Studio/Release
 /Visual Studio/DVBViewerTimerImport/Release
+/private/
+/publish Linux/
+/zip files/

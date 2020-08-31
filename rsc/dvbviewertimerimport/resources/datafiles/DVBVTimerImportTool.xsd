@@ -145,7 +145,7 @@
 					<xsd:complexType>
 						<xsd:sequence>
 							<xsd:element name="Channel" maxOccurs="unbounded"
-								minOccurs="1">
+								minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
 										<xsd:element name="Provider" minOccurs="0"
@@ -189,7 +189,7 @@
 					minOccurs="0">
 					<xsd:simpleType>
 						<xsd:restriction base="xsd:string">
-							<xsd:pattern value="\d+\.\d+\.\d+"></xsd:pattern>
+							<xsd:pattern value="\d+\.\d+\.\d+(\.[^\.]*){0,1}"></xsd:pattern>
 						</xsd:restriction>
 					</xsd:simpleType>
 				</xsd:element>

@@ -254,4 +254,16 @@ public final class Helper {
 		file.delete() ;
 		tempFile.renameTo( file ) ;
 	}
+	
+	public class Reference<T> {
+		private T value;
+		
+		public T get() {
+			return this.value;
+		}
+		
+		public void setValue( T value) {
+			this.value = value;
+		}
+	}
 }

@@ -165,6 +165,8 @@ public class Control {
 
 		Provider provider = null;
 		String channelID = null;
+		String userName = null ;
+		boolean user = false;
 
 		ChannelSet channelSet = null;
 
@@ -231,6 +233,8 @@ public class Control {
 					type = BlockType.CHANNEL_PROVIDER;
 					provider = null;
 					channelID = null;
+					userName = null ;
+					user = false;
 				} else if (stack.equals(this.pathWOL))
 					type = BlockType.WOL;
 				else if (stack.equals(this.pathDVBViewer))
@@ -265,6 +269,10 @@ public class Control {
 									throw new ErrorClass(ev, "Unknown provider name in file \"" + name + "\"");
 							} else if (attributeName.equals("channelID")) {
 								channelID = value;
+							} else if (attributeName.equals("userName")) {
+								userName = value;
+							} else if ( attributeName.equals("user")) {
+								user = Boolean.parseBoolean(value);
 							}
 							break;
 						case DVBSERVICE:
@@ -385,7 +393,7 @@ public class Control {
 				String data = ev.asCharacters().getData().trim();
 				if (data.length() > 0) {
 					if (stack.equals(this.pathChannelProvider))
-						channelSet.add(provider.getID(), data, channelID);
+						channelSet.add(provider.getID(), data, userName, channelID, user);
 					else if (stack.equals(this.pathChannelDVBViewer))
 						channelSet.setDVBViewerChannel(data);
 					else if (stack.equals(this.pathChannelMerge)) {
@@ -736,16 +744,18 @@ public class Control {
 			// get a list of files from current directory
 
 			for (File file : sourceFiles) {
-				logOut.append("\n\tAdding: " + file.getAbsolutePath() + "\"");
-				FileInputStream fi = new FileInputStream(file);
-				origin = new BufferedInputStream(fi, BUFFER);
-				ZipEntry entry = new ZipEntry(file.getName());
-				out.putNextEntry(entry);
-				int count;
-				while ((count = origin.read(data, 0, BUFFER)) != -1) {
-					out.write(data, 0, count);
+				if (file.exists()) {
+					logOut.append("\n\tAdding: " + file.getAbsolutePath() + "\"");
+					FileInputStream fi = new FileInputStream(file);
+					origin = new BufferedInputStream(fi, BUFFER);
+					ZipEntry entry = new ZipEntry(file.getName());
+					out.putNextEntry(entry);
+					int count;
+					while ((count = origin.read(data, 0, BUFFER)) != -1) {
+						out.write(data, 0, count);
+					}
+					origin.close();
 				}
-				origin.close();
 			}
 			out.close();
 		} catch (Exception e) {
