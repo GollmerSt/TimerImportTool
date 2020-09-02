@@ -94,7 +94,7 @@ public class DVBViewerAssignment extends MyTabPanel {
 		@Override
 		public String toString() {
 			return this.name;
-		};
+		}
 	}
 
 	class SpecialCellRenderer extends JLabel implements ListCellRenderer<Object> {

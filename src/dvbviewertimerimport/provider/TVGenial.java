@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Channel;
@@ -39,7 +41,6 @@ public class TVGenial extends Provider {
 	private static final String REG_ROOT5 = "5";
 
 	private final SimpleDateFormat dateFormat;
-
 
 	private static String getRegKey(String key) {
 		String installDir = null;
@@ -128,12 +129,12 @@ public class TVGenial extends Provider {
 	}
 
 	@Override
-	protected ArrayList<Channel> readChannels() {
+	protected Collection<Channel> readChannels() {
 		String dataPath = getRegKey("PublicDataRoot");
 		if (dataPath == null)
 			return null;
 
-		ArrayList<Channel> list = new ArrayList<Channel>();
+		Map<Long, Channel> map = new HashMap<>();
 
 		File f = new File(dataPath + File.separator + NAME_CHANNEL_FILE);
 
@@ -151,16 +152,6 @@ public class TVGenial extends Provider {
 
 		String line;
 
-		HashMap<String, Long> nameMap = new HashMap<String, Long>();
-
-		int pid = this.getID();
-
-		for (ChannelSet cs : this.control.getChannelSets()) {
-			Channel c = cs.getChannel(pid);
-			if (c == null)
-				continue;
-			nameMap.put(c.getName(), c.getNumID());
-		}
 
 		try {
 			while ((line = br.readLine()) != null) {
@@ -173,30 +164,23 @@ public class TVGenial extends Provider {
 				if (parts.length < 2)
 					continue;
 				long tvuid = Long.valueOf(parts[0]);
-				String name = parts[1];
-				String nameLong = parts[2];
-				String cName = name ;
-				
-				if ( nameMap.containsKey(cName)) {
-					cName = nameLong ;
-				}
+				String cName = parts[2];
 
-				int countR = 0;
-				while (nameMap.containsKey(cName)) {
-					if (nameMap.get(cName) == tvuid)
-						break;
-					cName = name + Integer.valueOf(countR++);
-				}
 				Channel c = this.createChannel(cName, null, Long.toString(tvuid), false);
-				list.add(c);
-				;
-				nameMap.put(cName, tvuid);
+				Channel former = map.get(tvuid);
+				if (former != null) {
+					if (cName.length() > former.getName().length()) {
+						map.put(tvuid, c);
+					}
+				} else {
+					map.put(tvuid, c);
+				}
 			}
 			br.close();
 		} catch (IOException e) {
-			return list = null;
+			return null;
 		}
-		return list;
+		return map.values();
 	}
 
 	private String getParaInfo() {
@@ -278,7 +262,7 @@ public class TVGenial extends Provider {
 	@Override
 	public boolean isAllChannelsImport() {
 		return true;
-	};
+	}
 
 	@Override
 	public boolean isChannelMapAvailable() {

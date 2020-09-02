@@ -52,11 +52,11 @@ public class Channel {
 
 	public int getType() {
 		return this.type;
-	};
+	}
 
 	public String getName() {
 		return this.name;
-	};
+	}
 
 	public String getTextID() {
 		if (this.id != null) {
@@ -64,15 +64,15 @@ public class Channel {
 		} else {
 			return this.name;
 		}
-	};
+	}
 
 	public long getNumID() {
 		return Long.valueOf(this.id);
-	};
+	}
 
 	public String getTypeName() {
 		return dvbviewertimerimport.provider.Provider.getProviderName(this.type);
-	};
+	}
 
 	public void writeXML(IndentingXMLStreamWriter sw) throws XMLStreamException {
 		sw.writeStartElement("Provider");
@@ -81,9 +81,6 @@ public class Channel {
 			sw.writeAttribute("channelID", this.id);
 		if (hasUserName()) {
 			sw.writeAttribute("userName", this.userName);
-		}
-		if (this.user) {
-			sw.writeAttribute("user", this.user);
 		}
 		sw.writeCData(this.name);
 		sw.writeEndElement();
@@ -126,7 +123,7 @@ public class Channel {
 	}
 
 	public boolean hasUserName() {
-		return this.userName != null && this.userName.equals(this.name);
+		return this.userName != null && !this.userName.equals(this.name);
 	}
 
 	@Override

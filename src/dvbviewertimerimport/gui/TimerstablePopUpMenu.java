@@ -127,7 +127,7 @@ public class TimerstablePopUpMenu extends JPopupMenu {
 
 		public boolean isSeparator() {
 			return this.menuItem == null;
-		};
+		}
 
 		public boolean isEnabled(final MyTreeTable table) {
 			return this.method == null ? true : this.method.isEnabled(table);
@@ -135,7 +135,7 @@ public class TimerstablePopUpMenu extends JPopupMenu {
 
 		public JMenuItem getItem() {
 			return this.menuItem;
-		};
+		}
 	}
 
 	public TimerstablePopUpMenu(final Control control, final MyTreeTable table) {

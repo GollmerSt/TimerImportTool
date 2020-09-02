@@ -61,6 +61,7 @@
 		<jar jarfile="${private.dir}/${dist.base}.jar">
 			<zipfileset src="${private.dir}/temp/${dist.base}_woLib.jar" excludes="META-INF/*" />
 			<zipfileset src="lib/commons-lang3-3.11.jar" />
+			<zipfileset src="lib/commons-logging-1.2.jar" />
 			<zipfileset src="lib/jackcess-3.5.0.jar" />
 			<manifest>
 				<attribute name="Main-Class" value="dvbviewertimerimport.main.TimerImportTool" />

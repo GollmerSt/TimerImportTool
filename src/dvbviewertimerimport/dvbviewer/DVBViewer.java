@@ -41,7 +41,7 @@ public class DVBViewer {
 	private static TimeZone timeZone = TimeZone.getTimeZone("Europe/Berlin");
 
 	public static enum Command {
-		SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER, UPDATE_UNRESOLVED_ENTRIES
+		SET, DELETE, FIND, UPDATE, UPDATE_TVBROWSER, UPDATE_UNRESOLVED_ENTRIES, FIND_SENDER
 	};
 
 	private static final int TIMEOUT_S = 120; // DVBViewer waiting time
@@ -87,16 +87,16 @@ public class DVBViewer {
 
 		private void reset() {
 			this.maxID = -1;
-		};
+		}
 	}
 
 	public static TimeZone getTimeZone() {
 		return timeZone;
-	};
+	}
 
 	public static void setTimeZone(TimeZone timeZone) {
 		DVBViewer.timeZone = timeZone;
-	};
+	}
 
 	private DVBViewerService service = null;
 	private final DVBViewerTimerXML timersXML;
@@ -329,15 +329,15 @@ public class DVBViewer {
 		this.writeXML();
 	}
 
-	public boolean process(DVBViewerProvider provider, boolean getAll, Object args) throws Exception {
-		return process(provider, getAll, args, Command.SET);
+	public boolean process(DVBViewerProvider provider, boolean getAll, Object arg) throws Exception {
+		return process(provider, getAll, arg, Command.SET);
 	}
 
-	public boolean process(DVBViewerProvider provider, boolean getAll, Object args, Command command) throws Exception {
-		Object[] argArray = new Object[1];
-		argArray[0] = args;
+	public boolean process(DVBViewerProvider provider, boolean getAll, Object arg, Command command) throws Exception {
+		Object[] args = new Object[1];
+		args[0] = arg;
 
-		return process(provider, getAll, argArray, command);
+		return process(provider, getAll, args, command);
 	}
 
 	public boolean process(DVBViewerProvider provider, boolean getAll, Object[] args, Command command)
@@ -348,12 +348,14 @@ public class DVBViewer {
 	public boolean process(DVBViewerEntry updateEntry, DVBViewerProvider provider, boolean getAll, Object[] args,
 			Command command) throws Exception {
 		boolean result = true;
-		if (command == Command.FIND && this.recordEntries != null) {
+		if (command == Command.FIND && this.recordEntries != null || command == Command.FIND_SENDER) {
 			result = provider.process(getAll, command);
 			for (Object o : args) {
 				result &= provider.processEntry(o, command);
 			}
 			return result;
+		} else if ( command == Command.FIND_SENDER ) {
+			return true;
 		}
 		this.connectDVBViewerIfNecessary();
 		try {
@@ -496,27 +498,27 @@ public class DVBViewer {
 
 	public ArrayList<DVBViewerEntry> getRecordEntries() {
 		return this.recordEntries;
-	};
+	}
 
 	public void resetRecordEntries() {
 		this.recordEntries = null;
-	};
+	}
 
 	public String getExePath() {
 		return this.exePath;
-	};
+	}
 
 	public String getExeName() {
 		return this.exeName;
-	};
+	}
 
 	public String getPluginConfPath() {
 		return this.dvbViewerPluginDataPath;
-	};
+	}
 
 	public String getDVBViewerDataPath() {
 		return this.dvbViewerDataPath;
-	};
+	}
 
 	public dvbviewertimerimport.dvbviewer.channels.Channels getChannels() {
 		return this.channels;
@@ -524,7 +526,7 @@ public class DVBViewer {
 
 	public String getDVBViewerPath() {
 		return this.dvbViewerPath;
-	};
+	}
 
 	public void setDVBViewerPath(final String dvbViewerPath) {
 		this.isDVBViewerPathSetExternal = true;
@@ -533,66 +535,66 @@ public class DVBViewer {
 			this.determineDataPath();
 		else
 			this.dvbViewerDataPath = null;
-	};
+	}
 
 	public boolean isDVBViewerPathSetExternal() {
 		return this.isDVBViewerPathSetExternal;
-	};
+	}
 
 	public String getDVBExePath() {
 		if (this.dvbExePath != null)
 			return this.dvbExePath;
 		else
 			return this.dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE;
-	};
+	}
 
 	public void setChannelChangeTime(final int waitTime) {
 		this.channelChangeTime = waitTime;
-	};
+	}
 
 	public int getChannelChangeTime() {
 		return this.channelChangeTime;
-	};
+	}
 
 	public void setWaitCOMTime(final int waitTime) {
 		this.waitCOMTime = waitTime;
-	};
+	}
 
 	public int getWaitCOMTime() {
 		return this.waitCOMTime;
-	};
+	}
 
 	public void setDVBExePath(final String dvbExePath) {
 		this.dvbExePath = dvbExePath;
-	};
+	}
 
 	public boolean isDVBExePathSetExternal() {
 		return this.dvbExePath != null;
-	};
+	}
 
 	public String getViewParameters() {
 		return this.viewParameters;
-	};
+	}
 
 	public void setViewParameters(final String viewParameters) {
 		this.viewParameters = viewParameters;
-	};
+	}
 
 	public String getRecordingParameters() {
 		return this.recordingParameters;
-	};
+	}
 
 	public void setRecordingParameters(final String recordingParameters) {
 		this.recordingParameters = recordingParameters;
-	};
+	}
 
 	public boolean getStartIfRecording() {
 		return this.startIfRecording;
-	};
+	}
 
 	public void setStartIfRecording(boolean startIfRecording) {
 		this.startIfRecording = startIfRecording;
-	};
+	}
 
 	public void setService(DVBViewerService s) {
 		this.service = s;
@@ -600,39 +602,39 @@ public class DVBViewer {
 
 	public DVBViewerService getService() {
 		return this.service;
-	};
+	}
 
 	public void setEnableWOL(boolean e) {
 		this.service.setEnableWOL(e);
-	};
+	}
 
 	public void setBroadCastAddress(String b) {
 		this.service.setBroadCastAddress(b);
-	};
+	}
 
 	public void setMacAddress(String m) {
 		this.service.setMacAddress(m);
-	};
+	}
 
 	public void setWaitTimeAfterWOL(int w) {
 		this.service.setWaitTimeAfterWOL(w);
-	};
+	}
 
 	public void setAfterRecordingAction(ActionAfterItems dvbViewerActionAfter) {
 		this.afterRecordingAction = dvbViewerActionAfter;
-	};
+	}
 
 	public ActionAfterItems getAfterRecordingAction() {
 		return this.afterRecordingAction;
-	};
+	}
 
 	public void setTimerAction(TimerActionItems timerAction) {
 		this.timerAction = timerAction;
-	};
+	}
 
 	public TimerActionItems getTimerAction() {
 		return this.timerAction;
-	};
+	}
 
 	public void clearChannelLists() {
 		this.channelsLists = new ArrayList<HashMap<String, Channel>>(
@@ -728,19 +730,19 @@ public class DVBViewer {
 
 	public void setSeparator(String s) {
 		this.separator = s;
-	};
+	}
 
 	public String getSeparator() {
 		return this.separator;
-	};
+	}
 
 	public void setMaxTitleLength(int t) {
 		this.maxTitleLength = t;
-	};
+	}
 
 	public int getMaxTitleLength() {
 		return this.maxTitleLength;
-	};
+	}
 
 	public ArrayList<DVBViewerEntry> readXML() {
 		this.maxID.reset();

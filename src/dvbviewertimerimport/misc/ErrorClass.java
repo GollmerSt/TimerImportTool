@@ -58,13 +58,13 @@ public class ErrorClass extends Error {
 
 	public String getErrorString() {
 		return this.errorString;
-	};
+	}
 
 	static public void setWarníng() {
 		ErrorClass.warnings = true;
-	};
+	}
 
 	static public boolean isWarning() {
 		return ErrorClass.warnings;
-	};
+	}
 }

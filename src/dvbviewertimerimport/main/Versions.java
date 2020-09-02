@@ -21,11 +21,11 @@ public class Versions {
 		} else {
 			return VERSION;
 		}
-	};
+	}
 
 	public static String getDVBViewerCOMVersion() {
 		return DVBVIEWER_COM_DLL_VERSION;
-	};
+	}
 
 	/**
 	 * @return triple containing the version numbers

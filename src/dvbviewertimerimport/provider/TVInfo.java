@@ -70,7 +70,7 @@ public final class TVInfo extends Provider {
 
 	public Provider getTVInfo() {
 		return this;
-	};
+	}
 
 //	private static enum HTML_Type {
 //		PROVIDER("t1"), DATE("t2"), START_TIME("t3"), END_TIME("t4"), TITLE("t5");
@@ -211,12 +211,12 @@ public final class TVInfo extends Provider {
 
 //		public long getKey() {
 //			return this.start;
-//		}; // Changed from start to end in case of a started recording
+//		} // Changed from start to end in case of a started recording
 //
 		@Override
 		public String toString() {
 			return this.title;
-		};
+		}
 	}
 
 	@Override
@@ -301,7 +301,7 @@ public final class TVInfo extends Provider {
 //
 //		public HashMap<Long, ArrayList<MyEntry>> getResult() {
 //			return this.entries;
-//		};
+//		}
 //
 //		public Boolean isOK() {
 //			return true;
@@ -533,7 +533,7 @@ public final class TVInfo extends Provider {
 	@Override
 	public boolean isAllChannelsImport() {
 		return true;
-	};
+	}
 
 	@Override
 	public boolean isChannelMapAvailable() {

@@ -18,7 +18,7 @@ import dvbviewertimerimport.provider.Provider;
 
 public class ChannelSet {
 
-	public static void createIDs(Collection<ChannelSet> channelSets) {
+	public static void createIDs(ChannelSets channelSets) {
 		Collection<ChannelSet> unresolvedEntries = new ArrayList<ChannelSet>();
 		long maxID = -1L;
 		for (Iterator<ChannelSet> it = channelSets.iterator(); it.hasNext();) {
@@ -60,14 +60,18 @@ public class ChannelSet {
 				it.remove();
 		}
 	}
+	
+	public boolean isEmpty() {
+		return this.channels.isEmpty();
+	}
 
 	public boolean isAutomaticAssigned() {
 		return this.isAutomaticAssigned;
-	};
+	}
 
 	public void setAutomaticAssigned(boolean val) {
 		this.isAutomaticAssigned = val;
-	};
+	}
 
 	public void setTimeOffsets(TimeOffsets timeOffsets) {
 		this.timeOffsets = timeOffsets;
@@ -75,22 +79,22 @@ public class ChannelSet {
 
 	public TimeOffsets getTimeOffsets() {
 		return this.timeOffsets;
-	};
+	}
 
 	public void setMerge(Merge merge) {
 		this.merge = merge;
-	};
+	}
 
 	public void setMerge(boolean merge) {
 		if (merge)
 			this.merge = Merge.TRUE;
 		else
 			this.merge = Merge.FALSE;
-	};
+	}
 
 	public Merge getMerge() {
 		return this.merge;
-	};
+	}
 
 	public void setDVBViewerChannel(String channelName) {
 		String [] parts;
@@ -101,26 +105,30 @@ public class ChannelSet {
 		}
 		this.dvbViewerChannelName = parts[1];
 		this.dvbViewerChannelId = parts[0];
-	};
+	}
 
 	public String getDVBViewerChannel() {
 		if (this.dvbViewerChannelId == null) {
 			return null;
 		}
 		return this.dvbViewerChannelId + '|' + this.dvbViewerChannelName;
-	};
+	}
+	
+	public boolean isDefinedDVBViewerChannel() {
+		return this.dvbViewerChannelId != null;
+	}
 
 	public void setID(final long id) {
 		this.id = id;
-	};
+	}
 
 	public long getID() {
 		return this.id;
-	};
+	}
 
 	public ArrayList<Channel> getChannels() {
 		return this.channels;
-	};
+	}
 
 	public Channel getChannel(int providerID) {
 		for (Channel c : this.channels) {

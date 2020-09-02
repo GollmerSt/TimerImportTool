@@ -203,11 +203,11 @@ public class Channels {
 
 	public MappedByteBuffer getMappedByteBuffer() {
 		return this.buffer;
-	};
+	}
 
 	public TreeMap<String, Channel> getChannels() {
 		return this.channelMap;
-	};
+	}
 
 	public boolean containsChannelID(String channelID) {
 		String parts[] = channelID.split("\\|");

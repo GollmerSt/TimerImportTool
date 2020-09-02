@@ -110,19 +110,19 @@ public class Log {
 
 	public static void setVerbose(boolean b) {
 		Log.verbose = b;
-	};
+	}
 
 	public static boolean isVerbose() {
 		return Log.verbose;
-	};
+	}
 
 	public static void setToDisplay(boolean d) {
 		Log.toDisplay = d;
-	};
+	}
 
 	public static boolean toDisplay() {
 		return Log.toDisplay;
-	};
+	}
 
 	public static void ErrorBox(String errorText, boolean isError) {
 		String lines = "";

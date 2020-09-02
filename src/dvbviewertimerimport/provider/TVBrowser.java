@@ -26,7 +26,7 @@ public class TVBrowser extends Provider {
 	@Override
 	protected Collection<Channel> readChannels() {
 		return DVBViewerTimerImport.getTVBChannelNames();
-	};
+	}
 
 	@Override
 	public boolean isChannelMapAvailable() {

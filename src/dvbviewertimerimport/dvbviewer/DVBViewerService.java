@@ -97,35 +97,35 @@ public class DVBViewerService {
 
 	public boolean getEnableWOL() {
 		return this.enableWOL;
-	};
+	}
 
 	public void setEnableWOL(boolean e) {
 		this.enableWOL = e;
-	};
+	}
 
 	public String getBroadCastAddress() {
 		return this.broadCastAddress;
-	};
+	}
 
 	public void setBroadCastAddress(String b) {
 		this.broadCastAddress = b;
-	};
+	}
 
 	public String getMacAddress() {
 		return this.macAddress;
-	};
+	}
 
 	public void setMacAddress(String m) {
 		this.macAddress = m;
-	};
+	}
 
 	public int getWaitTimeAfterWOL() {
 		return this.waitTimeAfterWOL;
-	};
+	}
 
 	public void setWaitTimeAfterWOL(int w) {
 		this.waitTimeAfterWOL = w;
-	};
+	}
 
 	private InputStream connect(String command, String query) {
 		return this.connect(command, query, false);
@@ -188,11 +188,11 @@ public class DVBViewerService {
 
 	private InputStream connect(String command) {
 		return this.connect(command, "", false);
-	};
+	}
 
 	private InputStream connect(String command, boolean check) {
 		return this.connect(command, "", check);
-	};
+	}
 
 	public long getVersion() {
 		if (this.version < 0)
@@ -202,7 +202,7 @@ public class DVBViewerService {
 
 	private long readVersion() {
 		return this.readVersion(false);
-	};
+	}
 
 	public long readVersion(boolean check) {
 		InputStream input = connect("version", check);
@@ -310,7 +310,7 @@ public class DVBViewerService {
 		} catch (IOException e1) {
 			throw new ErrorClass(e1, "Unexpected error on acces to the DVBViewerService");
 		}
-	};
+	}
 
 	public void setTimers(ArrayList<DVBViewerEntry> entries) {
 		for (DVBViewerEntry d : entries)
@@ -481,35 +481,35 @@ public class DVBViewerService {
 
 	public boolean isEnabled() {
 		return this.enable;
-	};
+	}
 
 	public void setEnabled(boolean e) {
 		this.enable = e;
-	};
+	}
 
 	public String getURL() {
 		return this.url;
-	};
+	}
 
 	public String getUserName() {
 		return this.userName;
-	};
+	}
 
 	public String getPassword() {
 		return this.password;
-	};
+	}
 
 	public void setURL(String url) {
 		this.url = url;
-	};
+	}
 
 	public void setUserName(String userName) {
 		this.userName = userName;
-	};
+	}
 
 	public void setPassword(String password) {
 		this.password = password;
-	};
+	}
 
 	private static void checkAndUpdateTimeZone() {
 		if (timeZone != DVBViewer.getTimeZone()) {

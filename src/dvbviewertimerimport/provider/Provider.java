@@ -46,7 +46,7 @@ public abstract class Provider implements DVBViewerProvider {
 
 	private enum XMLStatus {
 		UKNOWN, MISSING, PROVIDER, REGEX
-	};
+	}
 
 	private static ArrayList<String> names = new ArrayList<String>();
 	private static ArrayList<Provider> providers = new ArrayList<Provider>();
@@ -73,15 +73,15 @@ public abstract class Provider implements DVBViewerProvider {
 
 	public static void setIsPlugin() {
 		isPlugin = true;
-	};
+	}
 
 	public static boolean isPlugin() {
 		return isPlugin;
-	};
+	}
 
 	public static int size() {
 		return Provider.providers.size();
-	};
+	}
 
 	public static Provider processingProvider = null;
 
@@ -157,152 +157,152 @@ public abstract class Provider implements DVBViewerProvider {
 
 	public int getID() {
 		return this.pid;
-	};
+	}
 
 	public String getName() {
 		return this.name;
-	};
+	}
 
 	@Override
 	public String toString() {
 		return this.name;
-	};
+	}
 
 	public String getURL() {
 		return this.url;
-	};
+	}
 
 	public void setURL(final String url) {
 		this.url = url;
-	};
+	}
 
 	public String getUserName() {
 		return this.username;
-	};
+	}
 
 	public void setUserName(final String name) {
 		this.username = name;
-	};
+	}
 
 	public String getPassword() {
 		return this.password;
-	};
+	}
 
 	public void setPassword(final String password) {
 		this.password = password;
-	};
+	}
 
 	public int getTriggerAction() {
 		return this.triggerAction;
-	};
+	}
 
 	public void setTriggerAction(int triggerAction) {
 		this.triggerAction = triggerAction;
-	};
+	}
 
 	public boolean isFiltered() {
 		return this.filter;
-	};
+	}
 
 	public void setFilter(boolean filter) {
 		this.filter = filter;
-	};
+	}
 
 	public boolean isFilterEnabled() {
 		return this.isFilterEnabled;
-	};
+	}
 
 	public void setFilterEnabled(boolean enable) {
 		this.isFilterEnabled = enable;
-	};
+	}
 
 	public boolean getMerge() {
 		return this.merge;
-	};
+	}
 
 	public void setMerge(boolean m) {
 		this.merge = m;
-	};
+	}
 
 	public boolean getVerbose() {
 		return this.verbose;
-	};
+	}
 
 	public void setVerbose(boolean verbose) {
 		this.verbose = verbose;
-	};
+	}
 
 	public boolean getMessage() {
 		return this.message;
-	};
+	}
 
 	public void setMessage(boolean message) {
 		this.message = message;
-	};
+	}
 
 	public boolean hasURL() {
 		return this.hasURL;
-	};
+	}
 
 	public boolean hasAccount() {
 		return this.hasAccount;
-	};
+	}
 
 	public boolean canExecute() {
 		return this.canExecute;
-	};
+	}
 
 	public boolean canTest() {
 		return this.canTest;
-	};
+	}
 
 	public boolean canImport() {
 		return this.canImport && this.isFunctional;
-	};
+	}
 
 	public boolean canModify() {
 		return this.canModify;
-	};
+	}
 
 	public boolean canAddChannel() {
 		return this.canAddChannel;
-	};
+	}
 
 	public boolean mustInstall() {
 		return this.mustInstall;
-	};
+	}
 
 	public boolean isPrepared() {
 		return this.isPrepared;
-	};
+	}
 
 	public boolean isSilent() {
 		return this.isSilent;
-	};
+	}
 
 	public boolean isFunctional() {
 		return this.isFunctional;
-	};
+	}
 
 	public void setIsFunctional(final boolean status) {
 		this.isFunctional = status;
-	};
+	}
 
 	public void setPrepared(boolean prepared) {
 		this.isPrepared = prepared;
-	};
+	}
 
 	public OutDatedInfo getOutDatedLimits() {
 		return this.outDatedLimits;
-	};
+	}
 
 	public boolean install() {
 		return true;
-	};
+	}
 
 	public boolean uninstall() {
 		return true;
-	};
+	}
 
 	/**
 	 * 
@@ -335,7 +335,7 @@ public abstract class Provider implements DVBViewerProvider {
 
 	public boolean isChannelMapAvailable() {
 		return false;
-	};
+	}
 
 	public int importChannels() {
 		int changes = this.assignChannels();
@@ -343,7 +343,7 @@ public abstract class Provider implements DVBViewerProvider {
 			this.userChannelNames = null;
 		}
 		return changes;
-	};
+	}
 
 	/**
 	 * 
@@ -351,24 +351,24 @@ public abstract class Provider implements DVBViewerProvider {
 	 */
 	public boolean isAllChannelsImport() {
 		return false;
-	};
+	}
 
 	protected Collection<Channel> readChannels() {
 		return null;
-	};
+	}
 
 	public void updateRecordings(ArrayList<DVBViewerEntry> entries) {
-	};
+	}
 
 	@Override
 	public boolean process(boolean getAll, DVBViewer.Command command) {
 		return true;
-	};
+	}
 
 	@Override
 	public boolean processEntry(Object args, DVBViewer.Command command) {
 		return true;
-	};
+	}
 
 	public void check() {
 		if (this.hasAccount && (this.username == null || this.password == null))
@@ -380,7 +380,7 @@ public abstract class Provider implements DVBViewerProvider {
 
 	public boolean test() {
 		return false;
-	};
+	}
 
 	public static boolean isSilentProcessing() {
 		if (Provider.processingProvider == null)
@@ -391,19 +391,19 @@ public abstract class Provider implements DVBViewerProvider {
 
 	public static Provider getProcessingProvider() {
 		return Provider.processingProvider;
-	};
+	}
 
 	public static void setProcessingProvider(final Provider p) {
 		Provider.processingProvider = p;
-	};
+	}
 
 	public static ArrayList<Provider> getProviders() {
 		return Provider.providers;
-	};
+	}
 
 	public static boolean contains(String provider) {
 		return Provider.names.contains(provider);
-	};
+	}
 
 	public static Provider getProvider(String providerName) {
 		int pos = Provider.names.indexOf(providerName);
@@ -467,6 +467,8 @@ public abstract class Provider implements DVBViewerProvider {
 					message = false;
 					merge = false;
 					filter = false;
+					senderURL = "";
+					url = "";
 
 					xmlStatus = XMLStatus.PROVIDER;
 				} else if (stack.equals(pathMissing)) {
@@ -555,6 +557,7 @@ public abstract class Provider implements DVBViewerProvider {
 						info = null;
 					}
 					provider.senderURL = senderURL;
+					senderURL = "";
 					provider.url = url;
 					url = "";
 				} else if (stack.equals(pathRegularExpression)) {
@@ -678,21 +681,40 @@ public abstract class Provider implements DVBViewerProvider {
 					Log.out("Channel processing: \"" + c.getName() + "\" of provider \"" + this.getName()
 							+ "\" with provider key \"" + c.getIDKey() + "\"");
 				}
-				String channelName = c.getName() + (ix == 0 ? "" : "(" + ix + ")");
+
+				String channelName = c.getName();
+
+				if (ix > 0) {
+					channelName = c.getName() + "(" + ix + ")";
+					c = new Channel(this.getID(), channelName, c.getUserName(), c.getIDKey(), c.isUser());
+				}
 
 				String key = c.getIDKey();
 				ChannelSet former = mapByID.get(key);
 				if (former != null) {
 					mapByID.remove(key);
+					mapByName.remove(former.getChannel(pid).getName());
+					if (!former.getChannel(pid).getName().equals(c.getName())) {
+						former.remove(pid);
+						former.add(c);
+					}
 				} else {
 					former = mapByName.get(channelName);
+					if (former == null) {
+						former = mapByName.get(c.getIDKey());
+					}
+					if (former != null) {
+						mapByName.remove(former.getChannel(pid).getName());
+						String id = former.getChannel(pid).getIDKey();
+						if (id != null) {
+							mapByID.remove(former.getChannel(pid).getIDKey());
+						}
+						former.remove(pid);
+						former.add(c);
+					}
 				}
 
-				if (former != null) {
-					former.remove(pid);
-					former.add(c);
-					mapByName.remove(former.getChannel(pid).getName());
-				} else {
+				if (former == null ) {
 					ChannelSet cs = new ChannelSet();
 					cs.add(c);
 					this.control.getChannelSets().add(cs);
@@ -701,7 +723,7 @@ public abstract class Provider implements DVBViewerProvider {
 				}
 			}
 		}
-		if (isAllChannelsImport()) {
+		if (isAllChannelsImport() || DEBUG) {
 			for (ChannelSet cs : mapByID.values()) {
 				Log.out("Channel \"" + cs.getChannel(getID()).getName() + "\" removed from provider \"" + this.getName()
 						+ "\"");
@@ -710,20 +732,20 @@ public abstract class Provider implements DVBViewerProvider {
 			}
 			for (ChannelSet cs : mapByName.values()) {
 				Log.out("Channel \"" + cs.getChannel(getID()).getName() + "\" removed from provider \"" + this.getName()
-				+ "\"");
-		cs.remove(getID());
+						+ "\"");
+				cs.remove(getID());
 			}
 		}
 		return count;
-	};
+	}
 
 	public TimeZone getTimeZone() {
 		return this.timeZone;
-	};
+	}
 
 	public void setTimeZone(TimeZone timeZone) {
 		this.timeZone = timeZone;
-	};
+	}
 
 	protected static class ChannelsResult {
 		Collection<String> allChannels = new ArrayList<String>();

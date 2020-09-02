@@ -53,12 +53,12 @@ public class Channel {
 
 	public String getChannelName() {
 		return this.channelName;
-	};
+	}
 
 	@Override
 	public String toString() {
 		return this.channelName;
-	};
+	}
 
 	public String getChannelID() {
 		return this.channelID;
@@ -66,11 +66,11 @@ public class Channel {
 
 	public boolean isVideo() {
 		return this.isVideo;
-	};
+	}
 
 	public boolean isFailed() {
 		return this.channelName == null;
-	};
+	}
 
 	public static Channel createByChannelID(String channelID) {
 		String[] parts = channelID.split("[|]");

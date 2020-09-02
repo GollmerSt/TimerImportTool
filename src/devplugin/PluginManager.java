@@ -184,14 +184,15 @@ public interface PluginManager {
 //   * @since 4.2.1
 //   */
 //  public JMenuItem getPluginContextMenu(Program program, String id);
-//  
-//  /**
-//   * Returns an example program. You can use it for preview stuff.
-//   *
-//   * @return an example program.
-//   * @since 0.9.7.4
-//   */
-//  public Program getExampleProgram();
+
+	/**
+	 * Returns an example program. You can use it for preview stuff.
+	 *
+	 * @return an example program.
+	 * @since 0.9.7.4
+	 */
+	public Program getExampleProgram();
+
 //
 //  /**
 //   * Handles a single left click on a program.

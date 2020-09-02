@@ -20,7 +20,7 @@ import dvbviewertimerimport.gui.GUI.GUIStatus;
 public final class TimerImportTool {
 	private enum ImportType {
 		GUI, TVINFO, CLICKFINDER, TVGENIAL, UPDATE
-	};
+	}
 
 	public static void main(String[] args) {
 

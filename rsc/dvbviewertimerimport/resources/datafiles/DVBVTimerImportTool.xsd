@@ -153,12 +153,16 @@
 											<xsd:complexType>
 
 												<xsd:simpleContent>
-													<xsd:extension base="xsd:string">
-														<xsd:attribute name="name"
-															type="providerName">
+													<xsd:extension
+														base="xsd:string">
+														<xsd:attribute
+															name="name" type="providerName">
 														</xsd:attribute>
-														<xsd:attribute name="channelID"
-															type="xsd:string">
+														<xsd:attribute
+															name="channelID" type="xsd:string">
+														</xsd:attribute>
+														<xsd:attribute
+															name="userName" type="xsd:string">
 														</xsd:attribute>
 													</xsd:extension>
 												</xsd:simpleContent>

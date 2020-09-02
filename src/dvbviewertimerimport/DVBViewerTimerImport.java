@@ -29,6 +29,7 @@ import devplugin.Program;
 import devplugin.ProgramReceiveTarget;
 import devplugin.SettingsTab;
 import devplugin.Version;
+import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.dvbviewer.DVBViewer.Command;
@@ -365,11 +366,22 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 	}
 
+	@Override
 	public ActionMenu getContextMenuActions(final Program program) {
+
+		Program example = getPluginManager().getExampleProgram();
+
 		Action[] subActions = new AbstractAction[2];
 
 		Command temp = Command.SET;
 		try {
+			if (!program.equals(example)) {
+				if (!this.control.getDVBViewer().process(this, false, program, Command.FIND_SENDER)) {
+					Log.out("Channel \"" + program.getChannel().getName() + "\" not available on DVBViewer");
+					return null;
+				}
+			}
+
 			if (this.control.getDVBViewer().process(this, false, program, Command.FIND))
 				temp = Command.DELETE;
 		} catch (ErrorClass e) {
@@ -406,10 +418,12 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 	 * Get the Root-Node. The CapturePlugin handles all Programs for itself. Some
 	 * Devices can remove Programs externaly
 	 */
+	@Override
 	public PluginTreeNode getRootNode() {
 		return this.mRootNode;
 	}
 
+	@Override
 	public boolean canUseProgramTree() {
 		return true;
 	}
@@ -488,6 +502,19 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 			if (command == Command.UPDATE_TVBROWSER) {
 				this.updateMarks();
 				return true;
+			}
+
+			if (command == Command.FIND_SENDER) {
+				if (!(arg instanceof Program)) {
+					Log.out("Warning: wrong call of FIND_SENDER");
+					return false;
+				}
+				Channel channel = ((Program) arg).getChannel();
+				ChannelSet set = this.control.getChannelSets().get(this.providerID, channel.getUniqueId());
+				if ( set == null ) {
+					return false;
+				}
+				return set.isDefinedDVBViewerChannel();
 			}
 
 			if (command == Command.UPDATE_UNRESOLVED_ENTRIES) {

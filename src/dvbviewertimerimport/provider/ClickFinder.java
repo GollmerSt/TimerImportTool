@@ -221,7 +221,7 @@ public class ClickFinder extends Provider {
 	@Override
 	public boolean isAllChannelsImport() {
 		return true;
-	};
+	}
 
 	@Override
 	public Collection<Channel> readChannels() {
@@ -256,7 +256,7 @@ public class ClickFinder extends Provider {
 			}
 			boolean favorit = (boolean) row.get("Favorit");
 			String bezeichnung = (String) row.get("Bezeichnung");
-			Channel channel = this.createChannel(bezeichnung, name, null, favorit);
+			Channel channel = this.createChannel(bezeichnung, null, name, favorit);
 			result.add(channel);
 		}
 
@@ -270,7 +270,7 @@ public class ClickFinder extends Provider {
 		}
 
 		return result;
-	};
+	}
 
 
 	@Override

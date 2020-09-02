@@ -33,6 +33,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 			Long.class, // Original start time
 			Long.class // Original end time
 	};
+	
 	static protected String[] cNames = { ResourceManager.msg("TIMERS_TREE"), // tree
 			ResourceManager.msg("TIMERS_PROGRAM"), // Program
 			ResourceManager.msg("TIMERS_TITLE"), // title
@@ -58,11 +59,11 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 
 	public void setTreeTable(JTreeTable treeTable) {
 		this.treeTable = treeTable;
-	};
+	}
 
 	public void setTimersDialog(TimersDialog dialog) {
 		this.dialog = dialog;
-	};
+	}
 
 	class MyComparator implements Comparator<DVBViewerEntry> {
 		@Override
@@ -143,12 +144,12 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 
 	public boolean isChanged() {
 		return this.isChanged;
-	};
+	}
 
 	public void setIsChanged(boolean isChanged) {
 		this.isChanged = isChanged;
 		this.dialog.updateButtons();
-	};
+	}
 
 	@Override
 	public int getColumnCount() {

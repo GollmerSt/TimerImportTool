@@ -13,7 +13,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -56,7 +55,7 @@ public class Control {
 
 	private enum BlockType {
 		INVALID, CHANNEL_PROVIDER, DVBSERVICE, DVBVIEWER, OFFSETS, OFFSET_ENTRY, CHANNEL, WOL
-	};
+	}
 
 	private final DVBViewer dvbViewer;
 	private final StackXML<String> pathProgramVersion = new StackXML<String>("Importer", "ProgramVersion");
@@ -86,13 +85,13 @@ public class Control {
 	private Locale language = Locale.getDefault();
 	private String lookAndFeelName = Constants.SYSTEM_LOOK_AND_FEEL_NAME;
 
-	private ArrayList<ChannelSet> channelSets = new ArrayList<ChannelSet>();
+	private ChannelSets channelSets = new ChannelSets();
 	private String separator = null;
 	private int maxTitleLength = -1;
 
 	private enum ImportStatus {
 		FALSE, PENDING, IMPORTED
-	};
+	}
 
 	private ImportStatus importStatus = ImportStatus.FALSE;
 
@@ -126,7 +125,7 @@ public class Control {
 
 	public void read() throws TerminateClass {
 		this.read(null, null);
-	};
+	}
 
 	public void read(InputStream inputStream, String name) throws TerminateClass {
 		boolean versionChanged = true;
@@ -165,8 +164,7 @@ public class Control {
 
 		Provider provider = null;
 		String channelID = null;
-		String userName = null ;
-		boolean user = false;
+		String userName = null;
 
 		ChannelSet channelSet = null;
 
@@ -233,8 +231,7 @@ public class Control {
 					type = BlockType.CHANNEL_PROVIDER;
 					provider = null;
 					channelID = null;
-					userName = null ;
-					user = false;
+					userName = null;
 				} else if (stack.equals(this.pathWOL))
 					type = BlockType.WOL;
 				else if (stack.equals(this.pathDVBViewer))
@@ -271,8 +268,6 @@ public class Control {
 								channelID = value;
 							} else if (attributeName.equals("userName")) {
 								userName = value;
-							} else if ( attributeName.equals("user")) {
-								user = Boolean.parseBoolean(value);
 							}
 							break;
 						case DVBSERVICE:
@@ -393,7 +388,7 @@ public class Control {
 				String data = ev.asCharacters().getData().trim();
 				if (data.length() > 0) {
 					if (stack.equals(this.pathChannelProvider))
-						channelSet.add(provider.getID(), data, userName, channelID, user);
+						channelSet.add(provider.getID(), data, userName, channelID, false);
 					else if (stack.equals(this.pathChannelDVBViewer))
 						channelSet.setDVBViewerChannel(data);
 					else if (stack.equals(this.pathChannelMerge)) {
@@ -666,55 +661,55 @@ public class Control {
 
 	public String getDefaultProvider() {
 		return this.defaultProvider;
-	};
+	}
 
 	public void setDefaultProvider(String defaultProvider) {
 		this.defaultProvider = defaultProvider;
-	};
+	}
 
 	public Locale getLanguage() {
 		return this.language;
-	};
+	}
 
 	public void setLanguage(Locale language) {
 		this.language = language;
-	};
+	}
 
 	public String getLookAndFeelName() {
 		return this.lookAndFeelName;
-	};
+	}
 
 	public void setLookAndFeelName(String name) {
 		this.lookAndFeelName = name;
-	};
+	}
 
 	public String getSeparator() {
 		return this.separator;
-	};
+	}
 
 	public void setSeparator(String separator) {
 		this.separator = separator;
-	};
+	}
 
 	public int getMaxTitleLength() {
 		return this.maxTitleLength;
-	};
+	}
 
 	public void setMaxTitleLength(int l) {
 		this.maxTitleLength = l;
-	};
+	}
 
 	public void setIsImported() {
 		this.importStatus = ImportStatus.PENDING;
-	};
+	}
 
-	public ArrayList<ChannelSet> getChannelSets() {
+	public ChannelSets getChannelSets() {
 		return this.channelSets;
-	};
+	}
 
 	public DVBViewer getDVBViewer() {
 		return this.dvbViewer;
-	};
+	}
 
 	static final int BUFFER = 2048;
 

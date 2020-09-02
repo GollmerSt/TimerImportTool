@@ -36,7 +36,7 @@ public final class DVBViewerEntry implements Cloneable {
 
 	private enum CompStatus {
 		DIFFER, EQUAL, IN_RANGE
-	};
+	}
 
 	public enum MergeStatus {
 		// UNKNOWN DISABLED ENABLED MERGE JUST_SEPARATED SEPARATED_FIXED
@@ -69,16 +69,16 @@ public final class DVBViewerEntry implements Cloneable {
 
 		public MergeStatus post() {
 			return post(this);
-		};
-	};
+		}
+	}
 
 	public enum StatusTimer {
 		ENABLED, DISABLED, REMOVED, RECORDING
-	}; // applied to Service
+	} // applied to Service
 
 	public enum ToDo {
 		NONE, NEW, UPDATE, DELETE, DELETE_DVBVIEWER
-	}; // toDo by Service
+	} // toDo by Service
 
 	private static final StackXML<String> entryXML = new StackXML<String>("Entry");
 	private static final StackXML<String> titleXML = new StackXML<String>("Entry", "Title");
@@ -92,11 +92,11 @@ public final class DVBViewerEntry implements Cloneable {
 			timerStatusIfMerged = StatusTimer.DISABLED;
 		else
 			timerStatusIfMerged = StatusTimer.REMOVED;
-	};
+	}
 
 	public static boolean getInActiveIfMerged() {
 		return timerStatusIfMerged == StatusTimer.DISABLED;
-	};
+	}
 
 	private long id;
 	private String providerID;
@@ -689,15 +689,15 @@ public final class DVBViewerEntry implements Cloneable {
 
 			public boolean isSure() {
 				return this.isSure;
-			};
+			}
 
 			public ArrayList<DVBViewerEntry> get() {
 				return this.entries;
-			};
+			}
 
 			public int size() {
 				return this.entries.size();
-			};
+			}
 
 			private Result(final boolean isSure, final ArrayList<DVBViewerEntry> entries) {
 				this.isSure = isSure;
@@ -1166,43 +1166,43 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public long getID() {
 		return this.id;
-	};
+	}
 
 	public void setID(long id) {
 		this.id = id;
-	};
+	}
 
 	public long getDVBViewerID() {
 		return this.dvbViewerID;
-	};
+	}
 
 	public void setDVBViewerID(long id) {
 		this.dvbViewerID = id;
-	};
+	}
 
 	public String getProviderCID() {
 		return this.providerID;
-	};
+	}
 
 	public void clearDVBViewerID() {
 		this.dvbViewerID = -1;
-	};
+	}
 
 	public String getChannel() {
 		return this.channel;
-	};
+	}
 
 	public String getTitle() {
 		return this.preferedTitle;
-	};
+	}
 
 	public ActionAfterItems getActionAfter() {
 		return this.actionAfter;
-	};
+	}
 
 	public TimerActionItems getTimerAction() {
 		return this.timerAction;
-	};
+	}
 
 	@Override
 	public String toString() {
@@ -1212,43 +1212,43 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public DVBViewerEntry getMergeEntry() {
 		return this.mergeElement;
-	};
+	}
 
 	public long getStart() {
 		return this.preferedStart;
-	};
+	}
 
 	public long getEnd() {
 		return this.end;
-	};
+	}
 
 	public void setStart(long start) {
 		this.preferedStart = start;
-	};
+	}
 
 	public void setEnd(long end) {
 		this.end = end;
-	};
+	}
 
 	public long getStartOrg() {
 		return this.startOrg;
-	};
+	}
 
 	public long getEndOrg() {
 		return this.endOrg;
-	};
+	}
 
 	public String getDays() {
 		return this.days;
-	};
+	}
 
 	public ArrayList<DVBViewerEntry> getMergedEntries() {
 		return this.mergedEntries;
-	};
+	}
 
 	public void setMergedEntries(ArrayList<DVBViewerEntry> entries) {
 		this.mergedEntries = entries;
-	};
+	}
 
 	public void prepareTimerSetting() {
 		if (this.isRecording() && this.isEntryRecording()) {
@@ -1284,7 +1284,7 @@ public final class DVBViewerEntry implements Cloneable {
 
 		return !this.isRecording()
 				&& (this.mergeStatus == MergeStatus.ENABLED || this.mergeStatus == MergeStatus.JUST_SEPARATED);
-	};
+	}
 
 	public boolean mustMerge(DVBViewerEntry dE) {
 		if (this.isRecording())
@@ -1306,15 +1306,15 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public void setToDo(ToDo t) {
 		this.toDo = t;
-	};
+	}
 
 	public ToDo getToDo() {
 		return this.toDo;
-	};
+	}
 
 	public Provider getProvider() {
 		return this.provider;
-	};
+	}
 
 	public void setMissing() {
 		this.outDatedInfo.setMissing();
@@ -1326,7 +1326,7 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public boolean isDisabled() {
 		return this.statusTimer == StatusTimer.DISABLED || this.statusTimer == StatusTimer.REMOVED;
-	};
+	}
 
 	public boolean isEnabled() {
 		return this.statusTimer == StatusTimer.ENABLED || this.statusTimer == StatusTimer.RECORDING;
@@ -1334,7 +1334,7 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public boolean isRecording() {
 		return this.statusTimer == StatusTimer.RECORDING;
-	};
+	}
 
 	public boolean isRecording(boolean recursive) {
 		if (this.statusTimer == StatusTimer.RECORDING)
@@ -1350,15 +1350,15 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public boolean isDeleted() {
 		return this.toDo == ToDo.DELETE;
-	};
+	}
 
 	public boolean isMerged() {
 		return this.mergeElement != null;
-	};
+	}
 
 	public boolean isMergeElement() {
 		return this.mergedEntries != null && this.mergedEntries.size() != 0;
-	};
+	}
 
 	public boolean isFilterElement() {
 		return this.isFilterElement && this.toDo != ToDo.DELETE;
@@ -1409,18 +1409,18 @@ public final class DVBViewerEntry implements Cloneable {
 		if (!(this.toDo == ToDo.UPDATE) || this.dvbViewerID < 0)
 			return false;
 		return !this.isRecording() || this.isEntryRecording();
-	};
+	}
 
 	public boolean mustDeleted() {
 		return this.toDo == ToDo.DELETE;
-	};
+	}
 
 	public boolean mustDVBViewerDeleted() {
 		if (this.toDo == ToDo.UPDATE)
 			return this.isRecording() && !this.isEntryRecording();
 		else
 			return this.toDo == ToDo.DELETE || this.toDo == ToDo.DELETE_DVBVIEWER;
-	};
+	}
 
 	public boolean mustDVBViewerCreated() {
 		if (this.toDo == ToDo.NEW || (this.toDo == ToDo.UPDATE && this.dvbViewerID < 0))
@@ -1442,7 +1442,7 @@ public final class DVBViewerEntry implements Cloneable {
 	public void setToDelete() {
 		this.toDo = ToDo.DELETE;
 		this.prepareRemove();
-	};
+	}
 
 	public boolean exists() {
 		return this.toDo != ToDo.DELETE;
@@ -1466,7 +1466,7 @@ public final class DVBViewerEntry implements Cloneable {
 		if (this.provider != Provider.getProcessingProvider())
 			return false;
 		return this.outDatedInfo.isOutdated(this.provider);
-	};
+	}
 
 	public static void removeOutdatedEntries(final ArrayList<DVBViewerEntry> list) {
 		long now = System.currentTimeMillis();
@@ -1492,7 +1492,7 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public void setRoot(final DVBViewerEntry root) {
 		this.root = root;
-	};
+	}
 
 	public DVBViewerEntry getParent() {
 		if (this.mergeElement == null)
@@ -1513,11 +1513,11 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public boolean isCollapsed() {
 		return this.isCollapsed;
-	};
+	}
 
 	public void setIsCollapsed(boolean isCollapsed) {
 		this.isCollapsed = isCollapsed;
-	};
+	}
 
 	public static boolean isMergePossible(final DVBViewerEntry[] entries) {
 		if (entries.length < 2)
@@ -1880,5 +1880,5 @@ public final class DVBViewerEntry implements Cloneable {
 
 	public ChannelSet getChannelSet() {
 		return this.channelSet;
-	};
+	}
 }

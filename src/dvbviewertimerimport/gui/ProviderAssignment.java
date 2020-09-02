@@ -15,6 +15,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 
 import javax.swing.DefaultCellEditor;
@@ -39,6 +41,7 @@ import javax.swing.table.TableRowSorter;
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.misc.Constants;
+import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
 
@@ -61,30 +64,32 @@ public class ProviderAssignment extends MyTabPanel {
 		@Override
 		public String toString() {
 			return this.channel.getUserName();
-		};
+		}
 
 		public Channel getChannel() {
 			return this.channel;
-		};
+		}
 
 		public int getIndex() {
 			return this.listIndex;
-		};
+		}
 
 		public void setIndex(int ix) {
 			this.listIndex = ix;
-		};
+		}
 	}
 
-	public static class MyComboBox extends JComboBox<Channel> {
+	public class MyComboBox extends JComboBox<Channel> {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 8575973834032373480L;
 		private Channel selectedChannel = null;
+		private int currentProviderId = -1;
 
 		public MyComboBox() {
 			super();
+
 			this.addItemListener(new ItemListener() {
 
 				@Override
@@ -100,6 +105,36 @@ public class ProviderAssignment extends MyTabPanel {
 				}
 
 			});
+
+			this.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					ProviderAssignment.this.messageLabel.setText("");
+					ProviderAssignment.this.importButton.setText(ResourceManager.msg("IMPORT_TV"));
+
+					if (true) {
+						Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem();
+						if (p == null || p.getID() != MyComboBox.this.currentProviderId) {
+							return;
+						}
+						Channel channel = ProviderAssignment.this.channelCombo.getSelectedChannel();
+						if (channel != null) {
+							int ics = ProviderAssignment.this.providerMapsById.get(p.getID()).get(channel.getTextID())
+									.getIndex();
+							if (ics >= 0) {
+								int tableLine = ProviderAssignment.this.sorter.convertRowIndexToView(ics);
+								ProviderAssignment.this.table.setRowSelectionInterval(tableLine, tableLine);
+								ProviderAssignment.this.table.scrollRectToVisible(
+										ProviderAssignment.this.table.getCellRect(tableLine, p.getID() + 1, true));
+							}
+						}
+					}
+				}
+			});
+
+			this.setEditable(true);
+
 		}
 
 		public Channel getSelectedChannel() {
@@ -111,10 +146,17 @@ public class ProviderAssignment extends MyTabPanel {
 			this.selectedChannel = null;
 			super.removeAllItems();
 		}
+
+		public void setCurrentProviderId(int currentProviderId) {
+			this.currentProviderId = currentProviderId;
+		}
+
 	}
 
-	private final ArrayList<TreeMap<String, ChannelAssignment>> providerMaps = //
-			new ArrayList<TreeMap<String, ChannelAssignment>>(); // Key: channelId
+	private final ArrayList<Map<String, ChannelAssignment>> providerMapsById = //
+			new ArrayList<>(); // Key: channelId
+	private final ArrayList<Map<String, ChannelAssignment>> providerMapsByUserName = //
+			new ArrayList<>(); // Key: channelId
 	private final String[] columnNames;
 
 	private final JCheckBox unlockBox = new JCheckBox();
@@ -173,30 +215,6 @@ public class ProviderAssignment extends MyTabPanel {
 		}
 	}
 
-	public class ChannelSelected implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			ProviderAssignment.this.messageLabel.setText("");
-			ProviderAssignment.this.importButton.setText(ResourceManager.msg("IMPORT_TV"));
-
-			if (true) {
-				Provider p = (Provider) ProviderAssignment.this.providerCombo.getSelectedItem();
-				if (p == null) {
-					return;
-				}
-				Channel channel = ProviderAssignment.this.channelCombo.getSelectedChannel();
-				if (channel != null) {
-					int ics = ProviderAssignment.this.providerMaps.get(p.getID()).get(channel.getTextID()).getIndex();
-					if (ics >= 0) {
-						int tableLine = ProviderAssignment.this.sorter.convertRowIndexToView(ics);
-						ProviderAssignment.this.table.setRowSelectionInterval(tableLine, tableLine);
-						// table.scrollRectToVisible(table.getCellRect(tableLine,ix,true));
-					}
-				}
-			}
-		}
-	}
-
 	public class ChannelButtonsPressed implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -207,7 +225,7 @@ public class ProviderAssignment extends MyTabPanel {
 			if (p == null)
 				return;
 
-			TreeMap<String, ChannelAssignment> map = ProviderAssignment.this.providerMaps.get(p.getID());
+			Map<String, ChannelAssignment> map = ProviderAssignment.this.providerMapsById.get(p.getID());
 
 			JButton button = (JButton) e.getSource();
 
@@ -215,7 +233,7 @@ public class ProviderAssignment extends MyTabPanel {
 
 			if (button == ProviderAssignment.this.modifyChannelButton) {
 				Object item = ProviderAssignment.this.channelCombo.getSelectedItem();
-				if (channel != null &&  item != null) {
+				if (channel != null && item != null) {
 					String userName = item.toString();
 					if (!isUserNameDefined(userName, p.getID())) {
 						int ix = map.get(channel.getIDKey()).getIndex();
@@ -243,7 +261,7 @@ public class ProviderAssignment extends MyTabPanel {
 	}
 
 	private boolean isUserNameDefined(String userName, int pid) {
-		TreeMap<String, ChannelAssignment> map = ProviderAssignment.this.providerMaps.get(pid);
+		Map<String, ChannelAssignment> map = ProviderAssignment.this.providerMapsById.get(pid);
 		for (ChannelAssignment assignment : map.values()) {
 			if (assignment.channel.getUserName().equals(userName)) {
 				return true;
@@ -262,11 +280,13 @@ public class ProviderAssignment extends MyTabPanel {
 			if (row < 0)
 				return;
 			int column = ProviderAssignment.this.table.getSelectedColumn();
-			int selectedLine = ProviderAssignment.this.sorter.convertRowIndexToModel(row);
-			MyTableObject o = (MyTableObject) ProviderAssignment.this.table.getModel().getValueAt(selectedLine,
-					column);
-			ProviderAssignment.this.providerCombo.setSelectedIndex(o.getPid());
-			ProviderAssignment.this.setSelectedItemChannelCombo(o.getChannel());
+			if (column > 0 && ProviderAssignment.this.table.getSelectedColumnCount() == 1) {
+				int selectedLine = ProviderAssignment.this.sorter.convertRowIndexToModel(row);
+				MyTableObject o = (MyTableObject) ProviderAssignment.this.table.getModel().getValueAt(selectedLine,
+						column);
+				ProviderAssignment.this.providerCombo.setSelectedIndex(o.getPid());
+				ProviderAssignment.this.setSelectedItemChannelCombo(o.getChannel());
+			}
 		}
 	}
 
@@ -289,7 +309,8 @@ public class ProviderAssignment extends MyTabPanel {
 		for (Provider provider : Provider.getProviders()) {
 			int providerID = provider.getID();
 
-			this.providerMaps.add(providerID, new TreeMap<String, ChannelAssignment>(new MyComparator()));
+			this.providerMapsById.add(providerID, new HashMap<String, ChannelAssignment>());
+			this.providerMapsByUserName.add(providerID, new TreeMap<>(new MyComparator()));
 
 			this.updateMap(provider);
 
@@ -304,15 +325,20 @@ public class ProviderAssignment extends MyTabPanel {
 	public void updateMap(Provider provider) {
 		int pid = provider.getID();
 
-		TreeMap<String, ChannelAssignment> map = this.providerMaps.get(pid);
-		map.clear();
+		Map<String, ChannelAssignment> mapById = this.providerMapsById.get(pid);
+		mapById.clear();
+
+		Map<String, ChannelAssignment> mapByUserName = this.providerMapsByUserName.get(pid);
+		mapByUserName.clear();
 
 		for (int ix = 0; ix < this.control.getChannelSets().size(); ix++) {
 			ChannelSet cs = this.control.getChannelSets().get(ix);
 			Channel c = cs.getChannel(pid);
 			if (c == null)
 				continue;
-			map.put(c.getTextID(), new ChannelAssignment(c, ix));
+			ChannelAssignment assignment = new ChannelAssignment(c, ix);
+			mapById.put(c.getTextID(), assignment);
+			mapByUserName.put(c.getUserName(), assignment);
 		}
 	}
 
@@ -364,8 +390,6 @@ public class ProviderAssignment extends MyTabPanel {
 		c.fill = GridBagConstraints.HORIZONTAL;
 		c.insets = i;
 
-		this.channelCombo.addActionListener(new ChannelSelected());
-		this.channelCombo.setEditable(true);
 		this.add(this.channelCombo, c);
 
 		c = new GridBagConstraints();
@@ -425,10 +449,12 @@ public class ProviderAssignment extends MyTabPanel {
 
 	private void updateChannelComboBox() {
 		Provider provider = (Provider) this.providerCombo.getSelectedItem();
+
 		int pid = provider.getID();
 		this.channelCombo.removeAllItems();
+		this.channelCombo.setCurrentProviderId(pid);
 		this.channelCombo.addItem(null);
-		for (ChannelAssignment assignment : this.providerMaps.get(pid).values()) {
+		for (ChannelAssignment assignment : this.providerMapsByUserName.get(pid).values()) {
 			Channel c = assignment.channel;
 			this.channelCombo.addItem(new Channel(c) {
 				@Override
@@ -459,30 +485,39 @@ public class ProviderAssignment extends MyTabPanel {
 //		column.setPreferredWidth( 16 );
 		for (Provider p : Provider.getProviders()) {
 			int pid = p.getID();
-			JComboBox<?> comboBox = new JComboBox<>();
+			JComboBox<String> comboBox = new JComboBox<>();
 			comboBox.addPopupMenuListener(new PopupCellChanged());
 			column = this.table.getColumnModel().getColumn(pid + 1);
 			column.setPreferredWidth(150);
-			DefaultCellEditor cellEditor = new DefaultCellEditor(comboBox) {
-				/**
-				 *
-				 */
-				private static final long serialVersionUID = -5273432664600113545L;
-
-				@Override
-				public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
-						int col) {
-					String channel = value.toString();
-					((JComboBox<?>) getComponent()).setSelectedItem(channel);
-					return super.getTableCellEditorComponent(table, value, isSelected, row, col);
-				}
-			};
-			column.setCellEditor(cellEditor);
+			column.setCellEditor(new MyCellEditor(comboBox));
 		}
 		updateTableComboBoxes();
 		this.table.setRowSelectionAllowed(true);
 		ListSelectionModel cellSelectionModel = this.table.getSelectionModel();
 		cellSelectionModel.addListSelectionListener(new TableChannelSelected());
+	}
+
+	private class MyCellEditor extends DefaultCellEditor {
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = -5273432664600113545L;
+
+		public MyCellEditor(JComboBox<String> comboBox) {
+			super(comboBox);
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int col) {
+			MyTableObject tableObject = (MyTableObject) value;
+			String channel = tableObject.toString();
+			((JComboBox<?>) getComponent()).setSelectedItem(channel);
+
+			ProviderAssignment.this.providerCombo.setSelectedIndex(tableObject.getPid());
+			ProviderAssignment.this.setSelectedItemChannelCombo(tableObject.getChannel());
+
+			return super.getTableCellEditorComponent(table, value, isSelected, row, col);
+		}
 	}
 
 	private void cancelCellEditing() {
@@ -511,8 +546,7 @@ public class ProviderAssignment extends MyTabPanel {
 			comboBox.hidePopup();
 			comboBox.removeAllItems();
 			comboBox.addItem("");
-			for (ChannelAssignment assignment : this.providerMaps.get(pid).values()) {
-				String name = assignment.getChannel().getUserName();
+			for (String name : this.providerMapsByUserName.get(pid).keySet()) {
 				comboBox.addItem(name);
 			}
 		}
@@ -571,11 +605,11 @@ public class ProviderAssignment extends MyTabPanel {
 				}
 			}
 			return null;
-		};
+		}
 
 		public boolean isNullEntry() {
 			return this.channelSet == null;
-		};
+		}
 
 		public Channel getChannel() {
 			if (this.channelSet != null && this.pid != null) {
@@ -669,81 +703,103 @@ public class ProviderAssignment extends MyTabPanel {
 			ProviderAssignment.this.importButton.setText(ResourceManager.msg("IMPORT_TV"));
 			cancelCellEditing();
 
-			String channel = (String) value;
+			MyTableObject tableObject = (MyTableObject) this.getValueAt(row, col);
 
-			int csid = row;
+			Channel tableCellChannel = tableObject.getChannel();
+
+			int currentId = row;
 			int pid = col - 1;
+			String userChannel = (String) value;
 
-			TreeMap<String, ChannelAssignment> channelMap = ProviderAssignment.this.providerMaps.get(pid);
-			ChannelSet cs;
-			if (csid < ProviderAssignment.this.control.getChannelSets().size())
-				cs = ProviderAssignment.this.control.getChannelSets().get(csid);
-			else {
-				cs = new ChannelSet();
-				ProviderAssignment.this.control.getChannelSets().add(cs);
-			}
+			boolean assign = userChannel.length() > 0;
 
-			if (channel.length() > 0) {
-				ChannelAssignment pca = channelMap.get(channel);
-				int pcsid = pca.getIndex();
-				if (pcsid >= 0 && csid != pcsid) {
-					showTableLine(pcsid);
-					int answer = JOptionPane.showConfirmDialog(ProviderAssignment.this.guiPanel.getWindow(),
-							"\"" + channel + "\" " + ResourceManager.msg("ASSIGNED_ERROR"), Constants.PROGRAM_NAME,
-							JOptionPane.OK_CANCEL_OPTION);
-					if (answer == JOptionPane.CANCEL_OPTION) {
-						showTableLine(csid);
+			ChannelSet channelSet = tableObject.channelSet;
+
+			Map<String, ChannelAssignment> channelMap = ProviderAssignment.this.providerMapsByUserName.get(pid);
+
+			// Shift the selected channel to the end of the table
+
+			if (assign) {
+				// shift the selected channel to the selected position
+				ChannelAssignment assignment = channelMap.get(userChannel);
+				if (channelSet != null) {
+					int formerId = assignment.getIndex();
+					if (formerId >= 0 && currentId != formerId) {
+						showTableLine(formerId);
+						int answer = JOptionPane.showConfirmDialog(ProviderAssignment.this.guiPanel.getWindow(),
+								"\"" + userChannel + "\" " + ResourceManager.msg("ASSIGNED_ERROR"),
+								Constants.PROGRAM_NAME, JOptionPane.OK_CANCEL_OPTION);
+						if (answer == JOptionPane.CANCEL_OPTION) {
+							showTableLine(currentId);
+							return;
+						}
+
+						MyTableObject formerObject = (MyTableObject) this.getValueAt(formerId, col);
+						ChannelSet formerChannelSet = formerObject.channelSet;
+						formerChannelSet.remove(pid);
+
+						assignment.setIndex(currentId);
+						channelSet.add(assignment.getChannel());
+
+						if (formerChannelSet.isEmpty()) {
+							boolean isDeleted = removeChannelSetIfEmpty(formerId);
+							if (isDeleted && formerId < currentId)
+								--currentId;
+						}
+
+					} else {
 						return;
 					}
-					ChannelSet pcs = ProviderAssignment.this.control.getChannelSets().get(pcsid);
-					pcs.remove(pid);
-					pca.setIndex(-1);
-					boolean isDeleted = removeChannelSetIfEmpty(pcsid);
-					if (isDeleted && pcsid < csid)
-						csid--;
 				}
 			}
-			Channel pc = cs.getChannel(pid);
-			if (pc != null)
-				channelMap.put(pc.getName(), new ChannelAssignment(pc, -1));
-			cs.remove(pid);
+			
+			// move the former channel to the end of the list
 
-			if (channel.length() > 0) {
-				String channelID = null;
-				String userName = null;
-				boolean user = false;
+			if (tableCellChannel != null) {
 
-				if (channelMap.containsKey(channel)) {
-					Channel ch = channelMap.get(channel).getChannel();
-					channelID = ch.getTextID();
-					userName = ch.getUserName();
-					user = ch.isUser();
+				ChannelAssignment tableCellAssignment = channelMap.get(tableCellChannel.getUserName());
+
+				ChannelSet newSet = new ChannelSet();
+				newSet.add(tableCellChannel);
+
+				if (!assign) {
+					channelSet.remove(pid);
 				}
 
-				Channel c = cs.add(pid, channel, userName, channelID, user);
-				channelMap.put(channel, new ChannelAssignment(c, csid));
-			}
+				ProviderAssignment.this.control.getChannelSets().add(newSet);
 
-			removeChannelSetIfEmpty(csid);
+				if (!assign && channelSet.isEmpty()) {
+
+					removeChannelSetIfEmpty(tableCellAssignment.getIndex());
+				}
+
+				channelMap.get(tableCellChannel.getUserName())
+						.setIndex(ProviderAssignment.this.control.getChannelSets().size() - 1);
+
+			}
 			updateTable();
-			showTableLine(csid);
+			showTableLine(currentId);
 
 			ProviderAssignment.this.guiPanel.setChanged();
 		}
+
 	}
 
 	private boolean removeChannelSetIfEmpty(int csid) {
-		if (this.control.getChannelSets().get(csid).getChannels().size() != 0)
+		if (this.control.getChannelSets().get(csid).getChannels().size() != 0) {
 			return false;
+		}
 		this.control.getChannelSets().remove(csid);
-		for (TreeMap<String, ChannelAssignment> map : this.providerMaps) {
-			for (ChannelAssignment assignment : map.values()) {
-				int currentIndex = assignment.getIndex();
-				if (currentIndex == csid)
-					assignment.setIndex(-1);
-				else if (currentIndex > csid)
-					assignment.setIndex(currentIndex - 1);
+		for (int pid = 0; pid < Provider.getProviders().size(); ++pid) {
+			for (ChannelAssignment assignment : this.providerMapsByUserName.get(pid).values()) {
+				int id = assignment.getIndex();
+				if (id > csid) {
+					assignment.setIndex(id - 1);
+				} else if (id == csid) {
+					Log.error("Assignment of channel \"" + assignment.getChannel().getUserName() + "\" isn't moved.");
+				}
 			}
+
 		}
 		return true;
 	}
