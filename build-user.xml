@@ -14,7 +14,7 @@
 	<property name="pubWindows.dir" value="publish Windows" />
 	<property name="zip.dir" value="zip files" />
 	<property name="pdf" value="Documentation/DVBViewerTimerImport.pdf" />
-	<property name="changes" value="Documentation/ChangeLog.txt" />
+	<property name="changes" value="Documentation/CHANGES.txt" />
 	<property name="myBase.xml" location="${env.SOLVIS_SMART_HOME_SERVER_BASE_XML}" />
 	<property name="lib.dir" value="lib" />
 	<property name="dist.base" value="${AppName}" />
@@ -70,23 +70,24 @@
 		</jar>
 	</target>
 	<target depends="Build for me" name="Build users">
-		<copy todir="${pubLinux.dir}">
+		<!--copy todir="${pubLinux.dir}">
 			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
 		<fixcrlf file="${changes}" destdir="${pubLinux.dir}" eol="lf" />
-		<zip destfile="${zip.dir}/SolvisSmartHomeServer linux ${version}.zip" basedir="${pubLinux.dir}" />
+		<zip destfile="${zip.dir}/TimerImportTool linux ${version}.zip" basedir="${pubLinux.dir}" />
 
 		<exec executable="${innoSetup}" dir="${iss.dir}">
 			<arg value="/cc" />
 			<arg value="${iss}" />
-		</exec>
+		</exec-->
 		<copy todir="${pubWindows.dir}">
+			<fileset file="${private.dir}/${dist.base}.jar" casesensitive="yes" />
 			<fileset file="${pdf}" casesensitive="yes" />
 			<fileset file="${changes}" casesensitive="yes" />
 		</copy>
-		<zip destfile="${zip.dir}/SolvisSmartHomeServer windows ${version}.zip" basedir="${pubWindows.dir}" />
+		<zip destfile="${zip.dir}/TimerImportTool windows ${version}.zip" basedir="${pubWindows.dir}" />
 	</target>
 	<target name="clean">
 		<delete dir="${bin.dir}" />

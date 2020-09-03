@@ -1,0 +1,7 @@
+A E N D E R U N G E N
+
+Version 01.01.00.00
+
+    03.09.2020  Das ImportTool wurde umfangreich überarbeitet, es ist nun auch mit einem JRE-64 bit
+                lauffähig. Es wurde an die aktuellen Provider-Internetseiten und -Datenbanken angepasst.
+                Die Oberfläche wurde in einigen Punkten verbessert.
