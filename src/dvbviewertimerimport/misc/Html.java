@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+//ISO 8859-15
+
 public class Html {
 	public static InputStream getStream(String urlString, boolean utf8) {
 		return getStream(urlString, null, utf8);
@@ -33,10 +35,14 @@ public class Html {
 			if (cookies != null)
 				conn.setRequestProperty("Cookie", cookies);
 			if (utf8) {
-				conn.setRequestProperty("Accept-Charset", "UTF-8");
-				conn.setRequestProperty("Content-Type", "text/plain; charset=utf-8");
+				// conn.setRequestProperty("Accept-Charset", "UTF-8");
+				conn.setRequestProperty("Content-Type", "text/xml; charset=utf-8");
+				conn.setRequestProperty("charset", "utf-8");
+				// conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64;
+				// x64; rv:80.0) Gecko/20100101 Firefox/80.0");
+
 			}
-			//conn.connect();
+			// conn.connect();
 
 			result = conn.getInputStream();
 
@@ -50,5 +56,6 @@ public class Html {
 		 */
 		return result;
 	}
-
+	
+	
 }

@@ -215,9 +215,13 @@ public class ProviderService extends MyTabPanel {
 			updateProvider();
 			Provider p = (Provider) ProviderService.this.providerCombo.getSelectedItem();
 			if (p.canTest()) {
-				String buttonText = ResourceManager.msg("FAILED");
-				if (p.test())
-					buttonText = ResourceManager.msg("PASS");
+				String buttonText;
+				String testResult = p.test();
+				if (p.test() != null) {
+					buttonText = ResourceManager.msg(testResult);
+				} else {
+					buttonText = ResourceManager.msg("FAILED");
+				}
 				ProviderService.this.providerButton.setText(buttonText);
 			}
 		}

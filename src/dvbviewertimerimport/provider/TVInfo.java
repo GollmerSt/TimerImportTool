@@ -31,9 +31,8 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
 import javax.xml.stream.events.XMLEvent;
-import javax.xml.transform.stream.StreamSource;
 
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import dvbviewertimerimport.control.Channel;
 import dvbviewertimerimport.control.Control;
@@ -44,7 +43,6 @@ import dvbviewertimerimport.misc.Html;
 import dvbviewertimerimport.misc.Log;
 import dvbviewertimerimport.xml.StackXML;
 
-@SuppressWarnings("deprecation")
 public final class TVInfo extends Provider {
 
 	private static final boolean DEBUG = false;
@@ -107,7 +105,7 @@ public final class TVInfo extends Provider {
 	private String getMD5() {
 		MessageDigest md = null;
 		try {
-			md = MessageDigest.getInstance("SHA-1");
+			md = MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -122,32 +120,40 @@ public final class TVInfo extends Provider {
 	}
 
 	@Override
-	public boolean test() {
+	public String test() {
 		InputStream i = null;
 		try {
 			i = this.connect();
 		} catch (ErrorClass e) {
-			return false;
+			return null;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		String comp = "<?xml version=\"1.0";
+		String comp1 = "<?xml version=\"1.0";
 		byte[] buffer = new byte[1024];
-		int length = 0;
+		int start = 0;
+		int lengthComplete = 0;
+		int length;
 		try {
-			length = i.read(buffer);
+			while ((length = i.read(buffer, start, buffer.length - start)) >= 0 && lengthComplete < buffer.length) {
+				lengthComplete += length;
+				start += length;
+			}
 			i.close();
 		} catch (IOException e) {
-			return false;
+			return null;
 		}
-		String content = new String(buffer, 0, length);
-		content = new String(buffer, 0, comp.length());
-		if (content.length() < comp.length())
-			return false;
-		if (!content.equals(comp))
-			return false;
-		return true;
+		String content = new String(buffer, 0, lengthComplete).trim();
+		if (!content.startsWith(comp1)) {
+			return null;
+		}
+
+		String comp2 = "\"/>";
+		if (lengthComplete < buffer.length && content.endsWith(comp2)) {
+			return "NO_MERKLISTE_ENTRY";
+		}
+		return "PASS";
 	}
 
 	private class MyEntry {
@@ -177,8 +183,10 @@ public final class TVInfo extends Provider {
 		public boolean add() {
 			if (this.channel == null || this.channel.length() == 0)
 				return false;
+			String title = Helper.utf8Workaround(this.title) ;
+			title = title==null?this.title:title;
 			TVInfo.this.dvbViewer.addNewEntry(getTVInfo(), this.providerID, this.channel, this.start, this.end,
-					this.title);
+					title);
 			TVInfo.this.solvedChannels.add(this.channel);
 			return true;
 		}
@@ -234,7 +242,7 @@ public final class TVInfo extends Provider {
 		XMLInputFactory inputFactory = XMLInputFactory.newInstance();
 		inputFactory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 		try {
-			XMLEventReader reader = inputFactory.createXMLEventReader(new StreamSource(iS));
+			XMLEventReader reader = inputFactory.createXMLEventReader(new InputStreamReader(iS, "ISO-8859-15"));
 			StackXML<String> stack = new StackXML<>();
 			MyEntry entry = null;
 			while (reader.hasNext()) {
@@ -283,6 +291,8 @@ public final class TVInfo extends Provider {
 								+ Integer.toString(e.getLocation().getLineNumber()) + ", column = "
 								+ Integer.toString(e.getLocation().getColumnNumber()));
 
+		} catch (UnsupportedEncodingException e1) {
+			throw new ErrorClass("Encoding UTF-8 not available");
 		}
 //		if (this.unresolvedEntries != null)
 //			this.readMerklisteAndAddUnresolverEntries();
@@ -464,7 +474,7 @@ public final class TVInfo extends Provider {
 
 	@Override
 	protected Collection<Channel> readChannels() {
-		Collection< Channel> result = new ArrayList<>();
+		Collection<Channel> result = new ArrayList<>();
 
 		String completeURL = this.senderURL;
 
@@ -526,7 +536,7 @@ public final class TVInfo extends Provider {
 			Log.out("TVInfo pages are modified. Get a new version if available");
 
 		}
-		
+
 		return result;
 	}
 

@@ -35,7 +35,7 @@ import dvbviewertimerimport.xml.StackXML;
 
 public abstract class Provider implements DVBViewerProvider {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	private static final StackXML<String> pathProvider = new StackXML<String>("Providers", "Provider");
 	private static final StackXML<String> pathURL = new StackXML<String>("Providers", "Provider", "Url");
@@ -378,8 +378,8 @@ public abstract class Provider implements DVBViewerProvider {
 			throw new ErrorClass("URL is missing");
 	}
 
-	public boolean test() {
-		return false;
+	public String test() {
+		return null;
 	}
 
 	public static boolean isSilentProcessing() {

@@ -51,7 +51,7 @@ import dvbviewertimerimport.provider.Provider;
  */
 public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	private static Version version = null;
 
@@ -377,7 +377,9 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 		try {
 			if (!program.equals(example)) {
 				if (!this.control.getDVBViewer().process(this, false, program, Command.FIND_SENDER)) {
-					Log.out("Channel \"" + program.getChannel().getName() + "\" not available on DVBViewer");
+					if (DEBUG) {
+						Log.out("Channel \"" + program.getChannel().getName() + "\" not available on DVBViewer");
+					}
 					return null;
 				}
 			}
@@ -511,7 +513,7 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 				}
 				Channel channel = ((Program) arg).getChannel();
 				ChannelSet set = this.control.getChannelSets().get(this.providerID, channel.getUniqueId());
-				if ( set == null ) {
+				if (set == null) {
 					return false;
 				}
 				return set.isDefinedDVBViewerChannel();

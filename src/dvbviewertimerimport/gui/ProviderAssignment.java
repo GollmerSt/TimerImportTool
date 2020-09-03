@@ -596,7 +596,7 @@ public class ProviderAssignment extends MyTabPanel {
 		public String toString() {
 			if (this.channelSet != null) {
 				if (this.pid == null) {
-					return this.channelSet.getDVBViewerChannel();
+					return this.channelSet.getDvbViewerChannelName();
 				} else {
 					Channel c = this.channelSet.getChannel(this.pid);
 					if (c != null) {
