@@ -46,5 +46,9 @@ Nähere Informationen befinden sich in folgender PDF-Datei
 
 Sie ist aktuell auf einem etwas älteren Stand, der aktualisierte Inhalt wird in Zukunft in der Wiki zu finden sein.
 
+## Installation
 
+Aktuell ist das Jar-File des Programm-Paketes in das Verzeichnis des DVBViewers zu schieben und dort zu starten (Doppelklick).
+
+In Zukunft wird es ein entsprechendes Windows-Installationsfile geben.
 
