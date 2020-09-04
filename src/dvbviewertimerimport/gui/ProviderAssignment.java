@@ -739,6 +739,7 @@ public class ProviderAssignment extends MyTabPanel {
 						formerChannelSet.remove(pid);
 
 						assignment.setIndex(currentId);
+						channelSet.remove(pid);
 						channelSet.add(assignment.getChannel());
 
 						if (formerChannelSet.isEmpty()) {
