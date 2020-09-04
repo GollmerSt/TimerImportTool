@@ -297,19 +297,11 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 					return;
 				}
 
-				devplugin.Channel tvBChannel = this.program.getChannel();
+				if (this.program != null) {
 
-				dvbviewertimerimport.dvbviewer.Channel dvbChannel = null;
-
-				try {
-					dvbChannel = DVBViewerTimerImport.this.dvbViewer
-							.getDVBViewerChannel(DVBViewerTimerImport.this.provider.getID(), tvBChannel.getName());
-				} catch (ErrorClass e1) {
-					errorMessage(e1);
-					return;
+					DVBViewerTimerImport.this.dvbViewer.selectChannel(DVBViewerTimerImport.this.provider,
+							this.program.getChannel().getUniqueId());
 				}
-
-				DVBViewerTimerImport.this.dvbViewer.startDVBViewerAndSelectChannel(dvbChannel.getDVBViewer());
 			} catch (Throwable ee) {
 				Log.out("Throws on DVBViewerChannelChooseAction.actionPerformed, Message: " + ee.getMessage());
 				throw ee;
@@ -531,8 +523,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 						if (pgm == null)
 							continue;
 						long[] times = calcRecordTimes(pgm);
-						String channel = pgm.getChannel().getName();
-						this.dvbViewer.shiftEntry(co, this.provider, pgm.getUniqueID(), channel, times[0], times[1],
+						String channelId = pgm.getChannel().getUniqueId();
+						this.dvbViewer.shiftEntry(co, this.provider, pgm.getUniqueID(), channelId, times[0], times[1],
 								pgm.getTitle());
 						this.markProgram(pgm, true);
 						pgm.validateMarking();
@@ -547,8 +539,8 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 			switch (command) {
 				case SET: {
 					long[] times = calcRecordTimes(program);
-					String channel = program.getChannel().getName();
-					this.dvbViewer.addNewEntry(this.provider, program.getUniqueID(), channel, times[0], times[1],
+					String id = program.getChannel().getUniqueId();
+					this.dvbViewer.addNewEntry(this.provider, program.getUniqueID(), id, times[0], times[1],
 							program.getTitle());
 					break;
 				}

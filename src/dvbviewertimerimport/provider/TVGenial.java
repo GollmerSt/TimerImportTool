@@ -152,7 +152,6 @@ public class TVGenial extends Provider {
 
 		String line;
 
-
 		try {
 			while ((line = br.readLine()) != null) {
 				line = line.trim();
@@ -195,12 +194,16 @@ public class TVGenial extends Provider {
 		String title = null;
 
 		boolean mustDelete = false;
+		boolean selectChannel = false;
 
 		for (String p : (String[]) args) {
 			int pos = p.indexOf('=');
 			if (pos < 0) {
-				if (p.trim().equalsIgnoreCase("-delete"))
+				if (p.trim().equalsIgnoreCase("-delete")) {
 					mustDelete = true;
+				} else if (p.trim().equalsIgnoreCase("-remind")) {
+					selectChannel = true;
+				}
 				continue;
 			}
 			String key = p.substring(0, pos).trim();
@@ -221,35 +224,30 @@ public class TVGenial extends Provider {
 			} else if (key.equalsIgnoreCase("Sendung"))
 				title = value;
 		}
-		if (tvuid < 0 || startTime == null || milliSeconds < 0 || title == null) {
+		if (tvuid < 0 || !selectChannel && (startTime == null || milliSeconds < 0 || title == null)) {
 			String errorString = this.getParaInfo();
 			throw new ErrorClass("Missing parameter" + errorString);
 		}
-		long start = 0;
-		try {
-			start = timeToLong(startTime);
-		} catch (ParseException e) {
-			String errorString = this.getParaInfo();
-			throw new ErrorClass(e, "Syntax error in the parameter \"Begin\"" + errorString);
-		}
-		long end = start + milliSeconds;
 
-		String channel = null;
-		;
+		String id = Long.toString(tvuid);
 
-		for (ChannelSet cs : this.control.getChannelSets()) {
-			Channel c = cs.getChannel(this.getID());
-			if (c == null)
-				continue;
-			if (tvuid == c.getNumID()) {
-				channel = c.getName();
-				break;
+		if (!selectChannel) {
+			long start = 0;
+			try {
+				start = timeToLong(startTime);
+			} catch (ParseException e) {
+				String errorString = this.getParaInfo();
+				throw new ErrorClass(e, "Syntax error in the parameter \"Begin\"" + errorString);
 			}
+			long end = start + milliSeconds;
+
+			if (mustDelete)
+				this.control.getDVBViewer().deleteEntry(this, id, start, end, title);
+			else
+				this.control.getDVBViewer().addNewEntry(this, null, id, start, end, title);
+		} else {
+			this.control.getDVBViewer().selectChannel(this, id);			
 		}
-		if (mustDelete)
-			this.control.getDVBViewer().deleteEntry(this, channel, start, end, title);
-		else
-			this.control.getDVBViewer().addNewEntry(this, null, channel, start, end, title);
 		return true;
 	}
 

@@ -407,25 +407,25 @@ public class DVBViewer {
 		}
 	}
 
-	public Channel getDVBViewerChannel(final int providerID, final String providerChannel) {
+	public Channel getDVBViewerChannel(final int providerID, final String providerChannelId) {
 		this.prepareProvider();
 		HashMap<String, Channel> channelMap = this.channelsLists.get(providerID);
-		if (!channelMap.containsKey(providerChannel)) {
+		if (!channelMap.containsKey(providerChannelId)) {
 			ErrorClass.setWarníng();
-			throw new ErrorClass(ResourceManager.msg("MISSING_PROVIDER_CHANNEL_ENTRY", providerChannel));
+			throw new ErrorClass(ResourceManager.msg("MISSING_PROVIDER_CHANNEL_ENTRY", providerChannelId));
 		}
-		Channel c = channelMap.get(providerChannel);
+		Channel c = channelMap.get(providerChannelId);
 		String dvbViewerChannel = c.getDVBViewer();
 		if (dvbViewerChannel == null || dvbViewerChannel.length() == 0) {
 			ErrorClass.setWarníng();
-			throw new ErrorClass(ResourceManager.msg("MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannel));
+			throw new ErrorClass(ResourceManager.msg("MISSING_DVBVIEWER_CHANNEL_ENTRY", providerChannelId));
 		}
 		return c;
 	}
 
-	public boolean addNewEntry(Provider provider, String providerID, String channel, long start, long end,
+	public boolean addNewEntry(Provider provider, String providerID, String channelId, long start, long end,
 			String title) {
-		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
+		Channel c = this.getDVBViewerChannel(provider.getID(), channelId);
 		TimeOffsets o = c.getOffsets();
 		long startOrg = start;
 		start -= o.getPreOffset(start) * 60000;
@@ -454,9 +454,9 @@ public class DVBViewer {
 		return true;
 	}
 
-	public boolean shiftEntry(DVBViewerEntry shiftEntry, Provider provider, String providerID, String channel,
+	public boolean shiftEntry(DVBViewerEntry shiftEntry, Provider provider, String providerID, String channelId,
 			long start, long end, String title) {
-		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
+		Channel c = this.getDVBViewerChannel(provider.getID(), channelId);
 		TimeOffsets o = c.getOffsets();
 		long startOrg = start;
 		start -= o.getPreOffset(start) * 60000;
@@ -477,8 +477,8 @@ public class DVBViewer {
 		return true;
 	}
 
-	public void deleteEntry(Provider provider, String channel, long start, long end, String title) {
-		Channel c = this.getDVBViewerChannel(provider.getID(), channel);
+	public void deleteEntry(Provider provider, String channelId, long start, long end, String title) {
+		Channel c = this.getDVBViewerChannel(provider.getID(), channelId);
 
 		DVBViewerEntry e = new DVBViewerEntry(c.getDVBViewer(), c.getChannelSet(), null, start, end, start, end,
 				"-------", title, this.timerAction, this.afterRecordingAction, c.getMerge(provider.getMerge()),
@@ -490,6 +490,13 @@ public class DVBViewer {
 				break;
 			}
 		}
+	}
+
+	public void selectChannel(Provider provider, String channelId) {
+		Channel c = this.getDVBViewerChannel(provider.getID(), channelId);
+
+		this.startDVBViewerAndSelectChannel(c.getDVBViewer());
+		Log.out("DVBViewer channel \"" + c.getDVBViewer() + "\" selected.");
 	}
 
 	public void deleteEntry(DVBViewerEntry entry) {
@@ -660,7 +667,7 @@ public class DVBViewer {
 		Channel c = new Channel(channelSet, channelSet.getTimeOffsets(), channelSet.getMerge());
 		for (dvbviewertimerimport.control.Channel cC : channelSet.getChannels()) {
 			int type = cC.getType();
-			this.addChannel(this.channelsLists.get(type), cC.getName(), c, cC.getTypeName());
+			this.addChannel(this.channelsLists.get(type), cC.getIDKey(), c, cC.getTypeName());
 		}
 		this.channelSetMap.put(channelSet.getID(), channelSet);
 	}
@@ -1021,8 +1028,8 @@ public class DVBViewer {
 	}
 
 	public boolean startDVBViewerAndSelectChannel(String channelID) {
-		if (DVBViewerCOM.connect()) // actual running
-		{
+		if (DVBViewerCOM.connect()) {// actual running
+
 			DVBViewerCOM.disconnect();
 			return selectChannel(channelID, false);
 		}

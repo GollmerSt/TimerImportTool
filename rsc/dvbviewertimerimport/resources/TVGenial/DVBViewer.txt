@@ -1,3 +1,18 @@
+
+// Für das DVBViewerTimerImportTool. Transformation der Kanalnamen erfolgt durch die Tabellen im Tool.
+// Tabellendefinitionen sind daher nicht erforderlich.
+
+StartOffset = 0
+EndOffset   = 0
+
+DoDelete   "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+
+DoRecord   "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+
+RemindCall "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -remind TVUID='u'
+
+
+
 ////  ____________________________________________________________________________________________
 ////
 ////   A C H T U N G   Diese Datei nicht modifizieren !!!!!
@@ -159,9 +174,9 @@
 //   - Beispiel : StartOffset = -180   der Aufnahmestart findet 3 Minuten früher statt
 //   - Beispiel : StartOffset = - 180  Fehler !! keine Leerzeichen nach dem Minus, StartOffset wird bleibt null
 ////
-StartOffset = 0
-EndOffset   = 0
-
+//StartOffset = 0
+//EndOffset   = 0
+//
 //   ________________________________________________________________________________________________
 //
 //   Debug Informationen
@@ -371,8 +386,8 @@ EndOffset   = 0
 //
 //
 //EndID   // bitte nicht löschen / do not remove
-
-
+//
+//
 // Kommandozeilen:
 //
 //     DoRecord         [programmpfadname] [parameter]
@@ -443,10 +458,10 @@ EndOffset   = 0
 //  (z.B.  nimm mal folgendes auf: 24:02:2002-20:15 24:02:2002-21:00 (Sat 1) >Tierwelten am Amazonas <)
 ////
 // Für DVBViewer-TimerImport-Tool:
-DoRecord "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
-
-
-
+//DoRecord "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+//
+//
+//
 //  LÖSCHEN
 // 
 //  Um Sendungsprogrammierungen zu löschen, verwenden Sie Kommandos mit der Bezeichnung DoDelete oder DoDeleteWaitFor
@@ -460,11 +475,11 @@ DoRecord "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID
 //  dieses Beispiel:  DoDeleteWaitFor C:\Programme\Recorder.exe '"-del"' dd.mm.yyyy;hh:nn;i;"'"#"'"
 //          erzeugt:  DoDeleteWaitFor C:\Programme\Recorder.exe "-del" 24.06.2003;20:15;ZDF;'Wetten dass...?'
 //
-
+//
 //  Beispiel für VirtualDVR
 //  dieses Beispiel:  DoRecord c:\dein\pfad\zu\VirtualDVR.exe '-add' dd.mm.yyyy;hh:nn;qq.ww.eeee;rr:ff;i;#
 //          erzeugt:  DoRecord c:\dein\pfad\zu\VirtualDVR.exe -add 24.06.2003;20:15;24.06.2003;22:10;ZDF;Wetten dass...?
-
+//
 //   Beispiel für Haupauge WIN-TV-PVR
 //  1  =  c10           // ARD
 //  .....
@@ -476,11 +491,11 @@ DoRecord "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial         TVUID
 //   Zum löschen folgenden Befehl aktivieren:
 ////
 // Für DVBViewer-TimerImport-Tool:
-DoDelete "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
-
-
-
+//DoDelete "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -delete TVUID='u' Beginn='yyyymmddhhnn' Dauer='j' Sendung="'#'"'
+//
+//
+//
 //  RemindCall: dieses Beispiel startet zu einer Erinnerung ihre TV-Applikation und schaltet auf einen Sender um
 //  diese Funktion überschreib die in den Optionen angegebene Datei
 //  
-// RemindCall 'C:\Eigene_Dateien\ShowTV.exe' 'channel='i
+//RemindCall "%JAVA_Home%\bin\javaw.exe" ' -jar "%JAR_File%" -TVGenial -remind TVUID='u'

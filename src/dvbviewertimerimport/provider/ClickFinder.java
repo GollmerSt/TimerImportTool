@@ -19,7 +19,6 @@ import com.healthmarketscience.jackcess.DatabaseBuilder;
 import com.healthmarketscience.jackcess.Table;
 
 import dvbviewertimerimport.control.Channel;
-import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.misc.Constants;
@@ -96,19 +95,7 @@ public class ClickFinder extends Provider {
 		}
 		long end = start + milliSeconds;
 
-		String channel = null;
-
-		for (ChannelSet cs : this.control.getChannelSets()) {
-			Channel c = cs.getChannel(this.getID());
-			if (c == null)
-				continue;
-			if (id.contentEquals((String) c.getIDKey())) {
-				channel = c.getName();
-				break;
-			}
-		}
-
-		this.dvbViewer.addNewEntry(this, providerID, channel, start, end, title);
+		this.dvbViewer.addNewEntry(this, providerID, id, start, end, title);
 
 		return true;
 	}
