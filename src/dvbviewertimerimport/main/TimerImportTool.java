@@ -191,7 +191,7 @@ public final class TimerImportTool {
 				JOptionPane.showMessageDialog(null, "Successfull finished", provider.getName() + " status",
 						JOptionPane.INFORMATION_MESSAGE);
 		}
-		System.exit(0);
+		//System.exit(0);
 	}
 
 }

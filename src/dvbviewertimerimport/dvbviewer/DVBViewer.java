@@ -45,7 +45,7 @@ public class DVBViewer {
 	};
 
 	private static final int TIMEOUT_S = 120; // DVBViewer waiting time
-	private static final int DVBVIEWER_SCAN_TIME_MS = 100; // Scan time for
+	private static final int DVBVIEWER_SCAN_TIME_MS = 1000; // Scan time for
 															// waiting DVBViewer
 	private static final int DVBVIEWER_CHANNEL_TIME_MS = 200; // Selecting
 																// channel
