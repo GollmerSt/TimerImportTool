@@ -1,7 +1,20 @@
 A E N D E R U N G E N
 
+Version 01.04.01
+
+    04.09.2020  Der vorherige Kanal wurde bei einer Neuzuordnung eines Provider-Kanals nicht gelöscht.
+                Dadurch entstanden Mehrdeutigkeiten.
+                
+                TVGenial: Reminder-Funktion supported. Mit Setzen der Erinnerung (auch aktuelle Sendung)
+                wird der DVBViewer gestartet und der entsprechende Kanal wird eingestellt.
+                
+    05.09.2020	TVGenial u.a.: Die Kanaleinstellung funktionierte nur bei gestartetem DVBViewer 
+
+                
 Version 01.04.00
 
     03.09.2020  Das ImportTool wurde umfangreich überarbeitet, es ist nun auch mit einem JRE-64 bit
                 lauffähig. Es wurde an die aktuellen Provider-Internetseiten und -Datenbanken angepasst.
                 Die Oberfläche wurde in einigen Punkten verbessert.
+                
+   
