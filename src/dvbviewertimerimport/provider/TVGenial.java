@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.TimeZone;
 
 import dvbviewertimerimport.control.Channel;
-import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.Control;
 import dvbviewertimerimport.dvbviewer.DVBViewer;
 import dvbviewertimerimport.main.Versions;
