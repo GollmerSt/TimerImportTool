@@ -250,7 +250,7 @@ public class TimersTreeTableModel extends AbstractTreeTableModel implements Tree
 			merge.calcStartEnd();
 			Object[] path = merge.getPath().getPath();
 			// int[] index = { getIndexOfChild(parent, this) };
-			// Object[] children = { this };
+			// SubObject[] children = { this };
 			siht.fireTreeNodesChanged(siht, path, null, null);
 		} else {
 			entry.setStart(newStart);

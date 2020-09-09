@@ -188,9 +188,9 @@ public abstract class AbstractTreeTableModel implements TreeTableModel {
 	// Left to be implemented in the subclass:
 
 	/*
-	 * public Object getChild(Object parent, int index) public int
-	 * getChildCount(Object parent) public int getColumnCount() public String
-	 * getColumnName(Object node, int column) public Object getValueAt(Object node,
+	 * public SubObject getChild(SubObject parent, int index) public int
+	 * getChildCount(SubObject parent) public int getColumnCount() public String
+	 * getColumnName(SubObject node, int column) public SubObject getValueAt(SubObject node,
 	 * int column)
 	 */
 }

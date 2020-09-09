@@ -86,7 +86,7 @@ public class Tuner {
 	private byte  epgFlag ;				// Byte
 	private short diSEqCExt ;			// Word
 										// DiSEqC Extension: OrbitPos, or other value
-										// -> Positoner, GotoAngular, Command String (set to 0 if not required)
+										// -> Positoner, GotoAngular, MainObject String (set to 0 if not required)
 	private byte  diSEqC ;				// 0 = None
 										// 1 = Pos A (mostly translated to PosA/OptA)
 										// 2 = Pos B (mostly translated to PosB/OptA)

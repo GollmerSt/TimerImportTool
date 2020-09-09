@@ -4,9 +4,6 @@
 
 package dvbviewertimerimport.misc;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -18,6 +15,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public final class Helper {
 
@@ -298,5 +301,65 @@ public final class Helper {
 		System.out.println(builder.toString());
 		return builder.toString();
 	}
+	
+
+	public static abstract class ThreadPoolRunnable implements java.lang.Runnable {
+
+		private static ThreadPoolExecutor EXECUTOR = (ThreadPoolExecutor) Executors.newCachedThreadPool();
+		// private static ThreadPoolExecutor executor = (ThreadPoolExecutor)
+		// Executors.newFixedThreadPool(Constants.MAX_CONNECTIONS);
+		
+		public static void abort() {
+			EXECUTOR.shutdown();
+			try {
+				EXECUTOR.awaitTermination(1, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+			}
+		}
+
+		private final String threadName;
+
+		protected ThreadPoolRunnable(String threadName) {
+			this.threadName = threadName;
+		}
+
+		@Override
+		public abstract void run();
+
+		public void submit() {
+			EXECUTOR.submit(new java.lang.Runnable() {
+
+				@Override
+				public void run() {
+					setThreadName();
+					ThreadPoolRunnable.this.run();
+					setThreadNameFinished();
+				}
+			});
+		}
+
+		private void setThreadName() {
+			Thread thread = Thread.currentThread();
+			String threadName = thread.getName();
+			int i = threadName.lastIndexOf("-finished");
+			if (i == threadName.length() - 9) {
+				threadName = threadName.substring(0, i);
+			}
+			i = threadName.lastIndexOf('-');
+			if (i > 0) {
+				threadName = this.threadName + threadName.substring(i);
+			}
+			thread.setName(threadName);
+		}
+
+		private void setThreadNameFinished() {
+			Thread thread = Thread.currentThread();
+			String threadName = thread.getName();
+			thread.setName(threadName + "-finished");
+		}
+
+	}
+
+
 
 }
