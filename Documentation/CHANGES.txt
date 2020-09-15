@@ -1,5 +1,13 @@
 A E N D E R U N G E N
 
+Version 01.04.02
+
+    15.09.2020  Die 32-Bit-DLL wurde versehentlich unter einem falschen Namen versucht zu kopieren.
+                
+    14.09.2020	TVHeadend-Dateien entfernt, da ausn diesen dateien einen  Library erstellt wird und dann
+                in das Tool auch als Library eingebunden wird. 
+
+                
 Version 01.04.01
 
     04.09.2020  Der vorherige Kanal wurde bei einer Neuzuordnung eines Provider-Kanals nicht gelöscht.

@@ -21,7 +21,7 @@
 	<loadfile srcfile="src/dvbviewertimerimport/main/Versions.java" property="version">
 		<filterchain>
 			<linecontains>
-				<contains value="VERSION =" />
+				<contains value=" VERSION =" />
 			</linecontains>
 			<tokenfilter>
 				<replaceregex pattern=".*?&quot;(.*?)&quot;.*$" replace="\1" />

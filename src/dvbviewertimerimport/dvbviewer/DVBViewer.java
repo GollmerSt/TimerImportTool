@@ -872,6 +872,8 @@ public class DVBViewer {
 
 		if (jvmArch.equals("amd64")) {
 			jvmArch = "x64";
+		} else if ( jvmArch.equals("x86")) {
+			jvmArch = "x32";
 		}
 
 		String exePath = DVBViewer.PATH_PLUGIN_DATA;
