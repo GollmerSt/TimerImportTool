@@ -363,8 +363,6 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 
 		Program example = getPluginManager().getExampleProgram();
 
-		Action[] subActions = new AbstractAction[2];
-
 		Command temp = Command.SET;
 		try {
 			if (!program.equals(example)) {
@@ -389,13 +387,25 @@ public class DVBViewerTimerImport extends Plugin implements DVBViewerProvider {
 			return null;
 		}
 
+		boolean viewerAvailable = this.control.getDVBViewer().isDVBViewerAvailable();
+
+		Action[] subActions = new AbstractAction[viewerAvailable ? 2 : 1];
+
 		subActions[0] = this.timerAction;
 		this.timerAction.update(program, temp);
 
-		subActions[1] = this.chooseChannelAction;
-		this.chooseChannelAction.update(program);
+		if (viewerAvailable) {
 
-		return new ActionMenu(this.mainMenue, this.menuIcon, subActions);
+			subActions[1] = this.chooseChannelAction;
+			this.chooseChannelAction.update(program);
+		}
+		
+		if ( subActions.length > 1 ) {
+			return new ActionMenu(this.mainMenue, this.menuIcon, subActions);
+		} else {
+			return new ActionMenu(subActions[0]);
+		}
+
 	}
 
 	private void markProgram(final Program program, boolean mark) {

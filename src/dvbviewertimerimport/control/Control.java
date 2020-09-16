@@ -29,6 +29,7 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
+import dvbviewertimerimport.dvbviewer.DVBViewerCOM;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerService;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
@@ -457,12 +458,13 @@ public class Control {
 		} catch (XMLStreamException e) {
 			throw new ErrorClass(e, "Unexpected error on closing the file \"" + name + "\"");
 		}
-		if (versionChanged) {
-			DVBViewer.getDVBViewerCOMDllAndCheckVersion(true);
-			this.compressAndSaveFiles(oldVersion);
-			this.write(null);
-		} else
-			DVBViewer.getDVBViewerCOMDllAndCheckVersion(false);
+		if (this.dvbViewer != null) {
+			this.dvbViewer.init(versionChanged);
+			if (versionChanged) {
+				this.compressAndSaveFiles(oldVersion);
+				this.write(null);
+			}
+		}
 	}
 
 	public boolean write(final File xmlFile) {

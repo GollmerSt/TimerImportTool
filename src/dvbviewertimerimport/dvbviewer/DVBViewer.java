@@ -26,15 +26,18 @@ import javax.xml.stream.XMLStreamWriter;
 import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
-import dvbviewertimerimport.xml.StackXML;
 import dvbviewertimerimport.control.ChannelSet;
 import dvbviewertimerimport.control.TimeOffsets;
+import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
+import dvbviewertimerimport.misc.Constants;
 import dvbviewertimerimport.misc.Enums.ActionAfterItems;
 import dvbviewertimerimport.misc.Enums.TimerActionItems;
-import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
-import dvbviewertimerimport.main.Versions;
-import dvbviewertimerimport.misc.*;
+import dvbviewertimerimport.misc.ErrorClass;
+import dvbviewertimerimport.misc.Log;
+import dvbviewertimerimport.misc.Registry;
+import dvbviewertimerimport.misc.ResourceManager;
 import dvbviewertimerimport.provider.Provider;
+import dvbviewertimerimport.xml.StackXML;
 
 public class DVBViewer {
 
@@ -59,8 +62,6 @@ public class DVBViewer {
 
 	public static final String NAME_DVBVIEWER_COM_DLL = "DVBViewerTimerImport";
 	private static String PATH_PLUGIN_DATA;
-
-	private static boolean isDLLloaded = false;
 
 	private static final StackXML<String> xmlPath = new StackXML<String>("Processed", "Entry");
 
@@ -168,8 +169,13 @@ public class DVBViewer {
 		this.timersXML = new DVBViewerTimerXML(this);
 		this.xmlFilePath = xmlPath;
 
-		DVBViewer.checkAndGetDVBViewerCOMDllIfNecessary(false);
+	}
 
+	public void init(boolean versionChanged) {
+		File dllPath = new File(this.getXMLFilePath());
+		if (this.getDVBViewerPath() != null) {
+			DVBViewerCOM.getInstance().init(dllPath, versionChanged);
+		}
 	}
 
 	public void setProvider() {
@@ -239,22 +245,26 @@ public class DVBViewer {
 						String key = line.substring(0, p).trim();
 						String value = line.substring(p + 1).trim();
 						if (key.equalsIgnoreCase("UserMode")) {
-							if (value.equals("0")) {
-								path = this.dvbViewerPath + path;
-								userMode = 0;
-							} else if (value.equals("1")) {
-								path = System.getenv("APPDATA") + path;
-								userMode = 1;
-							} else if (value.equals("2")) {
-								String temp = System.getenv("APPDATA");
-								temp = temp.substring(temp.lastIndexOf(File.separator));
-								if (temp.equalsIgnoreCase(DVBViewer.NAME_PATH_REMOVE))
-									temp = "";
-								path = System.getenv("ALLUSERSPROFILE") + temp + path;
-								userMode = 2;
-							} else {
-								bR.close();
-								throw new ErrorClass("The file \"" + iniFile + "\" contains an illegal user mode.");
+							switch (value) {
+								case "0":
+									path = this.dvbViewerPath + path;
+									userMode = 0;
+									break;
+								case "1":
+									path = System.getenv("APPDATA") + path;
+									userMode = 1;
+									break;
+								case "2":
+									String temp = System.getenv("APPDATA");
+									temp = temp.substring(temp.lastIndexOf(File.separator));
+									if (temp.equalsIgnoreCase(DVBViewer.NAME_PATH_REMOVE))
+										temp = "";
+									path = System.getenv("ALLUSERSPROFILE") + temp + path;
+									userMode = 2;
+									break;
+								default:
+									bR.close();
+									throw new ErrorClass("The file \"" + iniFile + "\" contains an illegal user mode.");
 							}
 						} else if (key.equalsIgnoreCase("Root") && userMode != 0) {
 							root = true;
@@ -283,12 +293,12 @@ public class DVBViewer {
 
 	private void connectDVBViewerIfNecessary() {
 		if ((this.service == null || !this.service.isEnabled()) && !this.isDVBViewerConnected)
-			this.isDVBViewerConnected = DVBViewerCOM.connect();
+			this.isDVBViewerConnected = DVBViewerCOM.getInstance().connectViewer(false);
 	}
 
 	private void disconnectDVBViewer() {
 		if (this.isDVBViewerConnected)
-			DVBViewerCOM.disconnect();
+			DVBViewerCOM.getInstance().disconnectViewer();
 		this.isDVBViewerConnected = false;
 	}
 
@@ -297,9 +307,9 @@ public class DVBViewer {
 		if (this.service != null && this.service.isEnabled())
 			this.recordEntries = this.service.readTimers();
 		else {
-			if (DVBViewerCOM.connect()) {
-				this.recordEntries = DVBViewerCOM.readTimers();
-				DVBViewerCOM.disconnect();
+			if (DVBViewerCOM.getInstance().connectViewer(false)) {
+				this.recordEntries = DVBViewerCOM.getInstance().readTimers();
+				DVBViewerCOM.getInstance().disconnectViewer();
 			} else
 				this.recordEntries = this.timersXML.readTimers();
 		}
@@ -354,7 +364,7 @@ public class DVBViewer {
 				result &= provider.processEntry(o, command);
 			}
 			return result;
-		} else if ( command == Command.FIND_SENDER ) {
+		} else if (command == Command.FIND_SENDER) {
 			return true;
 		}
 		this.connectDVBViewerIfNecessary();
@@ -536,6 +546,10 @@ public class DVBViewer {
 	}
 
 	public void setDVBViewerPath(final String dvbViewerPath) {
+		File dvbViewer = new File(dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE);
+		if (!dvbViewer.canExecute()) {
+			return;
+		}
 		this.isDVBViewerPathSetExternal = true;
 		this.dvbViewerPath = dvbViewerPath;
 		if (dvbViewerPath != null)
@@ -549,10 +563,13 @@ public class DVBViewer {
 	}
 
 	public String getDVBExePath() {
-		if (this.dvbExePath != null)
+		if (this.dvbExePath != null) {
 			return this.dvbExePath;
-		else
+		} else if (this.dvbViewerPath != null) {
 			return this.dvbViewerPath + File.separator + NAME_DVBVIEWER_EXE;
+		} else {
+			return null;
+		}
 	}
 
 	public void setChannelChangeTime(final int waitTime) {
@@ -721,7 +738,7 @@ public class DVBViewer {
 
 		if (this.service != null && this.service.isEnabled())
 			this.service.setTimers(this.recordEntries);
-		else if (!DVBViewerCOM.setTimers(this.recordEntries)) {
+		else if (!DVBViewerCOM.getInstance().setTimers(this.recordEntries)) {
 			this.timersXML.setTimers(this.recordEntries);
 			if (this.startIfRecording)
 				this.startDVBViewerIfRecording();
@@ -847,73 +864,17 @@ public class DVBViewer {
 		this.recordEntries = lastTimers;
 	}
 
-	public static boolean loadDVBViewerCOMDll() {
-		if (!checkAndGetDVBViewerCOMDllIfNecessary(false))
-			return false;
-
-		if (DVBViewer.isDLLloaded)
-			return true;
-
-		File f = new File(DVBViewer.PATH_PLUGIN_DATA + File.separator + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll");
-
-		System.load(f.getAbsolutePath());
-		DVBViewer.setDLLisLoaded();
-		return true;
-	}
-
-	public static boolean checkAndGetDVBViewerCOMDllIfNecessary(boolean force) {
-		if (DVBViewer.isDLLloaded)
-			return true;
-
-		if (!Constants.IS_WINDOWS)
-			return false;
-
-		String jvmArch = System.getProperty("os.arch");
-
-		if (jvmArch.equals("amd64")) {
-			jvmArch = "x64";
-		} else if ( jvmArch.equals("x86")) {
-			jvmArch = "x32";
-		}
-
-		String exePath = DVBViewer.PATH_PLUGIN_DATA;
-
-		File f = new File(exePath + File.separator + DVBViewer.NAME_DVBVIEWER_COM_DLL + ".dll");
-
-		if (!f.canExecute() || force) {
-			if (!new File(exePath).canWrite()) {
-				Log.error(ResourceManager.msg("ADMINISTRATOR"));
-				throw new TerminateClass(1);
-			}
-			ResourceManager.copyBinaryFile(f, "datafiles/" + NAME_DVBVIEWER_COM_DLL + "_" + jvmArch + ".dll");
-		}
-		return true;
-
-	}
-
-	public static void getDVBViewerCOMDllAndCheckVersion(boolean load) {
-		if (!Constants.IS_WINDOWS)
-			return;
-
-		if (load)
-			DVBViewer.checkAndGetDVBViewerCOMDllIfNecessary(true);
-		if (!DVBViewerCOM.getVersion().equals(Versions.getDVBViewerCOMVersion())) {
-			Log.error(ResourceManager.msg("PACKAGE"));
-			throw new TerminateClass(1);
-		}
+	public boolean isDVBViewerAvailable() {
+		return DVBViewerCOM.getInstance().isAvailable();
 	}
 
 	public boolean isDVBViewerExecuting() {
-		if (DVBViewerCOM.connect()) // actual running
+		if (DVBViewerCOM.getInstance().connectViewer(false)) // actual running
 		{
-			DVBViewerCOM.disconnect();
+			DVBViewerCOM.getInstance().disconnectViewer();
 			return true;
 		}
 		return false;
-	}
-
-	public static void setDLLisLoaded() {
-		DVBViewer.isDLLloaded = true;
 	}
 
 	public boolean startDVBViewer() {
@@ -954,7 +915,7 @@ public class DVBViewer {
 			@Override
 			public void run() {
 				long timeOutTime = System.currentTimeMillis() + TIMEOUT_S * 1000;
-				while (!DVBViewerCOM.connect()) {
+				while (!DVBViewerCOM.getInstance().connectViewer(false)) {
 					try {
 						Thread.sleep(DVBVIEWER_SCAN_TIME_MS);
 					} catch (InterruptedException e) {
@@ -970,7 +931,7 @@ public class DVBViewer {
 					return;
 				}
 
-				DVBViewerCOM.disconnect();
+				DVBViewerCOM.getInstance().disconnectViewer();
 
 				if (wait) {
 					try {
@@ -989,20 +950,20 @@ public class DVBViewer {
 				while (true) {
 					if (waitingFinished || this.repeatChannelSelection) {
 
-						if (!DVBViewerCOM.connect()) {
+						if (!DVBViewerCOM.getInstance().connectViewer(false)) {
 							dvbViewer.isThreadListening = false;
 							break;
 						}
 
-						if (channelNo != DVBViewerCOM.getCurrentChannelNo()
+						if (channelNo != DVBViewerCOM.getInstance().getViewerChannel()
 								|| selectedChannel != dvbViewer.selectedChannel) {
 							selectedChannel = dvbViewer.selectedChannel;
-							channelNo = DVBViewerCOM.setCurrentChannel(selectedChannel);
+							channelNo = DVBViewerCOM.getInstance().setViewerChannel(selectedChannel);
 						}
 
 						// System.err.println( channelNo ) ;
 
-						DVBViewerCOM.disconnect();
+						DVBViewerCOM.getInstance().disconnectViewer();
 					}
 					if (waitingFinished || !wait) {
 						synchronized (dvbViewer) {
@@ -1030,9 +991,9 @@ public class DVBViewer {
 	}
 
 	public boolean startDVBViewerAndSelectChannel(String channelID) {
-		if (DVBViewerCOM.connect()) {// actual running
+		if (DVBViewerCOM.getInstance().connectViewer(false)) {// actual running
 
-			DVBViewerCOM.disconnect();
+			DVBViewerCOM.getInstance().disconnectViewer();
 			return selectChannel(channelID, false);
 		}
 		File f = new File(this.getDVBExePath());

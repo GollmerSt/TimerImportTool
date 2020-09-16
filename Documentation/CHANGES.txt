@@ -1,5 +1,11 @@
 A E N D E R U N G E N
 
+Version 01.04.03
+
+    16.09.2020  Bei Problemen beim Laden der DLL oder ist der DVBViewer nicht installiert,
+                verhält sich das Tool wie unter einem Linux-Betriebssystem. 
+                
+
 Version 01.04.02
 
     15.09.2020  Die 32-Bit-DLL wurde versehentlich unter einem falschen Namen versucht zu kopieren.
