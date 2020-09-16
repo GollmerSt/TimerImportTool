@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class Versions {
-	private static String VERSION = "01.04.03.rc1";
+	private static String VERSION = "01.04.03";
 	private static final String DVBVIEWER_COM_DLL_VERSION = "1.00.05";
 
 	public static String getVersion() {
