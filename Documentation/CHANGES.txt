@@ -1,5 +1,10 @@
 A E N D E R U N G E N
 
+Version 01.04.04
+
+    25.01.2021  In bestimmten Fällen gab es im TVBrowser ein NoSuchMehthodError. Gefixt.
+                
+
 Version 01.04.03
 
     16.09.2020  Bei Problemen beim Laden der DLL oder ist der DVBViewer nicht installiert,

@@ -4,7 +4,7 @@ import java.util.Calendar;
 
 public class Date {
 
-	public Date(Calendar calendar) {
+	public Date(final Calendar calendar) {
 
 	}
 
@@ -20,7 +20,8 @@ public class Date {
 		return 0;
 	}
 
-	public void addDays(int t) {
+	public Date addDays(final int t) {
+		return null;
 	}
 
 }

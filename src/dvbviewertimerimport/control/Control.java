@@ -29,7 +29,6 @@ import javax.xml.stream.events.XMLEvent;
 import javax.xml.transform.stream.StreamSource;
 
 import dvbviewertimerimport.dvbviewer.DVBViewer;
-import dvbviewertimerimport.dvbviewer.DVBViewerCOM;
 import dvbviewertimerimport.dvbviewer.DVBViewerEntry;
 import dvbviewertimerimport.dvbviewer.DVBViewerService;
 import dvbviewertimerimport.javanet.staxutils.IndentingXMLStreamWriter;
